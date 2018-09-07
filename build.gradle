@@ -103,6 +103,7 @@ project(":core") {
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        implementation "uy.kohesive.injekt:injekt-core:1.16.+"
     }
 }
 
