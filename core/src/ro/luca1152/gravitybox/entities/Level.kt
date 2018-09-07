@@ -20,8 +20,10 @@ package ro.luca1152.gravitybox.entities
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Vector2
@@ -35,91 +37,89 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.screens.PlayScreen
+import ro.luca1152.gravitybox.utils.ColorScheme
+import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
+import ro.luca1152.gravitybox.utils.ColorScheme.darkColor2
+import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
+import ro.luca1152.gravitybox.utils.ColorScheme.lightColor2
+import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import ro.luca1152.gravitybox.utils.MyUserData
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-class Level(levelNumber: Int) {
-
-    // Tools
-    var stage: Stage
-    var uiStage: Stage
-    var isFinished = false
-    var reset = false
-    var mapIsVisible = false
-    internal var labelStyle: Label.LabelStyle
-    private val mapRenderer: OrthogonalTiledMapRenderer
-    private val b2dRenderer: Box2DDebugRenderer
-    // Original colors
-    private val originalLightColor: Color
-    private val originalDarkColor: Color
-
+class Level(levelNumber: Int,
+            private val batch: Batch = Injekt.get(),
+            manager: AssetManager = Injekt.get()) {
+    // Map info
     private val map: TiledMap
     private val mapWidth: Int
     private val mapHeight: Int
+    private val mapHue: Int
     private val world: World
     private val player: Player
     private val finish: Finish
+    // Original colors
+    private val originalLightColor: Color
+    private val originalDarkColor: Color
+    // Variables
+    var isFinished = false
+    var reset = false
+    var mapIsVisible = false
+    // Util
+    private var labelStyle: Label.LabelStyle
+    private val mapRenderer: OrthogonalTiledMapRenderer
+    private val b2dRenderer: Box2DDebugRenderer
+    var stage: Stage
+    var uiStage: Stage
 
     init {
-        stage = Stage(FitViewport(20f, 20f), MyGame.batch)
-        uiStage = Stage(FitViewport(640f, 640f), stage.batch)
-        b2dRenderer = Box2DDebugRenderer()
-
-        // Create the [map]
-        map = MyGame.manager.get("maps/map-$levelNumber.tmx", TiledMap::class.java)
+        // Load the map
+        map = manager.get("maps/map-$levelNumber.tmx", TiledMap::class.java)
         val mapProperties = map.properties
         mapWidth = mapProperties.get("width") as Int
         mapHeight = mapProperties.get("height") as Int
+        // Create the Box2D world
+        world = World(Vector2(0f, -36f), true)
+        MapBodyBuilder.buildShapes(map, MyGame.PPM, world)
+        // Create the finish point and the player based on their position on the [map]
+        finish = Finish(map, world)
+        player = Player(map, world)
 
         // Generate colors
-        hue = mapProperties.get("hue") as Int
-        MyGame.lightColor = MyGame.getLightColor(hue)
-        MyGame.darkColor = MyGame.getDarkColor(hue)
-        originalLightColor = MyGame.lightColor.cpy()
-        originalDarkColor = MyGame.darkColor.cpy()
-        MyGame.lightColor2 = MyGame.getLightColor2(hue)
-        MyGame.darkColor2 = MyGame.getDarkColor2(hue)
+        mapHue = mapProperties.get("hue") as Int
+        lightColor = ColorScheme.getLightColor(mapHue)
+        darkColor = ColorScheme.getDarkColor(mapHue)
+        originalLightColor = lightColor.cpy()
+        originalDarkColor = darkColor.cpy()
+        lightColor2 = ColorScheme.getLightColor2(mapHue)
+        darkColor2 = ColorScheme.getDarkColor2(mapHue)
 
-        // Create the labelStyle
-        labelStyle = Label.LabelStyle(MyGame.font32, MyGame.darkColor)
+        // Initialize utils
+        stage = Stage(FitViewport(20f, 20f), batch)
+        uiStage = Stage(FitViewport(640f, 640f), stage.batch)
+        b2dRenderer = Box2DDebugRenderer()
+        labelStyle = Label.LabelStyle(MyGame.font32, darkColor)
+        mapRenderer = OrthogonalTiledMapRenderer(map, 1 / MyGame.PPM, batch)
 
-        // Create the [mapRenderer]
-        mapRenderer = OrthogonalTiledMapRenderer(map, 1 / MyGame.PPM, MyGame.batch)
-
-        // Create the Box2D [world]
-        world = World(Vector2(0f, -36f), true)
-
-        // Add the Box2D bodies from the [map] to the [world]
-        MapBodyBuilder.buildShapes(map, MyGame.PPM, world)
-
-        // Create the finish point based on its location on the [map]
-        finish = Finish(map, world)
+        // Add actors to stage
         finish.isVisible = false
         stage.addActor(finish)
-
-        // Create the player based on its location on the [map]
-        player = Player(map, world)
         player.isVisible = false
         stage.addActor(player)
 
-        // Handle the mouse click
+        // Misc
         setInputProcessor()
-
-        // Remove bullets when they collide with the walls
         setContactListener()
-
-        // Create hints if it's the first level
-        if (levelNumber == 1)
-            createHints()
-
-        // Show the level in the bottom right
-        createLevelLabel(levelNumber)
-
-        if (levelNumber.toFloat() == MyGame.TOTAL_LEVELS)
-            createFinishMessage()
+        if (levelNumber == 1) showHelpLabel()
+        showLevelLabel(levelNumber)
+        if (levelNumber == MyGame.TOTAL_LEVELS)
+            showFinishMessage()
     }
 
-
+    /**
+     * Handles the mouse click.
+     */
     private fun setInputProcessor() {
         Gdx.input.inputProcessor = object : InputAdapter() {
             override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
@@ -147,6 +147,9 @@ class Level(levelNumber: Int) {
         }
     }
 
+    /**
+     * Removes bullets when they collide with the walls.
+     */
     private fun setContactListener() {
         world.setContactListener(object : ContactListener {
             override fun beginContact(contact: Contact) {
@@ -154,16 +157,10 @@ class Level(levelNumber: Int) {
                 val bodyB = contact.fixtureB.body
 
                 // Collision between a bullet and a wall
-                if (contact.fixtureB.filterData.categoryBits == MyGame.EntityCategory.BULLET.bits)
+                if (contact.fixtureB.filterData.categoryBits == EntityCategory.BULLET.bits)
                     flagForDelete(bodyB)
-                if (contact.fixtureA.filterData.categoryBits == MyGame.EntityCategory.BULLET.bits)
+                if (contact.fixtureA.filterData.categoryBits == EntityCategory.BULLET.bits)
                     flagForDelete(bodyA)
-
-                //               // Collision between player and the finish point
-                //                if ((contact.getFixtureA().getFilterData().categoryBits == MyGame.EntityCategory.FINISH.bits && contact.getFixtureB().getFilterData().categoryBits == MyGame.EntityCategory.PLAYER.bits) ||
-                //                        (contact.getFixtureB().getFilterData().categoryBits == MyGame.EntityCategory.FINISH.bits && contact.getFixtureA().getFilterData().categoryBits == MyGame.EntityCategory.PLAYER.bits)) {
-                //                    finish.playerEntered();
-                //                }
             }
 
             private fun flagForDelete(body: Body) {
@@ -180,7 +177,10 @@ class Level(levelNumber: Int) {
         })
     }
 
-    private fun createHints() {
+    /**
+     * Shows how to play the game and the keymap
+     */
+    private fun showHelpLabel() {
         val info1 = Label("shoot at the walls/floor to move\npress 'R' to restart the level", labelStyle)
         info1.setAlignment(Align.center)
         info1.setPosition(320 - info1.prefWidth / 2f, 470f)
@@ -196,7 +196,10 @@ class Level(levelNumber: Int) {
         uiStage.addActor(info2)
     }
 
-    private fun createLevelLabel(levelNumber: Int) {
+    /**
+     * Shows the level number in the bottom right.
+     */
+    private fun showLevelLabel(levelNumber: Int) {
         val level = Label("#$levelNumber", labelStyle)
         level.setAlignment(Align.right)
         level.setPosition(640f - level.prefWidth - 10f, 7f)
@@ -207,8 +210,10 @@ class Level(levelNumber: Int) {
         uiStage.addActor(level)
     }
 
-
-    private fun createFinishMessage() {
+    /**
+     * Shows in how much time the game was finished.
+     */
+    private fun showFinishMessage() {
         PlayScreen.timer = (PlayScreen.timer * 100).toInt() / 100f
         val finish = Label("Good job!\nYou finished the game\nin " + PlayScreen.timer + "s!", labelStyle)
         finish.setAlignment(Align.center)
@@ -216,24 +221,32 @@ class Level(levelNumber: Int) {
         uiStage.addActor(finish)
     }
 
+    /**
+     * Is called every frame.
+     */
     fun update(delta: Float) {
+        mapRenderer.setView(stage.camera as OrthographicCamera)
         world.step(1 / 60f, 6, 2)
         stage.act(delta)
         uiStage.act(delta)
         updateVisibility()
         updateCamera()
-        mapRenderer.setView(stage.camera as OrthographicCamera)
         sweepDeadBodies()
         playerCollidesFinish()
     }
 
-    // Some entities may show up for .1s if I don't do this
+    /**
+     * Sets every actor to be visible. Initially they are invisible because when you restarted the level they would show up for 1ms.
+     */
     private fun updateVisibility() {
         player.isVisible = true
         finish.isVisible = true
         mapIsVisible = true
     }
 
+    /**
+     * Keeps the camera within the map's bounds.
+     */
     private fun updateCamera() {
         stage.camera.position.set(player.x, player.y - 5f, 0f)
         val mapLeft = -1
@@ -262,6 +275,10 @@ class Level(levelNumber: Int) {
         stage.camera.update()
     }
 
+    /**
+     * Destroys every bullet that collided with a wall (checked in contactListener).
+     * You can't destroy bodies from the contactListener, so I did it here.
+     */
     private fun sweepDeadBodies() {
         val array = Array<Body>()
         world.getBodies(array)
@@ -277,34 +294,37 @@ class Level(levelNumber: Int) {
         }
     }
 
+    /**
+     * If the player is in the finish point, transition to the secondary color scheme.
+     * If the player leaves it, transition back.
+     */
     private fun playerCollidesFinish() {
         if (player.collisionBox.overlaps(finish.collisionBox)) {
-            MyGame.lightColor.lerp(MyGame.lightColor2, .05f)
-            MyGame.darkColor.lerp(MyGame.darkColor2, .05f)
+            lightColor.lerp(lightColor2, .05f)
+            darkColor.lerp(darkColor2, .05f)
         } else {
-            MyGame.lightColor.lerp(originalLightColor, .05f)
-            MyGame.darkColor.lerp(originalDarkColor, .05f)
+            lightColor.lerp(originalLightColor, .05f)
+            darkColor.lerp(originalDarkColor, .05f)
         }
-        // If the two colors are close enough (inconsistency caused by lerp)
-        if (Math.abs(MyGame.lightColor.r - MyGame.lightColor2.r) <= 3f / 255f && Math.abs(MyGame.lightColor.g - MyGame.lightColor2.g) <= 3f / 255f && Math.abs(MyGame.lightColor.b - MyGame.lightColor2.b) <= 3f / 255f) {
+
+        // If the two colors are close enough (inconsistency caused by lerp), advance to the next level
+        if (Math.abs(lightColor.r - lightColor2.r) <= 3f / 255f && Math.abs(lightColor.g - lightColor2.g) <= 3f / 255f && Math.abs(lightColor.b - lightColor2.b) <= 3f / 255f) {
             isFinished = true
         }
     }
 
+    /**
+     * Draws every platform from the level, the player and the finish point.
+     */
     fun draw() {
-        MyGame.batch.color = MyGame.darkColor
-        MyGame.batch.projectionMatrix = stage.camera.combined
+        batch.color = darkColor
+        batch.projectionMatrix = stage.camera.combined
         if (mapIsVisible) {
             mapRenderer.render()
             stage.draw()
-            MyGame.batch.color = Color.WHITE
-            //        b2dRenderer.render(world, stage.getCamera().combined);
+            batch.color = Color.WHITE
+//            b2dRenderer.render(world, stage.getCamera().combined);
         }
         uiStage.draw()
-    }
-
-    companion object {
-        // Level
-        var hue: Int = 0
     }
 }

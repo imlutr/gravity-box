@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.entities
 
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.maps.Map
 import com.badlogic.gdx.maps.objects.RectangleMapObject
@@ -29,9 +30,15 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ro.luca1152.gravitybox.MyGame
+import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
+import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-class Finish(sourceMap: Map, destinationWorld: World) : Image(MyGame.manager.get("graphics/finish.png", Texture::class.java)) {
+class Finish(sourceMap: Map,
+             destinationWorld: World,
+             manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/finish.png", Texture::class.java)) {
     var body: Body
     var collisionBox: Rectangle
         get() {
@@ -56,8 +63,8 @@ class Finish(sourceMap: Map, destinationWorld: World) : Image(MyGame.manager.get
         val fixtureDef = FixtureDef()
         fixtureDef.shape = MapBodyBuilder.getRectangle(finishObject as RectangleMapObject)
         fixtureDef.density = 100f
-        fixtureDef.filter.categoryBits = MyGame.EntityCategory.FINISH.bits
-        fixtureDef.filter.maskBits = MyGame.EntityCategory.NONE.bits
+        fixtureDef.filter.categoryBits = EntityCategory.FINISH.bits
+        fixtureDef.filter.maskBits = EntityCategory.NONE.bits
         body.createFixture(fixtureDef)
 
         // Update the position
@@ -83,8 +90,8 @@ class Finish(sourceMap: Map, destinationWorld: World) : Image(MyGame.manager.get
     override fun act(delta: Float) {
         super.act(delta)
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
-        color.r = MyGame.darkColor.r
-        color.g = MyGame.darkColor.g
-        color.b = MyGame.darkColor.b
+        color.r = darkColor.r
+        color.g = darkColor.g
+        color.b = darkColor.b
     }
 }

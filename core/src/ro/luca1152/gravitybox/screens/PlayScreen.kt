@@ -19,44 +19,53 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
-
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.entities.Level
+import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-class PlayScreen : ScreenAdapter() {
+class PlayScreen(val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
     private val TAG = PlayScreen::class.java.simpleName
+
+    // Level info
     private var level: Level? = null
     private var levelNumber = 1
 
     override fun show() {
         Gdx.app.log(TAG, "Entered screen.")
-        val music = MyGame.manager.get("audio/music.mp3", Music::class.java)
+        level = Level(levelNumber)
+        playMusic()
+    }
+
+    private fun playMusic() {
+        val music = manager.get("audio/music.mp3", Music::class.java)
         music.volume = .30f
         music.isLooping = true
         music.play()
-        level = Level(levelNumber)
     }
 
     override fun render(delta: Float) {
         update(delta)
-        Gdx.gl20.glClearColor(MyGame.lightColor.r, MyGame.lightColor.g, MyGame.lightColor.b, MyGame.lightColor.a)
+        Gdx.gl20.glClearColor(lightColor.r, lightColor.g, lightColor.b, lightColor.a)
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        level!!.draw()
+        level?.draw()
     }
 
     private fun update(delta: Float) {
         timer += delta
-        level!!.update(delta)
-        if (level!!.reset) {
+        level?.update(delta)
+        if (level?.reset == true) {
             level = Level(levelNumber)
-            level!!.reset = false
+            level?.reset = false
         }
-        if (level!!.isFinished && levelNumber + 1 <= MyGame.TOTAL_LEVELS) {
+        if (level?.isFinished == true && levelNumber + 1 <= MyGame.TOTAL_LEVELS) {
             level = Level(++levelNumber)
-            MyGame.manager.get("audio/level-finished.wav", Sound::class.java).play(.2f)
+            manager.get("audio/level-finished.wav", Sound::class.java).play(.2f)
         }
     }
 

@@ -19,107 +19,42 @@ package ro.luca1152.gravitybox
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.physics.box2d.Box2D
-
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.screens.PlayScreen
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.addSingleton
+import uy.kohesive.injekt.api.get
 
 class MyGame : Game() {
-    // Constants
-    enum class EntityCategory(bits: Int) {
-        NONE(0x0000),
-        FINISH(0x0001),
-        PLAYER(0x0002),
-        OBSTACLE(0x0003),
-        BULLET(0x0004);
-
-        var bits: Short = 0
-
-        init {
-            this.bits = bits.toShort()
-        }
+    companion object {
+        const val TOTAL_LEVELS = 10
+        const val PPM = 32f // Pixels per meter
+        lateinit var font32: BitmapFont
     }
 
-
     override fun create() {
-        // Game
-        MyGame.instance = this
         Box2D.init()
 
-        // Tools
-        MyGame.batch = SpriteBatch()
-        MyGame.manager = AssetManager()
+        // Add singletons to Injekt
+        Injekt.addSingleton(SpriteBatch() as Batch)
+        Injekt.addSingleton(AssetManager())
+        Injekt.addSingleton(this as Game)
+        Injekt.addSingleton(LoadingScreen())
+        Injekt.addSingleton(PlayScreen())
 
-        // Screens
-        MyGame.loadingScreen = LoadingScreen()
-        MyGame.playScreen = PlayScreen()
-
-        // Fonts
         font32 = BitmapFont(Gdx.files.internal("fonts/font-32.fnt"))
-        preferences = Gdx.app.getPreferences("GMTK 2018 by Luca1152")
-
-        setScreen(MyGame.loadingScreen)
+        setScreen(Injekt.get<LoadingScreen>())
     }
 
     override fun dispose() {
-        MyGame.batch.dispose()
-        MyGame.manager.dispose()
-    }
-
-    companion object {
-
-        val TOTAL_LEVELS = 10f
-        val PPM = 32f // Pixels per meter
-
-        // Colors
-        var lightColor = Color()
-        var darkColor = Color()
-        var lightColor2 = Color()
-        var darkColor2 = Color()
-
-        // Game
-        lateinit var instance: MyGame
-
-        // Tools
-        lateinit var batch: Batch
-        lateinit var manager: AssetManager
-        lateinit var preferences: Preferences
-
-        // Screens
-        lateinit var playScreen: PlayScreen
-        lateinit var loadingScreen: LoadingScreen
-
-        // Fonts
-        lateinit var font32: BitmapFont
-
-        fun getLightColor(hue: Int): Color {
-            val color = Color().fromHsv(hue.toFloat(), 10f / 100f, 91f / 100f)
-            color.a = 1f
-            return color
-        }
-
-        fun getDarkColor(hue: Int): Color {
-            val color = Color().fromHsv(hue.toFloat(), 42f / 100f, 57f / 100f)
-            color.a = 1f
-            return color
-        }
-
-        fun getLightColor2(hue: Int): Color {
-            val color = Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f)
-            color.a = 1f
-            return color
-        }
-
-        fun getDarkColor2(hue: Int): Color {
-            val color = Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f)
-            color.a = 1f
-            return color
-        }
+        Injekt.get<Batch>().dispose()
+        Injekt.get<AssetManager>().dispose()
+        Injekt.get<LoadingScreen>().dispose()
+        Injekt.get<PlayScreen>().dispose()
     }
 }

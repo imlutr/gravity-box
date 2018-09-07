@@ -17,18 +17,22 @@
 
 package ro.luca1152.gravitybox.screens
 
+import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
-
 import ro.luca1152.gravitybox.MyGame
+import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-class LoadingScreen : ScreenAdapter() {
+class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
     private val TAG = LoadingScreen::class.java.simpleName
     private var timer = 0f
 
@@ -38,29 +42,33 @@ class LoadingScreen : ScreenAdapter() {
     }
 
     private fun loadAssets() {
-        // Textures
-        MyGame.manager.load("graphics/player.png", Texture::class.java)
-        MyGame.manager.load("graphics/bullet.png", Texture::class.java)
-        MyGame.manager.load("graphics/circle.png", Texture::class.java)
-        MyGame.manager.load("graphics/finish.png", Texture::class.java)
+        loadGraphics()
+        loadAudio()
+        loadMaps()
+    }
 
-        // Audio
-        MyGame.manager.load("audio/music.mp3", Music::class.java)
-        MyGame.manager.load("audio/level-finished.wav", Sound::class.java)
-        MyGame.manager.load("audio/bullet-wall-collision.wav", Sound::class.java)
+    private fun loadGraphics() {
+        manager.load("graphics/player.png", Texture::class.java)
+        manager.load("graphics/bullet.png", Texture::class.java)
+        manager.load("graphics/circle.png", Texture::class.java)
+        manager.load("graphics/finish.png", Texture::class.java)
+    }
 
-        // Maps
-        MyGame.manager.setLoader<TiledMap, TmxMapLoader.Parameters>(TiledMap::class.java, TmxMapLoader())
-        var i = 1
-        while (i <= MyGame.TOTAL_LEVELS) {
-            MyGame.manager.load("maps/map-$i.tmx", TiledMap::class.java)
-            i++
-        }
+    private fun loadAudio() {
+        manager.load("audio/music.mp3", Music::class.java)
+        manager.load("audio/level-finished.wav", Sound::class.java)
+        manager.load("audio/bullet-wall-collision.wav", Sound::class.java)
+    }
+
+    private fun loadMaps() {
+        manager.setLoader<TiledMap, TmxMapLoader.Parameters>(TiledMap::class.java, TmxMapLoader())
+        for (i in 1..MyGame.TOTAL_LEVELS)
+            manager.load("maps/map-$i.tmx", TiledMap::class.java)
     }
 
     override fun render(delta: Float) {
         update(delta)
-        Gdx.gl20.glClearColor(209 / 255f, 232 / 255f, 232 / 255f, 1f)
+        Gdx.gl20.glClearColor(lightColor.r, lightColor.g, lightColor.b, lightColor.a)
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT)
     }
 
@@ -68,15 +76,26 @@ class LoadingScreen : ScreenAdapter() {
         timer += delta
 
         // Finished loading assets
-        if (MyGame.manager.update()) {
-            MyGame.manager.get("graphics/player.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            MyGame.manager.get("graphics/bullet.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            MyGame.manager.get("graphics/circle.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            MyGame.manager.get("graphics/finish.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            timer = timer.toInt() * 100 / 100f
-            Gdx.app.log(TAG, "Finished loading assets in " + timer + "s.")
-            MyGame.instance.screen = MyGame.playScreen
+        if (manager.update()) {
+            setTextureFilters()
+            logLoadingTime()
+            Injekt.get<Game>().screen = Injekt.get<PlayScreen>()
         }
+    }
+
+    /**
+     * Smooths the textures by applying TextureFilter.Linear to all of them.
+     */
+    private fun setTextureFilters() {
+        manager.get("graphics/player.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        manager.get("graphics/bullet.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        manager.get("graphics/circle.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        manager.get("graphics/finish.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+    }
+
+    private fun logLoadingTime() {
+        timer = timer.toInt() * 100 / 100f
+        Gdx.app.log(TAG, "Finished loading assets in " + timer + "s.")
     }
 
     override fun hide() {

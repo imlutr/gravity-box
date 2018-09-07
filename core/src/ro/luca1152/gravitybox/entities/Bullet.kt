@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.entities
 
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.MathUtils
@@ -25,53 +26,20 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Array
-import ro.luca1152.gravitybox.MyGame
+import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
+import ro.luca1152.gravitybox.utils.EntityCategory
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-class Bullet(private val world: World, player: Player) : Image(MyGame.manager.get("graphics/bullet.png", Texture::class.java)) {
-
-    var body: Body
-
-    init {
-        setSize(.3f, .3f)
-        setOrigin(width / 2f, height / 2f)
-        val bodyDef = BodyDef()
-        bodyDef.type = BodyDef.BodyType.DynamicBody
-        bodyDef.bullet = true
-        bodyDef.position.set(player.body.worldCenter.x, player.body.worldCenter.y)
-        body = world.createBody(bodyDef)
-        body.setGravityScale(0.5f)
-        val polygonShape = PolygonShape()
-        polygonShape.setAsBox(.15f, .15f)
-        val bulletFixtureDef = FixtureDef()
-        bulletFixtureDef.shape = polygonShape
-        bulletFixtureDef.density = .2f
-        bulletFixtureDef.filter.categoryBits = MyGame.EntityCategory.BULLET.bits
-        bulletFixtureDef.filter.maskBits = MyGame.EntityCategory.OBSTACLE.bits
-        body.createFixture(bulletFixtureDef)
-    }
-
-    override fun act(delta: Float) {
-        super.act(delta)
-        setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
-        rotation = MathUtils.radiansToDegrees * body.transform.rotation
-        color = MyGame.darkColor
-
-        // Remove the actor if the body was removed
-        val bodies = Array<Body>()
-        world.getBodies(bodies)
-        if (bodies.lastIndexOf(body, true) == -1)
-            addAction(Actions.sequence(
-                    Actions.delay(.01f),
-                    Actions.removeActor()
-            ))
-    }
-
+class Bullet(private val world: World,
+             player: Player,
+             manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/bullet.png", Texture::class.java)) {
     companion object {
         val SPEED = 20f
 
-        // Move the player
-        fun collisionWithWall(player: Player, body: Body) {
-            MyGame.manager.get("audio/bullet-wall-collision.wav", Sound::class.java).play(.4f)
+        fun collisionWithWall(player: Player, body: Body,
+                              manager: AssetManager = Injekt.get()) {
+            manager.get("audio/bullet-wall-collision.wav", Sound::class.java).play(.4f)
 
             // Create the force vector
             val sourcePosition = Vector2(body.worldCenter.x, body.worldCenter.y)
@@ -91,5 +59,42 @@ class Bullet(private val world: World, player: Player) : Image(MyGame.manager.ge
             // Create explosion
             player.stage.addActor(Explosion(body.worldCenter.x, body.worldCenter.y))
         }
+    }
+
+    var body: Body
+
+    init {
+        setSize(.3f, .3f)
+        setOrigin(width / 2f, height / 2f)
+        val bodyDef = BodyDef()
+        bodyDef.type = BodyDef.BodyType.DynamicBody
+        bodyDef.bullet = true
+        bodyDef.position.set(player.body.worldCenter.x, player.body.worldCenter.y)
+        body = world.createBody(bodyDef)
+        body.setGravityScale(0.5f)
+        val polygonShape = PolygonShape()
+        polygonShape.setAsBox(.15f, .15f)
+        val bulletFixtureDef = FixtureDef()
+        bulletFixtureDef.shape = polygonShape
+        bulletFixtureDef.density = .2f
+        bulletFixtureDef.filter.categoryBits = EntityCategory.BULLET.bits
+        bulletFixtureDef.filter.maskBits = EntityCategory.OBSTACLE.bits
+        body.createFixture(bulletFixtureDef)
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
+        rotation = MathUtils.radiansToDegrees * body.transform.rotation
+        color = darkColor
+
+        // Remove the actor if the body was removed
+        val bodies = Array<Body>()
+        world.getBodies(bodies)
+        if (bodies.lastIndexOf(body, true) == -1)
+            addAction(Actions.sequence(
+                    Actions.delay(.01f),
+                    Actions.removeActor()
+            ))
     }
 }

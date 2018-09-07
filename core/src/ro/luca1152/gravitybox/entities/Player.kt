@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.entities
 
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.maps.Map
 import com.badlogic.gdx.maps.objects.RectangleMapObject
@@ -28,9 +29,15 @@ import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ro.luca1152.gravitybox.MyGame
+import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
+import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-class Player(sourceMap: Map, destinationWorld: World) : Image(MyGame.manager.get("graphics/player.png", Texture::class.java)) {
+class Player(sourceMap: Map,
+             destinationWorld: World,
+             manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/player.png", Texture::class.java)) {
     var body: Body
     val collisionBox: Rectangle
         get() {
@@ -55,8 +62,8 @@ class Player(sourceMap: Map, destinationWorld: World) : Image(MyGame.manager.get
         fixtureDef.shape = MapBodyBuilder.getRectangle(playerObject as RectangleMapObject)
         fixtureDef.density = 2f
         fixtureDef.friction = 2f
-        fixtureDef.filter.categoryBits = MyGame.EntityCategory.PLAYER.bits
-        fixtureDef.filter.maskBits = MyGame.EntityCategory.OBSTACLE.bits
+        fixtureDef.filter.categoryBits = EntityCategory.PLAYER.bits
+        fixtureDef.filter.maskBits = EntityCategory.OBSTACLE.bits
         body.createFixture(fixtureDef)
 
         // Create the collision box
@@ -65,12 +72,12 @@ class Player(sourceMap: Map, destinationWorld: World) : Image(MyGame.manager.get
 
         // Update the position
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
-    }// Create the image
+    }
 
     override fun act(delta: Float) {
         super.act(delta)
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
         rotation = MathUtils.radiansToDegrees * body.transform.rotation
-        color = MyGame.darkColor
+        color = darkColor
     }
 }
