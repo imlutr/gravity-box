@@ -32,22 +32,8 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.desktop;
+package ro.luca1152.gravitybox.utils;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.graphics.Color;
-
-import ro.luca1152.gravitybox.MyGame;
-
-public class DesktopLauncher {
-    public static void main(String[] arg) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = "GMTK 2018";
-        config.width = 640;
-        config.height = 640;
-        config.initialBackgroundColor = new Color(209 / 255f, 232 / 255f, 232 / 255f, 1);
-        config.samples = 4;
-        new LwjglApplication(new MyGame(), config);
-    }
+public class MyUserData {
+    public boolean isFlaggedForDelete = false;
 }
