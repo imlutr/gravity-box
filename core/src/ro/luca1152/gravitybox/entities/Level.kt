@@ -34,7 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.viewport.FitViewport
+import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.ColorScheme
@@ -106,8 +106,8 @@ class Level(levelNumber: Int,
         darkColor2 = ColorScheme.getDarkColor2(mapHue)
 
         // Initialize utils
-        stage = Stage(FitViewport(1280 / 40f, 720 / 40f), batch)
-        uiStage = Stage(FitViewport(1280f, 720f), stage.batch)
+        stage = Stage(ExtendViewport(1280 / 40f, 720 / 40f), batch)
+        uiStage = Stage(ExtendViewport(1280f, 720f), stage.batch)
         b2dRenderer = Box2DDebugRenderer()
         labelStyle = Label.LabelStyle(MyGame.font32, darkColor)
         mapRenderer = OrthogonalTiledMapRenderer(map, 1 / PPM, batch)
