@@ -65,8 +65,8 @@ class Level(levelNumber: Int,
     private val mapHeight: Int
     private val mapHue: Int
     private val world: World
-    private val player: Player
     private val finish: Finish
+    val player: Player
 
     // Original colors
     private val originalLightColor: Color
@@ -75,7 +75,6 @@ class Level(levelNumber: Int,
     // Variables
     private var mapIsVisible = false
     var isFinished = false
-    var reset = false
 
     // Util
     private val labelStyle: Label.LabelStyle
@@ -151,7 +150,7 @@ class Level(levelNumber: Int,
 
             override fun keyDown(keycode: Int): Boolean {
                 if (keycode == Input.Keys.R) {
-                    reset = true
+                    player.restart = true
                 }
                 return true
             }

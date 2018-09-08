@@ -56,9 +56,9 @@ class PlayScreen(val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
     private fun update(delta: Float) {
         timer += delta
         level?.update(delta)
-        if (level?.reset == true) {
+        if (level?.player?.restart == true) {
             level = Level(levelNumber)
-            level?.reset = false
+            level?.player?.restart = false
         }
         if (level?.isFinished == true && levelNumber + 1 <= Level.TOTAL_LEVELS) {
             level = Level(++levelNumber)

@@ -43,6 +43,7 @@ class Player(sourceMap: Map,
             field.setPosition(x, y)
             return field
         }
+    var restart = false
 
     init {
         // Set Actor properties
@@ -83,5 +84,9 @@ class Player(sourceMap: Map,
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
         rotation = MathUtils.radiansToDegrees * body.transform.rotation
         color = darkColor
+
+        // Restart if off-screen
+        if (body.worldCenter.y < -10)
+            restart = true
     }
 }
