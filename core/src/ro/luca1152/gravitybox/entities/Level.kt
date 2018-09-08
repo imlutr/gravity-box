@@ -106,8 +106,8 @@ class Level(levelNumber: Int,
         darkColor2 = ColorScheme.getDarkColor2(mapHue)
 
         // Initialize utils
-        stage = Stage(FitViewport(20f, 20f), batch)
-        uiStage = Stage(FitViewport(640f, 640f), stage.batch)
+        stage = Stage(FitViewport(1280 / 40f, 720 / 40f), batch)
+        uiStage = Stage(FitViewport(1280f, 720f), stage.batch)
         b2dRenderer = Box2DDebugRenderer()
         labelStyle = Label.LabelStyle(MyGame.font32, darkColor)
         mapRenderer = OrthogonalTiledMapRenderer(map, 1 / PPM, batch)
