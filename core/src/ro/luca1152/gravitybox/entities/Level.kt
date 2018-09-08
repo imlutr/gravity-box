@@ -190,15 +190,15 @@ class Level(levelNumber: Int,
      * Shows how to play the game and the keymap
      */
     private fun showHelpLabel() {
-        uiStage.addActor(Label("shoot at the walls/floor to move\npress 'R' to restart the level", labelStyle).apply {
+        uiStage.addActor(Label("shoot at the walls/floor to move", labelStyle).apply {
             setAlignment(Align.center)
-            setPosition(320 - this.prefWidth / 2f, 470f)
+            setPosition(uiStage.width / 2f - prefWidth / 2f, 520f)
             addAction(Actions.fadeOut(0f))
             addAction(Actions.fadeIn(2f))
         })
         uiStage.addActor(Label("the blinking object is the finish point", labelStyle).apply {
             setAlignment(Align.center)
-            setPosition(320 - this.prefWidth / 2f, 135f)
+            setPosition(uiStage.width / 2f - prefWidth / 2f, 170f)
             addAction(Actions.fadeOut(0f))
             addAction(Actions.fadeIn(2f))
         })
@@ -210,7 +210,7 @@ class Level(levelNumber: Int,
     private fun showLevelLabel(levelNumber: Int) {
         uiStage.addActor(Label("#$levelNumber", labelStyle).apply {
             setAlignment(Align.right)
-            setPosition(640f - this.prefWidth - 10f, 7f)
+            setPosition(uiStage.width - prefWidth - 10f, 7f)
             // Add fadeIn effect if it's the first level
             if (levelNumber == 1) {
                 addAction(Actions.fadeOut(0f))
@@ -224,9 +224,9 @@ class Level(levelNumber: Int,
      */
     private fun showFinishMessage() {
         PlayScreen.timer = (PlayScreen.timer * 100).toInt() / 100f
-        uiStage.addActor(Label("Good job!\nYou finished the game\nin " + PlayScreen.timer + "s!", labelStyle).apply {
+        uiStage.addActor(Label("Good job!\nYou finished the game in " + PlayScreen.timer + "s!", labelStyle).apply {
             setAlignment(Align.center)
-            setPosition(320f - finish.prefWidth / 2f, 350f)
+            setPosition(uiStage.width / 2f - prefWidth / 2f, 400f)
         })
     }
 
