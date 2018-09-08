@@ -16,7 +16,7 @@
  */
 
 buildscript {
-    ext.kotlinVersion = '1.2.60'
+    ext.kotlinVersion = '1.2.61'
 
     repositories {
         mavenLocal()
@@ -52,6 +52,7 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
+        jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
