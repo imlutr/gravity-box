@@ -32,29 +32,33 @@ import uy.kohesive.injekt.api.get
 
 class MyGame : Game() {
     companion object {
-        const val TOTAL_LEVELS = 10
-        const val PPM = 32f // Pixels per meter
         lateinit var font32: BitmapFont
     }
 
     override fun create() {
+        // Initialize Box2D
         Box2D.init()
 
-        // Add singletons to Injekt
-        Injekt.addSingleton(SpriteBatch() as Batch)
-        Injekt.addSingleton(AssetManager())
-        Injekt.addSingleton(this as Game)
-        Injekt.addSingleton(LoadingScreen())
-        Injekt.addSingleton(PlayScreen())
+        // Initialize dependency injection
+        Injekt.run {
+            addSingleton(SpriteBatch() as Batch)
+            addSingleton(AssetManager())
+            addSingleton(this@MyGame as Game)
+            addSingleton(LoadingScreen())
+            addSingleton(PlayScreen())
+        }
 
         font32 = BitmapFont(Gdx.files.internal("fonts/font-32.fnt"))
+        // Change the screen to the LoadingScreen
         setScreen(Injekt.get<LoadingScreen>())
     }
 
     override fun dispose() {
-        Injekt.get<Batch>().dispose()
-        Injekt.get<AssetManager>().dispose()
-        Injekt.get<LoadingScreen>().dispose()
-        Injekt.get<PlayScreen>().dispose()
+        Injekt.run {
+            get<Batch>().dispose()
+            get<AssetManager>().dispose()
+            get<LoadingScreen>().dispose()
+            get<PlayScreen>().dispose()
+        }
     }
 }

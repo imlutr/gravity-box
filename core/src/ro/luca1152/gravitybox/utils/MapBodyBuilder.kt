@@ -28,41 +28,25 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array
 
 object MapBodyBuilder {
-    private var ppt: Float = 0.toFloat()
-
-    fun buildShapes(map: Map, pixels: Float, world: World): Array<Body> {
-        ppt = pixels
-        val objects = map.layers.get("Obstacles").objects
-
+    private var ppt = 0f
+    fun buildShapes(map: Map, ppt: Float, world: World): Array<Body> {
+        this.ppt = ppt
+        val mapObjects = map.layers.get("Obstacles").objects
         val bodies = Array<Body>()
-
-        for (`object` in objects) {
-
-            if (`object` is TextureMapObject) {
+        loop@ for (mapObject in mapObjects) {
+            if (mapObject is TextureMapObject) {
                 continue
             }
-
-            val shape: Shape
-
-            if (`object` is RectangleMapObject) {
-                shape = getRectangle(`object`)
-            } else if (`object` is PolygonMapObject) {
-                shape = getPolygon(`object`)
-            } else if (`object` is PolylineMapObject) {
-                shape = getPolyline(`object`)
-            } else if (`object` is CircleMapObject) {
-                shape = getCircle(`object`)
-            } else {
-                continue
+            val shape = when (mapObject) {
+                is RectangleMapObject -> getRectangle(mapObject)
+                is PolygonMapObject -> getPolygon(mapObject)
+                is PolylineMapObject -> getPolyline(mapObject)
+                is CircleMapObject -> getCircle(mapObject)
+                else -> continue@loop
             }
-
-            val bd = BodyDef()
-            bd.type = BodyDef.BodyType.StaticBody
-            val body = world.createBody(bd)
-            body.createFixture(shape, 1f)
-
+            val bd = BodyDef().apply { type = BodyDef.BodyType.StaticBody }
+            val body = world.createBody(bd).apply { createFixture(shape, 1f) }
             bodies.add(body)
-
             shape.dispose()
         }
         return bodies

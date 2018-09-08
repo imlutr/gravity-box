@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
@@ -35,66 +35,73 @@ class Bullet(private val world: World,
              player: Player,
              manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/bullet.png", Texture::class.java)) {
     companion object {
-        val SPEED = 20f
+        const val SPEED = 20f
 
         fun collisionWithWall(player: Player, body: Body,
                               manager: AssetManager = Injekt.get()) {
+            // Play the collision sound
             manager.get("audio/bullet-wall-collision.wav", Sound::class.java).play(.4f)
 
             // Create the force vector
             val sourcePosition = Vector2(body.worldCenter.x, body.worldCenter.y)
             val distance = player.body.worldCenter.dst(sourcePosition)
-            val forceVector = player.body.worldCenter.cpy()
-            forceVector.sub(sourcePosition)
-            forceVector.nor()
-            forceVector.scl(2800f) // Multiply the force vector by an amount for a greater push
-            // Take into account the distance between the source and the player
-            // It's > 1 because you don't want to multiply the forceVector if the source is too close
-            if (Math.pow(distance.toDouble(), 1.7).toFloat() > 1) {
-                forceVector.scl(1f / Math.pow(distance.toDouble(), 1.7).toFloat())
-            }
-            // Push the player
-            player.body.applyForce(forceVector, player.body.worldCenter, true)
+            val forceVector = player.body.worldCenter.cpy().apply {
+                sub(sourcePosition)
+                nor()
+                scl(2800f) // Multiply the force vector by an amount for a greater push
 
-            // Create explosion
-            player.stage.addActor(Explosion(body.worldCenter.x, body.worldCenter.y))
+                // Take into account the distance between the source and the player
+                // It's > 1 because you don't want to multiply the forceVector if the source is too close
+                if (Math.pow(distance.toDouble(), 1.7).toFloat() > 1) {
+                    scl(1f / Math.pow(distance.toDouble(), 1.7).toFloat())
+                }
+            }
+            player.body.applyForce(forceVector, player.body.worldCenter, true) // Push the player
+            player.stage.addActor(Explosion(body.worldCenter.x, body.worldCenter.y)) // Draw the explosion
         }
     }
 
-    var body: Body
+    val body: Body
 
     init {
+        // Set Actor properties
         setSize(.3f, .3f)
         setOrigin(width / 2f, height / 2f)
-        val bodyDef = BodyDef()
-        bodyDef.type = BodyDef.BodyType.DynamicBody
-        bodyDef.bullet = true
-        bodyDef.position.set(player.body.worldCenter.x, player.body.worldCenter.y)
-        body = world.createBody(bodyDef)
-        body.setGravityScale(0.5f)
-        val polygonShape = PolygonShape()
-        polygonShape.setAsBox(.15f, .15f)
-        val bulletFixtureDef = FixtureDef()
-        bulletFixtureDef.shape = polygonShape
-        bulletFixtureDef.density = .2f
-        bulletFixtureDef.filter.categoryBits = EntityCategory.BULLET.bits
-        bulletFixtureDef.filter.maskBits = EntityCategory.OBSTACLE.bits
+
+        // Create the BodyDef
+        val bodyDef = BodyDef().apply {
+            type = BodyDef.BodyType.DynamicBody
+            bullet = true
+            position.set(player.body.worldCenter.x, player.body.worldCenter.y)
+        }
+
+        // Create the body
+        body = world.createBody(bodyDef).apply { gravityScale = .5f }
+        val polygonShape = PolygonShape().apply { setAsBox(.15f, .15f) }
+        val bulletFixtureDef = FixtureDef().apply {
+            shape = polygonShape
+            density = .2f
+            filter.categoryBits = EntityCategory.BULLET.bits
+            filter.maskBits = EntityCategory.OBSTACLE.bits
+        }
         body.createFixture(bulletFixtureDef)
     }
 
     override fun act(delta: Float) {
         super.act(delta)
+
+        // Update Actor properties
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
         rotation = MathUtils.radiansToDegrees * body.transform.rotation
         color = darkColor
 
-        // Remove the actor if the body was removed
+        // Remove the bullet if its Box2D body was removed
         val bodies = Array<Body>()
         world.getBodies(bodies)
         if (bodies.lastIndexOf(body, true) == -1)
-            addAction(Actions.sequence(
-                    Actions.delay(.01f),
-                    Actions.removeActor()
+            addAction(sequence(
+                    delay(.01f),
+                    removeActor()
             ))
     }
 }

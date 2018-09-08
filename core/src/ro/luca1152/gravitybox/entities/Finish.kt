@@ -29,7 +29,6 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
 import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
@@ -39,59 +38,56 @@ import uy.kohesive.injekt.api.get
 class Finish(sourceMap: Map,
              destinationWorld: World,
              manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/finish.png", Texture::class.java)) {
-    var body: Body
-    var collisionBox: Rectangle
+    private val body: Body
+    val collisionBox: Rectangle
         get() {
             field.setPosition(x, y)
             return field
         }
 
     init {
-        setSize(64 / MyGame.PPM, 64 / MyGame.PPM)
+        // Set Actor properties
+        setSize(64.pixelsToMeters, 64.pixelsToMeters)
         setOrigin(width / 2f, height / 2f)
 
-        // Read the object form the map
         val finishObject = sourceMap.layers.get("Finish").objects.get(0)
-
-        // Create the body definition
-        val bodyDef = BodyDef()
-        bodyDef.type = BodyDef.BodyType.DynamicBody
-
-        // Create the body
-        body = destinationWorld.createBody(bodyDef)
-        body.gravityScale = 0f
-        val fixtureDef = FixtureDef()
-        fixtureDef.shape = MapBodyBuilder.getRectangle(finishObject as RectangleMapObject)
-        fixtureDef.density = 100f
-        fixtureDef.filter.categoryBits = EntityCategory.FINISH.bits
-        fixtureDef.filter.maskBits = EntityCategory.NONE.bits
+        val bodyDef = BodyDef().apply { type = BodyDef.BodyType.DynamicBody }
+        body = destinationWorld.createBody(bodyDef).apply { gravityScale = 0f }
+        val fixtureDef = FixtureDef().apply {
+            shape = MapBodyBuilder.getRectangle(finishObject as RectangleMapObject)
+            density = 100f
+            filter.categoryBits = EntityCategory.FINISH.bits
+            filter.maskBits = EntityCategory.NONE.bits
+        }
         body.createFixture(fixtureDef)
 
         // Update the position
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
 
-        // Add permanent blinking effect
-        val repeatAction = RepeatAction()
-        repeatAction.action = Actions.sequence(
-                Actions.fadeOut(1f),
-                Actions.fadeIn(1f)
-        )
-        repeatAction.count = RepeatAction.FOREVER
-        addAction(repeatAction)
-
         // Create the collision box
         collisionBox = Rectangle()
         collisionBox.setSize(width, height)
 
-        // Update the position
-        setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
-    }// Create the image
+        // Add permanent blinking effect
+        addAction(RepeatAction().apply {
+            action = Actions.sequence(
+                    Actions.fadeOut(1f),
+                    Actions.fadeIn(1f)
+            )
+            count = RepeatAction.FOREVER
+        })
+    }
 
     override fun act(delta: Float) {
         super.act(delta)
+
+        // Update Actor properties
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
-        color.r = darkColor.r
-        color.g = darkColor.g
-        color.b = darkColor.b
+        color.apply {
+            // Don't copy the alpha because the blinking effect would stop
+            r = darkColor.r
+            g = darkColor.g
+            b = darkColor.b
+        }
     }
 }

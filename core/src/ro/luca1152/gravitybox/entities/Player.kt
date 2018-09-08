@@ -28,7 +28,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
 import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
@@ -38,7 +37,7 @@ import uy.kohesive.injekt.api.get
 class Player(sourceMap: Map,
              destinationWorld: World,
              manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/player.png", Texture::class.java)) {
-    var body: Body
+    val body: Body
     val collisionBox: Rectangle
         get() {
             field.setPosition(x, y)
@@ -46,24 +45,27 @@ class Player(sourceMap: Map,
         }
 
     init {
-        setSize(32 / MyGame.PPM, 32 / MyGame.PPM)
+        // Set Actor properties
+        setSize(32.pixelsToMeters, 32.pixelsToMeters)
         setOrigin(width / 2f, height / 2f)
 
-        // Read the object from the map
+        // Read the player object from the map
         val playerObject = sourceMap.layers.get("Player").objects.get(0)
 
         // Create the body definition
-        val bodyDef = BodyDef()
-        bodyDef.type = BodyDef.BodyType.DynamicBody
+        val bodyDef = BodyDef().apply {
+            type = BodyDef.BodyType.DynamicBody
+        }
 
         // Create the body
         body = destinationWorld.createBody(bodyDef)
-        val fixtureDef = FixtureDef()
-        fixtureDef.shape = MapBodyBuilder.getRectangle(playerObject as RectangleMapObject)
-        fixtureDef.density = 2f
-        fixtureDef.friction = 2f
-        fixtureDef.filter.categoryBits = EntityCategory.PLAYER.bits
-        fixtureDef.filter.maskBits = EntityCategory.OBSTACLE.bits
+        val fixtureDef = FixtureDef().apply {
+            shape = MapBodyBuilder.getRectangle(playerObject as RectangleMapObject)
+            density = 2f
+            friction = 2f
+            filter.categoryBits = EntityCategory.PLAYER.bits
+            filter.maskBits = EntityCategory.OBSTACLE.bits
+        }
         body.createFixture(fixtureDef)
 
         // Create the collision box
@@ -76,6 +78,8 @@ class Player(sourceMap: Map,
 
     override fun act(delta: Float) {
         super.act(delta)
+
+        // Update Actor properties
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
         rotation = MathUtils.radiansToDegrees * body.transform.rotation
         color = darkColor

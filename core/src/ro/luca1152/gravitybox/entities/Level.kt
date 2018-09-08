@@ -48,9 +48,17 @@ import ro.luca1152.gravitybox.utils.MyUserData
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+val Int.pixelsToMeters: Float
+    get() = this / Level.PPM
+
 class Level(levelNumber: Int,
             private val batch: Batch = Injekt.get(),
             manager: AssetManager = Injekt.get()) {
+    companion object {
+        const val TOTAL_LEVELS = 10
+        const val PPM = 32f // Pixels per meter
+    }
+
     // Map info
     private val map: TiledMap
     private val mapWidth: Int
@@ -59,19 +67,22 @@ class Level(levelNumber: Int,
     private val world: World
     private val player: Player
     private val finish: Finish
+
     // Original colors
     private val originalLightColor: Color
     private val originalDarkColor: Color
+
     // Variables
+    private var mapIsVisible = false
     var isFinished = false
     var reset = false
-    var mapIsVisible = false
+
     // Util
-    private var labelStyle: Label.LabelStyle
+    private val labelStyle: Label.LabelStyle
     private val mapRenderer: OrthogonalTiledMapRenderer
     private val b2dRenderer: Box2DDebugRenderer
-    var stage: Stage
-    var uiStage: Stage
+    private val uiStage: Stage
+    val stage: Stage
 
     init {
         // Load the map
@@ -81,7 +92,7 @@ class Level(levelNumber: Int,
         mapHeight = mapProperties.get("height") as Int
         // Create the Box2D world
         world = World(Vector2(0f, -36f), true)
-        MapBodyBuilder.buildShapes(map, MyGame.PPM, world)
+        MapBodyBuilder.buildShapes(map, PPM, world)
         // Create the finish point and the player based on their position on the [map]
         finish = Finish(map, world)
         player = Player(map, world)
@@ -100,21 +111,20 @@ class Level(levelNumber: Int,
         uiStage = Stage(FitViewport(640f, 640f), stage.batch)
         b2dRenderer = Box2DDebugRenderer()
         labelStyle = Label.LabelStyle(MyGame.font32, darkColor)
-        mapRenderer = OrthogonalTiledMapRenderer(map, 1 / MyGame.PPM, batch)
+        mapRenderer = OrthogonalTiledMapRenderer(map, 1 / PPM, batch)
 
         // Add actors to stage
-        finish.isVisible = false
-        stage.addActor(finish)
-        player.isVisible = false
-        stage.addActor(player)
+        stage.addActor(finish.apply { isVisible = false })
+        stage.addActor(player.apply { isVisible = false })
 
         // Misc
         setInputProcessor()
         setContactListener()
-        if (levelNumber == 1) showHelpLabel()
         showLevelLabel(levelNumber)
-        if (levelNumber == MyGame.TOTAL_LEVELS)
-            showFinishMessage()
+        when (levelNumber) {
+            1 -> showHelpLabel()
+            Level.TOTAL_LEVELS -> showFinishMessage()
+        }
     }
 
     /**
@@ -127,13 +137,14 @@ class Level(levelNumber: Int,
                 val bullet = Bullet(world, player)
                 stage.addActor(bullet)
 
-                val worldCoordinates = Vector3(screenX.toFloat(), screenY.toFloat(), 0f)
-                stage.camera.unproject(worldCoordinates)
-                val sourcePosition = Vector2(worldCoordinates.x, worldCoordinates.y)
-                val forceVector = player.body.worldCenter.cpy()
-                forceVector.sub(sourcePosition)
-                forceVector.nor()
-                forceVector.scl(-Bullet.SPEED)
+                val worldCoordinates = Vector3(screenX.toFloat(), screenY.toFloat(), 0f).run {
+                    stage.camera.unproject(this)
+                }
+                val forceVector = player.body.worldCenter.cpy().apply {
+                    sub(worldCoordinates.x, worldCoordinates.y)
+                    nor()
+                    scl(-Bullet.SPEED)
+                }
                 bullet.body.linearVelocity = forceVector
                 return true
             }
@@ -157,15 +168,14 @@ class Level(levelNumber: Int,
                 val bodyB = contact.fixtureB.body
 
                 // Collision between a bullet and a wall
-                if (contact.fixtureB.filterData.categoryBits == EntityCategory.BULLET.bits)
-                    flagForDelete(bodyB)
-                if (contact.fixtureA.filterData.categoryBits == EntityCategory.BULLET.bits)
-                    flagForDelete(bodyA)
+                when {
+                    contact.fixtureB.filterData.categoryBits == EntityCategory.BULLET.bits -> flagForDelete(bodyB)
+                    contact.fixtureA.filterData.categoryBits == EntityCategory.BULLET.bits -> flagForDelete(bodyA)
+                }
             }
 
             private fun flagForDelete(body: Body) {
-                val userData = MyUserData()
-                userData.isFlaggedForDelete = true
+                val userData = MyUserData().apply { isFlaggedForDelete = true }
                 body.userData = userData
             }
 
@@ -181,33 +191,33 @@ class Level(levelNumber: Int,
      * Shows how to play the game and the keymap
      */
     private fun showHelpLabel() {
-        val info1 = Label("shoot at the walls/floor to move\npress 'R' to restart the level", labelStyle)
-        info1.setAlignment(Align.center)
-        info1.setPosition(320 - info1.prefWidth / 2f, 470f)
-        info1.addAction(Actions.fadeOut(0f))
-        info1.addAction(Actions.fadeIn(2f))
-        uiStage.addActor(info1)
-
-        val info2 = Label("the blinking object is the finish point", labelStyle)
-        info2.setAlignment(Align.center)
-        info2.setPosition(320 - info2.prefWidth / 2f, 135f)
-        info2.addAction(Actions.fadeOut(0f))
-        info2.addAction(Actions.fadeIn(2f))
-        uiStage.addActor(info2)
+        uiStage.addActor(Label("shoot at the walls/floor to move\npress 'R' to restart the level", labelStyle).apply {
+            setAlignment(Align.center)
+            setPosition(320 - this.prefWidth / 2f, 470f)
+            addAction(Actions.fadeOut(0f))
+            addAction(Actions.fadeIn(2f))
+        })
+        uiStage.addActor(Label("the blinking object is the finish point", labelStyle).apply {
+            setAlignment(Align.center)
+            setPosition(320 - this.prefWidth / 2f, 135f)
+            addAction(Actions.fadeOut(0f))
+            addAction(Actions.fadeIn(2f))
+        })
     }
 
     /**
      * Shows the level number in the bottom right.
      */
     private fun showLevelLabel(levelNumber: Int) {
-        val level = Label("#$levelNumber", labelStyle)
-        level.setAlignment(Align.right)
-        level.setPosition(640f - level.prefWidth - 10f, 7f)
-        if (levelNumber == 1) {
-            level.addAction(Actions.fadeOut(0f))
-            level.addAction(Actions.fadeIn(2f))
-        }
-        uiStage.addActor(level)
+        uiStage.addActor(Label("#$levelNumber", labelStyle).apply {
+            setAlignment(Align.right)
+            setPosition(640f - this.prefWidth - 10f, 7f)
+            // Add fadeIn effect if it's the first level
+            if (levelNumber == 1) {
+                addAction(Actions.fadeOut(0f))
+                addAction(Actions.fadeIn(2f))
+            }
+        })
     }
 
     /**
@@ -215,10 +225,10 @@ class Level(levelNumber: Int,
      */
     private fun showFinishMessage() {
         PlayScreen.timer = (PlayScreen.timer * 100).toInt() / 100f
-        val finish = Label("Good job!\nYou finished the game\nin " + PlayScreen.timer + "s!", labelStyle)
-        finish.setAlignment(Align.center)
-        finish.setPosition(320f - finish.prefWidth / 2f, 350f)
-        uiStage.addActor(finish)
+        uiStage.addActor(Label("Good job!\nYou finished the game\nin " + PlayScreen.timer + "s!", labelStyle).apply {
+            setAlignment(Align.center)
+            setPosition(320f - finish.prefWidth / 2f, 350f)
+        })
     }
 
     /**
@@ -271,7 +281,6 @@ class Level(levelNumber: Int,
             cameraBottom <= mapBottom -> stage.camera.position.y = mapBottom + cameraHalfHeight
             cameraTop >= mapTop -> stage.camera.position.y = mapTop - cameraHalfHeight
         }
-        // Update the camera
         stage.camera.update()
     }
 
@@ -284,8 +293,7 @@ class Level(levelNumber: Int,
         world.getBodies(array)
         for (body in array) {
             if (body != null && body.userData != null && body.userData.javaClass == MyUserData::class.java) {
-                val data = body.userData as MyUserData
-                if (data.isFlaggedForDelete) {
+                if ((body.userData as MyUserData).isFlaggedForDelete) {
                     Bullet.collisionWithWall(player, body)
                     world.destroyBody(body)
                     body.userData = null
@@ -314,7 +322,7 @@ class Level(levelNumber: Int,
     }
 
     /**
-     * Draws every platform from the level, the player and the finish point.
+     * Draws every platform from the level, the player, the finish point and the UI.
      */
     fun draw() {
         batch.color = darkColor

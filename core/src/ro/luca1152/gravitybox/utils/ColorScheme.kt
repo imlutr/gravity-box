@@ -12,27 +12,10 @@ object ColorScheme {
     var lightColor2 = getLightColor2(initialHue)
     var darkColor2 = getDarkColor2(initialHue)
 
-    fun getLightColor(hue: Int): Color {
-        val color = Color().fromHsv(hue.toFloat(), 10f / 100f, 91f / 100f)
-        color.a = 1f
-        return color
-    }
+    // Methods to get the 4 colors from a given [hue]
+    fun getLightColor(hue: Int) = Color().fromHsv(hue.toFloat(), 10f / 100f, 91f / 100f).apply { a = 1f }!!
 
-    fun getDarkColor(hue: Int): Color {
-        val color = Color().fromHsv(hue.toFloat(), 42f / 100f, 57f / 100f)
-        color.a = 1f
-        return color
-    }
-
-    fun getLightColor2(hue: Int): Color {
-        val color = Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f)
-        color.a = 1f
-        return color
-    }
-
-    fun getDarkColor2(hue: Int): Color {
-        val color = Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f)
-        color.a = 1f
-        return color
-    }
+    fun getDarkColor(hue: Int) = Color().fromHsv(hue.toFloat(), 42f / 100f, 57f / 100f).apply { a = 1f }!!
+    fun getLightColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f).apply { a = 1f }!!
+    fun getDarkColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f).apply { a = 1f }!!
 }

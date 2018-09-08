@@ -20,10 +20,8 @@ package ro.luca1152.gravitybox.entities
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-
-import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -31,17 +29,20 @@ import uy.kohesive.injekt.api.get
 internal class Explosion(x: Float, y: Float,
                          manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/circle.png", Texture::class.java)) {
     init {
-        setSize(128 / MyGame.PPM, 128 / MyGame.PPM)
+        // Set Actor properties
+        setSize(128.pixelsToMeters, 128.pixelsToMeters)
         setOrigin(width / 2f, height / 2f)
         setPosition(x - width / 2f, y - height / 2f)
         color = darkColor
         setScale(1 / 6f)
-        addAction(Actions.sequence(
-                Actions.parallel(
-                        Actions.scaleBy(1f, 1f, .35f),
-                        Actions.fadeOut(.35f, Interpolation.exp5)
+
+        // Add a fade out effect
+        addAction(sequence(
+                parallel(
+                        scaleBy(1f, 1f, .35f),
+                        fadeOut(.35f, Interpolation.exp5)
                 ),
-                Actions.removeActor()
+                removeActor()
         ))
     }
 }

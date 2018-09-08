@@ -23,30 +23,27 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
-import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.entities.Level
 import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
-    private val TAG = PlayScreen::class.java.simpleName
-
     // Level info
     private var level: Level? = null
     private var levelNumber = 1
 
     override fun show() {
-        Gdx.app.log(TAG, "Entered screen.")
         level = Level(levelNumber)
-        playMusic()
+        playBgMusic()
     }
 
-    private fun playMusic() {
-        val music = manager.get("audio/music.mp3", Music::class.java)
-        music.volume = .30f
-        music.isLooping = true
-        music.play()
+    private fun playBgMusic() {
+        manager.get("audio/music.mp3", Music::class.java).apply {
+            volume = .30f
+            isLooping = true
+            play()
+        }
     }
 
     override fun render(delta: Float) {
@@ -63,14 +60,10 @@ class PlayScreen(val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
             level = Level(levelNumber)
             level?.reset = false
         }
-        if (level?.isFinished == true && levelNumber + 1 <= MyGame.TOTAL_LEVELS) {
+        if (level?.isFinished == true && levelNumber + 1 <= Level.TOTAL_LEVELS) {
             level = Level(++levelNumber)
             manager.get("audio/level-finished.wav", Sound::class.java).play(.2f)
         }
-    }
-
-    override fun hide() {
-        Gdx.app.log(TAG, "Left screen.")
     }
 
     override fun resize(width: Int, height: Int) {
