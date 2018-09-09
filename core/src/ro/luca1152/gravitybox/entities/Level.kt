@@ -193,14 +193,12 @@ class Level(levelNumber: Int,
      */
     private fun showHelpLabel() {
         uiStage.addActor(Label("shoot at the walls/floor to move", labelStyle).apply {
-            setAlignment(Align.center)
-            setPosition(uiStage.width / 2f - prefWidth / 2f, 520f)
+            setPosition(uiStage.width / 2f - prefWidth / 2f, 840f)
             addAction(Actions.fadeOut(0f))
             addAction(Actions.fadeIn(2f))
         })
         uiStage.addActor(Label("the blinking object is the finish point", labelStyle).apply {
-            setAlignment(Align.center)
-            setPosition(uiStage.width / 2f - prefWidth / 2f, 170f)
+            setPosition(uiStage.width / 2f - prefWidth / 2f, 415f)
             addAction(Actions.fadeOut(0f))
             addAction(Actions.fadeIn(2f))
         })
@@ -228,7 +226,7 @@ class Level(levelNumber: Int,
         PlayScreen.timer = (PlayScreen.timer * 100).toInt() / 100f
         uiStage.addActor(Label("Good job!\nYou finished the game in " + PlayScreen.timer + "s!", labelStyle).apply {
             setAlignment(Align.center)
-            setPosition(uiStage.width / 2f - prefWidth / 2f, 400f)
+            setPosition(uiStage.width / 2f - prefWidth / 2f, 700f)
         })
     }
 
