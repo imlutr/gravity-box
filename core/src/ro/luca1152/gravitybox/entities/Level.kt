@@ -106,8 +106,10 @@ class Level(levelNumber: Int,
         darkColor2 = ColorScheme.getDarkColor2(mapHue)
 
         // Initialize utils
-        stage = Stage(ExtendViewport(1280 / 40f, 720 / 40f), batch)
-        uiStage = Stage(ExtendViewport(1280f, 720f), stage.batch)
+//        stage = Stage(ExtendViewport(1280 / 50f, 720 / 50f), batch)
+        stage = Stage(ExtendViewport(720 / 50f, 1280 / 50f), batch)
+//        uiStage = Stage(ExtendViewport(1280f, 720f), stage.batch)
+        uiStage = Stage(ExtendViewport(720f, 1280f), stage.batch)
         b2dRenderer = Box2DDebugRenderer()
         labelStyle = Label.LabelStyle(MyGame.font32, darkColor)
         mapRenderer = OrthogonalTiledMapRenderer(map, 1 / PPM, batch)
@@ -257,9 +259,9 @@ class Level(levelNumber: Int,
      * Keeps the camera within the map's bounds.
      */
     private fun updateCamera() {
-        stage.camera.position.set(player.x, player.y - 5f, 0f)
-        val mapLeft = -1
-        val mapRight = mapWidth + 1
+        stage.camera.position.set(player.x, player.y, 0f)
+        val mapLeft = -2
+        val mapRight = mapWidth + 2
         val mapBottom = 0
         val mapTop = mapHeight
         val cameraHalfWidth = stage.camera.viewportWidth * .5f
