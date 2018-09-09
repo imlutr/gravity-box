@@ -26,9 +26,9 @@ import ro.luca1152.gravitybox.MyGame;
 public class DesktopLauncher {
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = "GMTK 2018";
-        config.width = 720;
-        config.height = 1280;
+        config.title = "Gravity Box";
+        config.width = 540;
+        config.height = 960;
         config.resizable = false;
         config.initialBackgroundColor = new Color(209 / 255f, 232 / 255f, 232 / 255f, 1);
         config.samples = 4;
