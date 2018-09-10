@@ -1,33 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="14" height="8" tilewidth="32" tileheight="32" infinite="0" nextobjectid="9">
+<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="14" height="8" tilewidth="64" tileheight="64" infinite="0" nextobjectid="19">
  <properties>
   <property name="hue" type="int" value="100"/>
  </properties>
- <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="16" columns="16">
-  <image source="../graphics/tileset.png" width="512" height="32"/>
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="128" columns="16">
+  <image source="../graphics/tileset.png" width="512" height="256"/>
  </tileset>
+ <tileset firstgid="129" source="tileset.tsx"/>
  <layer name="Tile Layer 1" width="14" height="8">
   <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,0,0,0,12,
-0,0,0,0,0,0,0,0,0,0,0,0,0,11,
-0,0,0,0,0,0,0,0,0,0,0,0,0,11,
-0,0,0,0,0,0,0,8,3,3,3,3,3,5,
-0,0,0,0,0,0,0,11,0,0,0,0,0,0,
-0,0,0,0,0,0,0,11,0,0,0,0,0,0,
-0,0,0,0,0,0,0,11,0,0,0,0,0,0,
-2,3,3,3,3,3,3,5,0,0,0,0,0,0
+0,0,0,0,0,0,0,0,0,0,0,0,0,144,
+0,0,0,0,0,0,0,0,0,0,0,0,0,143,
+0,0,0,0,0,0,0,0,0,0,0,0,0,143,
+0,0,0,0,0,0,0,140,135,135,135,135,135,137,
+0,0,0,0,0,0,0,143,0,0,0,0,0,0,
+0,0,0,0,0,0,0,143,0,0,0,0,0,0,
+0,0,0,0,0,0,0,143,0,0,0,0,0,0,
+134,135,135,135,135,135,135,137,0,0,0,0,0,0
 </data>
  </layer>
  <objectgroup name="Player">
-  <object id="1" x="96" y="204" width="32" height="32"/>
+  <object id="16" x="192" y="408" width="64" height="64"/>
  </objectgroup>
  <objectgroup name="Obstacles">
-  <object id="3" x="428" y="-0.666667" width="7.33333" height="117"/>
-  <object id="4" x="235.667" y="108.333" width="192" height="8"/>
-  <object id="5" x="236" y="116.667" width="7.66667" height="127.333"/>
-  <object id="6" x="0.333333" y="235.667" width="236.333" height="8.33333"/>
+  <object id="9" x="0.666667" y="472.667" width="486.667" height="14.6667"/>
+  <object id="10" x="472.667" y="216.667" width="401.333" height="16"/>
+  <object id="11" x="855.333" y="-2" width="17.3333" height="218.667"/>
+  <object id="17" x="472" y="233.333" width="16" height="238.667"/>
  </objectgroup>
  <objectgroup name="Finish">
-  <object id="2" x="362" y="44" width="64" height="64"/>
+  <object id="15" x="727" y="88" width="128" height="128"/>
  </objectgroup>
 </map>
