@@ -258,13 +258,14 @@ class Level(levelNumber: Int,
      * Keeps the camera within the map's bounds.
      */
     private fun updateCamera() {
+        val zoom = (stage.camera as OrthographicCamera).zoom
         stage.camera.position.set(player.x, player.y, 0f)
-        val mapLeft = -2
-        val mapRight = mapWidth + 2
+        val mapLeft = -2 * zoom
+        val mapRight = (mapWidth + 2) * zoom
         val mapBottom = 0
-        val mapTop = mapHeight
-        val cameraHalfWidth = stage.camera.viewportWidth * .5f
-        val cameraHalfHeight = stage.camera.viewportHeight * .5f
+        val mapTop = mapHeight * zoom
+        val cameraHalfWidth = stage.camera.viewportWidth * .5f * zoom
+        val cameraHalfHeight = stage.camera.viewportHeight * .5f * zoom
         val cameraLeft = stage.camera.position.x - cameraHalfWidth
         val cameraRight = stage.camera.position.x + cameraHalfWidth
         val cameraBottom = stage.camera.position.y - cameraHalfHeight
