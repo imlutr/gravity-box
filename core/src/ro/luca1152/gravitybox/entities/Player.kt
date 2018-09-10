@@ -47,7 +47,7 @@ class Player(sourceMap: Map,
 
     init {
         // Set Actor properties
-        setSize(32.pixelsToMeters, 32.pixelsToMeters)
+        setSize(64.pixelsToMeters, 64.pixelsToMeters)
         setOrigin(width / 2f, height / 2f)
 
         // Read the player object from the map

@@ -47,7 +47,7 @@ class Finish(sourceMap: Map,
 
     init {
         // Set Actor properties
-        setSize(64.pixelsToMeters, 64.pixelsToMeters)
+        setSize(128.pixelsToMeters, 128.pixelsToMeters)
         setOrigin(width / 2f, height / 2f)
 
         val finishObject = sourceMap.layers.get("Finish").objects.get(0)

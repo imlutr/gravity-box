@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="tileset" tilewidth="32" tileheight="32" tilecount="16" columns="16">
- <image source="../graphics/tileset.png" width="512" height="32"/>
+<tileset name="tileset" tilewidth="64" tileheight="64" spacing="4" margin="4" tilecount="16" columns="4">
+ <image source="../graphics/tileset.png" width="276" height="276"/>
 </tileset>

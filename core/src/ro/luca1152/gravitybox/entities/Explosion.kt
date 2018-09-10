@@ -30,7 +30,7 @@ internal class Explosion(x: Float, y: Float,
                          manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/circle.png", Texture::class.java)) {
     init {
         // Set Actor properties
-        setSize(128.pixelsToMeters, 128.pixelsToMeters)
+        setSize(256.pixelsToMeters, 256.pixelsToMeters)
         setOrigin(width / 2f, height / 2f)
         setPosition(x - width / 2f, y - height / 2f)
         color = darkColor

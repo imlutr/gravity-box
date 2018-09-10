@@ -35,7 +35,7 @@ class Bullet(private val world: World,
              player: Player,
              manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/bullet.png", Texture::class.java)) {
     companion object {
-        const val SPEED = 20f
+        const val SPEED = 40f
 
         fun collisionWithWall(player: Player, body: Body,
                               manager: AssetManager = Injekt.get()) {
@@ -48,7 +48,7 @@ class Bullet(private val world: World,
             val forceVector = player.body.worldCenter.cpy().apply {
                 sub(sourcePosition)
                 nor()
-                scl(2800f) // Multiply the force vector by an amount for a greater push
+                scl(22400f) // Multiply the force vector by an amount for a greater push
 
                 // Take into account the distance between the source and the player
                 // It's > 1 because you don't want to multiply the forceVector if the source is too close
@@ -65,7 +65,7 @@ class Bullet(private val world: World,
 
     init {
         // Set Actor properties
-        setSize(.3f, .3f)
+        setSize(.6f, .6f)
         setOrigin(width / 2f, height / 2f)
 
         // Create the BodyDef

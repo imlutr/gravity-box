@@ -90,7 +90,7 @@ class Level(levelNumber: Int,
         mapWidth = mapProperties.get("width") as Int
         mapHeight = mapProperties.get("height") as Int
         // Create the Box2D world
-        world = World(Vector2(0f, -36f), true)
+        world = World(Vector2(0f, -72f), true)
         MapBodyBuilder.buildShapes(map, PPM, world)
         // Create the finish point and the player based on their position on the [map]
         finish = Finish(map, world)
@@ -107,7 +107,8 @@ class Level(levelNumber: Int,
 
         // Initialize utils
 //        stage = Stage(ExtendViewport(1280 / 50f, 720 / 50f), batch)
-        stage = Stage(ExtendViewport(720 / 50f, 1280 / 50f), batch)
+        stage = Stage(ExtendViewport(720 / 64f, 1280 / 64f), batch)
+        (stage.camera as OrthographicCamera).zoom = 2f
 //        uiStage = Stage(ExtendViewport(1280f, 720f), stage.batch)
         uiStage = Stage(ExtendViewport(720f, 1280f), stage.batch)
         b2dRenderer = Box2DDebugRenderer()
