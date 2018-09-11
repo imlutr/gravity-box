@@ -62,7 +62,7 @@ class Player(sourceMap: Map,
         body = destinationWorld.createBody(bodyDef)
         val fixtureDef = FixtureDef().apply {
             shape = MapBodyBuilder.getRectangle(playerObject as RectangleMapObject)
-            density = 2f
+            density = 1.15f
             friction = 2f
             filter.categoryBits = EntityCategory.PLAYER.bits
             filter.maskBits = EntityCategory.OBSTACLE.bits

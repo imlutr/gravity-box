@@ -48,12 +48,12 @@ class Bullet(private val world: World,
             val forceVector = player.body.worldCenter.cpy().apply {
                 sub(sourcePosition)
                 nor()
-                scl(22400f) // Multiply the force vector by an amount for a greater push
+                scl(14000f) // Multiply the force vector by an amount for a greater push
 
                 // Take into account the distance between the source and the player
                 // It's > 1 because you don't want to multiply the forceVector if the source is too close
-                if (Math.pow(distance.toDouble(), 1.7).toFloat() > 1) {
-                    scl(1f / Math.pow(distance.toDouble(), 1.7).toFloat())
+                if (distance.toDouble() >= 1) {
+                    scl(1f / Math.pow(distance.toDouble(), 1.0).toFloat())
                 }
             }
             player.body.applyForce(forceVector, player.body.worldCenter, true) // Push the player
