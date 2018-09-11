@@ -48,6 +48,7 @@ import ro.luca1152.gravitybox.utils.MyUserData
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+
 val Int.pixelsToMeters: Float
     get() = this / Level.PPM
 
@@ -106,10 +107,8 @@ class Level(levelNumber: Int,
         darkColor2 = ColorScheme.getDarkColor2(mapHue)
 
         // Initialize utils
-//        stage = Stage(ExtendViewport(1280 / 50f, 720 / 50f), batch)
         stage = Stage(ExtendViewport(720 / 64f, 1280 / 64f), batch)
         (stage.camera as OrthographicCamera).zoom = 2f
-//        uiStage = Stage(ExtendViewport(1280f, 720f), stage.batch)
         uiStage = Stage(ExtendViewport(720f, 1280f), stage.batch)
         b2dRenderer = Box2DDebugRenderer()
         labelStyle = Label.LabelStyle(MyGame.font32, darkColor)
@@ -123,10 +122,10 @@ class Level(levelNumber: Int,
         setInputProcessor()
         setContactListener()
         showLevelLabel(levelNumber)
-        when (levelNumber) {
-            1 -> showHelpLabel()
-            Level.TOTAL_LEVELS -> showFinishMessage()
-        }
+//        when (levelNumber) {
+//            1 -> showHelpLabel()
+//            Level.TOTAL_LEVELS -> showFinishMessage()
+//        }
     }
 
     /**
@@ -259,30 +258,41 @@ class Level(levelNumber: Int,
      */
     private fun updateCamera() {
         val zoom = (stage.camera as OrthographicCamera).zoom
-        stage.camera.position.set(player.x, player.y, 0f)
-        val mapLeft = -2 * zoom
-        val mapRight = (mapWidth + 2) * zoom
-        val mapBottom = 0
+        stage.camera.position.set(player.x + player.width / 2f, player.y + player.height / 2f, 0f)
+        fixBounds(zoom)
+        stage.camera.update()
+    }
+
+    private fun fixBounds(zoom: Float) {
+        var mapLeft = 0f
+        var mapRight = mapWidth * zoom
+        println()
+        if (mapWidth * zoom > stage.camera.viewportWidth * zoom) {
+            mapLeft = (-1) * zoom
+            mapRight = (mapWidth + 1) * zoom
+        }
+        val mapBottom = 0 * zoom
         val mapTop = mapHeight * zoom
-        val cameraHalfWidth = stage.camera.viewportWidth * .5f * zoom
-        val cameraHalfHeight = stage.camera.viewportHeight * .5f * zoom
+        val cameraHalfWidth = stage.camera.viewportWidth / 2f * zoom
+        val cameraHalfHeight = stage.camera.viewportHeight / 2f * zoom
         val cameraLeft = stage.camera.position.x - cameraHalfWidth
         val cameraRight = stage.camera.position.x + cameraHalfWidth
         val cameraBottom = stage.camera.position.y - cameraHalfHeight
         val cameraTop = stage.camera.position.y + cameraHalfHeight
+
         // Clamp horizontal axis
         when {
-            stage.camera.viewportWidth > mapRight -> stage.camera.position.x = (mapRight / 2).toFloat()
+            stage.camera.viewportWidth * zoom > mapRight -> stage.camera.position.x = mapLeft + (mapWidth - player.width) * zoom / 2f
             cameraLeft <= mapLeft -> stage.camera.position.x = mapLeft + cameraHalfWidth
             cameraRight >= mapRight -> stage.camera.position.x = mapRight - cameraHalfWidth
         }
+
         // Clamp vertical axis
         when {
-            stage.camera.viewportHeight > mapTop -> stage.camera.position.y = (mapTop / 2).toFloat()
+            stage.camera.viewportHeight * zoom > mapTop -> stage.camera.position.y = mapBottom + (mapHeight - player.height) * zoom / 2f
             cameraBottom <= mapBottom -> stage.camera.position.y = mapBottom + cameraHalfHeight
             cameraTop >= mapTop -> stage.camera.position.y = mapTop - cameraHalfHeight
         }
-        stage.camera.update()
     }
 
     /**
@@ -331,8 +341,9 @@ class Level(levelNumber: Int,
         if (mapIsVisible) {
             mapRenderer.render()
             stage.draw()
-            batch.color = Color.WHITE
 //            b2dRenderer.render(world, stage.getCamera().combined);
+            batch.color = Color.WHITE
+
         }
         uiStage.draw()
     }
