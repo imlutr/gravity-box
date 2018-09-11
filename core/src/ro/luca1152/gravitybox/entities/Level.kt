@@ -266,7 +266,6 @@ class Level(levelNumber: Int,
     private fun fixBounds(zoom: Float) {
         var mapLeft = 0f
         var mapRight = mapWidth * zoom
-        println()
         if (mapWidth * zoom > stage.camera.viewportWidth * zoom) {
             mapLeft = (-1) * zoom
             mapRight = (mapWidth + 1) * zoom
@@ -289,7 +288,7 @@ class Level(levelNumber: Int,
 
         // Clamp vertical axis
         when {
-            stage.camera.viewportHeight * zoom > mapTop -> stage.camera.position.y = mapBottom + (mapHeight - player.height) * zoom / 2f
+            stage.camera.viewportHeight * zoom > mapTop -> stage.camera.position.y = mapTop / 2f
             cameraBottom <= mapBottom -> stage.camera.position.y = mapBottom + cameraHalfHeight
             cameraTop >= mapTop -> stage.camera.position.y = mapTop - cameraHalfHeight
         }
