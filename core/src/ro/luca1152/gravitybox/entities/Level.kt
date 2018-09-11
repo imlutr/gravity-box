@@ -108,7 +108,7 @@ class Level(levelNumber: Int,
 
         // Initialize utils
         stage = Stage(ExtendViewport(720 / 64f, 1280 / 64f), batch)
-        (stage.camera as OrthographicCamera).zoom = 2f
+        (stage.camera as OrthographicCamera).zoom = 2f // Don't change this or the camera won't align correctly :\
         uiStage = Stage(ExtendViewport(720f, 1280f), stage.batch)
         b2dRenderer = Box2DDebugRenderer()
         labelStyle = Label.LabelStyle(MyGame.font32, darkColor)
@@ -282,7 +282,7 @@ class Level(levelNumber: Int,
 
         // Clamp horizontal axis
         when {
-            stage.camera.viewportWidth * zoom > mapRight -> stage.camera.position.x = mapLeft + (mapWidth - player.width) * zoom / 2f
+            stage.camera.viewportWidth * zoom > mapRight -> stage.camera.position.x = mapRight / 2f
             cameraLeft <= mapLeft -> stage.camera.position.x = mapLeft + cameraHalfWidth
             cameraRight >= mapRight -> stage.camera.position.x = mapRight - cameraHalfWidth
         }
