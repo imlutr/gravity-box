@@ -1,7 +1,1 @@
-{
-  com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    font-32: {
-      file: font-32.fnt
-    }
-  }
-}
+{}

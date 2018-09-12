@@ -1,35 +1,11 @@
 {
 atlasData: {
 	atlasCurrent: true
-	drawables: [
-		{
-			file: C:/Users/Luca/Desktop/gravity-box/resources/font/font-32.png
-			bgColor: {
-				r: 0
-				g: 0
-				b: 0
-				a: 1
-			}
-			visible: false
-			tint: null
-			tintName: null
-			name: font-32
-			tiled: false
-			minWidth: 0
-			minHeight: 0
-			customized: false
-		}
-	]
+	drawables: []
 }
 jsonData: {
 	colors: []
-	fonts: [
-		{
-			class: com.ray3k.skincomposer.data.FontData
-			name: font-32
-			file: C:/Users/Luca/Desktop/gravity-box/resources/font/font-32.fnt
-		}
-	]
+	fonts: []
 	freeTypeFonts: []
 	classStyleMap: {
 		com.badlogic.gdx.scenes.scene2d.ui.Button: [
@@ -1531,7 +1507,7 @@ preferences: {
 	}
 	id: {
 		class: java.lang.Integer
-		value: 351194961
+		value: 785076601
 	}
 	resources-relative: {
 		class: java.lang.Boolean
