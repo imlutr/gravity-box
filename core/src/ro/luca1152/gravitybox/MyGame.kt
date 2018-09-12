@@ -18,10 +18,8 @@
 package ro.luca1152.gravitybox
 
 import com.badlogic.gdx.Game
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.physics.box2d.Box2D
 import ro.luca1152.gravitybox.screens.LoadingScreen
@@ -31,10 +29,6 @@ import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
 class MyGame : Game() {
-    companion object {
-        lateinit var font32: BitmapFont
-    }
-
     override fun create() {
         // Initialize Box2D
         Box2D.init()
@@ -48,7 +42,6 @@ class MyGame : Game() {
             addSingleton(PlayScreen())
         }
 
-        font32 = BitmapFont(Gdx.files.internal("fonts/font-32.fnt"))
         // Change the screen to the LoadingScreen
         setScreen(Injekt.get<LoadingScreen>())
     }

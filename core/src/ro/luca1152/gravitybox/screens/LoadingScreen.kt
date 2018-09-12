@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ro.luca1152.gravitybox.entities.Level
 import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
 import uy.kohesive.injekt.Injekt
@@ -38,9 +39,9 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
     override fun show() {
         loadGraphics()
         loadAudio()
+        loadSkin()
         loadMaps()
     }
-
     private fun loadGraphics() {
         manager.run {
             load("graphics/player.png", Texture::class.java)
@@ -56,6 +57,10 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
             load("audio/level-finished.wav", Sound::class.java)
             load("audio/bullet-wall-collision.wav", Sound::class.java)
         }
+    }
+
+    private fun loadSkin() {
+        manager.load("skin/skin.json", Skin::class.java)
     }
 
     private fun loadMaps() {
