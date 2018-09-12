@@ -77,7 +77,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
 
         // Finished loading assets
         if (manager.update()) {
-            setTextureFilters()
+            smoothTextures()
             logLoadingTime()
 
             // Change the screen to PlayScreen
@@ -85,10 +85,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
         }
     }
 
-    /**
-     * Smooths the textures by applying TextureFilter.Linear to all of them.
-     */
-    private fun setTextureFilters() {
+    private fun smoothTextures() {
         manager.run {
             get("graphics/player.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
             get("graphics/bullet.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)

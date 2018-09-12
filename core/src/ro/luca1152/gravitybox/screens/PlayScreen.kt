@@ -28,17 +28,17 @@ import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PlayScreen(val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
-    // Level info
+class PlayScreen(private val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
     private var level: Level? = null
     private var levelNumber = 1
+    var finishTimer = 0f
 
     override fun show() {
         level = Level(levelNumber)
-        playBgMusic()
+        playMusic()
     }
 
-    private fun playBgMusic() {
+    private fun playMusic() {
         manager.get("audio/music.mp3", Music::class.java).apply {
             volume = .30f
             isLooping = true
@@ -54,7 +54,7 @@ class PlayScreen(val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
     }
 
     private fun update(delta: Float) {
-        timer += delta
+        finishTimer += delta
         level?.update(delta)
         if (level?.player?.restart == true) {
             level = Level(levelNumber)
@@ -68,9 +68,5 @@ class PlayScreen(val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
 
     override fun resize(width: Int, height: Int) {
         level!!.stage.viewport.update(width, height)
-    }
-
-    companion object {
-        var timer = 0f
     }
 }

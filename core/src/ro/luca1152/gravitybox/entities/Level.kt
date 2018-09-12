@@ -53,14 +53,14 @@ val Int.pixelsToMeters: Float
     get() = this / Level.PPM
 
 class Level(levelNumber: Int,
+            manager: AssetManager = Injekt.get(),
             private val batch: Batch = Injekt.get(),
-            manager: AssetManager = Injekt.get()) {
+            private val playScreen: PlayScreen = Injekt.get()) {
     companion object {
         const val TOTAL_LEVELS = 10
         const val PPM = 32f // Pixels per meter
     }
 
-    // Map info
     private val map: TiledMap
     private val mapWidth: Int
     private val mapHeight: Int
@@ -69,15 +69,12 @@ class Level(levelNumber: Int,
     private val finish: Finish
     val player: Player
 
-    // Original colors
     private val originalLightColor: Color
     private val originalDarkColor: Color
 
-    // Variables
     private var mapIsVisible = false
     var isFinished = false
 
-    // Util
     private val labelStyle: Label.LabelStyle
     private val mapRenderer: OrthogonalTiledMapRenderer
     private val b2dRenderer: Box2DDebugRenderer
@@ -85,19 +82,15 @@ class Level(levelNumber: Int,
     val stage: Stage
 
     init {
-        // Load the map
         map = manager.get("maps/map-$levelNumber.tmx", TiledMap::class.java)
         val mapProperties = map.properties
         mapWidth = mapProperties.get("width") as Int
         mapHeight = mapProperties.get("height") as Int
-        // Create the Box2D world
         world = World(Vector2(0f, -72f), true)
         MapBodyBuilder.buildShapes(map, PPM, world)
-        // Create the finish point and the player based on their position on the [map]
         finish = Finish(map, world)
         player = Player(map, world)
 
-        // Generate colors
         mapHue = mapProperties.get("hue") as Int
         lightColor = ColorScheme.getLightColor(mapHue)
         darkColor = ColorScheme.getDarkColor(mapHue)
@@ -106,7 +99,6 @@ class Level(levelNumber: Int,
         lightColor2 = ColorScheme.getLightColor2(mapHue)
         darkColor2 = ColorScheme.getDarkColor2(mapHue)
 
-        // Initialize utils
         stage = Stage(ExtendViewport(720 / 64f, 1280 / 64f), batch)
         (stage.camera as OrthographicCamera).zoom = 2f // Don't change this or the camera won't align correctly :\
         uiStage = Stage(ExtendViewport(720f, 1280f), stage.batch)
@@ -114,23 +106,15 @@ class Level(levelNumber: Int,
         labelStyle = Label.LabelStyle(MyGame.font32, darkColor)
         mapRenderer = OrthogonalTiledMapRenderer(map, 1 / PPM, batch)
 
-        // Add actors to stage
         stage.addActor(finish.apply { isVisible = false })
         stage.addActor(player.apply { isVisible = false })
 
-        // Misc
         setInputProcessor()
         setContactListener()
         showLevelLabel(levelNumber)
-//        when (levelNumber) {
-//            1 -> showHelpLabel()
-//            Level.TOTAL_LEVELS -> showFinishMessage()
-//        }
+        if (levelNumber == Level.TOTAL_LEVELS) showFinishMessage()
     }
 
-    /**
-     * Handles the mouse click.
-     */
     private fun setInputProcessor() {
         Gdx.input.inputProcessor = object : InputAdapter() {
             override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
@@ -159,9 +143,6 @@ class Level(levelNumber: Int,
         }
     }
 
-    /**
-     * Removes bullets when they collide with the walls.
-     */
     private fun setContactListener() {
         world.setContactListener(object : ContactListener {
             override fun beginContact(contact: Contact) {
@@ -188,25 +169,6 @@ class Level(levelNumber: Int,
         })
     }
 
-    /**
-     * Shows how to play the game and the keymap
-     */
-    private fun showHelpLabel() {
-        uiStage.addActor(Label("shoot at the walls/floor to move", labelStyle).apply {
-            setPosition(uiStage.width / 2f - prefWidth / 2f, 840f)
-            addAction(Actions.fadeOut(0f))
-            addAction(Actions.fadeIn(2f))
-        })
-        uiStage.addActor(Label("the blinking object is the finish point", labelStyle).apply {
-            setPosition(uiStage.width / 2f - prefWidth / 2f, 415f)
-            addAction(Actions.fadeOut(0f))
-            addAction(Actions.fadeIn(2f))
-        })
-    }
-
-    /**
-     * Shows the level number in the bottom right.
-     */
     private fun showLevelLabel(levelNumber: Int) {
         uiStage.addActor(Label("#$levelNumber", labelStyle).apply {
             setAlignment(Align.right)
@@ -219,20 +181,14 @@ class Level(levelNumber: Int,
         })
     }
 
-    /**
-     * Shows in how much time the game was finished.
-     */
     private fun showFinishMessage() {
-        PlayScreen.timer = (PlayScreen.timer * 100).toInt() / 100f
-        uiStage.addActor(Label("Good job!\nYou finished the game in " + PlayScreen.timer + "s!", labelStyle).apply {
+        playScreen.finishTimer = (playScreen.finishTimer * 100).toInt() / 100f
+        uiStage.addActor(Label("Good job!\nYou finished the game in " + playScreen.finishTimer + "s!", labelStyle).apply {
             setAlignment(Align.center)
             setPosition(uiStage.width / 2f - prefWidth / 2f, 700f)
         })
     }
 
-    /**
-     * Is called every frame.
-     */
     fun update(delta: Float) {
         mapRenderer.setView(stage.camera as OrthographicCamera)
         world.step(1 / 60f, 6, 2)
@@ -244,18 +200,13 @@ class Level(levelNumber: Int,
         playerCollidesFinish()
     }
 
-    /**
-     * Sets every actor to be visible. Initially they are invisible because when you restarted the level they would show up for 1ms.
-     */
     private fun updateVisibility() {
+        // They are initially invisible because when you would restart the level they would flash for 0.01s in one corner
         player.isVisible = true
         finish.isVisible = true
         mapIsVisible = true
     }
 
-    /**
-     * Keeps the camera within the map's bounds.
-     */
     private fun updateCamera() {
         val zoom = (stage.camera as OrthographicCamera).zoom
         stage.camera.position.set(player.x + player.width / 2f, player.y + player.height / 2f, 0f)
@@ -294,10 +245,6 @@ class Level(levelNumber: Int,
         }
     }
 
-    /**
-     * Destroys every bullet that collided with a wall (checked in contactListener).
-     * You can't destroy bodies from the contactListener, so I did it here.
-     */
     private fun sweepDeadBodies() {
         val array = Array<Body>()
         world.getBodies(array)
@@ -312,10 +259,6 @@ class Level(levelNumber: Int,
         }
     }
 
-    /**
-     * If the player is in the finish point, transition to the secondary color scheme.
-     * If the player leaves it, transition back.
-     */
     private fun playerCollidesFinish() {
         if (player.collisionBox.overlaps(finish.collisionBox)) {
             lightColor.lerp(lightColor2, .05f)
@@ -331,9 +274,6 @@ class Level(levelNumber: Int,
         }
     }
 
-    /**
-     * Draws every platform from the level, the player, the finish point and the UI.
-     */
     fun draw() {
         batch.color = darkColor
         batch.projectionMatrix = stage.camera.combined
