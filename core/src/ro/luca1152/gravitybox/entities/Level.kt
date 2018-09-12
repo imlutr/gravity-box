@@ -32,11 +32,12 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ro.luca1152.gravitybox.screens.PlayScreen
+import ro.luca1152.gravitybox.screens.font
+import ro.luca1152.gravitybox.screens.fontShader
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor2
@@ -103,7 +104,7 @@ class Level(levelNumber: Int,
         (stage.camera as OrthographicCamera).zoom = 2f // Don't change this or the camera won't align correctly :\
         uiStage = Stage(ExtendViewport(720f, 1280f), stage.batch)
         b2dRenderer = Box2DDebugRenderer()
-        labelStyle = Label.LabelStyle(manager.get("skin/skin.json", Skin::class.java).getFont("font-32"), darkColor)
+        labelStyle = Label.LabelStyle(font, darkColor)
         mapRenderer = OrthogonalTiledMapRenderer(map, 1 / PPM, batch)
 
         stage.addActor(finish.apply { isVisible = false })
@@ -284,6 +285,8 @@ class Level(levelNumber: Int,
             batch.color = Color.WHITE
 
         }
+        uiStage.batch.shader = fontShader
         uiStage.draw()
+        uiStage.batch.shader = null
     }
 }

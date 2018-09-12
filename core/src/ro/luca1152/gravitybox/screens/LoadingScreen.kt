@@ -25,6 +25,10 @@ import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.Texture.TextureFilter
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -33,15 +37,21 @@ import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+
+var font: BitmapFont = BitmapFont()
+var fontShader: ShaderProgram = ShaderProgram(Gdx.files.internal("font/shader/font.vert"), Gdx.files.internal("font/shader/font.frag"))
+
 class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
     private var timer = 0f
 
     override fun show() {
+        manager.load("skin/skin.json", Skin::class.java)
+        loadFont()
         loadGraphics()
         loadAudio()
-        loadSkin()
         loadMaps()
     }
+
     private fun loadGraphics() {
         manager.run {
             load("graphics/player.png", Texture::class.java)
@@ -59,8 +69,9 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
         }
     }
 
-    private fun loadSkin() {
-        manager.load("skin/skin.json", Skin::class.java)
+    private fun loadFont() {
+        manager.load("font/font.png", Texture::class.java)
+        manager.load("font/font.fnt", BitmapFont::class.java)
     }
 
     private fun loadMaps() {
@@ -83,6 +94,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
         // Finished loading assets
         if (manager.update()) {
             smoothTextures()
+            createFont()
             logLoadingTime()
 
             // Change the screen to PlayScreen
@@ -97,6 +109,13 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
             get("graphics/circle.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
             get("graphics/finish.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
         }
+    }
+
+    private fun createFont() {
+        val fontTexture = Texture(Gdx.files.internal("font/font.png"), true).apply {
+            setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.MipMapLinearNearest)
+        }
+        font = BitmapFont(manager.get("font/font.fnt", BitmapFont::class.java).data.fontFile, TextureRegion(fontTexture))
     }
 
     private fun logLoadingTime() {
