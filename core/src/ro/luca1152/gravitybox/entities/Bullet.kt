@@ -44,23 +44,18 @@ class Bullet(private val world: World,
 
             // Create the force vector
             val sourcePosition = Vector2(body.worldCenter.x, body.worldCenter.y)
-            val distance = player.body.worldCenter.dst(sourcePosition)
+            val distance = player.body.worldCenter.dst(sourcePosition).toDouble()
             val forceVector = player.body.worldCenter.cpy().apply {
                 sub(sourcePosition)
                 nor()
-                scl(13500f) // Multiply the force vector by an amount for a greater push
-
-                // Take into account the distance between the source and the player
-                // It's > 1 because you don't want to multiply the forceVector if the source is too close
-                if (distance.toDouble() >= 1) {
-                    scl(1f / Math.pow(distance.toDouble(), .7).toFloat())
-                }
+                scl(15000f) // Multiply the force vector by an amount for a greater push
+                scl(1.22f * Math.pow(1 - .3, distance).toFloat())
             }
             player.body.applyForce(forceVector, player.body.worldCenter, true) // Push the player
             player.stage.addActor(Explosion(body.worldCenter.x, body.worldCenter.y)) // Draw the explosion
         }
     }
- 
+
     val body: Body
 
     init {
