@@ -16,6 +16,7 @@
  */
 
 package ro.luca1152.gravitybox.entities
+
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
@@ -59,7 +60,7 @@ class Bullet(private val world: World,
             player.stage.addActor(Explosion(body.worldCenter.x, body.worldCenter.y)) // Draw the explosion
         }
     }
-
+ 
     val body: Body
 
     init {

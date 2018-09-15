@@ -1,117 +1,117 @@
 
 tileset.png
-size: 276,276
+size: 286,286
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 double-joint-d
   rotate: false
-  xy: 4, 4
+  xy: 6, 6
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 double-joint-l
   rotate: false
-  xy: 72, 4
+  xy: 76, 6
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 double-joint-r
   rotate: false
-  xy: 140, 4
+  xy: 146, 6
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 double-joint-u
   rotate: false
-  xy: 208, 4
+  xy: 216, 6
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 h-both
   rotate: false
-  xy: 4, 72
+  xy: 6, 76
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 h-left
   rotate: false
-  xy: 72, 72
+  xy: 76, 76
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 h-none
   rotate: false
-  xy: 140, 72
+  xy: 146, 76
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 h-right
   rotate: false
-  xy: 208, 72
+  xy: 216, 76
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 joint-d-l
   rotate: false
-  xy: 4, 140
+  xy: 6, 146
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 joint-d-r
   rotate: false
-  xy: 72, 140
+  xy: 76, 146
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 joint-u-l
   rotate: false
-  xy: 140, 140
+  xy: 146, 146
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 joint-u-r
   rotate: false
-  xy: 208, 140
+  xy: 216, 146
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 v-both
   rotate: false
-  xy: 4, 208
+  xy: 6, 216
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 v-down
   rotate: false
-  xy: 72, 208
+  xy: 76, 216
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 v-none
   rotate: false
-  xy: 140, 208
+  xy: 146, 216
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 v-up
   rotate: false
-  xy: 208, 208
+  xy: 216, 216
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
