@@ -22,12 +22,13 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import ktx.assets.getAsset
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 internal class Explosion(x: Float, y: Float,
-                         manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/circle.png", Texture::class.java)) {
+                         manager: AssetManager = Injekt.get()) : Image(manager.getAsset<Texture>("graphics/circle.png")) {
     init {
         // Set Actor properties
         setSize(256.pixelsToMeters, 256.pixelsToMeters)

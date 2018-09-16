@@ -28,6 +28,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import ktx.assets.getAsset
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
 import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
@@ -36,7 +37,7 @@ import uy.kohesive.injekt.api.get
 
 class Player(sourceMap: Map,
              destinationWorld: World,
-             manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/player.png", Texture::class.java)) {
+             manager: AssetManager = Injekt.get()) : Image(manager.getAsset<Texture>("graphics/player.png")) {
     val body: Body
     val collisionBox: Rectangle
         get() {

@@ -21,68 +21,71 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.assets.loaders.TextureLoader
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.Texture.TextureFilter
+import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
+import com.badlogic.gdx.graphics.Texture.TextureFilter.MipMapLinearLinear
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import ktx.assets.getAsset
+import ktx.assets.load
 import ro.luca1152.gravitybox.entities.Level
 import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 
-var font: BitmapFont = BitmapFont()
-var fontShader: ShaderProgram = ShaderProgram(Gdx.files.internal("font/shader/font.vert"), Gdx.files.internal("font/shader/font.frag"))
+var font = BitmapFont()
+var fontShader = ShaderProgram(Gdx.files.internal("font/shader/font.vert"), Gdx.files.internal("font/shader/font.frag"))
 
 class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
     private var timer = 0f
 
     override fun show() {
-        manager.load("skin/skin.json", Skin::class.java)
         loadFont()
         loadGraphics()
         loadAudio()
         loadMaps()
     }
 
+    private fun loadFont() {
+        manager.run {
+            load<Texture>("font/font.png", TextureParameter().apply { genMipMaps = true })
+            load<BitmapFont>("font/font.fnt")
+        }
+    }
+
     private fun loadGraphics() {
         manager.run {
-            load("graphics/player.png", Texture::class.java)
-            load("graphics/bullet.png", Texture::class.java)
-            load("graphics/circle.png", Texture::class.java)
-            load("graphics/finish.png", Texture::class.java)
+            load<Skin>("skin/skin.json")
+            load<Texture>("graphics/player.png")
+            load<Texture>("graphics/bullet.png")
+            load<Texture>("graphics/bullet.png")
+            load<Texture>("graphics/circle.png")
+            load<Texture>("graphics/finish.png")
         }
     }
 
     private fun loadAudio() {
         manager.run {
-            load("audio/music.mp3", Music::class.java)
-            load("audio/level-finished.wav", Sound::class.java)
-            load("audio/bullet-wall-collision.wav", Sound::class.java)
+            load<Music>("audio/music.mp3")
+            load<Sound>("audio/level-finished.wav")
+            load<Sound>("audio/bullet-wall-collision.wav")
         }
-    }
-
-    private fun loadFont() {
-        val parameter = TextureLoader.TextureParameter().apply {
-            this.genMipMaps = true
-        }
-        manager.load("font/font.png", Texture::class.java, parameter)
-        manager.load("font/font.fnt", BitmapFont::class.java)
     }
 
     private fun loadMaps() {
         manager.run {
             setLoader<TiledMap, TmxMapLoader.Parameters>(TiledMap::class.java, TmxMapLoader())
             for (i in 1..Level.TOTAL_LEVELS)
-                load("maps/map-$i.tmx", TiledMap::class.java)
+                load<TiledMap>("maps/map-$i.tmx")
         }
     }
 
@@ -97,8 +100,8 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
 
         // Finished loading assets
         if (manager.update()) {
-            smoothTextures()
             createFont()
+            smoothTextures()
             logLoadingTime()
 
             // Change the screen to PlayScreen
@@ -106,20 +109,18 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
         }
     }
 
-    private fun smoothTextures() {
-        manager.run {
-            get("graphics/player.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            get("graphics/bullet.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            get("graphics/circle.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            get("graphics/finish.png", Texture::class.java).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        }
+    private fun createFont() {
+        val fontTexture = manager.getAsset<Texture>("font/font.png").apply { setFilter(MipMapLinearLinear, Linear) }
+        font = BitmapFont(manager.getAsset<BitmapFont>("font/font.fnt").data.fontFile, TextureRegion(fontTexture))
     }
 
-    private fun createFont() {
-        val fontTexture = manager.get<Texture>("font/font.png").apply {
-            setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear)
+    private fun smoothTextures() {
+        manager.run {
+            getAsset<Texture>("graphics/player.png").setFilter(Linear, Linear)
+            getAsset<Texture>("graphics/bullet.png").setFilter(Linear, Linear)
+            getAsset<Texture>("graphics/circle.png").setFilter(Linear, Linear)
+            getAsset<Texture>("graphics/finish.png").setFilter(Linear, Linear)
         }
-        font = BitmapFont(manager.get("font/font.fnt", BitmapFont::class.java).data.fontFile, TextureRegion(fontTexture))
     }
 
     private fun logLoadingTime() {

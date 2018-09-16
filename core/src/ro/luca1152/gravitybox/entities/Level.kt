@@ -35,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import ktx.assets.getAsset
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.screens.font
 import ro.luca1152.gravitybox.screens.fontShader
@@ -83,7 +84,7 @@ class Level(levelNumber: Int,
     val stage: Stage
 
     init {
-        map = manager.get("maps/map-$levelNumber.tmx", TiledMap::class.java)
+        map = manager.getAsset("maps/map-$levelNumber.tmx")
         val mapProperties = map.properties
         mapWidth = mapProperties.get("width") as Int
         mapHeight = mapProperties.get("height") as Int

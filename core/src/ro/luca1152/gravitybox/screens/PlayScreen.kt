@@ -23,6 +23,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
+import ktx.assets.getAsset
 import ro.luca1152.gravitybox.entities.Level
 import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
 import uy.kohesive.injekt.Injekt
@@ -39,7 +40,7 @@ class PlayScreen(private val manager: AssetManager = Injekt.get()) : ScreenAdapt
     }
 
     private fun playMusic() {
-        manager.get("audio/music.mp3", Music::class.java).apply {
+        manager.getAsset<Music>("audio/music.mp3").apply {
             volume = .30f
             isLooping = true
             play()
@@ -62,7 +63,7 @@ class PlayScreen(private val manager: AssetManager = Injekt.get()) : ScreenAdapt
         }
         if (level?.isFinished == true && levelNumber + 1 <= Level.TOTAL_LEVELS) {
             level = Level(++levelNumber)
-            manager.get("audio/level-finished.wav", Sound::class.java).play(.2f)
+            manager.getAsset<Sound>("audio/level-finished.wav").play(.2f)
         }
     }
 

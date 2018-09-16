@@ -26,6 +26,7 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Array
+import ktx.assets.getAsset
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
 import ro.luca1152.gravitybox.utils.EntityCategory
 import uy.kohesive.injekt.Injekt
@@ -33,14 +34,14 @@ import uy.kohesive.injekt.api.get
 
 class Bullet(private val world: World,
              player: Player,
-             manager: AssetManager = Injekt.get()) : Image(manager.get("graphics/bullet.png", Texture::class.java)) {
+             manager: AssetManager = Injekt.get()) : Image(manager.getAsset<Texture>("graphics/bullet.png")) {
     companion object {
         const val SPEED = 40f
 
         fun collisionWithWall(player: Player, body: Body,
                               manager: AssetManager = Injekt.get()) {
             // Play the collision sound
-            manager.get("audio/bullet-wall-collision.wav", Sound::class.java).play(.4f)
+            manager.getAsset<Sound>("audio/bullet-wall-collision.wav").play(.4f)
 
             // Create the force vector
             val sourcePosition = Vector2(body.worldCenter.x, body.worldCenter.y)
