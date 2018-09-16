@@ -19,12 +19,10 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.graphics.Texture.TextureFilter.MipMapLinearLinear
@@ -34,6 +32,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import ktx.app.KtxScreen
+import ktx.app.clearScreen
 import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.log.info
@@ -46,7 +46,7 @@ import uy.kohesive.injekt.api.get
 var font = BitmapFont()
 var fontShader = ShaderProgram(Gdx.files.internal("font/shader/font.vert"), Gdx.files.internal("font/shader/font.frag"))
 
-class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
+class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScreen {
     private var timer = 0f
 
     override fun show() {
@@ -92,8 +92,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
 
     override fun render(delta: Float) {
         update(delta)
-        Gdx.gl20.glClearColor(lightColor.r, lightColor.g, lightColor.b, lightColor.a)
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        clearScreen(lightColor.r, lightColor.g, lightColor.b)
     }
 
     private fun update(delta: Float) {

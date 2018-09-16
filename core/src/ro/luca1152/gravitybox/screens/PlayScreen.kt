@@ -17,19 +17,18 @@
 
 package ro.luca1152.gravitybox.screens
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.GL20
+import ktx.app.KtxScreen
+import ktx.app.clearScreen
 import ktx.assets.getAsset
 import ro.luca1152.gravitybox.entities.Level
 import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PlayScreen(private val manager: AssetManager = Injekt.get()) : ScreenAdapter() {
+class PlayScreen(private val manager: AssetManager = Injekt.get()) : KtxScreen {
     private var level: Level? = null
     private var levelNumber = 1
     var finishTimer = 0f
@@ -49,8 +48,7 @@ class PlayScreen(private val manager: AssetManager = Injekt.get()) : ScreenAdapt
 
     override fun render(delta: Float) {
         update(delta)
-        Gdx.gl20.glClearColor(lightColor.r, lightColor.g, lightColor.b, lightColor.a)
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        clearScreen(lightColor.r, lightColor.g, lightColor.b)
         level?.draw()
     }
 
