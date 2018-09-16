@@ -108,6 +108,7 @@ project(":core") {
         implementation group: 'io.github.libktx', name: 'ktx-assets', version: '1.9.8-b4'
         implementation group: 'io.github.libktx', name: 'ktx-log', version: '1.9.8-b4'
         implementation group: 'io.github.libktx', name: 'ktx-math', version: '1.9.8-b4'
+        implementation group: 'io.github.libktx', name: 'ktx-graphics', version: '1.9.8-b4'
     }
 }
 
