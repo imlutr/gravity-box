@@ -21,6 +21,7 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.TextureLoader
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
@@ -70,7 +71,10 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
     }
 
     private fun loadFont() {
-        manager.load("font/font.png", Texture::class.java)
+        val parameter = TextureLoader.TextureParameter().apply {
+            this.genMipMaps = true
+        }
+        manager.load("font/font.png", Texture::class.java, parameter)
         manager.load("font/font.fnt", BitmapFont::class.java)
     }
 
@@ -112,8 +116,8 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
     }
 
     private fun createFont() {
-        val fontTexture = Texture(Gdx.files.internal("font/font.png")).apply {
-            setFilter(TextureFilter.Linear, TextureFilter.Linear)
+        val fontTexture = manager.get<Texture>("font/font.png").apply {
+            setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear)
         }
         font = BitmapFont(manager.get("font/font.fnt", BitmapFont::class.java).data.fontFile, TextureRegion(fontTexture))
     }
