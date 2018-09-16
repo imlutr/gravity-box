@@ -185,7 +185,7 @@ class Level(levelNumber: Int,
 
     private fun showFinishMessage() {
         playScreen.finishTimer = (playScreen.finishTimer * 100).toInt() / 100f
-        uiStage.addActor(Label("Good job!\nYou finished the game in " + playScreen.finishTimer + "s!", labelStyle).apply {
+        uiStage.addActor(Label("Good job!\nYou finished the game in ${playScreen.finishTimer}s!", labelStyle).apply {
             setAlignment(Align.center)
             setPosition(uiStage.width / 2f - prefWidth / 2f, 700f)
         })

@@ -36,6 +36,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.assets.getAsset
 import ktx.assets.load
+import ktx.log.info
 import ro.luca1152.gravitybox.entities.Level
 import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
 import uy.kohesive.injekt.Injekt
@@ -125,6 +126,6 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
 
     private fun logLoadingTime() {
         timer = (timer * 100).toInt() / 100f
-        Gdx.app.log(LoadingScreen::class.java.simpleName, "Finished loading assets in " + timer + "s.")
+        info { "Finished loading assets in ${timer}s." }
     }
 }
