@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.assets.getAsset
+import ktx.graphics.copy
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
 import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
@@ -84,11 +85,6 @@ class Finish(sourceMap: Map,
 
         // Update Actor properties
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
-        color.apply {
-            // Don't copy the alpha because the blinking effect would stop
-            r = darkColor.r
-            g = darkColor.g
-            b = darkColor.b
-        }
+        color = darkColor.copy(alpha = color.a)
     }
 }

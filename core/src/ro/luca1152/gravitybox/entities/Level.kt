@@ -36,6 +36,7 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.assets.getAsset
+import ktx.graphics.copy
 import ktx.math.times
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.screens.font
@@ -97,8 +98,8 @@ class Level(levelNumber: Int,
         mapHue = mapProperties.get("hue") as Int
         lightColor = ColorScheme.getLightColor(mapHue)
         darkColor = ColorScheme.getDarkColor(mapHue)
-        originalLightColor = lightColor.cpy()
-        originalDarkColor = darkColor.cpy()
+        originalLightColor = lightColor.copy()
+        originalDarkColor = darkColor.copy()
         lightColor2 = ColorScheme.getLightColor2(mapHue)
         darkColor2 = ColorScheme.getDarkColor2(mapHue)
 
