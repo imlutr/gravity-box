@@ -107,6 +107,7 @@ project(":core") {
         implementation "uy.kohesive.injekt:injekt-core:1.16.+"
         implementation group: 'io.github.libktx', name: 'ktx-assets', version: '1.9.8-b4'
         implementation group: 'io.github.libktx', name: 'ktx-log', version: '1.9.8-b4'
+        implementation group: 'io.github.libktx', name: 'ktx-math', version: '1.9.8-b4'
     }
 }
 
