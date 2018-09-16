@@ -36,6 +36,7 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.assets.getAsset
+import ktx.math.times
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.screens.font
 import ro.luca1152.gravitybox.screens.fontShader
@@ -127,11 +128,12 @@ class Level(levelNumber: Int,
                 val worldCoordinates = Vector3(screenX.toFloat(), screenY.toFloat(), 0f).run {
                     stage.camera.unproject(this)
                 }
-                val forceVector = player.body.worldCenter.cpy().apply {
-                    sub(worldCoordinates.x, worldCoordinates.y)
-                    nor()
-                    scl(-Bullet.SPEED)
-                }
+
+                var forceVector = player.body.worldCenter.cpy()
+                forceVector.x -= worldCoordinates.x
+                forceVector.y -= worldCoordinates.y
+                forceVector.nor()
+                forceVector *= -Bullet.SPEED
                 bullet.body.linearVelocity = forceVector
                 return true
             }

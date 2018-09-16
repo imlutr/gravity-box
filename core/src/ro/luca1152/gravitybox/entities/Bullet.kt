@@ -21,16 +21,19 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Array
 import ktx.assets.getAsset
+import ktx.math.minusAssign
+import ktx.math.timesAssign
+import ktx.math.vec2
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
 import ro.luca1152.gravitybox.utils.EntityCategory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.lang.Math.pow
 
 class Bullet(private val world: World,
              player: Player,
@@ -44,14 +47,12 @@ class Bullet(private val world: World,
             manager.getAsset<Sound>("audio/bullet-wall-collision.wav").play(.4f)
 
             // Create the force vector
-            val sourcePosition = Vector2(body.worldCenter.x, body.worldCenter.y)
+            val sourcePosition = vec2(x = body.worldCenter.x, y = body.worldCenter.y)
             val distance = player.body.worldCenter.dst(sourcePosition).toDouble()
-            val forceVector = player.body.worldCenter.cpy().apply {
-                sub(sourcePosition)
-                nor()
-                scl(15000f) // Multiply the force vector by an amount for a greater push
-                scl(1.22f * Math.pow(1 - .3, distance).toFloat())
-            }
+            val forceVector = player.body.worldCenter.cpy()
+            forceVector -= sourcePosition
+            forceVector.nor()
+            forceVector *= 15000 * (1.22f * pow(1 - .3, distance).toFloat())
             player.body.applyForce(forceVector, player.body.worldCenter, true) // Push the player
             player.stage.addActor(Explosion(body.worldCenter.x, body.worldCenter.y)) // Draw the explosion
         }
