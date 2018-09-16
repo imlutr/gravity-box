@@ -112,8 +112,8 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : ScreenAd
     }
 
     private fun createFont() {
-        val fontTexture = Texture(Gdx.files.internal("font/font.png"), true).apply {
-            setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear)
+        val fontTexture = Texture(Gdx.files.internal("font/font.png")).apply {
+            setFilter(TextureFilter.Linear, TextureFilter.Linear)
         }
         font = BitmapFont(manager.get("font/font.fnt", BitmapFont::class.java).data.fontFile, TextureRegion(fontTexture))
     }
