@@ -111,6 +111,7 @@ project(":core") {
         implementation group: 'io.github.libktx', name: 'ktx-graphics', version: '1.9.8-b4'
         implementation group: 'io.github.libktx', name: 'ktx-app', version: '1.9.8-b4'
         implementation group: 'io.github.libktx', name: 'ktx-actors', version: '1.9.8-b4'
+        implementation group: 'io.github.libktx', name: 'ktx-scene2d', version: '1.9.8-b4'
     }
 }
 
