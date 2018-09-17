@@ -35,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import ktx.actors.plus
 import ktx.assets.getAsset
 import ktx.graphics.copy
 import ktx.math.times
@@ -110,8 +111,7 @@ class Level(levelNumber: Int,
         labelStyle = Label.LabelStyle(font, darkColor)
         mapRenderer = OrthogonalTiledMapRenderer(map, 1 / PPM, batch)
 
-        stage.addActor(finish.apply { isVisible = false })
-        stage.addActor(player.apply { isVisible = false })
+        stage + finish.apply { isVisible = false } + player.apply { isVisible = false }
 
         setInputProcessor()
         setContactListener()
@@ -124,7 +124,7 @@ class Level(levelNumber: Int,
             override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
                 // Create the bullet
                 val bullet = Bullet(world, player)
-                stage.addActor(bullet)
+                stage + bullet
 
                 val worldCoordinates = Vector3(screenX.toFloat(), screenY.toFloat(), 0f).run {
                     stage.camera.unproject(this)
@@ -175,23 +175,22 @@ class Level(levelNumber: Int,
     }
 
     private fun showLevelLabel(levelNumber: Int) {
-        uiStage.addActor(Label("#$levelNumber", labelStyle).apply {
+        uiStage + Label("#$levelNumber", labelStyle).apply {
             setAlignment(Align.right)
             setPosition(uiStage.width - prefWidth - 10f, 7f)
-            // Add fadeIn effect if it's the first level
             if (levelNumber == 1) {
                 addAction(Actions.fadeOut(0f))
                 addAction(Actions.fadeIn(2f))
             }
-        })
+        }
     }
 
     private fun showFinishMessage() {
         playScreen.finishTimer = (playScreen.finishTimer * 100).toInt() / 100f
-        uiStage.addActor(Label("Good job!\nYou finished the game in ${playScreen.finishTimer}s!", labelStyle).apply {
+        uiStage + Label("Good job!\nYou finished the game in ${playScreen.finishTimer}s!", labelStyle).apply {
             setAlignment(Align.center)
             setPosition(uiStage.width / 2f - prefWidth / 2f, 700f)
-        })
+        }
     }
 
     fun update(delta: Float) {
