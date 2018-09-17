@@ -64,6 +64,11 @@ class Level(levelNumber: Int,
     companion object {
         const val TOTAL_LEVELS = 10
         const val PPM = 32f // Pixels per meter
+
+        // Physics
+        private const val TIME_STEP = 1f / 300f
+        private const val VELOCITY_ITERATIONS = 6
+        private const val POSITION_ITERATIONS = 2
     }
 
     private val map: TiledMap
@@ -195,13 +200,23 @@ class Level(levelNumber: Int,
 
     fun update(delta: Float) {
         mapRenderer.setView(stage.camera as OrthographicCamera)
-        world.step(1 / 60f, 6, 2)
+        updatePhysics(delta)
         stage.act(delta)
         uiStage.act(delta)
         updateVisibility()
         updateCamera()
         sweepDeadBodies()
         playerCollidesFinish()
+    }
+
+    private var accumulator = 0f
+    private fun updatePhysics(delta: Float) {
+        println(Gdx.graphics.framesPerSecond.toString())
+        accumulator += Math.min(delta, 0.25f)
+        while (accumulator >= TIME_STEP) {
+            world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS)
+            accumulator -= TIME_STEP
+        }
     }
 
     private fun updateVisibility() {

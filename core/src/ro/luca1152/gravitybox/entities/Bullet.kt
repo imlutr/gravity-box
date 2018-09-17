@@ -52,7 +52,7 @@ class Bullet(private val world: World,
             val forceVector = player.body.worldCenter.cpy()
             forceVector -= sourcePosition
             forceVector.nor()
-            forceVector *= 15000 * (1.22f * pow(1 - .3, distance).toFloat())
+            forceVector *= 15000 * (1.22f * pow(1 - .3, distance).toFloat()) * 5
             player.body.applyForce(forceVector, player.body.worldCenter, true) // Push the player
             player.stage.addActor(Explosion(body.worldCenter.x, body.worldCenter.y)) // Draw the explosion
         }
