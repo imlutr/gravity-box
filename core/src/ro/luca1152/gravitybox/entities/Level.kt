@@ -33,10 +33,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.actors.plus
 import ktx.assets.getAsset
+import ktx.collections.gdxArrayOf
 import ktx.graphics.copy
 import ktx.math.times
 import ro.luca1152.gravitybox.screens.PlayScreen
@@ -249,10 +249,11 @@ class Level(levelNumber: Int,
         }
     }
 
+    private val bodiesToSweep = gdxArrayOf<Body>()
     private fun sweepDeadBodies() {
-        val array = Array<Body>()
-        world.getBodies(array)
-        for (body in array) {
+        bodiesToSweep.clear()
+        world.getBodies(bodiesToSweep)
+        for (body in bodiesToSweep) {
             if (body != null && body.userData != null && body.userData.javaClass == MyUserData::class.java) {
                 if ((body.userData as MyUserData).isFlaggedForDelete) {
                     Bullet.collisionWithWall(player, body)
