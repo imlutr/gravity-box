@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.physics.box2d.Box2D
 import ro.luca1152.gravitybox.screens.LoadingScreen
+import ro.luca1152.gravitybox.screens.MainMenuScreen
 import ro.luca1152.gravitybox.screens.PlayScreen
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
@@ -39,6 +40,7 @@ class MyGame : Game() {
             addSingleton(AssetManager())
             addSingleton(this@MyGame as Game)
             addSingleton(LoadingScreen())
+            addSingleton(MainMenuScreen())
             addSingleton(PlayScreen())
         }
 
@@ -51,6 +53,7 @@ class MyGame : Game() {
             get<Batch>().dispose()
             get<AssetManager>().dispose()
             get<LoadingScreen>().dispose()
+            get<MainMenuScreen>().dispose()
             get<PlayScreen>().dispose()
         }
     }

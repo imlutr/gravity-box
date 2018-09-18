@@ -105,7 +105,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
             logLoadingTime()
 
             // Change the screen to PlayScreen
-            Injekt.get<Game>().screen = Injekt.get<PlayScreen>()
+            Injekt.get<Game>().screen = Injekt.get<MainMenuScreen>()
         }
     }
 

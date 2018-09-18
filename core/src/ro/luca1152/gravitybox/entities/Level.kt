@@ -211,7 +211,6 @@ class Level(levelNumber: Int,
 
     private var accumulator = 0f
     private fun updatePhysics(delta: Float) {
-        println(Gdx.graphics.framesPerSecond.toString())
         accumulator += Math.min(delta, 0.25f)
         while (accumulator >= TIME_STEP) {
             world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS)
