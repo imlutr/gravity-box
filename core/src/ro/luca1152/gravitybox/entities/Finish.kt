@@ -48,7 +48,6 @@ class Finish(sourceMap: Map,
         }
 
     init {
-        // Set Actor properties
         setSize(128.pixelsToMeters, 128.pixelsToMeters)
         setOrigin(width / 2f, height / 2f)
 
@@ -63,14 +62,11 @@ class Finish(sourceMap: Map,
         }
         body.createFixture(fixtureDef)
 
-        // Update the position
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
 
-        // Create the collision box
         collisionBox = Rectangle()
         collisionBox.setSize(width, height)
 
-        // Add permanent blinking effect
         addAction(RepeatAction().apply {
             action = Actions.sequence(
                     Actions.fadeOut(1f),
@@ -83,7 +79,6 @@ class Finish(sourceMap: Map,
     override fun act(delta: Float) {
         super.act(delta)
 
-        // Update Actor properties
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
         color = darkColor.copy(alpha = color.a)
     }

@@ -43,10 +43,8 @@ class Bullet(private val world: World,
 
         fun collisionWithWall(player: Player, body: Body,
                               manager: AssetManager = Injekt.get()) {
-            // Play the collision sound
             manager.getAsset<Sound>("audio/bullet-wall-collision.wav").play(.4f)
 
-            // Create the force vector
             val sourcePosition = vec2(x = body.worldCenter.x, y = body.worldCenter.y)
             val distance = player.body.worldCenter.dst(sourcePosition).toDouble()
             val forceVector = player.body.worldCenter.cpy()

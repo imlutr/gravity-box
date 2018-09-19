@@ -30,14 +30,12 @@ import uy.kohesive.injekt.api.get
 internal class Explosion(x: Float, y: Float,
                          manager: AssetManager = Injekt.get()) : Image(manager.getAsset<Texture>("graphics/circle.png")) {
     init {
-        // Set Actor properties
         setSize(256.pixelsToMeters, 256.pixelsToMeters)
         setOrigin(width / 2f, height / 2f)
         setPosition(x - width / 2f, y - height / 2f)
         color = darkColor
         setScale(1 / 6f)
 
-        // Add a fade out effect
         addAction(sequence(
                 parallel(
                         scaleBy(1f, 1f, .35f),

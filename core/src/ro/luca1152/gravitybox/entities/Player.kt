@@ -47,19 +47,14 @@ class Player(sourceMap: Map,
     var restart = false
 
     init {
-        // Set Actor properties
         setSize(64.pixelsToMeters, 64.pixelsToMeters)
         setOrigin(width / 2f, height / 2f)
 
-        // Read the player object from the map
         val playerObject = sourceMap.layers.get("Player").objects.get(0)
 
-        // Create the body definition
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
         }
-
-        // Create the body
         body = destinationWorld.createBody(bodyDef)
         val fixtureDef = FixtureDef().apply {
             shape = MapBodyBuilder.getRectangle(playerObject as RectangleMapObject)
@@ -70,24 +65,22 @@ class Player(sourceMap: Map,
         }
         body.createFixture(fixtureDef)
 
-        // Create the collision box
         collisionBox = Rectangle()
         collisionBox.setSize(width, height)
 
-        // Update the position
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
     }
+
+    private val isOffScreen
+        get() = body.worldCenter.y < -10
 
     override fun act(delta: Float) {
         super.act(delta)
 
-        // Update Actor properties
         setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
         rotation = MathUtils.radiansToDegrees * body.transform.rotation
         color = darkColor
-
-        // Restart if off-screen
-        if (body.worldCenter.y < -10)
+        if (isOffScreen)
             restart = true
     }
 }
