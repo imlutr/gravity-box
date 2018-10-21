@@ -17,69 +17,50 @@
 
 package ro.luca1152.gravitybox.entities
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.maps.Map
 import com.badlogic.gdx.maps.objects.RectangleMapObject
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.assets.getAsset
-import ktx.graphics.copy
+import ro.luca1152.gravitybox.components.ImageComponent
+import ro.luca1152.gravitybox.components.PhysicsComponent
+import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
-import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class Finish(sourceMap: Map,
-             destinationWorld: World,
-             manager: AssetManager = Injekt.get()) : Image(manager.getAsset<Texture>("graphics/finish.png")) {
-    private val body: Body
-    val collisionBox: Rectangle
-        get() {
-            field.setPosition(x, y)
-            return field
-        }
-
+class FinishEntity(map: TiledMap, world: World, stage: Stage,
+                   manager: AssetManager = Injekt.get()) : Entity() {
     init {
-        setSize(128.pixelsToMeters, 128.pixelsToMeters)
-        setOrigin(width / 2f, height / 2f)
-
-        val finishObject = sourceMap.layers.get("Finish").objects.get(0)
-        val bodyDef = BodyDef().apply { type = BodyDef.BodyType.DynamicBody }
-        body = destinationWorld.createBody(bodyDef).apply { gravityScale = 0f }
+        // PhysicsComponent
+        val bodyDef = BodyDef().apply {
+            type = BodyDef.BodyType.DynamicBody
+        }
+        val body = world.createBody(bodyDef).apply { gravityScale = 0f }
+        val finishObject = map.layers.get("Finish").objects.get(0)
         val fixtureDef = FixtureDef().apply {
             shape = MapBodyBuilder.getRectangle(finishObject as RectangleMapObject)
             density = 100f
-            filter.categoryBits = EntityCategory.FINISH.bits
-            filter.maskBits = EntityCategory.NONE.bits
         }
         body.createFixture(fixtureDef)
+        add(PhysicsComponent(body))
 
-        setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
-
-        collisionBox = Rectangle()
-        collisionBox.setSize(width, height)
-
-        addAction(RepeatAction().apply {
+        // ImageComponent
+        add(ImageComponent(stage, manager.getAsset("graphics/finish.png"), body.worldCenter.x, body.worldCenter.y))
+        image.color = darkColor
+        image.addAction(RepeatAction().apply {
             action = Actions.sequence(
                     Actions.fadeOut(1f),
                     Actions.fadeIn(1f)
             )
             count = RepeatAction.FOREVER
         })
-    }
-
-    override fun act(delta: Float) {
-        super.act(delta)
-
-        setPosition(body.worldCenter.x - width / 2f, body.worldCenter.y - height / 2f)
-        color = darkColor.copy(alpha = color.a)
     }
 }

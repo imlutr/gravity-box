@@ -15,8 +15,16 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.screens
+package ro.luca1152.gravitybox.components
 
-import com.badlogic.gdx.ScreenAdapter
 
-class LevelsScreen : ScreenAdapter() 
+import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.ComponentMapper
+import com.badlogic.ashley.core.Entity
+
+open class ComponentResolver<T : Component>(componentClass: Class<T>) {
+    val MAPPER = ComponentMapper.getFor(componentClass)
+    operator fun get(entity: Entity) = MAPPER[entity]
+}
+
+fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? = componentResolver[this]

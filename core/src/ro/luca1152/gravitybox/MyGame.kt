@@ -17,44 +17,45 @@
 
 package ro.luca1152.gravitybox
 
-import com.badlogic.gdx.Game
+import com.badlogic.ashley.core.Engine
+import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.physics.box2d.Box2D
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import ktx.app.KtxGame
 import ro.luca1152.gravitybox.screens.LoadingScreen
-import ro.luca1152.gravitybox.screens.MainMenuScreen
 import ro.luca1152.gravitybox.screens.PlayScreen
+import ro.luca1152.gravitybox.utils.GameCamera
+import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
-class MyGame : Game() {
+class MyGame : KtxGame<Screen>() {
     override fun create() {
-        // Initialize Box2D
-        Box2D.init()
-
-        // Initialize dependency injection
         Injekt.run {
+            addSingleton(this@MyGame)
             addSingleton(SpriteBatch() as Batch)
+            addSingleton(ShapeRenderer())
             addSingleton(AssetManager())
-            addSingleton(this@MyGame as Game)
-            addSingleton(LoadingScreen())
-            addSingleton(MainMenuScreen())
-            addSingleton(PlayScreen())
+            addSingleton(GameCamera)
+            addSingleton(GameViewport)
+            addSingleton(Engine())
         }
-
-        // Change the screen to the LoadingScreen
-        setScreen(Injekt.get<LoadingScreen>())
+        addScreen(PlayScreen()); addScreen(LoadingScreen())
+        setScreen<LoadingScreen>()
     }
 
     override fun dispose() {
+        super.dispose() // Dispose every screen
         Injekt.run {
             get<Batch>().dispose()
-            get<AssetManager>().dispose()
-            get<LoadingScreen>().dispose()
-            get<MainMenuScreen>().dispose()
-            get<PlayScreen>().dispose()
         }
     }
 }
+
+const val PPM = 64f // Pixels per meter
+
+val Int.pixelsToMeters: Float
+    get() = this / PPM

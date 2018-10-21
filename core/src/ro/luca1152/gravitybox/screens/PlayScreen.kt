@@ -17,55 +17,54 @@
 
 package ro.luca1152.gravitybox.screens
 
-import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.audio.Music
-import com.badlogic.gdx.audio.Sound
+import com.badlogic.ashley.core.Engine
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
-import ktx.assets.getAsset
-import ro.luca1152.gravitybox.entities.Level
+import ro.luca1152.gravitybox.components.map
+import ro.luca1152.gravitybox.entities.FinishEntity
+import ro.luca1152.gravitybox.entities.MapEntity
+import ro.luca1152.gravitybox.entities.PlayerEntity
+import ro.luca1152.gravitybox.systems.*
 import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
+import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PlayScreen(private val manager: AssetManager = Injekt.get()) : KtxScreen {
-    private var level: Level? = null
-    private var levelNumber = 1
-    var finishTimer = 0f
+class PlayScreen(private val engine: Engine = Injekt.get(),
+                 private val gameViewport: GameViewport = Injekt.get(),
+                 batch: Batch = Injekt.get()) : KtxScreen {
+    private val stage = Stage(gameViewport, batch)
+    private val world = World(Vector2(0f, -1f), true)
 
     override fun show() {
-        level = Level(levelNumber)
-        playMusic()
-    }
-
-    private fun playMusic() {
-        manager.getAsset<Music>("audio/music.mp3").apply {
-            volume = .30f
-            isLooping = true
-            play()
+        val mapEntity = MapEntity(1, world)
+        val playerEntity = PlayerEntity(mapEntity.map.tiledMap, world, stage)
+        val finishEntity = FinishEntity(mapEntity.map.tiledMap, world, stage)
+        engine.run {
+            // Entities
+            addEntity(mapEntity)
+            addEntity(finishEntity)
+            addEntity(playerEntity)
+            // Systems
+            addSystem(PhysicsSystem(world))
+            addSystem(PhysicsSynchronizationSystem())
+            addSystem(PlayerCameraSystem(playerEntity, mapEntity))
+            addSystem(MapRenderingSystem(mapEntity.map.tiledMap))
+            addSystem(ImageRenderingSystem(stage))
+            addSystem(PhysicsDebugSystem(world))
         }
     }
 
     override fun render(delta: Float) {
-        update(delta)
         clearScreen(lightColor.r, lightColor.g, lightColor.b)
-        level?.draw()
-    }
-
-    private fun update(delta: Float) {
-        finishTimer += delta
-        level?.update(delta)
-        if (level?.player?.restart == true) {
-            level = Level(levelNumber)
-            level?.player?.restart = false
-        }
-        if (level?.isFinished == true && levelNumber + 1 <= Level.TOTAL_LEVELS) {
-            level = Level(++levelNumber)
-            manager.getAsset<Sound>("audio/level-finished.wav").play(.2f)
-        }
+        engine.update(delta)
     }
 
     override fun resize(width: Int, height: Int) {
-        level!!.stage.viewport.update(width, height)
+        gameViewport.update(width, height, true)
     }
 }

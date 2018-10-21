@@ -17,18 +17,12 @@
 
 package ro.luca1152.gravitybox.screens
 
-import com.badlogic.gdx.Game
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter
+import com.badlogic.gdx.assets.loaders.TextureLoader
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
-import com.badlogic.gdx.graphics.Texture.TextureFilter.MipMapLinearLinear
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -37,14 +31,10 @@ import ktx.app.clearScreen
 import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.log.info
-import ro.luca1152.gravitybox.entities.Level
+import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-
-
-var font = BitmapFont()
-var fontShader = ShaderProgram(Gdx.files.internal("font/shader/font.vert"), Gdx.files.internal("font/shader/font.frag"))
 
 class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScreen {
     private var timer = 0f
@@ -58,7 +48,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
 
     private fun loadFont() {
         manager.run {
-            load<Texture>("font/font.png", TextureParameter().apply { genMipMaps = true })
+            load<Texture>("font/font.png", TextureLoader.TextureParameter().apply { genMipMaps = true })
             load<BitmapFont>("font/font.fnt")
         }
     }
@@ -85,7 +75,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
     private fun loadMaps() {
         manager.run {
             setLoader<TiledMap, TmxMapLoader.Parameters>(TiledMap::class.java, TmxMapLoader())
-            for (i in 1..Level.TOTAL_LEVELS)
+            for (i in 1..10)
                 load<TiledMap>("maps/map-$i.tmx")
         }
     }
@@ -97,34 +87,20 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
 
     private fun update(delta: Float) {
         timer += delta
-
         // Finished loading assets
         if (manager.update()) {
-            createFont()
             smoothTextures()
-            logLoadingTime()
-
-            // Change the screen to PlayScreen
-            Injekt.get<Game>().screen = Injekt.get<MainMenuScreen>()
+            info { "Finished loading assets in ${(timer * 100).toInt() / 100f}s." }
+            Injekt.get<MyGame>().setScreen<PlayScreen>()
         }
-    }
-
-    private fun createFont() {
-        val fontTexture = manager.getAsset<Texture>("font/font.png").apply { setFilter(MipMapLinearLinear, Linear) }
-        font = BitmapFont(manager.getAsset<BitmapFont>("font/font.fnt").data.fontFile, TextureRegion(fontTexture))
     }
 
     private fun smoothTextures() {
         manager.run {
-            getAsset<Texture>("graphics/player.png").setFilter(Linear, Linear)
-            getAsset<Texture>("graphics/bullet.png").setFilter(Linear, Linear)
-            getAsset<Texture>("graphics/circle.png").setFilter(Linear, Linear)
-            getAsset<Texture>("graphics/finish.png").setFilter(Linear, Linear)
+            getAsset<Texture>("graphics/player.png").setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+            getAsset<Texture>("graphics/bullet.png").setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+            getAsset<Texture>("graphics/circle.png").setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+            getAsset<Texture>("graphics/finish.png").setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
         }
-    }
-
-    private fun logLoadingTime() {
-        timer = (timer * 100).toInt() / 100f
-        info { "Finished loading assets in ${timer}s." }
     }
 }

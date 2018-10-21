@@ -15,17 +15,25 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.screens
+package ro.luca1152.gravitybox.components
 
-import com.badlogic.gdx.Game
-import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.maps.tiled.TiledMap
+import ktx.assets.getAsset
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class MainMenuScreen : ScreenAdapter() {
-    override fun show() {
-        Injekt.get<Game>().screen = Injekt.get<PlayScreen>()
-        // TODO : Add a play button
-        // TODO : Add a level editor button
-    }
+class MapComponent(levelNumber: Int,
+                   manager: AssetManager = Injekt.get()) : Component {
+    val tiledMap: TiledMap = manager.getAsset("maps/map-$levelNumber.tmx")
+    val width = tiledMap.properties.get("width") as Int
+    val height = tiledMap.properties.get("height") as Int
+    val hue = tiledMap.properties.get("hue") as Int
+
+    companion object : ComponentResolver<MapComponent>(MapComponent::class.java)
 }
+
+val Entity.map: MapComponent
+    get() = MapComponent[this]
