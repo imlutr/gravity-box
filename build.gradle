@@ -104,7 +104,7 @@ project(":core") {
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-        implementation "uy.kohesive.injekt:injekt-core:1.16.0"
+        implementation "uy.kohesive.injekt:injekt-core:1.16.1"
         implementation group: 'io.github.libktx', name: 'ktx-assets', version: '1.9.8-b4'
         implementation group: 'io.github.libktx', name: 'ktx-log', version: '1.9.8-b4'
         implementation group: 'io.github.libktx', name: 'ktx-math', version: '1.9.8-b4'
@@ -112,7 +112,8 @@ project(":core") {
         implementation group: 'io.github.libktx', name: 'ktx-app', version: '1.9.8-b4'
         implementation group: 'io.github.libktx', name: 'ktx-actors', version: '1.9.8-b4'
         implementation group: 'io.github.libktx', name: 'ktx-scene2d', version: '1.9.8-b4'
-        implementation  group: 'io.github.libktx', name: 'ktx-collections', version: '1.9.8-b4'
+        implementation group: 'io.github.libktx', name: 'ktx-collections', version: '1.9.8-b4'
+        implementation "com.badlogicgames.ashley:ashley:1.7.0"
     }
 }
 
