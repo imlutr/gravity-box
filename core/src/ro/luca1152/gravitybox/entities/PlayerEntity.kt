@@ -48,6 +48,7 @@ class PlayerEntity(map: TiledMap, world: World, stage: Stage,
             density = 1.15f
             friction = 2f
         }
+        body.userData = this
         body.createFixture(fixtureDef)
         add(PhysicsComponent(body))
 

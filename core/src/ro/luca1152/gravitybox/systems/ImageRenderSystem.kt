@@ -24,9 +24,9 @@ import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class ImageRenderingSystem(private val stage: Stage,
-                           private val gameCamera: GameCamera = Injekt.get(),
-                           private val gameViewport: GameViewport = Injekt.get()) : EntitySystem() {
+class ImageRenderSystem(private val stage: Stage,
+                        private val gameCamera: GameCamera = Injekt.get(),
+                        private val gameViewport: GameViewport = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
         gameViewport.apply()
         stage.batch.projectionMatrix = gameCamera.combined

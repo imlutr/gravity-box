@@ -19,4 +19,9 @@ package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
 
-class FinishComponent : Component
+/**
+ * Indicates that the entity is a finish point.
+ */
+class FinishComponent : Component {
+    companion object : ComponentResolver<FinishComponent>(FinishComponent::class.java)
+}

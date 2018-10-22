@@ -49,6 +49,7 @@ class FinishEntity(map: TiledMap, world: World, stage: Stage,
             shape = MapBodyBuilder.getRectangle(finishObject as RectangleMapObject)
             density = 100f
         }
+        body.userData = this
         body.createFixture(fixtureDef)
         add(PhysicsComponent(body))
 

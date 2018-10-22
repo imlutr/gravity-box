@@ -26,7 +26,10 @@ import ro.luca1152.gravitybox.components.PhysicsComponent
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.components.physics
 
-class PhysicsSynchronizationSystem : IteratingSystem(Family.all(ImageComponent::class.java, PhysicsComponent::class.java).get()) {
+/**
+ * Synchronize the position of the Actor with the position of the Box2D body
+ */
+class PhysicsSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, PhysicsComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val body = entity.physics.body
         val image = entity.image

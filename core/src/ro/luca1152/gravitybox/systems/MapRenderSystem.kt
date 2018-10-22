@@ -28,10 +28,10 @@ import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class MapRenderingSystem(tiledMap: TiledMap,
-                         private val batch: Batch = Injekt.get(),
-                         private val gameCamera: GameCamera = Injekt.get(),
-                         private val gameViewport: GameViewport = Injekt.get()) : EntitySystem() {
+class MapRenderSystem(tiledMap: TiledMap,
+                      private val batch: Batch = Injekt.get(),
+                      private val gameCamera: GameCamera = Injekt.get(),
+                      private val gameViewport: GameViewport = Injekt.get()) : EntitySystem() {
     private val mapRenderer = OrthogonalTiledMapRenderer(tiledMap, 1 / PPM, batch)
 
     override fun update(deltaTime: Float) {

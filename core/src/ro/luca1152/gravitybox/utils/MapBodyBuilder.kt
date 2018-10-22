@@ -26,6 +26,7 @@ import com.badlogic.gdx.maps.objects.*
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array
+import ro.luca1152.gravitybox.entities.PlatformEntity
 
 object MapBodyBuilder {
     private var ppt = 0f
@@ -45,7 +46,10 @@ object MapBodyBuilder {
                 else -> continue@loop
             }
             val bd = BodyDef().apply { type = BodyDef.BodyType.StaticBody }
-            val body = world.createBody(bd).apply { createFixture(shape, 1f) }
+            val body = world.createBody(bd).apply {
+                userData = PlatformEntity()
+                createFixture(shape, 1f)
+            }
             bodies.add(body)
             shape.dispose()
         }

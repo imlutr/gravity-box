@@ -51,6 +51,7 @@ class MyGame : KtxGame<Screen>() {
         super.dispose() // Dispose every screen
         Injekt.run {
             get<Batch>().dispose()
+            get<AssetManager>().dispose()
         }
     }
 }

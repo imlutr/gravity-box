@@ -18,6 +18,7 @@
 package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
@@ -28,6 +29,8 @@ import ro.luca1152.gravitybox.components.map
 import ro.luca1152.gravitybox.entities.FinishEntity
 import ro.luca1152.gravitybox.entities.MapEntity
 import ro.luca1152.gravitybox.entities.PlayerEntity
+import ro.luca1152.gravitybox.events.GameEvent
+import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.*
 import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
 import ro.luca1152.gravitybox.utils.GameViewport
@@ -41,21 +44,30 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
     private val world = World(Vector2(0f, -1f), true)
 
     override fun show() {
+        val gameEventSignal = Signal<GameEvent>()
         val mapEntity = MapEntity(1, world)
         val playerEntity = PlayerEntity(mapEntity.map.tiledMap, world, stage)
         val finishEntity = FinishEntity(mapEntity.map.tiledMap, world, stage)
+        world.setContactListener(WorldContactListener(world, gameEventSignal))
+
+        // Entities
         engine.run {
-            // Entities
             addEntity(mapEntity)
             addEntity(finishEntity)
             addEntity(playerEntity)
-            // Systems
+        }
+        // Systems
+        engine.run {
+            // Physics
             addSystem(PhysicsSystem(world))
-            addSystem(PhysicsSynchronizationSystem())
+            addSystem(PhysicsSyncSystem())
             addSystem(PlayerCameraSystem(playerEntity, mapEntity))
-            addSystem(MapRenderingSystem(mapEntity.map.tiledMap))
-            addSystem(ImageRenderingSystem(stage))
+            // Render
+            addSystem(MapRenderSystem(mapEntity.map.tiledMap))
+            addSystem(ImageRenderSystem(stage))
             addSystem(PhysicsDebugSystem(world))
+            // Test
+            addSystem(TestSystem(gameEventSignal))
         }
     }
 
