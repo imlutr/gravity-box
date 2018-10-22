@@ -30,6 +30,7 @@ import ro.luca1152.gravitybox.components.PhysicsComponent
 import ro.luca1152.gravitybox.components.PlayerComponent
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
+import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
@@ -53,6 +54,8 @@ class PlayerEntity(map: TiledMap = Injekt.get(),
             shape = MapBodyBuilder.getRectangle(playerObject as RectangleMapObject)
             density = 1.15f
             friction = 2f
+            filter.categoryBits = EntityCategory.PLAYER.bits
+            filter.maskBits = EntityCategory.OBSTACLE.bits
         }
         body.userData = this
         body.createFixture(fixtureDef)

@@ -32,6 +32,7 @@ import ro.luca1152.gravitybox.components.ImageComponent
 import ro.luca1152.gravitybox.components.PhysicsComponent
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
+import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
@@ -54,6 +55,8 @@ class FinishEntity(map: TiledMap = Injekt.get(),
         val fixtureDef = FixtureDef().apply {
             shape = MapBodyBuilder.getRectangle(finishObject as RectangleMapObject)
             density = 100f
+            filter.categoryBits = EntityCategory.FINISH.bits
+            filter.maskBits = EntityCategory.NONE.bits
         }
         body.userData = this
         body.createFixture(fixtureDef)

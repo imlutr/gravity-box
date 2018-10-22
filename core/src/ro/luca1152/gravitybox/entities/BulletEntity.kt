@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.World
 import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.utils.ColorScheme
+import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -30,13 +31,15 @@ class BulletEntity(playerEntity: PlayerEntity = Injekt.get(),
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
             bullet = true
-            position.set(playerBody.worldCenter.x + 1f, playerBody.worldCenter.y)
+            position.set(playerBody.worldCenter.x, playerBody.worldCenter.y)
         }
         val body = world.createBody(bodyDef).apply { gravityScale = .5f }
         val polygonShape = PolygonShape().apply { setAsBox(.15f, .15f) }
         val bulletFixtureDef = FixtureDef().apply {
             shape = polygonShape
             density = .2f
+            filter.categoryBits = EntityCategory.BULLET.bits
+            filter.maskBits = EntityCategory.OBSTACLE.bits
         }
         body.createFixture(bulletFixtureDef)
         add(PhysicsComponent(body))
