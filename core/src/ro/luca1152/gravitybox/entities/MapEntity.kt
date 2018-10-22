@@ -24,9 +24,11 @@ import ro.luca1152.gravitybox.components.MapComponent
 import ro.luca1152.gravitybox.components.map
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 class MapEntity(levelNumber: Int,
-                world: World) : Entity() {
+                world: World = Injekt.get()) : Entity() {
     init {
         add(MapComponent(levelNumber))
 

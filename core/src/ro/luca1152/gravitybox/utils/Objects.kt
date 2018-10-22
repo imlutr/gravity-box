@@ -18,8 +18,11 @@
 package ro.luca1152.gravitybox.utils
 
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ro.luca1152.gravitybox.pixelsToMeters
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 /**
  * Used in dependency injection so I can inject more variables of the same type,
@@ -29,3 +32,5 @@ import ro.luca1152.gravitybox.pixelsToMeters
 object GameCamera : OrthographicCamera(720.pixelsToMeters, 1280.pixelsToMeters)
 
 object GameViewport : ExtendViewport(720.pixelsToMeters, 1280.pixelsToMeters, GameCamera)
+
+object GameStage : Stage(GameViewport, Injekt.get())

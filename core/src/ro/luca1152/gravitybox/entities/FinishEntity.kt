@@ -24,21 +24,27 @@ import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import ktx.assets.getAsset
+import ro.luca1152.gravitybox.components.FinishComponent
 import ro.luca1152.gravitybox.components.ImageComponent
 import ro.luca1152.gravitybox.components.PhysicsComponent
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
+import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class FinishEntity(map: TiledMap, world: World, stage: Stage,
+class FinishEntity(map: TiledMap = Injekt.get(),
+                   world: World = Injekt.get(),
+                   stage: GameStage = Injekt.get(),
                    manager: AssetManager = Injekt.get()) : Entity() {
     init {
+        // FinishComponent
+        add(FinishComponent())
+
         // PhysicsComponent
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody

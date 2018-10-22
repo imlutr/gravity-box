@@ -3,14 +3,17 @@ package ro.luca1152.gravitybox.listeners
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.signals.Signal
-import com.badlogic.gdx.physics.box2d.*
+import com.badlogic.gdx.physics.box2d.Contact
+import com.badlogic.gdx.physics.box2d.ContactImpulse
+import com.badlogic.gdx.physics.box2d.ContactListener
+import com.badlogic.gdx.physics.box2d.Manifold
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.PlatformComponent
 import ro.luca1152.gravitybox.components.PlayerComponent
 import ro.luca1152.gravitybox.components.tryGet
 import ro.luca1152.gravitybox.events.GameEvent
 
-class WorldContactListener(private val world: World, private val gameEventSignal: Signal<GameEvent>) : ContactListener {
+class WorldContactListener(private val gameEventSignal: Signal<GameEvent>) : ContactListener {
     private fun <T : Component> findEntity(componentResolver: ComponentResolver<T>, entityA: Entity, entityB: Entity): Entity? {
         if (entityA.tryGet(componentResolver) != null) return entityA
         if (entityB.tryGet(componentResolver) != null) return entityB

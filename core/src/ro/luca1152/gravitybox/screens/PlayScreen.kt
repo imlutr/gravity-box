@@ -19,12 +19,13 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.signals.Signal
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
+import ro.luca1152.gravitybox.GameInputAdapter
 import ro.luca1152.gravitybox.components.map
 import ro.luca1152.gravitybox.entities.FinishEntity
 import ro.luca1152.gravitybox.entities.MapEntity
@@ -33,22 +34,37 @@ import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.*
 import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
+import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(private val engine: Engine = Injekt.get(),
                  private val gameViewport: GameViewport = Injekt.get(),
                  batch: Batch = Injekt.get()) : KtxScreen {
-    private val stage = Stage(gameViewport, batch)
-    private val world = World(Vector2(0f, -1f), true)
+    private val stage = GameStage
+    private val world = World(Vector2(0f, -25f), true)
+
+    init {
+        Injekt.run {
+            addSingleton(stage)
+            addSingleton(world)
+        }
+    }
 
     override fun show() {
         val gameEventSignal = Signal<GameEvent>()
-        val mapEntity = MapEntity(1, world)
-        val playerEntity = PlayerEntity(mapEntity.map.tiledMap, world, stage)
-        val finishEntity = FinishEntity(mapEntity.map.tiledMap, world, stage)
-        world.setContactListener(WorldContactListener(world, gameEventSignal))
+        val mapEntity = MapEntity(1)
+        Injekt.addSingleton(mapEntity.map.tiledMap)
+        val playerEntity = PlayerEntity()
+        val finishEntity = FinishEntity()
+        world.setContactListener(WorldContactListener(gameEventSignal))
+        Injekt.run {
+            addSingleton(playerEntity)
+            addSingleton(finishEntity)
+        }
+        Gdx.input.inputProcessor = GameInputAdapter()
 
         // Entities
         engine.run {
@@ -65,7 +81,7 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
             // Render
             addSystem(MapRenderSystem(mapEntity.map.tiledMap))
             addSystem(ImageRenderSystem(stage))
-            addSystem(PhysicsDebugSystem(world))
+//            addSystem(PhysicsDebugSystem(world))
             // Test
             addSystem(TestSystem(gameEventSignal))
         }
