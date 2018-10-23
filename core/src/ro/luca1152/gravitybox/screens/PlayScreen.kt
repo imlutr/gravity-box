@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.screens
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
@@ -41,8 +40,7 @@ import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(private val engine: Engine = Injekt.get(),
-                 private val gameViewport: GameViewport = Injekt.get(),
-                 batch: Batch = Injekt.get()) : KtxScreen {
+                 private val gameViewport: GameViewport = Injekt.get()) : KtxScreen {
     private val stage = GameStage
     private val world = World(Vector2(0f, -25f), true)
 
@@ -78,12 +76,12 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
             addSystem(PhysicsSystem(world))
             addSystem(PhysicsSyncSystem())
             addSystem(PlayerCameraSystem(playerEntity, mapEntity))
+            // Other
+            addSystem(BulletCollisionSystem())
             // Render
             addSystem(MapRenderSystem(mapEntity.map.tiledMap))
             addSystem(ImageRenderSystem(stage))
 //            addSystem(PhysicsDebugSystem(world))
-            // Test
-            addSystem(TestSystem(gameEventSignal))
         }
     }
 
