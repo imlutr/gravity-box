@@ -21,24 +21,50 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import ro.luca1152.gravitybox.components.BulletComponent
-import ro.luca1152.gravitybox.components.ImageComponent
-import ro.luca1152.gravitybox.components.bullet
-import ro.luca1152.gravitybox.components.image
+import ktx.math.minus
+import ktx.math.times
+import ktx.math.vec2
+import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.entities.PlayerEntity
 import ro.luca1152.gravitybox.utils.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.lang.Math.pow
 
-class BulletCollisionSystem(private val stage: GameStage = Injekt.get()) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
-    override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (entity.bullet.collidedWithWall) {
-            stage.addAction(
-                    sequence(
-                            delay(.01f),
-                            removeActor(entity.image)
-                    )
-            )
-            engine.removeEntity(entity)
+/**
+ * A system that handles what happens when a bullet collides with a platform.
+ */
+class BulletCollisionSystem(private val playerEntity: PlayerEntity = Injekt.get(),
+                            private val stage: GameStage = Injekt.get()) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
+    override fun processEntity(bullet: Entity, deltaTime: Float) {
+        if (bullet.bullet.collidedWithWall) {
+            pushPlayer(bullet)
+            removeBullet(bullet)
         }
+    }
+
+    /**
+     * Push the [playerEntity] away from the point of collision.
+     */
+    private fun pushPlayer(bullet: Entity) {
+        val sourcePosition = vec2(x = bullet.physics.body.worldCenter.x, y = bullet.physics.body.worldCenter.y)
+        val playerBody = playerEntity.physics.body
+        val distance = playerBody.worldCenter.dst(sourcePosition).toDouble()
+        var forceVector = playerBody.worldCenter.cpy()
+        forceVector -= sourcePosition
+        forceVector.nor()
+        forceVector *= 1500 * (1.22f * pow(1 - .3, distance).toFloat()) * 5
+        playerBody.applyForce(forceVector, playerBody.worldCenter, true)
+    }
+
+    private fun removeBullet(bullet: Entity) {
+        stage.addAction(
+                sequence(
+                        // Wait 0.01s because otherwise there would be a gap between the bullet and the platform when removing
+                        delay(.01f),
+                        removeActor(bullet.image)
+                )
+        )
+        engine.removeEntity(bullet)
     }
 }

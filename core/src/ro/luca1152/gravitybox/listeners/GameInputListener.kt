@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox
+package ro.luca1152.gravitybox.listeners
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.math.Vector2
@@ -29,17 +29,22 @@ import ro.luca1152.gravitybox.utils.GameCamera
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class GameInputAdapter(private val playerEntity: PlayerEntity = Injekt.get(),
-                       private val gameCamera: GameCamera = Injekt.get(),
-                       private val engine: Engine = Injekt.get()) : KtxInputAdapter {
+/**
+ * Trigger actions for every input event handled.
+ */
+class GameInputListener(private val playerEntity: PlayerEntity = Injekt.get(),
+                        private val gameCamera: GameCamera = Injekt.get(),
+                        private val engine: Engine = Injekt.get()) : KtxInputAdapter {
     private val worldCoordinates = Vector3()
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         // Translate the screen coordinates to world coordinates
         worldCoordinates.x = screenX.toFloat(); worldCoordinates.y = screenY.toFloat()
         gameCamera.unproject(worldCoordinates)
 
-        // Create a bullet
+        // Create a bullet with a trajectory towards worldCoordinates
         createBullet(worldCoordinates.x, worldCoordinates.y)
+
+        // The touchDown event was handled
         return true
     }
 

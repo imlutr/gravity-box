@@ -24,12 +24,12 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
-import ro.luca1152.gravitybox.GameInputAdapter
 import ro.luca1152.gravitybox.components.map
 import ro.luca1152.gravitybox.entities.FinishEntity
 import ro.luca1152.gravitybox.entities.MapEntity
 import ro.luca1152.gravitybox.entities.PlayerEntity
 import ro.luca1152.gravitybox.events.GameEvent
+import ro.luca1152.gravitybox.listeners.GameInputListener
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.*
 import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
@@ -62,23 +62,22 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
             addSingleton(playerEntity)
             addSingleton(finishEntity)
         }
-        Gdx.input.inputProcessor = GameInputAdapter()
+        Gdx.input.inputProcessor = GameInputListener()
 
         // Entities
         engine.run {
             addEntity(mapEntity)
-            addEntity(finishEntity)
             addEntity(playerEntity)
+            addEntity(finishEntity)
         }
         // Systems
         engine.run {
             // Physics
             addSystem(PhysicsSystem(world))
             addSystem(PhysicsSyncSystem())
-            addSystem(PlayerCameraSystem(playerEntity, mapEntity))
-            // Other
             addSystem(BulletCollisionSystem())
             // Render
+            addSystem(PlayerCameraSystem(playerEntity, mapEntity))
             addSystem(MapRenderSystem(mapEntity.map.tiledMap))
             addSystem(ImageRenderSystem(stage))
 //            addSystem(PhysicsDebugSystem(world))
