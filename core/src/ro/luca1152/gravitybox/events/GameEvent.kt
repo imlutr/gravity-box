@@ -20,8 +20,9 @@ package ro.luca1152.gravitybox.events
 enum class GameEvent {
     // General events
     LEVEL_FINISHED, // The player stayed long enough in the finish point so the level is finished
+    LEVEL_RESTART, // The player is off-screen
 
     // Collisions
-    BULLET_PLATFORM_COLLISION, // Collision between a bullet and a wall
+    BULLET_PLATFORM_COLLISION, // Collision between a bullet and a platform
     PLAYER_FINISH_COLLISION, // Collision between the player and the finish point
 }

@@ -53,7 +53,7 @@ class BulletCollisionSystem(private val playerEntity: PlayerEntity = Injekt.get(
         var forceVector = playerBody.worldCenter.cpy()
         forceVector -= sourcePosition
         forceVector.nor()
-        forceVector *= 1500 * (1.22f * pow(1 - .3, distance).toFloat()) * 5
+        forceVector *= 1300 * (1.22f * pow(1 - .3, distance).toFloat()) * 5
         playerBody.applyForce(forceVector, playerBody.worldCenter, true)
     }
 

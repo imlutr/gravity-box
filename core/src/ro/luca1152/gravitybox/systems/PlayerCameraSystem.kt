@@ -39,7 +39,7 @@ class PlayerCameraSystem(private val playerEntity: Entity, private val mapEntity
     }
 
     /**
-     * Move the camera within the bounds of the map.
+     * Keep the camera within the bounds of the map.
      */
     private fun fixBounds(zoom: Float) {
         var mapLeft = 0f

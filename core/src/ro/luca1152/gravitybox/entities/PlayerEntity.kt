@@ -21,6 +21,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.World
@@ -40,6 +42,8 @@ class PlayerEntity(map: TiledMap = Injekt.get(),
                    world: World = Injekt.get(),
                    stage: GameStage = Injekt.get(),
                    manager: AssetManager = Injekt.get()) : Entity() {
+    private var initialPosition = Vector2()
+    private val body: Body
     init {
         // PlayerComponent
         add(PlayerComponent())
@@ -48,7 +52,7 @@ class PlayerEntity(map: TiledMap = Injekt.get(),
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
         }
-        val body = world.createBody(bodyDef)
+        body = world.createBody(bodyDef)
         val playerObject = map.layers.get("Player").objects[0]
         val fixtureDef = FixtureDef().apply {
             shape = MapBodyBuilder.getRectangle(playerObject as RectangleMapObject)
@@ -59,10 +63,20 @@ class PlayerEntity(map: TiledMap = Injekt.get(),
         }
         body.userData = this
         body.createFixture(fixtureDef)
+        initialPosition = body.position.cpy()
         add(PhysicsComponent(body))
 
         // ImageComponent
         add(ImageComponent(stage, manager.getAsset("graphics/player.png"), body.worldCenter.x, body.worldCenter.y))
         image.color = darkColor
+    }
+
+    /**
+     * Reset the player to its initial state (position & no velocity).
+     * Used when restarting the level.
+     */
+    fun reset() {
+        body.setTransform(initialPosition, 0f)
+        body.setLinearVelocity(0f, 0f)
     }
 }

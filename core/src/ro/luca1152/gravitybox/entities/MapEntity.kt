@@ -29,6 +29,10 @@ import uy.kohesive.injekt.api.get
 
 class MapEntity(levelNumber: Int,
                 world: World = Injekt.get()) : Entity() {
+    companion object {
+        const val GRAVITY = -25f
+    }
+
     init {
         add(MapComponent(levelNumber))
 

@@ -36,7 +36,7 @@ class BulletEntity(playerEntity: PlayerEntity = Injekt.get(),
                    stage: GameStage = Injekt.get(),
                    manager: AssetManager = Injekt.get()) : Entity() {
     companion object {
-        const val SPEED = 10f
+        const val SPEED = 15f
     }
 
     init {

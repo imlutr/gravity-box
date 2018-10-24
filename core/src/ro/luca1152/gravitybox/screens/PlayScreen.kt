@@ -42,7 +42,7 @@ import uy.kohesive.injekt.api.get
 class PlayScreen(private val engine: Engine = Injekt.get(),
                  private val gameViewport: GameViewport = Injekt.get()) : KtxScreen {
     private val stage = GameStage
-    private val world = World(Vector2(0f, -25f), true)
+    private val world = World(Vector2(0f, MapEntity.GRAVITY), true)
 
     init {
         Injekt.run {
@@ -53,7 +53,7 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
 
     override fun show() {
         val gameEventSignal = Signal<GameEvent>()
-        val mapEntity = MapEntity(1)
+        val mapEntity = MapEntity(2)
         Injekt.addSingleton(mapEntity.map.tiledMap)
         val playerEntity = PlayerEntity()
         val finishEntity = FinishEntity()
@@ -75,9 +75,18 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
             // Physics
             addSystem(PhysicsSystem(world))
             addSystem(PhysicsSyncSystem())
+
+            // Collision
             addSystem(BulletCollisionSystem())
-            // Render
+
+            // Level
+            addSystem(AutoRestartSystem(gameEventSignal))
+            addSystem(LevelSystem(gameEventSignal))
+
+            // Camera
             addSystem(PlayerCameraSystem(playerEntity, mapEntity))
+
+            // Render
             addSystem(MapRenderSystem(mapEntity.map.tiledMap))
             addSystem(ImageRenderSystem(stage))
 //            addSystem(PhysicsDebugSystem(world))
