@@ -27,8 +27,10 @@ import ktx.app.clearScreen
 import ro.luca1152.gravitybox.components.map
 import ro.luca1152.gravitybox.entities.FinishEntity
 import ro.luca1152.gravitybox.entities.MapEntity
+import ro.luca1152.gravitybox.entities.MapEntity.Companion.GRAVITY
 import ro.luca1152.gravitybox.entities.PlayerEntity
 import ro.luca1152.gravitybox.events.GameEvent
+import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.listeners.GameInputListener
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.*
@@ -41,55 +43,39 @@ import uy.kohesive.injekt.api.get
 
 class PlayScreen(private val engine: Engine = Injekt.get(),
                  private val gameViewport: GameViewport = Injekt.get()) : KtxScreen {
+    private val world = World(Vector2(0f, GRAVITY), true)
+    private val gameEventSignal = Signal<GameEvent>()
     private val stage = GameStage
-    private val world = World(Vector2(0f, MapEntity.GRAVITY), true)
 
     init {
-        Injekt.run {
-            addSingleton(stage)
-            addSingleton(world)
-        }
+        Injekt.run { addSingleton(stage); addSingleton(world); addSingleton(gameEventSignal) }
+        world.setContactListener(WorldContactListener(gameEventSignal))
     }
 
     override fun show() {
-        val gameEventSignal = Signal<GameEvent>()
-        val mapEntity = MapEntity(2)
-        Injekt.addSingleton(mapEntity.map.tiledMap)
+        // Create entities
+        val mapEntity = MapEntity(1)
+        Injekt.run { addSingleton(mapEntity); addSingleton(mapEntity.map.tiledMap) }
         val playerEntity = PlayerEntity()
         val finishEntity = FinishEntity()
-        world.setContactListener(WorldContactListener(gameEventSignal))
-        Injekt.run {
-            addSingleton(playerEntity)
-            addSingleton(finishEntity)
-        }
+        Injekt.run { addSingleton(playerEntity); addSingleton(finishEntity) }
+
+        // Handle input
         Gdx.input.inputProcessor = GameInputListener()
 
-        // Entities
         engine.run {
             addEntity(mapEntity)
             addEntity(playerEntity)
             addEntity(finishEntity)
-        }
-        // Systems
-        engine.run {
-            // Physics
-            addSystem(PhysicsSystem(world))
+
+            addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
-
-            // Collision
             addSystem(BulletCollisionSystem())
-
-            // Level
-            addSystem(AutoRestartSystem(gameEventSignal))
-            addSystem(LevelSystem(gameEventSignal))
-
-            // Camera
-            addSystem(PlayerCameraSystem(playerEntity, mapEntity))
-
-            // Render
-            addSystem(MapRenderSystem(mapEntity.map.tiledMap))
-            addSystem(ImageRenderSystem(stage))
-//            addSystem(PhysicsDebugSystem(world))
+            addSystem(CollisionBoxListener())
+            addSystem(AutoRestartSystem())
+            addSystem(LevelSystem())
+            addSystem(PlayerCameraSystem())
+            addSystem(RenderSystem())
         }
     }
 

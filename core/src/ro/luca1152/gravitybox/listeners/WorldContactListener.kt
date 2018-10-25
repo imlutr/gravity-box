@@ -32,16 +32,6 @@ import ro.luca1152.gravitybox.events.GameEvent
  */
 class WorldContactListener(private val gameEventSignal: Signal<GameEvent>) : ContactListener {
     /**
-     * Returns which of [entityA] and [entityB] has the [componentResolver] component.
-     * If none, returns null.
-     */
-    private fun <T : Component> findEntity(componentResolver: ComponentResolver<T>, entityA: Entity, entityB: Entity): Entity? {
-        if (entityA.tryGet(componentResolver) != null) return entityA
-        if (entityB.tryGet(componentResolver) != null) return entityB
-        return null
-    }
-
-    /**
      * Called automatically when two Box2D bodies collide.
      */
     override fun beginContact(contact: Contact) {
@@ -74,3 +64,14 @@ class WorldContactListener(private val gameEventSignal: Signal<GameEvent>) : Con
 
     override fun postSolve(contact: Contact?, impulse: ContactImpulse?) {}
 }
+
+/**
+ * Returns which of [entityA] and [entityB] has the [componentResolver] component.
+ * If none, returns null.
+ */
+fun <T : Component> findEntity(componentResolver: ComponentResolver<T>, entityA: Entity, entityB: Entity) =
+        when {
+            entityA.tryGet(componentResolver) != null -> entityA
+            entityB.tryGet(componentResolver) != null -> entityB
+            else -> null
+        }

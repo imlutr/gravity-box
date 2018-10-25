@@ -23,5 +23,5 @@ import com.badlogic.ashley.core.Component
  * Indicates that the entity is a player.
  */
 class PlayerComponent : Component {
-    companion object : ComponentResolver<PlatformComponent>(PlatformComponent::class.java)
+    companion object : ComponentResolver<PlayerComponent>(PlayerComponent::class.java)
 }

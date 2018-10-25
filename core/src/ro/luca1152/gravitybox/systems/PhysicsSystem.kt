@@ -19,8 +19,10 @@ package ro.luca1152.gravitybox.systems
 
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.physics.box2d.World
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-class PhysicsSystem(private val world: World) : EntitySystem() {
+class PhysicsSystem(private val world: World = Injekt.get()) : EntitySystem() {
     private var accumulator = 0f
 
     override fun update(deltaTime: Float) {

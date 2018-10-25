@@ -25,11 +25,14 @@ import ro.luca1152.gravitybox.components.PhysicsComponent
 import ro.luca1152.gravitybox.components.PlayerComponent
 import ro.luca1152.gravitybox.components.physics
 import ro.luca1152.gravitybox.events.GameEvent
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 /**
  * Restarts the level when the player is off-screen.
  */
-class AutoRestartSystem(private val gameEventSignal: Signal<GameEvent>) : IteratingSystem(Family.all(PlayerComponent::class.java, PhysicsComponent::class.java).get()) {
+class AutoRestartSystem(private val gameEventSignal: Signal<GameEvent> = Injekt.get())
+    : IteratingSystem(Family.all(PlayerComponent::class.java, PhysicsComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.physics.body.worldCenter.y < -10f)
             gameEventSignal.dispatch(GameEvent.LEVEL_RESTART)

@@ -18,6 +18,8 @@
 package ro.luca1152.gravitybox.listeners
 
 import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.signals.Signal
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import ktx.app.KtxInputAdapter
@@ -25,6 +27,7 @@ import ktx.math.times
 import ro.luca1152.gravitybox.components.physics
 import ro.luca1152.gravitybox.entities.BulletEntity
 import ro.luca1152.gravitybox.entities.PlayerEntity
+import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.GameCamera
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -32,9 +35,11 @@ import uy.kohesive.injekt.api.get
 /**
  * Trigger actions for every input event handled.
  */
-class GameInputListener(private val playerEntity: PlayerEntity = Injekt.get(),
+class GameInputListener(private val gameEventSignal: Signal<GameEvent> = Injekt.get(),
+                        private val playerEntity: PlayerEntity = Injekt.get(),
                         private val gameCamera: GameCamera = Injekt.get(),
                         private val engine: Engine = Injekt.get()) : KtxInputAdapter {
+
     private val worldCoordinates = Vector3()
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         // Translate the screen coordinates to world coordinates
@@ -44,8 +49,14 @@ class GameInputListener(private val playerEntity: PlayerEntity = Injekt.get(),
         // Create a bullet with a trajectory towards worldCoordinates
         createBullet(worldCoordinates.x, worldCoordinates.y)
 
-        // The touchDown event was handled
-        return true
+        return true // The touchDown event was handled
+    }
+
+    override fun keyDown(keycode: Int): Boolean {
+        if (keycode == Input.Keys.R)
+            gameEventSignal.dispatch(GameEvent.LEVEL_RESTART)
+
+        return true // the keyDown event was handled
     }
 
     private var velocity = Vector2()

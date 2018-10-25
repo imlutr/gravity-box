@@ -27,13 +27,17 @@ import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class MapEntity(levelNumber: Int,
-                world: World = Injekt.get()) : Entity() {
+class MapEntity(val levelNumber: Int,
+                private val world: World = Injekt.get()) : Entity() {
     companion object {
         const val GRAVITY = -25f
     }
 
     init {
+        loadMap(levelNumber)
+    }
+
+    fun loadMap(levelNumber: Int) {
         add(MapComponent(levelNumber))
 
         // Update the colors

@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import ktx.math.minus
 import ktx.math.times
@@ -35,7 +36,8 @@ import java.lang.Math.pow
  * A system that handles what happens when a bullet collides with a platform.
  */
 class BulletCollisionSystem(private val playerEntity: PlayerEntity = Injekt.get(),
-                            private val stage: GameStage = Injekt.get()) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
+                            private val stage: GameStage = Injekt.get(),
+                            private val world: World = Injekt.get()) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
     override fun processEntity(bullet: Entity, deltaTime: Float) {
         if (bullet.bullet.collidedWithWall) {
             pushPlayer(bullet)
@@ -60,11 +62,11 @@ class BulletCollisionSystem(private val playerEntity: PlayerEntity = Injekt.get(
     private fun removeBullet(bullet: Entity) {
         stage.addAction(
                 sequence(
-                        // Wait 0.01s because otherwise there would be a gap between the bullet and the platform when removing
-                        delay(.01f),
+                        delay(.01f), // With no delay there would be a gap between the bullet and the platform
                         removeActor(bullet.image)
                 )
         )
+        world.destroyBody(bullet.physics.body)
         engine.removeEntity(bullet)
     }
 }

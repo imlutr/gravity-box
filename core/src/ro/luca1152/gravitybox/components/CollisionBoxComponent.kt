@@ -19,26 +19,19 @@ package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import ktx.actors.plus
-import ro.luca1152.gravitybox.pixelsToMeters
+import com.badlogic.gdx.math.Rectangle
 
-class ImageComponent(stage: Stage, texture: Texture, x: Float = 0f, y: Float = 0f) : Component {
-    val image: Image = Image(texture)
-
-    init {
-        image.apply {
-            setPosition(x, y)
-            setSize(texture.width.pixelsToMeters, texture.height.pixelsToMeters)
-            setOrigin(width / 2f, height / 2f)
-        }
-        stage + image
+/**
+ * Used to detect when the player is in the finish point.
+ * Box2D collisions can't be used because the player doesn't collide with the finish point.
+ */
+class CollisionBoxComponent(size: Float) : Component {
+    val box = Rectangle().apply {
+        setSize(size)
     }
 
-    companion object : ComponentResolver<ImageComponent>(ImageComponent::class.java)
+    companion object : ComponentResolver<CollisionBoxComponent>(CollisionBoxComponent::class.java)
 }
 
-val Entity.image: Image
-    get() = ImageComponent[this].image
+val Entity.collisionBox
+    get() = CollisionBoxComponent[this]

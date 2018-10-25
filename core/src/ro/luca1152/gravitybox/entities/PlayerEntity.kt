@@ -27,10 +27,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.World
 import ktx.assets.getAsset
-import ro.luca1152.gravitybox.components.ImageComponent
-import ro.luca1152.gravitybox.components.PhysicsComponent
-import ro.luca1152.gravitybox.components.PlayerComponent
-import ro.luca1152.gravitybox.components.image
+import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
 import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.GameStage
@@ -38,33 +35,24 @@ import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PlayerEntity(map: TiledMap = Injekt.get(),
-                   world: World = Injekt.get(),
+class PlayerEntity(private val map: TiledMap = Injekt.get(),
+                   private val world: World = Injekt.get(),
                    stage: GameStage = Injekt.get(),
                    manager: AssetManager = Injekt.get()) : Entity() {
     private var initialPosition = Vector2()
-    private val body: Body
+    private var body: Body
+
     init {
         // PlayerComponent
         add(PlayerComponent())
 
         // PhysicsComponent
-        val bodyDef = BodyDef().apply {
-            type = BodyDef.BodyType.DynamicBody
-        }
-        body = world.createBody(bodyDef)
-        val playerObject = map.layers.get("Player").objects[0]
-        val fixtureDef = FixtureDef().apply {
-            shape = MapBodyBuilder.getRectangle(playerObject as RectangleMapObject)
-            density = 1.15f
-            friction = 2f
-            filter.categoryBits = EntityCategory.PLAYER.bits
-            filter.maskBits = EntityCategory.OBSTACLE.bits
-        }
-        body.userData = this
-        body.createFixture(fixtureDef)
+        body = createBodyFromMap()
         initialPosition = body.position.cpy()
         add(PhysicsComponent(body))
+
+        // CollisionBoxComponent
+        add(CollisionBoxComponent(1f))
 
         // ImageComponent
         add(ImageComponent(stage, manager.getAsset("graphics/player.png"), body.worldCenter.x, body.worldCenter.y))
@@ -78,5 +66,23 @@ class PlayerEntity(map: TiledMap = Injekt.get(),
     fun reset() {
         body.setTransform(initialPosition, 0f)
         body.setLinearVelocity(0f, 0f)
+    }
+
+    fun createBodyFromMap(): Body {
+        val bodyDef = BodyDef().apply {
+            type = BodyDef.BodyType.DynamicBody
+        }
+        val body = world.createBody(bodyDef)
+        val playerObject = map.layers.get("Player").objects[0]
+        val fixtureDef = FixtureDef().apply {
+            shape = MapBodyBuilder.getRectangle(playerObject as RectangleMapObject)
+            density = 1.15f
+            friction = 2f
+            filter.categoryBits = EntityCategory.PLAYER.bits
+            filter.maskBits = EntityCategory.OBSTACLE.bits
+        }
+        body.userData = this
+        body.createFixture(fixtureDef)
+        return body
     }
 }
