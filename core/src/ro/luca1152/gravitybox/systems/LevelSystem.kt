@@ -24,11 +24,14 @@ import com.badlogic.gdx.physics.box2d.World
 import ktx.actors.minus
 import ktx.collections.GdxArray
 import ro.luca1152.gravitybox.components.image
+import ro.luca1152.gravitybox.components.physics
 import ro.luca1152.gravitybox.entities.BulletEntity
+import ro.luca1152.gravitybox.entities.FinishEntity
 import ro.luca1152.gravitybox.entities.MapEntity
 import ro.luca1152.gravitybox.entities.PlayerEntity
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.GameEvent
+import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -38,6 +41,7 @@ import uy.kohesive.injekt.api.get
  */
 class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
                   private val playerEntity: PlayerEntity = Injekt.get(),
+                  private val finishEntity: FinishEntity = Injekt.get(),
                   private val mapEntity: MapEntity = Injekt.get(),
                   private val world: World = Injekt.get(),
                   private val stage: GameStage = Injekt.get()) : EntitySystem() {
@@ -78,5 +82,13 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
 
         removeAllBodies()
         mapEntity.loadMap(mapEntity.levelNumber + 1)
+        playerEntity.run {
+            physics.body = playerEntity.loadBodyFromMap()
+            image.color = ColorScheme.darkColor
+        }
+        finishEntity.run {
+            physics.body = finishEntity.loadBodyFromMap()
+            image.color = ColorScheme.darkColor
+        }
     }
 }

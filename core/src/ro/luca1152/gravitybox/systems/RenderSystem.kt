@@ -21,7 +21,6 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
@@ -29,6 +28,8 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import ktx.collections.GdxArray
 import ro.luca1152.gravitybox.PPM
+import ro.luca1152.gravitybox.components.map
+import ro.luca1152.gravitybox.entities.MapEntity
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.GameCamera
 import ro.luca1152.gravitybox.utils.GameStage
@@ -36,14 +37,14 @@ import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class RenderSystem(tiledMap: TiledMap = Injekt.get(),
+class RenderSystem(private val mapEntity: MapEntity = Injekt.get(),
                    private val world: World = Injekt.get(),
                    private val stage: GameStage = Injekt.get(),
                    private val batch: Batch = Injekt.get(),
                    private val shapeRenderer: ShapeRenderer = Injekt.get(),
                    private val gameCamera: GameCamera = Injekt.get(),
                    private val gameViewport: GameViewport = Injekt.get()) : EntitySystem() {
-    private val mapRenderer = OrthogonalTiledMapRenderer(tiledMap, 1 / PPM, batch)
+    private val mapRenderer = OrthogonalTiledMapRenderer(mapEntity.map.tiledMap, 1 / PPM, batch)
     private val b2DDebugRenderer = Box2DDebugRenderer()
     private val bodies = GdxArray<Body>()
 
@@ -54,12 +55,12 @@ class RenderSystem(tiledMap: TiledMap = Injekt.get(),
 
         drawImages()
         drawTiledMap()
-        drawPhysicsDebug()
+//        drawPhysicsDebug()
     }
 
     private fun drawImages() {
         /**
-         * Reposition the actors so they are drawn from the center.
+         * Reposition the actors so they are drawn from the center (Box2D bodies' position is from center, not bottom-left)
          * It adds half the size of the actors and subtracts it when restoring.
          */
         fun repositionImages(restore: Boolean = false) {
@@ -76,6 +77,9 @@ class RenderSystem(tiledMap: TiledMap = Injekt.get(),
     }
 
     private fun drawTiledMap() {
+        // Update the map in case the level changed
+        mapRenderer.map = mapEntity.map.tiledMap
+
         batch.color = ColorScheme.darkColor
         mapRenderer.setView(gameCamera)
         mapRenderer.render()

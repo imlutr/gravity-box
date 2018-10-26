@@ -20,7 +20,7 @@ package ro.luca1152.gravitybox.entities
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.maps.objects.RectangleMapObject
-import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.World
@@ -35,8 +35,8 @@ import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class FinishEntity(map: TiledMap = Injekt.get(),
-                   world: World = Injekt.get(),
+class FinishEntity(private val mapEntity: MapEntity = Injekt.get(),
+                   private val world: World = Injekt.get(),
                    stage: GameStage = Injekt.get(),
                    manager: AssetManager = Injekt.get()) : Entity() {
     init {
@@ -44,19 +44,7 @@ class FinishEntity(map: TiledMap = Injekt.get(),
         add(FinishComponent())
 
         // PhysicsComponent
-        val bodyDef = BodyDef().apply {
-            type = BodyDef.BodyType.DynamicBody
-        }
-        val body = world.createBody(bodyDef).apply { gravityScale = 0f }
-        val finishObject = map.layers.get("Finish").objects.get(0)
-        val fixtureDef = FixtureDef().apply {
-            shape = MapBodyBuilder.getRectangle(finishObject as RectangleMapObject)
-            density = 100f
-            filter.categoryBits = EntityCategory.FINISH.bits
-            filter.maskBits = EntityCategory.NONE.bits
-        }
-        body.userData = this
-        body.createFixture(fixtureDef)
+        val body = loadBodyFromMap()
         add(PhysicsComponent(body))
 
         // CollisionBoxComponent
@@ -72,5 +60,22 @@ class FinishEntity(map: TiledMap = Injekt.get(),
             )
             count = RepeatAction.FOREVER
         })
+    }
+
+    fun loadBodyFromMap(): Body {
+        val bodyDef = BodyDef().apply {
+            type = BodyDef.BodyType.DynamicBody
+        }
+        val body = world.createBody(bodyDef).apply { gravityScale = 0f }
+        val finishObject = mapEntity.map.tiledMap.layers.get("Finish").objects.get(0)
+        val fixtureDef = FixtureDef().apply {
+            shape = MapBodyBuilder.getRectangle(finishObject as RectangleMapObject)
+            density = 100f
+            filter.categoryBits = EntityCategory.FINISH.bits
+            filter.maskBits = EntityCategory.NONE.bits
+        }
+        body.userData = this
+        body.createFixture(fixtureDef)
+        return body
     }
 }

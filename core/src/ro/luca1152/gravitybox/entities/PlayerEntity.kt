@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.entities
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.maps.objects.RectangleMapObject
-import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
@@ -35,20 +34,18 @@ import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PlayerEntity(private val map: TiledMap = Injekt.get(),
+class PlayerEntity(private val mapEntity: MapEntity = Injekt.get(),
                    private val world: World = Injekt.get(),
                    stage: GameStage = Injekt.get(),
                    manager: AssetManager = Injekt.get()) : Entity() {
     private var initialPosition = Vector2()
-    private var body: Body
 
     init {
         // PlayerComponent
         add(PlayerComponent())
 
         // PhysicsComponent
-        body = createBodyFromMap()
-        initialPosition = body.position.cpy()
+        val body = loadBodyFromMap()
         add(PhysicsComponent(body))
 
         // CollisionBoxComponent
@@ -64,16 +61,17 @@ class PlayerEntity(private val map: TiledMap = Injekt.get(),
      * Used when restarting the level.
      */
     fun reset() {
-        body.setTransform(initialPosition, 0f)
-        body.setLinearVelocity(0f, 0f)
+        physics.body.setLinearVelocity(0f, 0f)
+        physics.body.setTransform(0f, 0f, 0f)
+        physics.body.applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
     }
 
-    fun createBodyFromMap(): Body {
+    fun loadBodyFromMap(): Body {
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
         }
         val body = world.createBody(bodyDef)
-        val playerObject = map.layers.get("Player").objects[0]
+        val playerObject = mapEntity.map.tiledMap.layers.get("Player").objects[0]
         val fixtureDef = FixtureDef().apply {
             shape = MapBodyBuilder.getRectangle(playerObject as RectangleMapObject)
             density = 1.15f
@@ -83,6 +81,7 @@ class PlayerEntity(private val map: TiledMap = Injekt.get(),
         }
         body.userData = this
         body.createFixture(fixtureDef)
+        initialPosition = body.worldCenter.cpy()
         return body
     }
 }

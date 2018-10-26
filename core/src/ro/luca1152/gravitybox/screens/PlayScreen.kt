@@ -24,7 +24,6 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
-import ro.luca1152.gravitybox.components.map
 import ro.luca1152.gravitybox.entities.FinishEntity
 import ro.luca1152.gravitybox.entities.MapEntity
 import ro.luca1152.gravitybox.entities.MapEntity.Companion.GRAVITY
@@ -55,7 +54,7 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
     override fun show() {
         // Create entities
         val mapEntity = MapEntity(1)
-        Injekt.run { addSingleton(mapEntity); addSingleton(mapEntity.map.tiledMap) }
+        Injekt.run { addSingleton(mapEntity) }
         val playerEntity = PlayerEntity()
         val finishEntity = FinishEntity()
         Injekt.run { addSingleton(playerEntity); addSingleton(finishEntity) }

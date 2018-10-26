@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.Body
 
-class PhysicsComponent(val body: Body) : Component {
+class PhysicsComponent(var body: Body) : Component {
     companion object : ComponentResolver<PhysicsComponent>(PhysicsComponent::class.java)
 }
 
