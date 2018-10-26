@@ -58,17 +58,7 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
         }
     }
 
-    private val bodies = GdxArray<Body>()
     private fun restartLevel() {
-        fun removeBullets() {
-            world.getBodies(bodies)
-            bodies.forEach { body ->
-                if (body.userData is BulletEntity) {
-                    stage - (body.userData as BulletEntity).image
-                    world.destroyBody(body)
-                }
-            }
-        }
 
         playerEntity.reset()
         removeBullets()
@@ -76,6 +66,7 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
 
     private fun nextLevel() {
         fun removeAllBodies() {
+            removeBullets()
             world.getBodies(bodies)
             bodies.forEach { body -> world.destroyBody(body) }
         }
@@ -89,6 +80,17 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
         finishEntity.run {
             physics.body = finishEntity.loadBodyFromMap()
             image.color = ColorScheme.darkColor
+        }
+    }
+
+    private val bodies = GdxArray<Body>()
+    private fun removeBullets() {
+        world.getBodies(bodies)
+        bodies.forEach { body ->
+            if (body.userData is BulletEntity) {
+                stage - (body.userData as BulletEntity).image
+                world.destroyBody(body)
+            }
         }
     }
 }
