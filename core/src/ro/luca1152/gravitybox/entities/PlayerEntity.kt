@@ -58,13 +58,14 @@ class PlayerEntity(private val mapEntity: MapEntity = Injekt.get(),
     }
 
     /**
-     * Reset the player to its initial state (position & no velocity).
+     * Reset the player to its initial state (initial position & no velocity).
      * Used when restarting the level.
      */
     fun reset() {
-        physics.body.setLinearVelocity(0f, 0f)
-        physics.body.setTransform(0f, 0f, 0f)
+        physics.body.setTransform(0f, 0f, 0f) // Reset the position
         physics.body.applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
+        physics.body.setLinearVelocity(0f, 0f)
+        physics.body.angularVelocity = 0f
     }
 
     fun loadBodyFromMap(): Body {
