@@ -17,18 +17,12 @@
 
 package ro.luca1152.gravitybox.systems
 
-import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.systems.IntervalSystem
 import ro.luca1152.gravitybox.utils.ColorScheme
 
-class ColorSchemeSystem : EntitySystem() {
-    private var accumulator = 0f
-
-    override fun update(deltaTime: Float) {
-        accumulator += deltaTime
-        if (accumulator >= 1 / 60f) {
-            ColorScheme.currentDarkColor.lerp(ColorScheme.currentDarkLerpColor, .05f)
-            ColorScheme.currentLightColor.lerp(ColorScheme.currentLightLerpColor, .05f)
-            accumulator -= 1 / 60f
-        }
+class ColorSchemeSystem : IntervalSystem(1 / 60f) {
+    override fun updateInterval() {
+        ColorScheme.currentDarkColor.lerp(ColorScheme.currentDarkLerpColor, .05f)
+        ColorScheme.currentLightColor.lerp(ColorScheme.currentLightLerpColor, .05f)
     }
 }

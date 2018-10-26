@@ -53,11 +53,9 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
 
     override fun show() {
         // Create entities
-        val mapEntity = MapEntity(1)
-        Injekt.run { addSingleton(mapEntity) }
-        val finishEntity = FinishEntity()
-        val playerEntity = PlayerEntity()
-        Injekt.run { addSingleton(playerEntity); addSingleton(finishEntity) }
+        val mapEntity = MapEntity(1); Injekt.addSingleton(mapEntity)
+        val finishEntity = FinishEntity(); Injekt.addSingleton(finishEntity)
+        val playerEntity = PlayerEntity(); Injekt.addSingleton(playerEntity)
 
         // Handle input
         Gdx.input.inputProcessor = GameInputListener()

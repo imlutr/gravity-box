@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
@@ -51,6 +52,7 @@ class FinishEntity(private val mapEntity: MapEntity = Injekt.get(),
 
         // ImageComponent
         add(ImageComponent(stage, manager.getAsset("graphics/finish.png"), body.worldCenter.x, body.worldCenter.y))
+        image.color = ColorScheme.currentDarkColor
         image.addAction(RepeatAction().apply {
             action = Actions.sequence(
                     Actions.fadeOut(1f),
