@@ -40,13 +40,11 @@ class MapEntity(var levelNumber: Int,
     fun loadMap(levelNumber: Int) {
         this.levelNumber = levelNumber
 
+        // Replace the previous MapComponent with a new one, thus updating the tiledMap
         add(MapComponent(levelNumber))
 
-        // Update the colors
-        ColorScheme.lightColor = ColorScheme.getLightColor(map.hue)
-        ColorScheme.darkColor = ColorScheme.getDarkColor(map.hue)
-        ColorScheme.lightColor2 = ColorScheme.getLightColor2(map.hue)
-        ColorScheme.darkColor2 = ColorScheme.getDarkColor2(map.hue)
+        // The new map has a new hue so the color scheme must be updated
+        ColorScheme.updateColors(map.hue)
 
         // Put the collision boxes on the tiles
         MapBodyBuilder.buildShapes(map.tiledMap, PPM, world)

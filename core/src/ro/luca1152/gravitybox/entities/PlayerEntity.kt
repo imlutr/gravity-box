@@ -27,7 +27,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.World
 import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.utils.ColorScheme.darkColor
 import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
@@ -53,7 +52,9 @@ class PlayerEntity(private val mapEntity: MapEntity = Injekt.get(),
 
         // ImageComponent
         add(ImageComponent(stage, manager.getAsset("graphics/player.png"), body.worldCenter.x, body.worldCenter.y))
-        image.color = darkColor
+
+        // ColorComponent
+        add(ColorComponent(ColorType.DARK))
     }
 
     /**

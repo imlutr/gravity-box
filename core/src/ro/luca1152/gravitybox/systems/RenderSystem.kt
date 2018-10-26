@@ -80,7 +80,7 @@ class RenderSystem(private val mapEntity: MapEntity = Injekt.get(),
         // Update the map in case the level changed
         mapRenderer.map = mapEntity.map.tiledMap
 
-        batch.color = ColorScheme.darkColor
+        batch.color = ColorScheme.currentDarkColor
         mapRenderer.setView(gameCamera)
         mapRenderer.render()
         batch.color = Color.WHITE

@@ -29,6 +29,7 @@ import ro.luca1152.gravitybox.components.FinishComponent
 import ro.luca1152.gravitybox.components.PlayerComponent
 import ro.luca1152.gravitybox.components.collisionBox
 import ro.luca1152.gravitybox.events.GameEvent
+import ro.luca1152.gravitybox.utils.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -43,15 +44,15 @@ class CollisionBoxListener(private val gameEventSignal: Signal<GameEvent> = Inje
         // Find two boxes that collide one with each other
         for (i in 0 until entities.size() - 1)
             for (j in i + 1 until entities.size()) {
-                if (entities[i].collisionBox.box.overlaps(entities[j].collisionBox.box)) {
-                    // Find the specific entities
-                    val playerEntity = findEntity(PlayerComponent, entities[i], entities[j])
-                    val finishEntity = findEntity(FinishComponent, entities[i], entities[j])
+                val overlaps = entities[i].collisionBox.box.overlaps(entities[j].collisionBox.box)
 
-                    // The player collided with the finish point
-                    if (finishEntity != null && playerEntity != null)
-                        gameEventSignal.dispatch(GameEvent.LEVEL_FINISHED)
-                }
+                // Find the specific entities
+                val playerEntity = findEntity(PlayerComponent, entities[i], entities[j])
+                val finishEntity = findEntity(FinishComponent, entities[i], entities[j])
+
+                // The player collided with the finish point
+                if (finishEntity != null && playerEntity != null)
+                    ColorScheme.useDarkColorScheme = overlaps
             }
     }
 }

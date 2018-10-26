@@ -25,7 +25,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
 import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.GameStage
 import uy.kohesive.injekt.Injekt
@@ -64,6 +63,8 @@ class BulletEntity(playerEntity: PlayerEntity = Injekt.get(),
 
         // ImageComponent
         add(ImageComponent(stage, manager.getAsset("graphics/bullet.png"), body.worldCenter.x, body.worldCenter.y))
-        image.color = ColorScheme.darkColor
+
+        // ColorComponent
+        add(ColorComponent(ColorType.DARK))
     }
 }

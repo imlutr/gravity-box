@@ -32,7 +32,7 @@ import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.utils.ColorScheme.lightColor
+import ro.luca1152.gravitybox.utils.ColorScheme.currentLightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -82,7 +82,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
 
     override fun render(delta: Float) {
         update(delta)
-        clearScreen(lightColor.r, lightColor.g, lightColor.b)
+        clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
     }
 
     private fun update(delta: Float) {

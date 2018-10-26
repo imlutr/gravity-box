@@ -20,18 +20,33 @@ package ro.luca1152.gravitybox.utils
 import com.badlogic.gdx.graphics.Color
 
 object ColorScheme {
-    // The hue of the first level
-    private const val initialHue = 180
+    private var lightColor = Color()
+    private var darkColor = Color()
+    private var lightColor2 = Color()
+    private var darkColor2 = Color()
+    var useDarkColorScheme = false
+    var currentLightColor = Color()
+    var currentDarkColor = Color()
+    val currentLightLerpColor
+        get() = if (useDarkColorScheme) lightColor2 else lightColor
+    val currentDarkLerpColor
+        get() = if (useDarkColorScheme) darkColor2 else darkColor
 
-    // The 4 colors used in the game
-    var lightColor = getLightColor(initialHue)
-    var darkColor = getDarkColor(initialHue)
-    var lightColor2 = getLightColor2(initialHue)
-    var darkColor2 = getDarkColor2(initialHue)
+    init {
+        updateColors(180) // 180 is the hue of the first level
+    }
 
-    // Methods to get the 4 colors from a given [hue]
-    fun getLightColor(hue: Int) = Color().fromHsv(hue.toFloat(), 10f / 100f, 91f / 100f).apply { a = 1f }!!
-    fun getDarkColor(hue: Int) = Color().fromHsv(hue.toFloat(), 42f / 100f, 57f / 100f).apply { a = 1f }!!
-    fun getLightColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f).apply { a = 1f }!!
-    fun getDarkColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f).apply { a = 1f }!!
+    fun updateColors(hue: Int) {
+        fun getLightColor(hue: Int) = Color().fromHsv(hue.toFloat(), 10f / 100f, 91f / 100f).apply { a = 1f }!!
+        fun getDarkColor(hue: Int) = Color().fromHsv(hue.toFloat(), 42f / 100f, 57f / 100f).apply { a = 1f }!!
+        fun getLightColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f).apply { a = 1f }!!
+        fun getDarkColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f).apply { a = 1f }!!
+
+        lightColor = getLightColor(hue)
+        darkColor = getDarkColor(hue)
+        lightColor2 = getLightColor2(hue)
+        darkColor2 = getDarkColor2(hue)
+        currentLightColor = lightColor.cpy()
+        currentDarkColor = darkColor.cpy()
+    }
 }
