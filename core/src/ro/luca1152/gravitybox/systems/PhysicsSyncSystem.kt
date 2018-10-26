@@ -31,14 +31,14 @@ class PhysicsSyncSystem : IteratingSystem(Family.all(PhysicsComponent::class.jav
         val body = entity.physics.body
 
         // Sync the Image's position
-        entity.tryGet(ImageComponent)?.let {
+        entity.tryGet(ImageComponent)?.let { _ ->
             entity.image.setPosition(body.worldCenter.x, body.worldCenter.y)
             entity.image.rotation = body.angle * MathUtils.radDeg
-        }
 
-        // Sync the CollisionBox's position
-        entity.tryGet(CollisionBoxComponent)?.let {
-            entity.collisionBox.box.setPosition(body.worldCenter)
+            // Sync the CollisionBox's position
+            entity.tryGet(CollisionBoxComponent)?.let {
+                entity.collisionBox.box.setPosition(body.worldCenter.x - entity.image.width / 2f, body.worldCenter.y - entity.image.height / 2f)
+            }
         }
     }
 }
