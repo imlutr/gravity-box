@@ -32,8 +32,12 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
+/**
+ * The main class of the game.
+ */
 class MyGame : KtxGame<Screen>() {
     override fun create() {
+        // Initialize Injekt, the dependency injection library
         Injekt.run {
             addSingleton(this@MyGame)
             addSingleton(SpriteBatch() as Batch)
@@ -43,20 +47,28 @@ class MyGame : KtxGame<Screen>() {
             addSingleton(GameViewport)
             addSingleton(Engine())
         }
+
+        // Add the screens so setScreen<[ScreenClass]>() can be used
         addScreen(PlayScreen()); addScreen(LoadingScreen())
+
         setScreen<LoadingScreen>()
     }
 
     override fun dispose() {
-        super.dispose() // Dispose every screen
+        // Dispose every screen
+        super.dispose()
+
+        // Dispose heavy objects
         Injekt.run {
             get<Batch>().dispose()
             get<AssetManager>().dispose()
+            get<ShapeRenderer>().dispose()
         }
     }
 }
 
-const val PPM = 64f // Pixels per meter
+/** Pixels per meter. */
+const val PPM = 64f
 
 val Int.pixelsToMeters: Float
     get() = this / PPM

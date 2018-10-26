@@ -37,6 +37,9 @@ import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/**
+ * Used to render everything on the screen, excluding UI.
+ */
 class RenderSystem(private val mapEntity: MapEntity = Injekt.get(),
                    private val world: World = Injekt.get(),
                    private val stage: GameStage = Injekt.get(),
@@ -61,7 +64,7 @@ class RenderSystem(private val mapEntity: MapEntity = Injekt.get(),
     private fun drawImages() {
         /**
          * Reposition the actors so they are drawn from the center (Box2D bodies' position is from center, not bottom-left)
-         * It adds half the size of the actors and subtracts it when restoring.
+         * It subtracts half the size of the images and adds it back when restoring.
          */
         fun repositionImages(restore: Boolean = false) {
             for (i in 0 until stage.actors.size) {
@@ -80,6 +83,7 @@ class RenderSystem(private val mapEntity: MapEntity = Injekt.get(),
         // Update the map in case the level changed
         mapRenderer.map = mapEntity.map.tiledMap
 
+        // Make the platforms from the map have a color from the color scheme
         batch.color = ColorScheme.currentDarkColor
         mapRenderer.setView(gameCamera)
         mapRenderer.render()

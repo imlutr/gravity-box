@@ -29,9 +29,9 @@ import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.entities.PlatformEntity
 
 object MapBodyBuilder {
-    private var ppt = 0f
-    fun buildShapes(map: Map, ppt: Float, world: World): Array<Body> {
-        this.ppt = ppt
+    private var PPM = 0f
+    fun buildShapes(map: Map, PPM: Float, world: World): Array<Body> {
+        this.PPM = PPM
         val mapObjects = map.layers.get("Obstacles").objects
         val bodies = Array<Body>()
         loop@ for (mapObject in mapObjects) {
@@ -59,10 +59,10 @@ object MapBodyBuilder {
     fun getRectangle(rectangleObject: RectangleMapObject): PolygonShape {
         val rectangle = rectangleObject.rectangle
         val polygon = PolygonShape()
-        val size = Vector2((rectangle.x + rectangle.width * 0.5f) / ppt,
-                (rectangle.y + rectangle.height * 0.5f) / ppt)
-        polygon.setAsBox(rectangle.width * 0.5f / ppt,
-                rectangle.height * 0.5f / ppt,
+        val size = Vector2((rectangle.x + rectangle.width * 0.5f) / PPM,
+                (rectangle.y + rectangle.height * 0.5f) / PPM)
+        polygon.setAsBox(rectangle.width * 0.5f / PPM,
+                rectangle.height * 0.5f / PPM,
                 size,
                 0.0f)
         return polygon
@@ -75,7 +75,7 @@ object MapBodyBuilder {
         val worldVertices = FloatArray(vertices.size)
 
         for (i in vertices.indices) {
-            worldVertices[i] = vertices[i] / ppt
+            worldVertices[i] = vertices[i] / PPM
         }
 
         polygon.set(worldVertices)
@@ -88,8 +88,8 @@ object MapBodyBuilder {
 
         for (i in 0 until vertices.size / 2) {
             worldVertices[i] = Vector2()
-            worldVertices[i]!!.x = vertices[i * 2] / ppt
-            worldVertices[i]!!.y = vertices[i * 2 + 1] / ppt
+            worldVertices[i]!!.x = vertices[i * 2] / PPM
+            worldVertices[i]!!.y = vertices[i * 2 + 1] / PPM
         }
 
         val chain = ChainShape()
@@ -100,8 +100,8 @@ object MapBodyBuilder {
     private fun getCircle(circleObject: CircleMapObject): CircleShape {
         val circle = circleObject.circle
         val circleShape = CircleShape()
-        circleShape.radius = circle.radius / ppt
-        circleShape.position = Vector2(circle.x / ppt, circle.y / ppt)
+        circleShape.radius = circle.radius / PPM
+        circleShape.position = Vector2(circle.x / PPM, circle.y / PPM)
         return circleShape
     }
 }

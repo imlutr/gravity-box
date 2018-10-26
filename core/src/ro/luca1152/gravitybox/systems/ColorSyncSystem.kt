@@ -24,7 +24,11 @@ import com.badlogic.gdx.graphics.Color
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.utils.ColorScheme
 
-class SyncColorsSystem : IteratingSystem(Family.all(ImageComponent::class.java, ColorComponent::class.java).get()) {
+/**
+ * Sync the [ImageComponent]'s color with the [ColorComponent]'s color.
+ * Used mostly to set the color of every object to the respective color from ColorScheme.
+ */
+class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, ColorComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         when (entity.color.colorType) {
             ColorType.DARK -> entity.image.color.setWithoutAlpha(ColorScheme.currentDarkColor)
@@ -33,6 +37,9 @@ class SyncColorsSystem : IteratingSystem(Family.all(ImageComponent::class.java, 
     }
 }
 
+/**
+ * Sets [this] color to [color], but without copying the alpha value, to keep the transparency.
+ */
 fun Color.setWithoutAlpha(color: Color) {
     this.r = color.r
     this.g = color.g
