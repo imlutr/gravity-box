@@ -55,8 +55,8 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
         // Create entities
         val mapEntity = MapEntity(1)
         Injekt.run { addSingleton(mapEntity) }
-        val playerEntity = PlayerEntity()
         val finishEntity = FinishEntity()
+        val playerEntity = PlayerEntity()
         Injekt.run { addSingleton(playerEntity); addSingleton(finishEntity) }
 
         // Handle input
@@ -64,8 +64,8 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
 
         engine.run {
             addEntity(mapEntity)
-            addEntity(playerEntity)
             addEntity(finishEntity)
+            addEntity(playerEntity)
 
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
