@@ -20,9 +20,9 @@ package ro.luca1152.gravitybox.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.graphics.Color
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.utils.ColorScheme
+import ro.luca1152.gravitybox.utils.setWithoutAlpha
 
 /**
  * Sync the [ImageComponent]'s color with the [ColorComponent]'s color.
@@ -35,13 +35,4 @@ class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, C
             ColorType.LIGHT -> entity.image.color.setWithoutAlpha(ColorScheme.currentLightColor)
         }
     }
-}
-
-/**
- * Sets [this] color to [color], but without copying the alpha value, to keep the transparency.
- */
-fun Color.setWithoutAlpha(color: Color) {
-    this.r = color.r
-    this.g = color.g
-    this.b = color.b
 }

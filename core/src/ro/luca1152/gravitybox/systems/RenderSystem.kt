@@ -22,18 +22,13 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
-import ktx.collections.GdxArray
 import ro.luca1152.gravitybox.PPM
 import ro.luca1152.gravitybox.components.map
 import ro.luca1152.gravitybox.entities.MapEntity
-import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.GameCamera
-import ro.luca1152.gravitybox.utils.GameStage
-import ro.luca1152.gravitybox.utils.GameViewport
+import ro.luca1152.gravitybox.utils.*
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -49,7 +44,6 @@ class RenderSystem(private val mapEntity: MapEntity = Injekt.get(),
                    private val gameViewport: GameViewport = Injekt.get()) : EntitySystem() {
     private val mapRenderer = OrthogonalTiledMapRenderer(mapEntity.map.tiledMap, 1 / PPM, batch)
     private val b2DDebugRenderer = Box2DDebugRenderer()
-    private val bodies = GdxArray<Body>()
 
     override fun update(deltaTime: Float) {
         stage.act()
@@ -92,13 +86,13 @@ class RenderSystem(private val mapEntity: MapEntity = Injekt.get(),
 
     private fun drawPhysicsDebug() {
         fun drawXAtOrigins() {
-            world.getBodies(bodies)
             shapeRenderer.projectionMatrix = gameCamera.combined
             shapeRenderer.color = Color.RED
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line)
-            for (i in 0 until bodies.size)
-                if (bodies[i].type == BodyDef.BodyType.DynamicBody)
-                    shapeRenderer.x(bodies[i].worldCenter, .05f)
+            world.bodies.forEach { body ->
+                if (body.type == BodyDef.BodyType.DynamicBody)
+                    shapeRenderer.x(body.worldCenter, .05f)
+            }
             shapeRenderer.end()
             shapeRenderer.color = Color.WHITE
         }

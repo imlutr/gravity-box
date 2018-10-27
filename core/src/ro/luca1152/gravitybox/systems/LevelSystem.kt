@@ -20,11 +20,8 @@ package ro.luca1152.gravitybox.systems
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.signals.Signal
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import ktx.actors.minus
-import ktx.collections.GdxArray
 import ro.luca1152.gravitybox.components.ExplosionComponent
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.components.physics
@@ -36,9 +33,10 @@ import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.GameStage
+import ro.luca1152.gravitybox.utils.approxEqualTo
+import ro.luca1152.gravitybox.utils.bodies
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.lang.Math.abs
 
 /**
  * Handles every event related to levels, such as restarting the level.
@@ -50,7 +48,6 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
                   private val world: World = Injekt.get(),
                   private val stage: GameStage = Injekt.get()) : EntitySystem() {
     private val eventQueue = EventQueue()
-    private val bodies = GdxArray<Body>()
 
     init {
         gameEventSignal.add(eventQueue)
@@ -60,7 +57,7 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
         eventQueue.getEvents().forEach { event ->
             if (event == GameEvent.LEVEL_RESTART) restartLevel()
         }
-        if (ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approximatelyEqualTo(ColorScheme.currentDarkLerpColor))
+        if (ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(ColorScheme.currentDarkLerpColor))
             nextLevel()
     }
 
@@ -80,8 +77,7 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
     private fun nextLevel() {
         fun removeAllBodies() {
             removeBullets()
-            world.getBodies(bodies)
-            bodies.forEach { body -> world.destroyBody(body) }
+            world.bodies.forEach { body -> world.destroyBody(body) }
         }
 
         removeAllBodies()
@@ -100,16 +96,11 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
      * Removes every bullet, including their Box2D body and ImageComponent.
      */
     private fun removeBullets() {
-        world.getBodies(bodies)
-        bodies.forEach { body ->
+        world.bodies.forEach { body ->
             if (body.userData is BulletEntity) {
                 stage - (body.userData as BulletEntity).image
                 world.destroyBody(body)
             }
         }
     }
-}
-
-fun Color.approximatelyEqualTo(color: Color): Boolean {
-    return (abs(this.r - color.r) <= 2 / 255f) && (abs(this.g - color.g) <= 2 / 255f) && (abs(this.b - color.b) <= 2 / 255f)
 }

@@ -17,7 +17,11 @@
 
 package ro.luca1152.gravitybox.utils
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.utils.Array
 
 /**
  * Linearly interpolates to the target values.
@@ -28,3 +32,26 @@ fun Vector3.lerp(targetX: Float, targetY: Float, targetZ: Float = 0f, progress: 
     z += progress * (targetZ - z)
     return this
 }
+
+/**
+ * Used to compare a color that was linearly interpolated using lerp, resulting in imprecision.
+ */
+fun Color.approxEqualTo(color: Color): Boolean {
+    return (Math.abs(this.r - color.r) <= 1 / 255f) && (Math.abs(this.g - color.g) <= 1 / 255f) && (Math.abs(this.b - color.b) <= 1 / 255f)
+}
+
+/**
+ * Sets [this] color to [color] without copying the alpha value to keep its transparency.
+ */
+fun Color.setWithoutAlpha(color: Color) {
+    this.r = color.r
+    this.g = color.g
+    this.b = color.b
+}
+
+private val bodyArray: Array<Body> = Array()
+val World.bodies: Array<Body>
+    get() {
+        getBodies(bodyArray)
+        return bodyArray
+    }

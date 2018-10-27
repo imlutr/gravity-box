@@ -51,9 +51,6 @@ class BulletCollisionSystem(private val playerEntity: PlayerEntity = Injekt.get(
         engine.addEntity(ExplosionEntity(bullet.physics.body.worldCenter))
     }
 
-    /**
-     * Push the [playerEntity] away from the point of collision.
-     */
     private fun pushPlayer(bullet: Entity) {
         val sourcePosition = vec2(x = bullet.physics.body.worldCenter.x, y = bullet.physics.body.worldCenter.y)
         val playerBody = playerEntity.physics.body
