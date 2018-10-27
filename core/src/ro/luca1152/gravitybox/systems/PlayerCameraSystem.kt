@@ -23,6 +23,7 @@ import ro.luca1152.gravitybox.components.map
 import ro.luca1152.gravitybox.entities.MapEntity
 import ro.luca1152.gravitybox.entities.PlayerEntity
 import ro.luca1152.gravitybox.utils.GameCamera
+import ro.luca1152.gravitybox.utils.lerp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -33,16 +34,17 @@ class PlayerCameraSystem(private val playerEntity: PlayerEntity = Injekt.get(),
                          private val mapEntity: MapEntity = Injekt.get(),
                          private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
-        val image = playerEntity.image
-        gameCamera.position.set(image.x + image.width / 2f, image.y + image.height / 2f, 0f)
-        fixBounds(gameCamera.zoom)
+        // Smoothly move the camera towards the player
+        gameCamera.position.lerp(playerEntity.image.x + playerEntity.image.width / 2f, playerEntity.image.y + playerEntity.image.height / 2f, progress = .15f)
+
+        // Keep the camera within the bounds of the map
+        keepWithinBounds(gameCamera.zoom)
+
+        // Apply the changes
         gameCamera.update()
     }
 
-    /**
-     * Keep the camera within the bounds of the map.
-     */
-    private fun fixBounds(zoom: Float) {
+    private fun keepWithinBounds(zoom: Float) {
         var mapLeft = 0f
         var mapRight = mapEntity.map.width * zoom
         if (mapEntity.map.width * zoom > gameCamera.viewportWidth * zoom) {
