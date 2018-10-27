@@ -18,12 +18,14 @@
 package ro.luca1152.gravitybox.systems
 
 import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import ktx.actors.minus
 import ktx.collections.GdxArray
+import ro.luca1152.gravitybox.components.ExplosionComponent
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.components.physics
 import ro.luca1152.gravitybox.entities.BulletEntity
@@ -57,15 +59,22 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
     override fun update(deltaTime: Float) {
         eventQueue.getEvents().forEach { event ->
             if (event == GameEvent.LEVEL_RESTART) restartLevel()
-//            if (event == GameEvent.LEVEL_FINISHED) nextLevel()
         }
         if (ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approximatelyEqualTo(ColorScheme.currentDarkLerpColor))
             nextLevel()
     }
 
     private fun restartLevel() {
+        fun removeExplosions() {
+            engine.getEntitiesFor(Family.all(ExplosionComponent::class.java).get()).forEach { explosion ->
+                stage - explosion.image
+                engine.removeEntity(explosion)
+            }
+        }
+
         playerEntity.reset()
         removeBullets()
+        removeExplosions()
     }
 
     private fun nextLevel() {

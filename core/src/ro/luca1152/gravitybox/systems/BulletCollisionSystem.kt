@@ -26,6 +26,7 @@ import ktx.math.minus
 import ktx.math.times
 import ktx.math.vec2
 import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.entities.ExplosionEntity
 import ro.luca1152.gravitybox.entities.PlayerEntity
 import ro.luca1152.gravitybox.utils.GameStage
 import uy.kohesive.injekt.Injekt
@@ -40,9 +41,14 @@ class BulletCollisionSystem(private val playerEntity: PlayerEntity = Injekt.get(
                             private val world: World = Injekt.get()) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
     override fun processEntity(bullet: Entity, deltaTime: Float) {
         if (bullet.bullet.collidedWithWall) {
+            createExplosion(bullet)
             pushPlayer(bullet)
             removeBullet(bullet)
         }
+    }
+
+    private fun createExplosion(bullet: Entity) {
+        engine.addEntity(ExplosionEntity(bullet.physics.body.worldCenter))
     }
 
     /**
