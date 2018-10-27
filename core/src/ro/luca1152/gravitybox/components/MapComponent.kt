@@ -81,6 +81,7 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
         val body = world.createBody(bodyDef).apply {
             createFixture(fixtureDef)
         }
+        fixtureDef.shape.dispose()
         return body
     }
 
@@ -98,6 +99,7 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
             createFixture(fixtureDef)
             gravityScale = 0f
         }
+        fixtureDef.shape.dispose()
         return body
     }
 

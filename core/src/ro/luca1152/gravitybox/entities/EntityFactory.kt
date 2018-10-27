@@ -52,17 +52,18 @@ object EntityFactory {
             bullet = true
             position.set(playerEntity.physics.body.worldCenter)
         }
-        val bulletFixtureDef = FixtureDef().apply {
+        val fixtureDef = FixtureDef().apply {
             shape = PolygonShape().apply { setAsBox(.15f, .15f) }
             density = .2f
             filter.categoryBits = EntityCategory.BULLET.bits
             filter.maskBits = EntityCategory.OBSTACLE.bits
         }
         val body = world.createBody(bodyDef).apply {
-            createFixture(bulletFixtureDef)
+            createFixture(fixtureDef)
             gravityScale = .5f
             userData = this@label
         }
+        fixtureDef.shape.dispose()
         this.physics.set(body)
 
         // ImageComponent

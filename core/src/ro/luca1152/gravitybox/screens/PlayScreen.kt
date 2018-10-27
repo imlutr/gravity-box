@@ -84,4 +84,8 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
     override fun resize(width: Int, height: Int) {
         gameViewport.update(width, height, true)
     }
+
+    override fun dispose() {
+        stage.dispose()
+    }
 }

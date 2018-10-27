@@ -23,9 +23,9 @@ import java.util.*
 
 class EventQueue : Listener<GameEvent> {
     private val eventQueue = PriorityQueue<GameEvent>()
-    private var events: Array<GameEvent> = emptyArray()
+    private var events: Array<GameEvent?> = arrayOfNulls(25)
 
-    fun getEvents(): Array<GameEvent> {
+    fun getEvents(): Array<GameEvent?> {
         for (i in 0 until eventQueue.size)
             events[i] = eventQueue.elementAt(i)
         eventQueue.clear()

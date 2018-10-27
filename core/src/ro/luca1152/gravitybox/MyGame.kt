@@ -23,6 +23,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.screens.PlayScreen
@@ -63,6 +64,7 @@ class MyGame : KtxGame<Screen>() {
             get<Batch>().dispose()
             get<AssetManager>().dispose()
             get<ShapeRenderer>().dispose()
+            get<World>().dispose()
         }
     }
 }
