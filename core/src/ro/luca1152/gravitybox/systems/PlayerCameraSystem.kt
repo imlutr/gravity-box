@@ -17,11 +17,10 @@
 
 package ro.luca1152.gravitybox.systems
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.components.map
-import ro.luca1152.gravitybox.entities.MapEntity
-import ro.luca1152.gravitybox.entities.PlayerEntity
 import ro.luca1152.gravitybox.utils.GameCamera
 import ro.luca1152.gravitybox.utils.lerp
 import uy.kohesive.injekt.Injekt
@@ -30,8 +29,8 @@ import uy.kohesive.injekt.api.get
 /**
  * Make the game [gameCamera] follow the [playerEntity].
  */
-class PlayerCameraSystem(private val playerEntity: PlayerEntity = Injekt.get(),
-                         private val mapEntity: MapEntity = Injekt.get(),
+class PlayerCameraSystem(private val mapEntity: Entity,
+                         private val playerEntity: Entity,
                          private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
         // Smoothly move the camera towards the player

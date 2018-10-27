@@ -26,10 +26,11 @@ import com.badlogic.gdx.maps.objects.*
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array
-import ro.luca1152.gravitybox.entities.PlatformEntity
+import ro.luca1152.gravitybox.entities.EntityFactory
 
 object MapBodyBuilder {
     private var PPM = 0f
+
     fun buildShapes(map: Map, PPM: Float, world: World): Array<Body> {
         this.PPM = PPM
         val mapObjects = map.layers.get("Obstacles").objects
@@ -47,7 +48,7 @@ object MapBodyBuilder {
             }
             val bd = BodyDef().apply { type = BodyDef.BodyType.StaticBody }
             val body = world.createBody(bd).apply {
-                userData = PlatformEntity()
+                userData = EntityFactory.createPlatform()
                 createFixture(shape, 1f)
             }
             bodies.add(body)

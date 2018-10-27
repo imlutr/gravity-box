@@ -18,7 +18,10 @@
 package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.gdx.utils.Pool.Poolable
 
-class PlatformComponent : Component {
+class PlatformComponent : Component, Poolable {
     companion object : ComponentResolver<PlatformComponent>(PlatformComponent::class.java)
+
+    override fun reset() {}
 }

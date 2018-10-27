@@ -17,18 +17,13 @@
 
 package ro.luca1152.gravitybox.systems
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.physics.box2d.World
 import ktx.actors.minus
-import ro.luca1152.gravitybox.components.ExplosionComponent
-import ro.luca1152.gravitybox.components.image
-import ro.luca1152.gravitybox.components.physics
-import ro.luca1152.gravitybox.entities.BulletEntity
-import ro.luca1152.gravitybox.entities.FinishEntity
-import ro.luca1152.gravitybox.entities.MapEntity
-import ro.luca1152.gravitybox.entities.PlayerEntity
+import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.ColorScheme
@@ -41,10 +36,10 @@ import uy.kohesive.injekt.api.get
 /**
  * Handles every event related to levels, such as restarting the level.
  */
-class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
-                  private val playerEntity: PlayerEntity = Injekt.get(),
-                  private val finishEntity: FinishEntity = Injekt.get(),
-                  private val mapEntity: MapEntity = Injekt.get(),
+class LevelSystem(private var mapEntity: Entity,
+                  private val finishEntity: Entity,
+                  private val playerEntity: Entity,
+                  gameEventSignal: Signal<GameEvent> = Injekt.get(),
                   private val world: World = Injekt.get(),
                   private val stage: GameStage = Injekt.get()) : EntitySystem() {
     private val eventQueue = EventQueue()
@@ -69,7 +64,7 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
             }
         }
 
-        playerEntity.reset()
+        playerEntity.player.reset(playerEntity.physics.body)
         removeBullets()
         removeExplosions()
     }
@@ -81,13 +76,13 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
         }
 
         removeAllBodies()
-        mapEntity.loadMap(mapEntity.levelNumber + 1)
+        mapEntity.map.loadMap(mapEntity.map.levelNumber + 1)
         playerEntity.run {
-            physics.body = playerEntity.loadBodyFromMap()
+            physics.body = mapEntity.map.getPlayerBody()
             image.color = ColorScheme.currentDarkColor
         }
         finishEntity.run {
-            physics.body = finishEntity.loadBodyFromMap()
+            physics.body = mapEntity.map.getFinishBody()
             image.color = ColorScheme.currentDarkColor
         }
     }
@@ -97,8 +92,8 @@ class LevelSystem(gameEventSignal: Signal<GameEvent> = Injekt.get(),
      */
     private fun removeBullets() {
         world.bodies.forEach { body ->
-            if (body.userData is BulletEntity) {
-                stage - (body.userData as BulletEntity).image
+            if (body.userData is Entity && (body.userData as Entity).tryGet(BulletComponent) != null && (body.userData as Entity).tryGet(ImageComponent) != null) {
+                stage - (body.userData as Entity).image
                 world.destroyBody(body)
             }
         }

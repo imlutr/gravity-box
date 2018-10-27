@@ -19,14 +19,20 @@ package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.utils.Pool.Poolable
 
 /**
  * Indicates that the entity is a bullet.
  */
-class BulletComponent : Component {
+class BulletComponent : Component, Poolable {
+    companion object : ComponentResolver<BulletComponent>(BulletComponent::class.java) {
+
+        const val SPEED = 15f
+    }
+
     var collidedWithWall = false
 
-    companion object : ComponentResolver<BulletComponent>(BulletComponent::class.java)
+    override fun reset() {}
 }
 
 val Entity.bullet: BulletComponent

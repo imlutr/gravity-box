@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.systems
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -27,7 +28,6 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import ro.luca1152.gravitybox.PPM
 import ro.luca1152.gravitybox.components.map
-import ro.luca1152.gravitybox.entities.MapEntity
 import ro.luca1152.gravitybox.utils.*
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -35,7 +35,7 @@ import uy.kohesive.injekt.api.get
 /**
  * Used to render everything on the screen, excluding UI.
  */
-class RenderSystem(private val mapEntity: MapEntity = Injekt.get(),
+class RenderSystem(private val mapEntity: Entity,
                    private val world: World = Injekt.get(),
                    private val stage: GameStage = Injekt.get(),
                    private val batch: Batch = Injekt.get(),

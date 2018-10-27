@@ -17,7 +17,7 @@
 
 package ro.luca1152.gravitybox
 
-import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -45,7 +45,7 @@ class MyGame : KtxGame<Screen>() {
             addSingleton(AssetManager())
             addSingleton(GameCamera)
             addSingleton(GameViewport)
-            addSingleton(Engine())
+            addSingleton(PooledEngine())
         }
 
         // Add the screens so setScreen<[ScreenClass]>() can be used

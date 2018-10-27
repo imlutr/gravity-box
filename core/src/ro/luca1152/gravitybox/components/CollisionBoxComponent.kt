@@ -20,18 +20,23 @@ package ro.luca1152.gravitybox.components
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.utils.Pool.Poolable
 
 /**
  * Used to detect when the player is in the finish point.
  * Box2D collisions can't be used because the player doesn't collide with the finish point.
  */
-class CollisionBoxComponent(size: Float) : Component {
+class CollisionBoxComponent(size: Float) : Component, Poolable {
+    companion object : ComponentResolver<CollisionBoxComponent>(CollisionBoxComponent::class.java)
+
     val box = Rectangle().apply {
         setSize(size)
     }
 
-    companion object : ComponentResolver<CollisionBoxComponent>(CollisionBoxComponent::class.java)
+    override fun reset() {
+        box.set(0f, 0f, 0f, 0f)
+    }
 }
 
-val Entity.collisionBox
+val Entity.collisionBox: CollisionBoxComponent
     get() = CollisionBoxComponent[this]

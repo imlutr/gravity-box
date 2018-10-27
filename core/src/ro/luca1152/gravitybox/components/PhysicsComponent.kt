@@ -20,9 +20,12 @@ package ro.luca1152.gravitybox.components
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.utils.Pool.Poolable
 
-class PhysicsComponent(var body: Body) : Component {
+class PhysicsComponent(var body: Body) : Component, Poolable {
     companion object : ComponentResolver<PhysicsComponent>(PhysicsComponent::class.java)
+
+    override fun reset() {}
 }
 
 val Entity.physics: PhysicsComponent

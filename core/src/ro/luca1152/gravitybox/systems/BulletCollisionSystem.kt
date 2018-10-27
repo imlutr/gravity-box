@@ -26,8 +26,7 @@ import ktx.math.minus
 import ktx.math.times
 import ktx.math.vec2
 import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.entities.ExplosionEntity
-import ro.luca1152.gravitybox.entities.PlayerEntity
+import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.utils.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -36,7 +35,7 @@ import java.lang.Math.pow
 /**
  * A system that handles what happens when a bullet collides with a platform.
  */
-class BulletCollisionSystem(private val playerEntity: PlayerEntity = Injekt.get(),
+class BulletCollisionSystem(private val playerEntity: Entity,
                             private val stage: GameStage = Injekt.get(),
                             private val world: World = Injekt.get()) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
     override fun processEntity(bullet: Entity, deltaTime: Float) {
@@ -48,7 +47,7 @@ class BulletCollisionSystem(private val playerEntity: PlayerEntity = Injekt.get(
     }
 
     private fun createExplosion(bullet: Entity) {
-        engine.addEntity(ExplosionEntity(bullet.physics.body.worldCenter))
+        engine.addEntity(EntityFactory.createExplosion(bullet.physics.body.worldCenter))
     }
 
     private fun pushPlayer(bullet: Entity) {

@@ -18,10 +18,13 @@
 package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.gdx.utils.Pool.Poolable
 
 /**
  * Indicates that the entity is a finish point.
  */
-class FinishComponent : Component {
+class FinishComponent : Component, Poolable {
     companion object : ComponentResolver<FinishComponent>(FinishComponent::class.java)
+
+    override fun reset() {}
 }

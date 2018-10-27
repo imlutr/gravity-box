@@ -19,12 +19,15 @@ package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.utils.Pool.Poolable
 
-class ColorComponent(val colorType: ColorType) : Component {
+class ColorComponent(val colorType: ColorType) : Component, Poolable {
     companion object : ComponentResolver<ColorComponent>(ColorComponent::class.java)
+
+    override fun reset() {}
 }
 
-val Entity.color
+val Entity.color: ColorComponent
     get() = ColorComponent[this]
 
 enum class ColorType {

@@ -17,17 +17,15 @@
 
 package ro.luca1152.gravitybox.screens
 
-import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
-import ro.luca1152.gravitybox.entities.FinishEntity
-import ro.luca1152.gravitybox.entities.MapEntity
-import ro.luca1152.gravitybox.entities.MapEntity.Companion.GRAVITY
-import ro.luca1152.gravitybox.entities.PlayerEntity
+import ro.luca1152.gravitybox.components.MapComponent.Companion.GRAVITY
+import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.listeners.GameInputListener
@@ -40,7 +38,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
-class PlayScreen(private val engine: Engine = Injekt.get(),
+class PlayScreen(private val engine: PooledEngine = Injekt.get(),
                  private val gameViewport: GameViewport = Injekt.get()) : KtxScreen {
     private val world = World(Vector2(0f, GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
@@ -53,28 +51,28 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
 
     override fun show() {
         // Create entities
-        val mapEntity = MapEntity(1); Injekt.addSingleton(mapEntity)
-        val finishEntity = FinishEntity(); Injekt.addSingleton(finishEntity)
-        val playerEntity = PlayerEntity(); Injekt.addSingleton(playerEntity)
+        val mapEntity = EntityFactory.createMap(levelNumber = 1)
+        val finishEntity = EntityFactory.createFinish(mapEntity)
+        val playerEntity = EntityFactory.createPlayer(mapEntity)
 
         // Handle input
-        Gdx.input.inputProcessor = GameInputListener()
+        Gdx.input.inputProcessor = GameInputListener(playerEntity)
 
         engine.run {
             addEntity(mapEntity)
             addEntity(finishEntity)
             addEntity(playerEntity)
 
-            addSystem(LevelSystem())
+            addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
-            addSystem(BulletCollisionSystem())
+            addSystem(BulletCollisionSystem(playerEntity))
             addSystem(CollisionBoxListener())
             addSystem(AutoRestartSystem())
             addSystem(ColorSchemeSystem())
             addSystem(ColorSyncSystem())
-            addSystem(PlayerCameraSystem())
-            addSystem(RenderSystem())
+            addSystem(PlayerCameraSystem(mapEntity, playerEntity))
+            addSystem(RenderSystem(mapEntity))
         }
     }
 

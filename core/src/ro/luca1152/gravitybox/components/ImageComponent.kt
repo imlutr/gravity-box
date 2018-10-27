@@ -19,13 +19,18 @@ package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.actors.minus
 import ktx.actors.plus
 import ro.luca1152.gravitybox.pixelsToMeters
 
-class ImageComponent(stage: Stage, texture: Texture, x: Float = 0f, y: Float = 0f) : Component {
+class ImageComponent(private val stage: Stage, texture: Texture, x: Float = 0f, y: Float = 0f) : Component, Poolable {
+    companion object : ComponentResolver<ImageComponent>(ImageComponent::class.java)
+
     val image: Image = Image(texture)
 
     init {
@@ -37,7 +42,13 @@ class ImageComponent(stage: Stage, texture: Texture, x: Float = 0f, y: Float = 0
         stage + image
     }
 
-    companion object : ComponentResolver<ImageComponent>(ImageComponent::class.java)
+    override fun reset() {
+        // If the image was not removed from the stage, remove it
+        if (stage.actors.any { it == image })
+            stage - image
+
+        image.color = Color.WHITE
+    }
 }
 
 val Entity.image: Image

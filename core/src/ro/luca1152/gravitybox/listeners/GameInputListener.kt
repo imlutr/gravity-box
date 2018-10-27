@@ -17,16 +17,17 @@
 
 package ro.luca1152.gravitybox.listeners
 
-import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import ktx.app.KtxInputAdapter
 import ktx.math.times
+import ro.luca1152.gravitybox.components.BulletComponent
 import ro.luca1152.gravitybox.components.physics
-import ro.luca1152.gravitybox.entities.BulletEntity
-import ro.luca1152.gravitybox.entities.PlayerEntity
+import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.GameCamera
 import uy.kohesive.injekt.Injekt
@@ -35,10 +36,10 @@ import uy.kohesive.injekt.api.get
 /**
  * Trigger actions for every input event handled.
  */
-class GameInputListener(private val gameEventSignal: Signal<GameEvent> = Injekt.get(),
-                        private val playerEntity: PlayerEntity = Injekt.get(),
+class GameInputListener(private val playerEntity: Entity,
+                        private val gameEventSignal: Signal<GameEvent> = Injekt.get(),
                         private val gameCamera: GameCamera = Injekt.get(),
-                        private val engine: Engine = Injekt.get()) : KtxInputAdapter {
+                        private val engine: PooledEngine = Injekt.get()) : KtxInputAdapter {
 
     private val worldCoordinates = Vector3()
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
@@ -61,11 +62,11 @@ class GameInputListener(private val gameEventSignal: Signal<GameEvent> = Injekt.
 
     private var velocity = Vector2()
     private fun createBullet(touchX: Float, touchY: Float) {
-        val bullet = BulletEntity()
+        val bullet = EntityFactory.createBullet(playerEntity)
         velocity = playerEntity.physics.body.worldCenter.cpy()
         velocity.x -= touchX; velocity.y -= touchY
         velocity.nor()
-        velocity *= -BulletEntity.SPEED
+        velocity *= -BulletComponent.SPEED
         bullet.physics.body.linearVelocity = velocity
         engine.addEntity(bullet)
     }
