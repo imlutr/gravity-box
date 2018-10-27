@@ -24,7 +24,7 @@ import com.badlogic.gdx.utils.Pool.Poolable
  * Indicates that the entity is a finish point.
  */
 class FinishComponent : Component, Poolable {
-    companion object : ComponentResolver<FinishComponent>(FinishComponent::class.java)
-
     override fun reset() {}
+
+    companion object : ComponentResolver<FinishComponent>(FinishComponent::class.java)
 }

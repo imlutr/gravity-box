@@ -20,12 +20,28 @@ package ro.luca1152.gravitybox.components
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pool.Poolable
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-class PhysicsComponent(var body: Body) : Component, Poolable {
+class PhysicsComponent(world: World = Injekt.get()) : Component, Poolable {
+    // Initialized with an empty body to avoid nullable type
+    var body: Body = world.createBody(BodyDef())
+
+    fun set(body: Body) {
+        this.body = body
+    }
+
+    override fun reset() {
+        body.setTransform(0f, 0f, 0f) // Reset the position
+        body.applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
+        body.setLinearVelocity(0f, 0f)
+        body.angularVelocity = 0f
+    }
+
     companion object : ComponentResolver<PhysicsComponent>(PhysicsComponent::class.java)
-
-    override fun reset() {}
 }
 
 val Entity.physics: PhysicsComponent

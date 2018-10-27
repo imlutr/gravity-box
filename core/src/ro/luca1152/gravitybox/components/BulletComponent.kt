@@ -25,14 +25,15 @@ import com.badlogic.gdx.utils.Pool.Poolable
  * Indicates that the entity is a bullet.
  */
 class BulletComponent : Component, Poolable {
-    companion object : ComponentResolver<BulletComponent>(BulletComponent::class.java) {
-
-        const val SPEED = 15f
-    }
-
     var collidedWithWall = false
 
-    override fun reset() {}
+    override fun reset() {
+        collidedWithWall = false
+    }
+
+    companion object : ComponentResolver<BulletComponent>(BulletComponent::class.java) {
+        const val SPEED = 15f
+    }
 }
 
 val Entity.bullet: BulletComponent

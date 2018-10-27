@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool.Poolable
 
 class ExplosionComponent : Component, Poolable {
-    companion object : ComponentResolver<ExplosionComponent>(ExplosionComponent::class.java)
-
     override fun reset() {}
+
+    companion object : ComponentResolver<ExplosionComponent>(ExplosionComponent::class.java)
 }

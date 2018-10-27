@@ -57,13 +57,6 @@ class LevelSystem(private var mapEntity: Entity,
     }
 
     private fun restartLevel() {
-        fun removeExplosions() {
-            engine.getEntitiesFor(Family.all(ExplosionComponent::class.java).get()).forEach { explosion ->
-                stage - explosion.image
-                engine.removeEntity(explosion)
-            }
-        }
-
         playerEntity.player.reset(playerEntity.physics.body)
         removeBullets()
         removeExplosions()
@@ -72,6 +65,7 @@ class LevelSystem(private var mapEntity: Entity,
     private fun nextLevel() {
         fun removeAllBodies() {
             removeBullets()
+            removeExplosions()
             world.bodies.forEach { body -> world.destroyBody(body) }
         }
 
@@ -87,13 +81,20 @@ class LevelSystem(private var mapEntity: Entity,
         }
     }
 
+    fun removeExplosions() {
+        engine.getEntitiesFor(Family.all(ExplosionComponent::class.java).get()).forEach { explosion ->
+            stage - explosion.image.img
+            engine.removeEntity(explosion)
+        }
+    }
+
     /**
      * Removes every bullet, including their Box2D body and ImageComponent.
      */
     private fun removeBullets() {
         world.bodies.forEach { body ->
             if (body.userData is Entity && (body.userData as Entity).tryGet(BulletComponent) != null && (body.userData as Entity).tryGet(ImageComponent) != null) {
-                stage - (body.userData as Entity).image
+                stage - (body.userData as Entity).image.img
                 world.destroyBody(body)
             }
         }

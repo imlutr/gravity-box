@@ -21,35 +21,71 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Pool.Poolable
-import ktx.actors.minus
 import ktx.actors.plus
 import ro.luca1152.gravitybox.pixelsToMeters
+import ro.luca1152.gravitybox.utils.GameStage
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-class ImageComponent(private val stage: Stage, texture: Texture, x: Float = 0f, y: Float = 0f) : Component, Poolable {
-    companion object : ComponentResolver<ImageComponent>(ImageComponent::class.java)
+class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, Poolable {
+    // Initialized with an empty image to avoid nullable type
+    // Called img to avoid confusion between entity.image and entity.image.img
+    var img: Image = Image()
 
-    val image: Image = Image(texture)
+    // Getters and setters for easier access (entity.image.[x] instead of entity.image.img.[x])
+    // Entity.image returns ImageComponent and not Image so set(texture, x, y) can be used
+    val width: Float
+        get() = img.width
+    val height: Float
+        get() = img.height
+    var x: Float
+        get() = img.x
+        set(value) {
+            img.x = value
+        }
+    var y: Float
+        get() = img.y
+        set(value) {
+            img.y = value
+        }
+    var color: Color
+        get() = img.color
+        set(value) {
+            img.color = value
+        }
 
-    init {
-        image.apply {
+    fun set(texture: Texture, x: Float, y: Float) {
+        img.run {
+            drawable = TextureRegionDrawable(TextureRegion(texture))
             setPosition(x, y)
             setSize(texture.width.pixelsToMeters, texture.height.pixelsToMeters)
             setOrigin(width / 2f, height / 2f)
         }
-        stage + image
+        stage + img
+    }
+
+    fun set(texture: Texture, position: Vector2) {
+        set(texture, position.x, position.y)
     }
 
     override fun reset() {
-        // If the image was not removed from the stage, remove it
-        if (stage.actors.any { it == image })
-            stage - image
-
-        image.color = Color.WHITE
+        img.run {
+            color = Color.WHITE
+            rotation = 0f
+            scaleX = 1f; img.scaleY = 1f
+            actions.forEach {
+                removeAction(it)
+            }
+        }
     }
+
+    companion object : ComponentResolver<ImageComponent>(ImageComponent::class.java)
 }
 
-val Entity.image: Image
-    get() = ImageComponent[this].image
+val Entity.image: ImageComponent
+    get() = ImageComponent[this]

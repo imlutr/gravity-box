@@ -28,134 +28,149 @@ import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import ktx.actors.minus
 import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.EntityCategory
-import ro.luca1152.gravitybox.utils.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+
 
 object EntityFactory {
     fun createBullet(playerEntity: Entity,
                      world: World = Injekt.get(),
-                     stage: GameStage = Injekt.get(),
                      manager: AssetManager = Injekt.get(),
-                     engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+                     engine: PooledEngine = Injekt.get()) = engine.createEntity().apply label@{
         // BulletComponent
-        add(BulletComponent())
+        add(engine.createComponent(BulletComponent::class.java))
 
         // PhysicsComponent
-        val playerBody = playerEntity.physics.body
+        add(engine.createComponent(PhysicsComponent::class.java))
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
             bullet = true
-            position.set(playerBody.worldCenter.x, playerBody.worldCenter.y)
+            position.set(playerEntity.physics.body.worldCenter)
         }
-        val body = world.createBody(bodyDef).apply { gravityScale = .5f }
-        val polygonShape = PolygonShape().apply { setAsBox(.15f, .15f) }
         val bulletFixtureDef = FixtureDef().apply {
-            shape = polygonShape
+            shape = PolygonShape().apply { setAsBox(.15f, .15f) }
             density = .2f
             filter.categoryBits = EntityCategory.BULLET.bits
             filter.maskBits = EntityCategory.OBSTACLE.bits
         }
-        body.userData = this
-        body.createFixture(bulletFixtureDef)
-        add(PhysicsComponent(body))
+        val body = world.createBody(bodyDef).apply {
+            createFixture(bulletFixtureDef)
+            gravityScale = .5f
+            userData = this@label
+        }
+        this.physics.set(body)
 
         // ImageComponent
-        add(ImageComponent(stage, manager.getAsset("graphics/bullet.png"), body.worldCenter.x, body.worldCenter.y))
-        image.color = ColorScheme.currentDarkColor
+        add(engine.createComponent(ImageComponent::class.java))
+        this.image.set(manager.getAsset("graphics/bullet.png"), body.worldCenter)
 
         // ColorComponent
-        add(ColorComponent(ColorType.DARK))
+        add(engine.createComponent(ColorComponent::class.java))
+        this.color.colorType = ColorType.DARK
+        this.image.color = ColorScheme.currentDarkColor
     }!!
 
     fun createExplosion(position: Vector2,
-                        stage: GameStage = Injekt.get(),
                         manager: AssetManager = Injekt.get(),
                         engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         // ExplosionComponent
-        add(ExplosionComponent())
+        add(engine.createComponent(ExplosionComponent::class.java))
 
         // ImageComponent
-        add(ImageComponent(stage, manager.getAsset("graphics/circle.png"), position.x, position.y))
-        image.run {
-            color = ColorScheme.currentDarkColor
+        add(engine.createComponent(ImageComponent::class.java))
+        this.image.set(manager.getAsset("graphics/circle.png"), position)
+        this.image.img.run {
             setScale(1f)
             addAction(Actions.sequence(
                     Actions.parallel(
                             Actions.scaleBy(3f, 3f, .25f),
                             Actions.fadeOut(.25f, Interpolation.exp5)
                     ),
-                    Actions.removeActor(),
-                    Actions.run { engine.removeEntity(this@apply) }
+                    Actions.run {
+                        stage - this
+                        engine.removeEntity(this@apply)
+                    },
+                    Actions.removeActor()
             ))
         }
 
         // ColorComponent
-        add(ColorComponent(ColorType.DARK))
+        add(engine.createComponent(ColorComponent::class.java))
+        this.color.set(ColorType.DARK)
+        this.image.color = ColorScheme.currentDarkColor
     }!!
 
     fun createFinish(mapEntity: Entity,
-                     stage: GameStage = Injekt.get(),
                      manager: AssetManager = Injekt.get(),
                      engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         // FinishComponent
-        add(FinishComponent())
+        add(engine.createComponent(FinishComponent::class.java))
 
         // PhysicsComponent
-        val body = mapEntity.map.getFinishBody()
-        add(PhysicsComponent(body))
+        add(engine.createComponent(PhysicsComponent::class.java))
+        this.physics.set(mapEntity.map.getFinishBody())
 
         // CollisionBoxComponent
-        add(CollisionBoxComponent(2f))
+        add(engine.createComponent(CollisionBoxComponent::class.java))
+        this.collisionBox.set(2f)
 
         // ImageComponent
-        add(ImageComponent(stage, manager.getAsset("graphics/finish.png"), body.worldCenter.x, body.worldCenter.y))
-        image.color = ColorScheme.currentDarkColor
-        image.addAction(RepeatAction().apply {
-            action = Actions.sequence(
-                    Actions.fadeOut(1f),
-                    Actions.fadeIn(1f)
-            )
-            count = RepeatAction.FOREVER
-        })
+        add(engine.createComponent(ImageComponent::class.java))
+        this.image.set(manager.getAsset("graphics/finish.png"), physics.body.worldCenter)
+        this.image.img.run {
+            addAction(RepeatAction().apply {
+                action = Actions.sequence(
+                        Actions.fadeOut(1f),
+                        Actions.fadeIn(1f)
+                )
+                count = RepeatAction.FOREVER
+            })
+        }
 
         // ColorComponent
-        add(ColorComponent(ColorType.DARK))
+        add(engine.createComponent(ColorComponent::class.java))
+        this.color.set(ColorType.DARK)
+        this.image.color = ColorScheme.currentDarkColor
     }!!
 
     fun createMap(levelNumber: Int,
                   engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
-        add(MapComponent(levelNumber))
+        // MapComponent
+        add(engine.createComponent(MapComponent::class.java))
+        this.map.set(levelNumber)
     }!!
 
     fun createPlatform(engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         // PlatformComponent
-        add(PlatformComponent())
+        add(engine.createComponent(PlatformComponent::class.java))
     }!!
 
     fun createPlayer(mapEntity: Entity,
-                     stage: GameStage = Injekt.get(),
                      manager: AssetManager = Injekt.get(),
                      engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         // PlayerComponent
-        add(PlayerComponent())
+        add(engine.createComponent(PlayerComponent::class.java))
 
         // PhysicsComponent
-        val body = mapEntity.map.getPlayerBody()
-        add(PhysicsComponent(body))
+        add(engine.createComponent(PhysicsComponent::class.java))
+        this.physics.set(mapEntity.map.getPlayerBody())
 
         // CollisionBoxComponent
-        add(CollisionBoxComponent(1f))
+        add(engine.createComponent(CollisionBoxComponent::class.java))
+        this.collisionBox.set(1f)
 
         // ImageComponent
-        add(ImageComponent(stage, manager.getAsset("graphics/player.png"), body.worldCenter.x, body.worldCenter.y))
-        image.color = ColorScheme.currentDarkColor
+        add(engine.createComponent(ImageComponent::class.java))
+        this.image.set(manager.getAsset("graphics/player.png"), physics.body.worldCenter)
 
         // ColorComponent
-        add(ColorComponent(ColorType.DARK))
+        add(engine.createComponent(ColorComponent::class.java))
+        this.color.set(ColorType.DARK)
+        this.image.color = ColorScheme.currentDarkColor
     }!!
 }

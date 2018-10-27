@@ -26,8 +26,6 @@ import com.badlogic.gdx.utils.Pool.Poolable
  * Indicates that the entity is a player.
  */
 class PlayerComponent : Component, Poolable {
-    companion object : ComponentResolver<PlayerComponent>(PlayerComponent::class.java)
-
     /**
      * Reset the player to its initial state (initial position & no velocity).
      * Used when restarting the level.
@@ -40,6 +38,8 @@ class PlayerComponent : Component, Poolable {
     }
 
     override fun reset() {}
+
+    companion object : ComponentResolver<PlayerComponent>(PlayerComponent::class.java)
 }
 
 val Entity.player: PlayerComponent

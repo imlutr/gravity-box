@@ -26,16 +26,19 @@ import com.badlogic.gdx.utils.Pool.Poolable
  * Used to detect when the player is in the finish point.
  * Box2D collisions can't be used because the player doesn't collide with the finish point.
  */
-class CollisionBoxComponent(size: Float) : Component, Poolable {
-    companion object : ComponentResolver<CollisionBoxComponent>(CollisionBoxComponent::class.java)
+class CollisionBoxComponent : Component, Poolable {
+    // Initialized with an empty rectangle to avoid nullable type
+    val box = Rectangle()
 
-    val box = Rectangle().apply {
-        setSize(size)
+    fun set(size: Float) {
+        box.setSize(size)
     }
 
     override fun reset() {
         box.set(0f, 0f, 0f, 0f)
     }
+
+    companion object : ComponentResolver<CollisionBoxComponent>(CollisionBoxComponent::class.java)
 }
 
 val Entity.collisionBox: CollisionBoxComponent

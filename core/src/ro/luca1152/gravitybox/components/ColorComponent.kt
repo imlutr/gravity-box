@@ -21,10 +21,19 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 
-class ColorComponent(val colorType: ColorType) : Component, Poolable {
-    companion object : ComponentResolver<ColorComponent>(ColorComponent::class.java)
+class ColorComponent : Component, Poolable {
+    // Initialized with null ColorType to avoid nullable type
+    var colorType = ColorType.NULL
 
-    override fun reset() {}
+    fun set(colorType: ColorType) {
+        this.colorType = colorType
+    }
+
+    override fun reset() {
+        colorType = ColorType.NULL
+    }
+
+    companion object : ComponentResolver<ColorComponent>(ColorComponent::class.java)
 }
 
 val Entity.color: ColorComponent
@@ -32,5 +41,6 @@ val Entity.color: ColorComponent
 
 enum class ColorType {
     DARK,
-    LIGHT
+    LIGHT,
+    NULL
 }

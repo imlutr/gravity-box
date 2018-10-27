@@ -21,7 +21,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
+import com.badlogic.gdx.scenes.scene2d.actions.Actions.removeActor
+import com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence
 import ktx.math.minus
 import ktx.math.times
 import ktx.math.vec2
@@ -64,8 +65,8 @@ class BulletCollisionSystem(private val playerEntity: Entity,
     private fun removeBullet(bullet: Entity) {
         stage.addAction(
                 sequence(
-                        delay(.01f), // With no delay there would be a gap between the bullet and the platform
-                        removeActor(bullet.image)
+//                        delay(.01f), // With no delay there would be a gap between the bullet and the platform TODO
+                        removeActor(bullet.image.img)
                 )
         )
         world.destroyBody(bullet.physics.body)

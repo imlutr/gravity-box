@@ -32,8 +32,10 @@ class PhysicsSyncSystem : IteratingSystem(Family.all(PhysicsComponent::class.jav
 
         // Sync the Image's position
         entity.tryGet(ImageComponent)?.let { _ ->
-            entity.image.setPosition(body.worldCenter.x, body.worldCenter.y)
-            entity.image.rotation = body.angle * MathUtils.radDeg
+            entity.image.img.run {
+                setPosition(body.worldCenter.x, body.worldCenter.y)
+                rotation = body.angle * MathUtils.radDeg
+            }
 
             // Sync the CollisionBox's position
             entity.tryGet(CollisionBoxComponent)?.let {
