@@ -55,19 +55,19 @@ class RenderSystem(private val mapEntity: Entity,
 //        drawPhysicsDebug()
     }
 
-    private fun drawImages() {
-        /**
-         * Reposition the actors so they are drawn from the center (Box2D bodies' position is from center, not bottom-left)
-         * It subtracts half the size of the images and adds it back when restoring.
-         */
-        fun repositionImages(restore: Boolean = false) {
-            for (i in 0 until stage.actors.size) {
-                val change = if (restore) 1 else -1
-                stage.actors[i].x += change * stage.actors[i].width / 2f
-                stage.actors[i].y += change * stage.actors[i].height / 2f
-            }
+    /**
+     * Reposition the actors so they are drawn from the center (Box2D bodies' position is from center, not bottom-left)
+     * It subtracts half the size of the images and adds it back when restoring.
+     */
+    private fun repositionImages(restore: Boolean = false) {
+        for (i in 0 until stage.actors.size) {
+            val change = if (restore) 1 else -1
+            stage.actors[i].x += change * stage.actors[i].width / 2f
+            stage.actors[i].y += change * stage.actors[i].height / 2f
         }
+    }
 
+    private fun drawImages() {
         repositionImages()
         stage.draw()
         repositionImages(restore = true)
