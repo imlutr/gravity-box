@@ -65,12 +65,12 @@ class PlayScreen(private val engine: Engine = Injekt.get(),
             addEntity(finishEntity)
             addEntity(playerEntity)
 
+            addSystem(LevelSystem())
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(BulletCollisionSystem())
             addSystem(CollisionBoxListener())
             addSystem(AutoRestartSystem())
-            addSystem(LevelSystem())
             addSystem(ColorSchemeSystem())
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem())
