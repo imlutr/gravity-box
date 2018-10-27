@@ -26,7 +26,8 @@ class EventQueue : Listener<GameEvent> {
     private var events: Array<GameEvent?> = arrayOfNulls(25)
 
     fun getEvents(): Array<GameEvent?> {
-        events = arrayOfNulls(25)
+        for (i in 0 until events.size)
+            events[i] = null
         for (i in 0 until eventQueue.size)
             events[i] = eventQueue.elementAt(i)
         eventQueue.clear()
