@@ -1,5 +1,5 @@
 # Gravity Box
-A minimalist 2D puzzle platformer originally made for [Game Maker's Toolkit Jam 2018](https://itch.io/jam/gmtk-2018/rate/300201), where it took place #152/1049. You can play the original version [here](https://luca1152.itch.io/gravity-box).
+A minimalist 2D puzzle platformer, originally made for [Game Maker's Toolkit Jam 2018](https://itch.io/jam/gmtk-2018/rate/300201), where it took place #152/1049. You can play the original version [here](https://luca1152.itch.io/gravity-box).
 
 ## Getting started
 ### Running the game
