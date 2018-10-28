@@ -26,6 +26,9 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/**
+ * Contains a Box2D body.
+ */
 class PhysicsComponent(world: World = Injekt.get()) : Component, Poolable {
     // Initialized with an empty body to avoid nullable type
     var body: Body = world.createBody(BodyDef())

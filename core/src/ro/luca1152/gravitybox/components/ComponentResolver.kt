@@ -23,7 +23,7 @@ import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 
 open class ComponentResolver<T : Component>(componentClass: Class<T>) {
-    val MAPPER = ComponentMapper.getFor(componentClass)
+    private val MAPPER = ComponentMapper.getFor(componentClass)!!
     operator fun get(entity: Entity) = MAPPER[entity]
 }
 

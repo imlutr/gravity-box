@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * Code by daemonaka (https://gamedev.stackexchange.com/users/41604/daemonaka)
  */
 

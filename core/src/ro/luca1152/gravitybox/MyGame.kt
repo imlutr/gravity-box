@@ -49,7 +49,7 @@ class MyGame : KtxGame<Screen>() {
             addSingleton(PooledEngine())
         }
 
-        // Add the screens so setScreen<[ScreenClass]>() can be used
+        // Add the screens so setScreen<[Screen]>() can be used
         addScreen(PlayScreen()); addScreen(LoadingScreen())
 
         setScreen<LoadingScreen>()

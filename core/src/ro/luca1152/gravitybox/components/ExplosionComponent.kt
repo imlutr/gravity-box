@@ -20,6 +20,10 @@ package ro.luca1152.gravitybox.components
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool.Poolable
 
+/**
+ * Indicates that the entity is an explosion (the circle that appears when the bullet
+ * collides with a platform).
+ */
 class ExplosionComponent : Component, Poolable {
     override fun reset() {}
 

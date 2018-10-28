@@ -37,5 +37,4 @@ class EventQueue : Listener<GameEvent> {
     override fun receive(signal: Signal<GameEvent>?, event: GameEvent) {
         eventQueue.add(event)
     }
-
 }

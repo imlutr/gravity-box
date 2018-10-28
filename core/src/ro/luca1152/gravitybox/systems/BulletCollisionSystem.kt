@@ -34,7 +34,7 @@ import uy.kohesive.injekt.api.get
 import java.lang.Math.pow
 
 /**
- * A system that handles what happens when a bullet collides with a platform.
+ * Handles what happens when a bullet collides with a platform.
  */
 class BulletCollisionSystem(private val playerEntity: Entity,
                             private val stage: GameStage = Injekt.get(),

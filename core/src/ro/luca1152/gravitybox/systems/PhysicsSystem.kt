@@ -22,6 +22,9 @@ import com.badlogic.gdx.physics.box2d.World
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/**
+ * Makes physics bodies work.
+ */
 class PhysicsSystem(private val world: World = Injekt.get()) : EntitySystem() {
     private var accumulator = 0f
 

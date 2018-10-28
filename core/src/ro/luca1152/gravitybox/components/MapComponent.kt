@@ -35,6 +35,9 @@ import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/**
+ * Contains the data of a TiledMap, such as its width, height, hue.
+ */
 class MapComponent(private val manager: AssetManager = Injekt.get()) : Component, Poolable {
     var tiledMap = TiledMap() // Initialized with an empty TiledMap to avoid nullable type
     var levelNumber = 0
@@ -60,7 +63,7 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
         height = tiledMap.properties.get("height") as Int
         hue = tiledMap.properties.get("hue") as Int
 
-        // The new map has a new hue so the color scheme must be updated
+        // The new map may have a different hue so the color scheme must be updated
         ColorScheme.updateColors(hue)
 
         // Create the Box2D bodies of the platforms

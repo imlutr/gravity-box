@@ -20,6 +20,10 @@ package ro.luca1152.gravitybox.systems
 import com.badlogic.ashley.systems.IntervalSystem
 import ro.luca1152.gravitybox.utils.ColorScheme
 
+/**
+ * Smoothly transition between the colors of the color scheme,
+ * mainly the lighter and the darker color scheme.
+ */
 class ColorSchemeSystem : IntervalSystem(1 / 70f) {
     override fun updateInterval() {
         ColorScheme.currentDarkColor.lerp(ColorScheme.currentDarkLerpColor, .05f)

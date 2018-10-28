@@ -26,7 +26,7 @@ object ColorScheme {
     private var lightColor2 = Color()
     private var darkColor2 = Color()
 
-    /** If true, the darker color scheme will be used */
+    /** If true, the darker color scheme will be used. */
     var useDarkColorScheme = false
     /** Stores the current light color. Used in transitions between the two color schemes. */
     var currentLightColor = Color()

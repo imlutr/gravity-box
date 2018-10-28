@@ -21,6 +21,9 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 
+/**
+ * Every entity that has this component will have its color in sync with the color scheme.
+ */
 class ColorComponent : Component, Poolable {
     // Initialized with null ColorType to avoid nullable type
     var colorType = ColorType.NULL

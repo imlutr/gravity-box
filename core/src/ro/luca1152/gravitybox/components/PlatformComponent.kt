@@ -20,6 +20,9 @@ package ro.luca1152.gravitybox.components
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool.Poolable
 
+/**
+ * Indicates that the entity is a platform.
+ */
 class PlatformComponent : Component, Poolable {
     override fun reset() {}
 

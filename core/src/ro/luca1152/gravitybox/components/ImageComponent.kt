@@ -32,6 +32,10 @@ import ro.luca1152.gravitybox.utils.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/**
+ * Contains the rendering data for an entity, such as the position or texture.
+ * Is an Image (from Scene2D) in order to be able to use Actions.
+ */
 class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, Poolable {
     // Initialized with an empty image to avoid nullable type
     // Called img to avoid confusion between entity.image and entity.image.img

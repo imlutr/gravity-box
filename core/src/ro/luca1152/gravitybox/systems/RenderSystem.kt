@@ -33,7 +33,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /**
- * Used to render everything on the screen, excluding UI.
+ * Used to render everything on the screen, excluding the UI.
  */
 class RenderSystem(private val mapEntity: Entity,
                    private val world: World = Injekt.get(),
