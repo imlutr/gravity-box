@@ -68,6 +68,5 @@ class GameInputListener(private val playerEntity: Entity,
         velocity.nor()
         velocity *= -BulletComponent.SPEED
         bullet.physics.body.linearVelocity = velocity
-        engine.addEntity(bullet)
     }
 }

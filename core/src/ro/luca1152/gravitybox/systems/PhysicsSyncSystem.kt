@@ -36,11 +36,11 @@ class PhysicsSyncSystem : IteratingSystem(Family.all(PhysicsComponent::class.jav
                 setPosition(body.worldCenter.x, body.worldCenter.y)
                 rotation = body.angle * MathUtils.radDeg
             }
+        }
 
-            // Sync the CollisionBox's position
-            entity.tryGet(CollisionBoxComponent)?.let {
-                entity.collisionBox.box.setPosition(body.worldCenter.x - entity.image.width / 2f, body.worldCenter.y - entity.image.height / 2f)
-            }
+        // Sync the CollisionBox's position
+        entity.tryGet(CollisionBoxComponent)?.let {
+            entity.collisionBox.box.setPosition(body.worldCenter.x - entity.collisionBox.size / 2f, body.worldCenter.y - entity.collisionBox.size / 2f)
         }
     }
 }

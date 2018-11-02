@@ -26,10 +26,7 @@ import ktx.actors.minus
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.GameEvent
-import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.GameStage
-import ro.luca1152.gravitybox.utils.approxEqualTo
-import ro.luca1152.gravitybox.utils.bodies
+import ro.luca1152.gravitybox.utils.*
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -73,11 +70,11 @@ class LevelSystem(private var mapEntity: Entity,
         removeAllBodies()
         mapEntity.map.loadMap(mapEntity.map.levelNumber + 1)
         playerEntity.run {
-            physics.body = mapEntity.map.getPlayerBody()
+            physics.body = MapBodyBuilder.buildPlayer(mapEntity.map.tiledMap).physics.body
             image.color = ColorScheme.currentDarkColor
         }
         finishEntity.run {
-            physics.body = mapEntity.map.getFinishBody()
+            physics.body = MapBodyBuilder.buildFinish(mapEntity.map.tiledMap).physics.body
             image.color = ColorScheme.currentDarkColor
         }
     }

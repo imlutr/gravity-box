@@ -30,7 +30,10 @@ class CollisionBoxComponent : Component, Poolable {
     // Initialized with an empty rectangle to avoid nullable type
     val box = Rectangle()
 
+    var size = 0f
+
     fun set(size: Float) {
+        this.size = size
         box.setSize(size)
     }
 

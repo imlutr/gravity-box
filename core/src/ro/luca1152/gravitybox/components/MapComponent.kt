@@ -20,17 +20,10 @@ package ro.luca1152.gravitybox.components
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.physics.box2d.Body
-import com.badlogic.gdx.physics.box2d.BodyDef
-import com.badlogic.gdx.physics.box2d.FixtureDef
-import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.assets.getAsset
-import ro.luca1152.gravitybox.PPM
 import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.EntityCategory
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -52,11 +45,15 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
         loadMap(levelNumber)
     }
 
-    fun loadMap(levelNumber: Int, world: World = Injekt.get()) {
+    fun loadMap(levelNumber: Int) {
         this.levelNumber = levelNumber
 
         // Update the map
         tiledMap = manager.getAsset("maps/map-$levelNumber.tmx")
+
+        // Build the platforms & collectibles
+        MapBodyBuilder.buildPlatforms(tiledMap)
+        MapBodyBuilder.buildCollectibles(tiledMap)
 
         // Update the map properties
         width = tiledMap.properties.get("width") as Int
@@ -65,45 +62,6 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
 
         // The new map may have a different hue so the color scheme must be updated
         ColorScheme.updateColors(hue)
-
-        // Create the Box2D bodies of the platforms
-        MapBodyBuilder.buildShapes(tiledMap, PPM, world)
-    }
-
-    fun getPlayerBody(world: World = Injekt.get()): Body {
-        val bodyDef = BodyDef().apply {
-            type = BodyDef.BodyType.DynamicBody
-        }
-        val fixtureDef = FixtureDef().apply {
-            shape = MapBodyBuilder.getRectangle(tiledMap.layers.get("Player").objects[0] as RectangleMapObject)
-            density = 1.15f
-            friction = 2f
-            filter.categoryBits = EntityCategory.PLAYER.bits
-            filter.maskBits = EntityCategory.OBSTACLE.bits
-        }
-        val body = world.createBody(bodyDef).apply {
-            createFixture(fixtureDef)
-        }
-        fixtureDef.shape.dispose()
-        return body
-    }
-
-    fun getFinishBody(world: World = Injekt.get()): Body {
-        val bodyDef = BodyDef().apply {
-            type = BodyDef.BodyType.DynamicBody
-        }
-        val fixtureDef = FixtureDef().apply {
-            shape = MapBodyBuilder.getRectangle(tiledMap.layers.get("Finish").objects.get(0) as RectangleMapObject)
-            density = 100f
-            filter.categoryBits = EntityCategory.FINISH.bits
-            filter.maskBits = EntityCategory.NONE.bits
-        }
-        val body = world.createBody(bodyDef).apply {
-            createFixture(fixtureDef)
-            gravityScale = 0f
-        }
-        fixtureDef.shape.dispose()
-        return body
     }
 
     override fun reset() {}

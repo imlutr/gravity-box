@@ -15,104 +15,108 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
- * Code by daemonaka (https://gamedev.stackexchange.com/users/41604/daemonaka)
- */
-
 package ro.luca1152.gravitybox.utils
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
-import com.badlogic.gdx.maps.Map
-import com.badlogic.gdx.maps.objects.*
+import com.badlogic.gdx.maps.objects.RectangleMapObject
+import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.*
-import com.badlogic.gdx.utils.Array
+import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.FixtureDef
+import com.badlogic.gdx.physics.box2d.PolygonShape
+import com.badlogic.gdx.physics.box2d.World
+import ro.luca1152.gravitybox.PPM
 import ro.luca1152.gravitybox.entities.EntityFactory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object MapBodyBuilder {
     private val engine: PooledEngine = Injekt.get()
-    private var PPM = 0f
 
-    fun buildShapes(map: Map, PPM: Float, world: World) {
-        fun buildObstacles(obstacleType: String) {
-            val mapObjects = map.layers.get(obstacleType).objects
-            val bodies = Array<Body>()
-            loop@ for (mapObject in mapObjects) {
-                if (mapObject is TextureMapObject) {
-                    continue
+    fun buildPlayer(tiledMap: TiledMap,
+                    world: World = Injekt.get()): Entity {
+        val bodyDef = BodyDef().apply {
+            type = BodyDef.BodyType.DynamicBody
+        }
+        val fixtureDef = FixtureDef().apply {
+            shape = MapBodyBuilder.getRectangle(tiledMap.layers.get("Player").objects[0] as RectangleMapObject)
+            density = 1.15f
+            friction = 2f
+            filter.categoryBits = EntityCategory.PLAYER.bits
+            filter.maskBits = EntityCategory.OBSTACLE.bits
+        }
+        val body = world.createBody(bodyDef).apply {
+            userData = EntityFactory.createPlayer(this)
+            createFixture(fixtureDef)
+        }
+        fixtureDef.shape.dispose()
+        return body.userData as Entity
+    }
+
+    fun buildFinish(tiledMap: TiledMap,
+                    world: World = Injekt.get()): Entity {
+        val bodyDef = BodyDef().apply {
+            type = BodyDef.BodyType.DynamicBody
+        }
+        val fixtureDef = FixtureDef().apply {
+            shape = MapBodyBuilder.getRectangle(tiledMap.layers.get("Finish").objects.get(0) as RectangleMapObject)
+            density = 100f
+            filter.categoryBits = EntityCategory.FINISH.bits
+            filter.maskBits = EntityCategory.NONE.bits
+        }
+        val body = world.createBody(bodyDef).apply {
+            userData = EntityFactory.createFinish(this)
+            gravityScale = 0f
+            createFixture(fixtureDef)
+        }
+        fixtureDef.shape.dispose()
+        return body.userData as Entity
+    }
+
+    fun buildPlatforms(tiledMap: TiledMap,
+                       world: World = Injekt.get()) {
+        fun buildPlatformsOfType(platformType: String) {
+            tiledMap.layers.get(platformType).objects.forEach { mapObject ->
+                val bodyDef = BodyDef().apply {
+                    type = BodyDef.BodyType.StaticBody
                 }
-                val shape = when (mapObject) {
-                    is RectangleMapObject -> getRectangle(mapObject)
-                    is PolygonMapObject -> getPolygon(mapObject)
-                    is PolylineMapObject -> getPolyline(mapObject)
-                    is CircleMapObject -> getCircle(mapObject)
-                    else -> continue@loop
+                val platformShape = getRectangle(mapObject as RectangleMapObject)
+                world.createBody(bodyDef).apply {
+                    userData = EntityFactory.createPlatform(mapObject, platformType == "Dynamic", this)
+                    createFixture(platformShape, 1f)
                 }
-                val bd = BodyDef().apply { type = BodyDef.BodyType.StaticBody }
-                val body = world.createBody(bd).apply {
-                    userData = EntityFactory.createPlatform(mapObject, obstacleType == "Dynamic", this)
-                    engine.addEntity(userData as Entity)
-                    createFixture(shape, 1f)
-                }
-                bodies.add(body)
-                shape.dispose()
+                platformShape.dispose()
             }
         }
-
-        this.PPM = PPM
-        buildObstacles("Static")
-        buildObstacles("Dynamic")
+        buildPlatformsOfType("Static")
+        buildPlatformsOfType("Dynamic")
     }
 
-    fun getRectangle(rectangleObject: RectangleMapObject): PolygonShape {
+    fun buildCollectibles(tiledMap: TiledMap,
+                          world: World = Injekt.get()) {
+        tiledMap.layers.get("Collectible").objects.forEach { mapObject ->
+            val bodyDef = BodyDef().apply {
+                type = BodyDef.BodyType.DynamicBody
+            }
+            val fixtureDef = FixtureDef().apply {
+                shape = MapBodyBuilder.getRectangle(mapObject as RectangleMapObject)
+                density = 100f
+                filter.categoryBits = EntityCategory.COLLECTIBLE.bits
+                filter.maskBits = EntityCategory.NONE.bits
+            }
+            world.createBody(bodyDef).apply {
+                userData = EntityFactory.createCollectible(this)
+                gravityScale = 0f
+                createFixture(fixtureDef)
+            }
+            fixtureDef.shape.dispose()
+        }
+    }
+
+    private fun getRectangle(rectangleObject: RectangleMapObject): PolygonShape {
         val rectangle = rectangleObject.rectangle
-        val polygon = PolygonShape()
-        val size = Vector2((rectangle.x + rectangle.width * 0.5f) / PPM,
-                (rectangle.y + rectangle.height * 0.5f) / PPM)
-        polygon.setAsBox(rectangle.width * 0.5f / PPM,
-                rectangle.height * 0.5f / PPM,
-                size,
-                0.0f)
-        return polygon
-    }
-
-    private fun getPolygon(polygonObject: PolygonMapObject): PolygonShape {
-        val polygon = PolygonShape()
-        val vertices = polygonObject.polygon.transformedVertices
-
-        val worldVertices = FloatArray(vertices.size)
-
-        for (i in vertices.indices) {
-            worldVertices[i] = vertices[i] / PPM
-        }
-
-        polygon.set(worldVertices)
-        return polygon
-    }
-
-    private fun getPolyline(polylineObject: PolylineMapObject): ChainShape {
-        val vertices = polylineObject.polyline.transformedVertices
-        val worldVertices = arrayOfNulls<Vector2>(vertices.size / 2)
-
-        for (i in 0 until vertices.size / 2) {
-            worldVertices[i] = Vector2()
-            worldVertices[i]!!.x = vertices[i * 2] / PPM
-            worldVertices[i]!!.y = vertices[i * 2 + 1] / PPM
-        }
-
-        val chain = ChainShape()
-        chain.createChain(worldVertices)
-        return chain
-    }
-
-    private fun getCircle(circleObject: CircleMapObject): CircleShape {
-        val circle = circleObject.circle
-        val circleShape = CircleShape()
-        circleShape.radius = circle.radius / PPM
-        circleShape.position = Vector2(circle.x / PPM, circle.y / PPM)
-        return circleShape
+        val size = Vector2((rectangle.x + rectangle.width * 0.5f) / PPM, (rectangle.y + rectangle.height * 0.5f) / PPM)
+        return PolygonShape().apply { setAsBox(rectangle.width * 0.5f / PPM, rectangle.height * 0.5f / PPM, size, 0.0f) }
     }
 }

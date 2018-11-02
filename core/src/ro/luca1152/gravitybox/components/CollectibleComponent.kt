@@ -15,19 +15,14 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils
+package ro.luca1152.gravitybox.components
 
-/**
- * Used for Box2D collision detection.
- * Every Box2D body stores its own bits (categoryBits) and the bits of the bodies it can collide with (maskBits).
- */
-enum class EntityCategory(bits: Int) {
-    NONE(0x0000),
-    FINISH(0x0001),
-    COLLECTIBLE(0x0001),
-    PLAYER(0x0002),
-    OBSTACLE(0x0003),
-    BULLET(0x0004);
+import com.badlogic.ashley.core.Component
+import com.badlogic.gdx.utils.Pool
 
-    var bits: Short = bits.toShort()
+class CollectibleComponent : Component, Pool.Poolable {
+    override fun reset() {
+    }
+
+    companion object : ComponentResolver<CollectibleComponent>(CollectibleComponent::class.java)
 }

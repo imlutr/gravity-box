@@ -72,6 +72,8 @@ object EntityFactory {
         add(engine.createComponent(ColorComponent::class.java))
         this.color.colorType = ColorType.DARK
         this.image.color = ColorScheme.currentDarkColor
+
+        engine.addEntity(this)
     }!!
 
     fun createExplosion(position: Vector2,
@@ -102,9 +104,11 @@ object EntityFactory {
         add(engine.createComponent(ColorComponent::class.java))
         this.color.set(ColorType.DARK)
         this.image.color = ColorScheme.currentDarkColor
+
+        engine.addEntity(this)
     }!!
 
-    fun createFinish(mapEntity: Entity,
+    fun createFinish(body: Body,
                      manager: AssetManager = Injekt.get(),
                      engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         // FinishComponent
@@ -112,7 +116,7 @@ object EntityFactory {
 
         // PhysicsComponent
         add(engine.createComponent(PhysicsComponent::class.java))
-        this.physics.set(mapEntity.map.getFinishBody())
+        this.physics.set(body)
 
         // CollisionBoxComponent
         add(engine.createComponent(CollisionBoxComponent::class.java))
@@ -135,6 +139,8 @@ object EntityFactory {
         add(engine.createComponent(ColorComponent::class.java))
         this.color.set(ColorType.DARK)
         this.image.color = ColorScheme.currentDarkColor
+
+        engine.addEntity(this)
     }!!
 
     fun createMap(levelNumber: Int,
@@ -156,9 +162,11 @@ object EntityFactory {
         // PhysicsComponent
         add(engine.createComponent(PhysicsComponent::class.java))
         this.physics.set(body)
+
+        engine.addEntity(this)
     }!!
 
-    fun createPlayer(mapEntity: Entity,
+    fun createPlayer(body: Body,
                      manager: AssetManager = Injekt.get(),
                      engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         // PlayerComponent
@@ -166,7 +174,7 @@ object EntityFactory {
 
         // PhysicsComponent
         add(engine.createComponent(PhysicsComponent::class.java))
-        this.physics.set(mapEntity.map.getPlayerBody())
+        this.physics.set(body)
 
         // CollisionBoxComponent
         add(engine.createComponent(CollisionBoxComponent::class.java))
@@ -180,5 +188,23 @@ object EntityFactory {
         add(engine.createComponent(ColorComponent::class.java))
         this.color.set(ColorType.DARK)
         this.image.color = ColorScheme.currentDarkColor
+
+        engine.addEntity(this)
+    }!!
+
+    fun createCollectible(body: Body,
+                          engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+        // CollectibleComponent
+        add(engine.createComponent(CollectibleComponent::class.java))
+
+        // PhysicsComponent
+        add(engine.createComponent(PhysicsComponent::class.java))
+        this.physics.set(body)
+
+        // CollisionBoxComponent
+        add(engine.createComponent(CollisionBoxComponent::class.java))
+        this.collisionBox.set(1f)
+
+        engine.addEntity(this)
     }!!
 }

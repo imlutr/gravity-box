@@ -54,11 +54,13 @@ class WorldContactListener(private val gameEventSignal: Signal<GameEvent>,
 
         // A bullet and a platform collided
         if (bulletEntity != null && platformEntity != null) {
+            // Remove the bullet
             bulletEntity.bullet.collidedWithWall = true
-            if (platformEntity.platform.isDynamic) {
-                gameEventSignal.dispatch(GameEvent.BULLET_PLATFORM_COLLISION)
+            gameEventSignal.dispatch(GameEvent.BULLET_PLATFORM_COLLISION)
+
+            // Remove the platform if it's dynamic
+            if (platformEntity.platform.isDynamic)
                 platformEntity.platform.remove = true
-            }
         }
     }
 

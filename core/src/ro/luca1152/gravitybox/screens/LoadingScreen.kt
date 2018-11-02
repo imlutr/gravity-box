@@ -75,7 +75,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
     private fun loadMaps() {
         manager.run {
             setLoader<TiledMap, TmxMapLoader.Parameters>(TiledMap::class.java, TmxMapLoader())
-            for (i in 1..2)
+            for (i in 1..3)
                 load<TiledMap>("maps/map-$i.tmx")
         }
     }

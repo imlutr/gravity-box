@@ -101,7 +101,7 @@ class RenderSystem(private val mapEntity: Entity,
             shapeRenderer.color = Color.LIME
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
             world.bodies.forEach { body ->
-                if (body.userData != null && (body.userData as Entity).tryGet(PlatformComponent) != null && !(body.userData as Entity).platform.isDynamic) {
+                if (body.userData != null && body.userData is Entity && (body.userData as Entity).tryGet(PlatformComponent) != null && !(body.userData as Entity).platform.isDynamic) {
                     val obj = (body.userData as Entity).mapObject
                     shapeRenderer.rect(obj.position.x, obj.position.y, obj.width, obj.height)
                 }

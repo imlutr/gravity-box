@@ -25,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.components.MapComponent.Companion.GRAVITY
+import ro.luca1152.gravitybox.components.map
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
@@ -33,6 +34,7 @@ import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.*
 import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.GameViewport
+import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
@@ -50,18 +52,14 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
 
     override fun show() {
         // Create entities
-        val mapEntity = EntityFactory.createMap(levelNumber = 1)
-        val finishEntity = EntityFactory.createFinish(mapEntity)
-        val playerEntity = EntityFactory.createPlayer(mapEntity)
+        val mapEntity = EntityFactory.createMap(3)
+        val finishEntity = MapBodyBuilder.buildFinish(mapEntity.map.tiledMap)
+        val playerEntity = MapBodyBuilder.buildPlayer(mapEntity.map.tiledMap)
 
         // Handle input
         Gdx.input.inputProcessor = GameInputListener(playerEntity)
 
         engine.run {
-            addEntity(mapEntity)
-            addEntity(finishEntity)
-            addEntity(playerEntity)
-
             addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())

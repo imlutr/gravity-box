@@ -24,10 +24,7 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.utils.Array
-import ro.luca1152.gravitybox.components.CollisionBoxComponent
-import ro.luca1152.gravitybox.components.FinishComponent
-import ro.luca1152.gravitybox.components.PlayerComponent
-import ro.luca1152.gravitybox.components.collisionBox
+import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.ColorScheme
 import uy.kohesive.injekt.Injekt
@@ -49,10 +46,14 @@ class CollisionBoxListener(private val gameEventSignal: Signal<GameEvent> = Inje
                 // Find the specific entities
                 val playerEntity = findEntity(PlayerComponent, entities[i], entities[j])
                 val finishEntity = findEntity(FinishComponent, entities[i], entities[j])
+                val collectibleEntity = findEntity(CollectibleComponent, entities[i], entities[j])
 
                 // The player collided with the finish point
-                if (finishEntity != null && playerEntity != null)
+                if (playerEntity != null && finishEntity != null)
                     ColorScheme.useDarkColorScheme = overlaps
+
+                // The player collided with a collectible
+                if (playerEntity != null && collectibleEntity != null)
             }
     }
 }

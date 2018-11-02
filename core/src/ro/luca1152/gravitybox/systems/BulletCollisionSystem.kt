@@ -48,7 +48,7 @@ class BulletCollisionSystem(private val playerEntity: Entity,
     }
 
     private fun createExplosion(bullet: Entity) {
-        engine.addEntity(EntityFactory.createExplosion(bullet.physics.body.worldCenter))
+        EntityFactory.createExplosion(bullet.physics.body.worldCenter)
     }
 
     private fun pushPlayer(bullet: Entity) {
