@@ -18,13 +18,22 @@
 package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 
 /**
  * Indicates that the entity is a platform.
  */
 class PlatformComponent : Component, Poolable {
-    override fun reset() {}
+    var remove = false
+    var isDynamic = false
+
+    override fun reset() {
+        remove = false
+    }
 
     companion object : ComponentResolver<PlatformComponent>(PlatformComponent::class.java)
 }
+
+val Entity.platform: PlatformComponent
+    get() = PlatformComponent[this]

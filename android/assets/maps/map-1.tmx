@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="5" height="8" tilewidth="64" tileheight="64" infinite="0" nextobjectid="48">
+<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="5" height="8" tilewidth="64" tileheight="64" infinite="0" nextobjectid="56">
  <properties>
   <property name="hue" type="int" value="180"/>
  </properties>
@@ -16,12 +16,14 @@
 10,7,7,7,9
 </data>
  </layer>
- <objectgroup name="Obstacles">
-  <object id="39" x="23.3333" y="22.6667" width="274.667" height="17.3333"/>
-  <object id="40" x="22" y="472" width="274.667" height="17.3333"/>
-  <object id="42" x="22" y="41.3333" width="17.3333" height="430.667"/>
-  <object id="43" x="280.667" y="40" width="16" height="432"/>
-  <object id="44" x="127.333" y="153.333" width="65.3333" height="14.6667"/>
+ <objectgroup name="Static">
+  <object id="52" x="129" y="155" width="64" height="16"/>
+  <object id="53" x="279" y="41" width="14" height="444"/>
+  <object id="54" x="41" y="473" width="236" height="16"/>
+ </objectgroup>
+ <objectgroup name="Dynamic">
+  <object id="48" x="23" y="23" width="272" height="16"/>
+  <object id="51" x="23" y="39" width="18" height="450"/>
  </objectgroup>
  <objectgroup name="Player">
   <object id="46" x="128" y="90" width="64" height="64"/>

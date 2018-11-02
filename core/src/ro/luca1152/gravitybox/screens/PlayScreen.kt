@@ -31,7 +31,6 @@ import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.listeners.GameInputListener
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.*
-import ro.luca1152.gravitybox.utils.ColorScheme.currentLightColor
 import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
@@ -68,6 +67,7 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
             addSystem(PhysicsSyncSystem())
             addSystem(BulletCollisionSystem(playerEntity))
             addSystem(CollisionBoxListener())
+            addSystem(PlatformRemovalSystem())
             addSystem(AutoRestartSystem())
             addSystem(ColorSchemeSystem())
             addSystem(ColorSyncSystem())
@@ -77,7 +77,8 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
     }
 
     override fun render(delta: Float) {
-        clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
+//        clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
+        clearScreen(40f / 255f, 40f / 255f, 40f / 255f)
         engine.update(delta)
     }
 

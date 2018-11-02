@@ -27,7 +27,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import ro.luca1152.gravitybox.PPM
-import ro.luca1152.gravitybox.components.map
+import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.utils.*
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -51,8 +51,8 @@ class RenderSystem(private val mapEntity: Entity,
         stage.batch.projectionMatrix = gameCamera.combined
 
         drawImages()
-        drawTiledMap()
-//        drawPhysicsDebug()
+//        drawTiledMap()
+        drawPhysicsDebug()
     }
 
     /**
@@ -69,7 +69,7 @@ class RenderSystem(private val mapEntity: Entity,
 
     private fun drawImages() {
         repositionImages()
-        stage.draw()
+//        stage.draw()
         repositionImages(restore = true)
     }
 
@@ -97,7 +97,21 @@ class RenderSystem(private val mapEntity: Entity,
             shapeRenderer.color = Color.WHITE
         }
 
+        fun drawStaticPlatforms() {
+            shapeRenderer.color = Color.LIME
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
+            world.bodies.forEach { body ->
+                if (body.userData != null && (body.userData as Entity).tryGet(PlatformComponent) != null && !(body.userData as Entity).platform.isDynamic) {
+                    val obj = (body.userData as Entity).mapObject
+                    shapeRenderer.rect(obj.position.x, obj.position.y, obj.width, obj.height)
+                }
+            }
+            shapeRenderer.end()
+            shapeRenderer.color = Color.WHITE
+        }
+
         b2DDebugRenderer.render(world, gameCamera.combined)
         drawXAtOrigins()
+        drawStaticPlatforms()
     }
 }

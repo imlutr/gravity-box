@@ -19,18 +19,20 @@ package ro.luca1152.gravitybox.listeners
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.ashley.signals.Signal
-import com.badlogic.gdx.physics.box2d.Contact
-import com.badlogic.gdx.physics.box2d.ContactImpulse
-import com.badlogic.gdx.physics.box2d.ContactListener
-import com.badlogic.gdx.physics.box2d.Manifold
+import com.badlogic.gdx.physics.box2d.*
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.events.GameEvent
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 /**
  * Dispatches the appropriate events for every Box2D collisions.
  */
-class WorldContactListener(private val gameEventSignal: Signal<GameEvent>) : ContactListener {
+class WorldContactListener(private val gameEventSignal: Signal<GameEvent>,
+                           private val world: World = Injekt.get(),
+                           private val engine: PooledEngine = Injekt.get()) : ContactListener {
     /**
      * Called automatically when two Box2D bodies collide.
      */
@@ -53,7 +55,10 @@ class WorldContactListener(private val gameEventSignal: Signal<GameEvent>) : Con
         // A bullet and a platform collided
         if (bulletEntity != null && platformEntity != null) {
             bulletEntity.bullet.collidedWithWall = true
-            gameEventSignal.dispatch(GameEvent.BULLET_PLATFORM_COLLISION)
+            if (platformEntity.platform.isDynamic) {
+                gameEventSignal.dispatch(GameEvent.BULLET_PLATFORM_COLLISION)
+                platformEntity.platform.remove = true
+            }
         }
     }
 

@@ -20,12 +20,10 @@ package ro.luca1152.gravitybox.entities
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.BodyDef
-import com.badlogic.gdx.physics.box2d.FixtureDef
-import com.badlogic.gdx.physics.box2d.PolygonShape
-import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import ktx.actors.minus
@@ -146,9 +144,18 @@ object EntityFactory {
         this.map.set(levelNumber)
     }!!
 
-    fun createPlatform(engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+    fun createPlatform(mapObject: MapObject, isDynamic: Boolean, body: Body, engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+        // MapObjectComponent
+        add(engine.createComponent(MapObjectComponent::class.java))
+        this.mapObject.set(mapObject)
+
         // PlatformComponent
         add(engine.createComponent(PlatformComponent::class.java))
+        this.platform.isDynamic = isDynamic
+
+        // PhysicsComponent
+        add(engine.createComponent(PhysicsComponent::class.java))
+        this.physics.set(body)
     }!!
 
     fun createPlayer(mapEntity: Entity,

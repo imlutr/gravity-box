@@ -21,40 +21,50 @@
 
 package ro.luca1152.gravitybox.utils
 
+import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.maps.Map
 import com.badlogic.gdx.maps.objects.*
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.entities.EntityFactory
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 object MapBodyBuilder {
+    private val engine: PooledEngine = Injekt.get()
     private var PPM = 0f
 
-    fun buildShapes(map: Map, PPM: Float, world: World): Array<Body> {
-        this.PPM = PPM
-        val mapObjects = map.layers.get("Obstacles").objects
-        val bodies = Array<Body>()
-        loop@ for (mapObject in mapObjects) {
-            if (mapObject is TextureMapObject) {
-                continue
+    fun buildShapes(map: Map, PPM: Float, world: World) {
+        fun buildObstacles(obstacleType: String) {
+            val mapObjects = map.layers.get(obstacleType).objects
+            val bodies = Array<Body>()
+            loop@ for (mapObject in mapObjects) {
+                if (mapObject is TextureMapObject) {
+                    continue
+                }
+                val shape = when (mapObject) {
+                    is RectangleMapObject -> getRectangle(mapObject)
+                    is PolygonMapObject -> getPolygon(mapObject)
+                    is PolylineMapObject -> getPolyline(mapObject)
+                    is CircleMapObject -> getCircle(mapObject)
+                    else -> continue@loop
+                }
+                val bd = BodyDef().apply { type = BodyDef.BodyType.StaticBody }
+                val body = world.createBody(bd).apply {
+                    userData = EntityFactory.createPlatform(mapObject, obstacleType == "Dynamic", this)
+                    engine.addEntity(userData as Entity)
+                    createFixture(shape, 1f)
+                }
+                bodies.add(body)
+                shape.dispose()
             }
-            val shape = when (mapObject) {
-                is RectangleMapObject -> getRectangle(mapObject)
-                is PolygonMapObject -> getPolygon(mapObject)
-                is PolylineMapObject -> getPolyline(mapObject)
-                is CircleMapObject -> getCircle(mapObject)
-                else -> continue@loop
-            }
-            val bd = BodyDef().apply { type = BodyDef.BodyType.StaticBody }
-            val body = world.createBody(bd).apply {
-                userData = EntityFactory.createPlatform()
-                createFixture(shape, 1f)
-            }
-            bodies.add(body)
-            shape.dispose()
         }
-        return bodies
+
+        this.PPM = PPM
+        buildObstacles("Static")
+        buildObstacles("Dynamic")
     }
 
     fun getRectangle(rectangleObject: RectangleMapObject): PolygonShape {

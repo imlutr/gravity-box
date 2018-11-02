@@ -60,6 +60,7 @@ class LevelSystem(private var mapEntity: Entity,
         playerEntity.player.reset(playerEntity.physics.body)
         removeBullets()
         removeExplosions()
+        mapEntity.map.set(mapEntity.map.levelNumber)
     }
 
     private fun nextLevel() {
