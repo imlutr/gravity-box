@@ -1,5 +1,5 @@
 android {
-    buildToolsVersion "28.0.0"
+    buildToolsVersion "28.0.3"
     compileSdkVersion 28
     sourceSets {
         main {
@@ -31,7 +31,6 @@ android {
     }
 }
 
-
 /*
  * This file is part of Gravity Box.
  *
@@ -52,25 +51,27 @@ android {
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
 // so they get packed with the APK.
-task copyAndroidNatives() { 
-    file("libs/armeabi/").mkdirs()
-    file("libs/armeabi-v7a/").mkdirs()
-    file("libs/arm64-v8a/").mkdirs()
-    file("libs/x86_64/").mkdirs()
-    file("libs/x86/").mkdirs()
+task copyAndroidNatives {
+    doFirst {
+        file("libs/armeabi/").mkdirs()
+        file("libs/armeabi-v7a/").mkdirs()
+        file("libs/arm64-v8a/").mkdirs()
+        file("libs/x86_64/").mkdirs()
+        file("libs/x86/").mkdirs()
 
-    configurations.natives.files.each { jar ->
-        def outputDir = null
-        if(jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
-        if(jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")        
-        if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
-        if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
-        if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
-        if(outputDir != null) {
-            copy {
-                from zipTree(jar)
-                into outputDir
-                include "*.so"
+        configurations.natives.files.each { jar ->
+            def outputDir = null
+            if (jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
+            if (jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
+            if (jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
+            if (jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
+            if (jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+            if (outputDibr != null) {
+                copy {
+                    from zipTree(jar)
+                    into outputDir
+                    include "*.so"
+                }
             }
         }
     }
@@ -114,8 +115,8 @@ eclipse {
     }
 
     classpath {
-        plusConfigurations += [ project.configurations.compile ]        
-        containers 'com.android.ide.eclipse.adt.ANDROID_FRAMEWORK', 'com.android.ide.eclipse.adt.LIBRARIES'       
+        plusConfigurations += [project.configurations.compile]
+        containers 'com.android.ide.eclipse.adt.ANDROID_FRAMEWORK', 'com.android.ide.eclipse.adt.LIBRARIES'
     }
 
     project {
@@ -133,7 +134,7 @@ eclipse {
 idea {
     module {
         sourceDirs += file("src")
-        scopes = [ COMPILE: [plus:[project.configurations.compile]]]        
+        scopes = [COMPILE: [plus: [project.configurations.compile]]]
 
         iml {
             withXml {
@@ -143,7 +144,7 @@ idea {
                 builder.component(name: "FacetManager") {
                     facet(type: "android", name: "Android") {
                         configuration {
-                            option(name: "UPDATE_PROPERTY_FILES", value:"true")
+                            option(name: "UPDATE_PROPERTY_FILES", value: "true")
                         }
                     }
                 }
