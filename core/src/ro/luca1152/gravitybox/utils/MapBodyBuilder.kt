@@ -27,6 +27,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
 import ro.luca1152.gravitybox.PPM
+import ro.luca1152.gravitybox.components.MapComponent
 import ro.luca1152.gravitybox.entities.EntityFactory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -93,9 +94,13 @@ object MapBodyBuilder {
         buildPlatformsOfType("Dynamic")
     }
 
-    fun buildCollectibles(tiledMap: TiledMap,
+    fun buildCollectibles(map: MapComponent,
                           world: World = Injekt.get()) {
-        tiledMap.layers.get("Collectible").objects.forEach { mapObject ->
+        map.tiledMap.layers.get("Collectible").objects.forEach { mapObject ->
+            // Increase the number of collectibles of the map
+            map.totalCollectiblesNumber++
+
+            // Create the body
             val bodyDef = BodyDef().apply {
                 type = BodyDef.BodyType.DynamicBody
             }

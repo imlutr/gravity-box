@@ -66,6 +66,7 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
             addSystem(BulletCollisionSystem(playerEntity))
             addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
+            addSystem(PointSystem(mapEntity.map))
             addSystem(AutoRestartSystem())
             addSystem(ColorSchemeSystem())
             addSystem(ColorSyncSystem())

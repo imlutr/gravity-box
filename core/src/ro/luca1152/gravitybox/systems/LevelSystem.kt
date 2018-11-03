@@ -49,7 +49,7 @@ class LevelSystem(private var mapEntity: Entity,
         eventQueue.getEvents().forEach { event ->
             if (event == GameEvent.LEVEL_RESTART) restartLevel()
         }
-        if (ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(ColorScheme.currentDarkLerpColor))
+        if (mapEntity.map.isFinished && ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(ColorScheme.currentDarkLerpColor))
             nextLevel()
     }
 

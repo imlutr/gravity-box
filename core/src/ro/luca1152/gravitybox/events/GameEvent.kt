@@ -23,6 +23,7 @@ enum class GameEvent {
     LEVEL_RESTART, // The player is off-screen
 
     // Collisions
-    BULLET_PLATFORM_COLLISION, // Collision between a bullet and a platform
-    PLAYER_FINISH_COLLISION, // Collision between the player and the finish point
+    BULLET_PLATFORM_COLLISION,
+    PLAYER_FINISH_COLLISION,
+    PLAYER_COLLECTED_POINT,
 }

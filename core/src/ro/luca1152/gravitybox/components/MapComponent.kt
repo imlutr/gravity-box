@@ -40,6 +40,13 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
     var height = 0
     /** The hue of the color of the map, in [0, 360] range. */
     var hue = 180 // The initial hue is 180
+    /** How many collectibles a map has. */
+    var totalCollectiblesNumber = 0
+    /** The number of collectibles the player got. */
+    var collectedCollectibles = 0
+    /** True if the player collected every collectible. */
+    val isFinished
+        get() = collectedCollectibles == totalCollectiblesNumber
 
     fun set(levelNumber: Int) {
         loadMap(levelNumber)
@@ -53,7 +60,7 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
 
         // Build the platforms & collectibles
         MapBodyBuilder.buildPlatforms(tiledMap)
-        MapBodyBuilder.buildCollectibles(tiledMap)
+        MapBodyBuilder.buildCollectibles(this)
 
         // Update the map properties
         width = tiledMap.properties.get("width") as Int
