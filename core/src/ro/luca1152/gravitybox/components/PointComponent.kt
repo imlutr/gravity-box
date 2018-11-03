@@ -21,15 +21,15 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool
 
-class CollectibleComponent : Component, Pool.Poolable {
+class PointComponent : Component, Pool.Poolable {
     var isCollected = false
 
     override fun reset() {
         isCollected = false
     }
 
-    companion object : ComponentResolver<CollectibleComponent>(CollectibleComponent::class.java)
+    companion object : ComponentResolver<PointComponent>(PointComponent::class.java)
 }
 
-val Entity.collectible: CollectibleComponent
-    get() = CollectibleComponent[this]
+val Entity.point: PointComponent
+    get() = PointComponent[this]

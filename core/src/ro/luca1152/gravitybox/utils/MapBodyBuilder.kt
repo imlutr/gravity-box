@@ -94,11 +94,11 @@ object MapBodyBuilder {
         buildPlatformsOfType("Dynamic")
     }
 
-    fun buildCollectibles(map: MapComponent,
-                          world: World = Injekt.get()) {
-        map.tiledMap.layers.get("Collectible").objects.forEach { mapObject ->
-            // Increase the number of collectibles of the map
-            map.totalCollectiblesNumber++
+    fun buildPoints(map: MapComponent,
+                    world: World = Injekt.get()) {
+        map.tiledMap.layers.get("Points").objects.forEach { mapObject ->
+            // Increase the number points of the map
+            map.totalPointsNumber++
 
             // Create the body
             val bodyDef = BodyDef().apply {
@@ -107,11 +107,11 @@ object MapBodyBuilder {
             val fixtureDef = FixtureDef().apply {
                 shape = MapBodyBuilder.getRectangle(mapObject as RectangleMapObject)
                 density = 100f
-                filter.categoryBits = EntityCategory.COLLECTIBLE.bits
+                filter.categoryBits = EntityCategory.POINT.bits
                 filter.maskBits = EntityCategory.NONE.bits
             }
             world.createBody(bodyDef).apply {
-                userData = EntityFactory.createCollectible(this)
+                userData = EntityFactory.createPoint(this)
                 gravityScale = 0f
                 createFixture(fixtureDef)
             }

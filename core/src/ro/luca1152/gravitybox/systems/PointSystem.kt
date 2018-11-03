@@ -30,7 +30,7 @@ import uy.kohesive.injekt.api.get
 
 class PointSystem(private val map: MapComponent,
                   gameEventSignal: Signal<GameEvent> = Injekt.get(),
-                  private val world: World = Injekt.get()) : IteratingSystem(Family.all(CollectibleComponent::class.java, PhysicsComponent::class.java).get()) {
+                  private val world: World = Injekt.get()) : IteratingSystem(Family.all(PointComponent::class.java, PhysicsComponent::class.java).get()) {
     private val eventQueue = EventQueue()
 
     init {
@@ -43,8 +43,8 @@ class PointSystem(private val map: MapComponent,
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (entity.collectible.isCollected) {
-            map.collectedCollectibles++
+        if (entity.point.isCollected) {
+            map.collectedPoints++
             world.destroyBody(entity.physics.body)
             engine.removeEntity(entity)
         }

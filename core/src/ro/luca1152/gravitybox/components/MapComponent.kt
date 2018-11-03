@@ -33,6 +33,8 @@ import uy.kohesive.injekt.api.get
  */
 class MapComponent(private val manager: AssetManager = Injekt.get()) : Component, Poolable {
     var tiledMap = TiledMap() // Initialized with an empty TiledMap to avoid nullable type
+
+    // Properties
     var levelNumber = 0
     /** The width of the map, in tiles. */
     var width = 0
@@ -40,13 +42,13 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
     var height = 0
     /** The hue of the color of the map, in [0, 360] range. */
     var hue = 180 // The initial hue is 180
-    /** How many collectibles a map has. */
-    var totalCollectiblesNumber = 0
-    /** The number of collectibles the player got. */
-    var collectedCollectibles = 0
-    /** True if the player collected every collectible. */
+    /** How many points a map has. */
+    var totalPointsNumber = 0
+    /** The number of points the player collected. */
+    var collectedPoints = 0
+    /** True if the player collected every point. */
     val isFinished
-        get() = collectedCollectibles == totalCollectiblesNumber
+        get() = collectedPoints == totalPointsNumber
 
     fun set(levelNumber: Int) {
         loadMap(levelNumber)
@@ -58,9 +60,9 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
         // Update the map
         tiledMap = manager.getAsset("maps/map-$levelNumber.tmx")
 
-        // Build the platforms & collectibles
+        // Build the platforms & points
         MapBodyBuilder.buildPlatforms(tiledMap)
-        MapBodyBuilder.buildCollectibles(this)
+        MapBodyBuilder.buildPoints(this)
 
         // Update the map properties
         width = tiledMap.properties.get("width") as Int

@@ -192,10 +192,10 @@ object EntityFactory {
         engine.addEntity(this)
     }!!
 
-    fun createCollectible(body: Body,
-                          engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
-        // CollectibleComponent
-        add(engine.createComponent(CollectibleComponent::class.java))
+    fun createPoint(body: Body,
+                    engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+        // PointComponent
+        add(engine.createComponent(PointComponent::class.java))
 
         // PhysicsComponent
         add(engine.createComponent(PhysicsComponent::class.java))

@@ -46,7 +46,7 @@ class CollisionBoxListener(private val gameEventSignal: Signal<GameEvent> = Inje
                 // Find the specific entities
                 val playerEntity = findEntity(PlayerComponent, entities[i], entities[j])
                 val finishEntity = findEntity(FinishComponent, entities[i], entities[j])
-                val collectibleEntity = findEntity(CollectibleComponent, entities[i], entities[j])
+                val pointEntity = findEntity(PointComponent, entities[i], entities[j])
 
                 // If the player collided with the finish point, change the color scheme
                 if (playerEntity != null && finishEntity != null)
@@ -54,9 +54,9 @@ class CollisionBoxListener(private val gameEventSignal: Signal<GameEvent> = Inje
 
                 // entity[i] overlaps entity[j]
                 if (overlaps) {
-                    // The player collided with a collectible
-                    if (playerEntity != null && collectibleEntity != null) {
-                        collectibleEntity.collectible.isCollected = true
+                    // The player collected a point
+                    if (playerEntity != null && pointEntity != null) {
+                        pointEntity.point.isCollected = true
                         gameEventSignal.dispatch(GameEvent.PLAYER_COLLECTED_POINT)
                     }
                 }

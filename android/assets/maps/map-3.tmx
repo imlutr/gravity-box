@@ -31,7 +31,7 @@
   <object id="72" x="575" y="471" width="192" height="16"/>
   <object id="73" x="63" y="471" width="194" height="16"/>
  </objectgroup>
- <objectgroup name="Collectible">
+ <objectgroup name="Points">
   <object id="76" x="128" y="384" width="64" height="64"/>
   <object id="77" x="640" y="384" width="64" height="64"/>
  </objectgroup>
