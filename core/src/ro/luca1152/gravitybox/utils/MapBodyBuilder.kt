@@ -104,7 +104,7 @@ object MapBodyBuilder {
         map: MapComponent,
         world: World = Injekt.get()
     ) {
-        map.tiledMap.layers.get("Points").objects.forEach { mapObject ->
+        map.tiledMap.layers.get("Points")?.objects?.forEach { mapObject ->
             // Increase the number points of the map
             map.totalPointsNumber++
 

@@ -116,6 +116,7 @@ class RenderSystem(
                 }
             }
             // Draw dynamic platforms
+            shapeRenderer.setAutoShapeType(true)
             shapeRenderer.set(ShapeRenderer.ShapeType.Line)
             for (body in world.bodies) {
                 if (body.userData != null && body.userData is Entity) {
