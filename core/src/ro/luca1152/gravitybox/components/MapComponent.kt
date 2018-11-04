@@ -23,6 +23,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.assets.getAsset
+import ro.luca1152.gravitybox.components.utils.ComponentResolver
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
@@ -50,11 +51,8 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
     val isFinished
         get() = collectedPoints == totalPointsNumber
 
+    /** Initializes the component. */
     fun set(levelNumber: Int) {
-        loadMap(levelNumber)
-    }
-
-    fun loadMap(levelNumber: Int) {
         this.levelNumber = levelNumber
 
         // Update the map
@@ -73,7 +71,12 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
         ColorScheme.updateColors(hue)
     }
 
-    override fun reset() {}
+    /** Resets the component for reuse. */
+    override fun reset() {
+        levelNumber = 0
+        width = 0; height = 0; hue = 180
+        totalPointsNumber = 0; collectedPoints = 0
+    }
 
     companion object : ComponentResolver<MapComponent>(MapComponent::class.java) {
         const val GRAVITY = -25f

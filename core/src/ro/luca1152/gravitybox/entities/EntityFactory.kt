@@ -26,9 +26,9 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
-import ktx.actors.minus
 import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.EntityCategory
 import uy.kohesive.injekt.Injekt
@@ -97,10 +97,7 @@ object EntityFactory {
                         Actions.scaleBy(3f, 3f, .25f),
                         Actions.fadeOut(.25f, Interpolation.exp5)
                     ),
-                    Actions.run {
-                        stage - this
-                        engine.removeEntity(this@apply)
-                    },
+                    Actions.run { engine.removeAndResetEntity(this@apply) },
                     Actions.removeActor()
                 )
             )

@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.components
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
 /**
  * Indicates that the entity is a platform.
@@ -28,6 +29,7 @@ class PlatformComponent : Component, Poolable {
     var remove = false
     var isDynamic = false
 
+    /** Resets the component for reuse. */
     override fun reset() {
         remove = false
     }

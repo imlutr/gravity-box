@@ -22,7 +22,12 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.physics.box2d.*
-import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.BulletComponent
+import ro.luca1152.gravitybox.components.PlatformComponent
+import ro.luca1152.gravitybox.components.bullet
+import ro.luca1152.gravitybox.components.platform
+import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.components.utils.tryGet
 import ro.luca1152.gravitybox.events.GameEvent
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -58,7 +63,7 @@ class WorldContactListener(
         if (bulletEntity != null && platformEntity != null) {
             // Remove the bullet
             bulletEntity.bullet.collidedWithWall = true
-            gameEventSignal.dispatch(GameEvent.BULLET_PLATFORM_COLLISION)
+            bulletEntity.bullet.collidedWith = platformEntity
 
             // Remove the platform if it's dynamic
             if (platformEntity.platform.isDynamic)

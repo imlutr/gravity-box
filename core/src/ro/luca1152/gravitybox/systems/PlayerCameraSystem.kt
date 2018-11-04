@@ -19,8 +19,10 @@ package ro.luca1152.gravitybox.systems
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import ro.luca1152.gravitybox.components.ImageComponent
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.components.map
+import ro.luca1152.gravitybox.components.utils.tryGet
 import ro.luca1152.gravitybox.utils.GameCamera
 import ro.luca1152.gravitybox.utils.lerp
 import uy.kohesive.injekt.Injekt
@@ -35,12 +37,13 @@ class PlayerCameraSystem(
     private val gameCamera: GameCamera = Injekt.get()
 ) : EntitySystem() {
     override fun update(deltaTime: Float) {
+        if (playerEntity.tryGet(ImageComponent) != null)
         // Smoothly move the camera towards the player
-        gameCamera.position.lerp(
-            playerEntity.image.x + playerEntity.image.width / 2f,
-            playerEntity.image.y + playerEntity.image.height / 2f,
-            progress = .15f
-        )
+            gameCamera.position.lerp(
+                playerEntity.image.x + playerEntity.image.width / 2f,
+                playerEntity.image.y + playerEntity.image.height / 2f,
+                progress = .15f
+            )
 
         // Keep the camera within the bounds of the map
         keepWithinBounds(gameCamera.zoom)

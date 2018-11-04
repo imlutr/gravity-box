@@ -20,20 +20,16 @@ package ro.luca1152.gravitybox.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.physics.box2d.World
 import ro.luca1152.gravitybox.components.PhysicsComponent
 import ro.luca1152.gravitybox.components.PlatformComponent
-import ro.luca1152.gravitybox.components.physics
 import ro.luca1152.gravitybox.components.platform
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 
-class PlatformRemovalSystem(private val world: World = Injekt.get()) :
+class PlatformRemovalSystem :
     IteratingSystem(Family.all(PlatformComponent::class.java, PhysicsComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.platform.remove) {
-            world.destroyBody(entity.physics.body)
-            engine.removeEntity(entity)
+            engine.removeAndResetEntity(entity)
         }
     }
 }

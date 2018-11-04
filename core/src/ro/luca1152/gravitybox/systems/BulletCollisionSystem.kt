@@ -20,58 +20,96 @@ package ro.luca1152.gravitybox.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.scenes.scene2d.actions.Actions.removeActor
-import com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence
-import ktx.math.minus
-import ktx.math.times
-import ktx.math.vec2
 import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
+import ro.luca1152.gravitybox.components.utils.tryGet
 import ro.luca1152.gravitybox.entities.EntityFactory
-import ro.luca1152.gravitybox.utils.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.lang.Math.pow
 
 /**
  * Handles what happens when a bullet collides with a platform.
  */
-class BulletCollisionSystem(
-    private val playerEntity: Entity,
-    private val stage: GameStage = Injekt.get(),
-    private val world: World = Injekt.get()
-) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
+class BulletCollisionSystem :
+    IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
     override fun processEntity(bullet: Entity, deltaTime: Float) {
         if (bullet.bullet.collidedWithWall) {
-            createExplosion(bullet)
-            pushPlayer(bullet)
-            removeBullet(bullet)
+            // Modify the position so the bullet will be inside the platform it collided with.
+            // If I wouldn't do this, there would be no explosion force if the player shot down, for example.
+            val bPos = bullet.physics.body.worldCenter
+            val pPos = bullet.bullet.collidedWith.mapObject.worldCenter
+            bPos.set(
+                if (bPos.x.approxEqual(pPos.x)) pPos.x else bPos.x,
+                if (bPos.y.approxEqual(pPos.y)) pPos.y else bPos.y
+            )
+
+            // Create the actual explosion by applying a force
+            explodeAt(bPos)
+
+            // Create the explosion image
+            EntityFactory.createExplosion(bullet.physics.body.worldCenter)
+
+            engine.removeAndResetEntity(bullet)
         }
     }
 
-    private fun createExplosion(bullet: Entity) {
-        EntityFactory.createExplosion(bullet.physics.body.worldCenter)
+    private fun Float.approxEqual(x: Float, epsilon: Float = 0.4f): Boolean {
+        return Math.abs(this - x) <= epsilon
     }
 
-    private fun pushPlayer(bullet: Entity) {
-        val sourcePosition = vec2(x = bullet.physics.body.worldCenter.x, y = bullet.physics.body.worldCenter.y)
-        val playerBody = playerEntity.physics.body
-        val distance = playerBody.worldCenter.dst(sourcePosition).toDouble()
-        var forceVector = playerBody.worldCenter.cpy()
-        forceVector -= sourcePosition
-        forceVector.nor()
-        forceVector *= 1300 * (1.22f * pow(1 - .3, distance).toFloat()) * 5
-        playerBody.applyForce(forceVector, playerBody.worldCenter, true)
-    }
+    /**
+     * Creates a raycast explosion.
+     * Code from https://mentalgrain.com/box2d/explosions-in-box2d/
+     */
+    private fun explodeAt(
+        center: Vector2,
+        world: World = Injekt.get()
+    ) {
+        // Constants
+        val numRays = 15
+        val blastPower = 200f
+        val blastRadius = 10
 
-    private fun removeBullet(bullet: Entity) {
-        stage.addAction(
-            sequence(
-//                        delay(.01f), // With no delay there would be a gap between the bullet and the platform TODO
-                removeActor(bullet.image.img)
+        // Vector2's
+        val rayDir = Vector2()
+        val rayEnd = Vector2()
+
+        for (i in 0 until numRays) {
+            val angle = i.toFloat() / numRays * 360 * MathUtils.degRad
+            rayDir.set(MathUtils.sin(angle), MathUtils.cos(angle))
+            rayEnd.set(
+                center.x + blastRadius * rayDir.x,
+                center.y + blastRadius * rayDir.y
             )
-        )
-        world.destroyBody(bullet.physics.body)
-        engine.removeEntity(bullet)
+            world.rayCast({ fixture, point, _, _ ->
+                if ((fixture.body.userData as Entity).tryGet(PlayerComponent) != null)
+                    fixture.body.applyBlastImpulse(
+                        center,
+                        point,
+                        blastPower / numRays.toFloat()
+                    )
+                0f
+            }, center, rayEnd)
+        }
+    }
+
+    private fun Body.applyBlastImpulse(blastCenter: Vector2, applyPoint: Vector2, blastPower: Float) {
+        if (this.type != BodyDef.BodyType.DynamicBody)
+            return
+
+        val blastDir = applyPoint.cpy().sub(blastCenter)
+        val distance = blastDir.len()
+        if (distance == 0f) return
+
+        val invDistance = 1f / distance
+        val impulseMag = Math.min(blastPower * invDistance * invDistance, 7.5f)
+
+        this.applyLinearImpulse(blastDir.nor().scl(impulseMag), applyPoint, true)
     }
 }
+

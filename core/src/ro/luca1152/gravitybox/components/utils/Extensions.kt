@@ -15,38 +15,29 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.utils
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
 /**
- * Every entity that has this component will have its color in sync with the color scheme.
+ * Returns the component if the has the [componentResolver].
+ * Otherwise, it returns null.
  */
-class ColorComponent : Component, Poolable {
-    // Initialized with null ColorType to avoid nullable type
-    var colorType = ColorType.NULL
+fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? = componentResolver[this]
 
-    /** Initializes the component. */
-    fun set(colorType: ColorType) {
-        this.colorType = colorType
+/** Removes the [entity] from the engine and resets each of its components. */
+fun Engine.removeAndResetEntity(entity: Entity) {
+    // Reset every component so you don't have to manually reset them for
+    // each entity, such as calling world.destroyBody(entity.physics.body).
+    for (component in entity.components) {
+        if (component is Poolable)
+            component.reset()
+        entity.remove(component::class.java)
     }
 
-    /** Resets the component for reuse. */
-    override fun reset() {
-        colorType = ColorType.NULL
-    }
-
-    companion object : ComponentResolver<ColorComponent>(ColorComponent::class.java)
-}
-
-val Entity.color: ColorComponent
-    get() = ColorComponent[this]
-
-enum class ColorType {
-    DARK,
-    LIGHT,
-    NULL
+    // Call the default removeEntity() function
+    this.removeEntity(entity)
 }

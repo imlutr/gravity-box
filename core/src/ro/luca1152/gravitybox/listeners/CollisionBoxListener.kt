@@ -57,7 +57,6 @@ class CollisionBoxListener(private val gameEventSignal: Signal<GameEvent> = Inje
                     // The player collected a point
                     if (playerEntity != null && pointEntity != null) {
                         pointEntity.point.isCollected = true
-                        gameEventSignal.dispatch(GameEvent.PLAYER_COLLECTED_POINT)
                     }
                 }
             }

@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.systems
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -29,7 +30,11 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import ro.luca1152.gravitybox.PPM
 import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.utils.*
+import ro.luca1152.gravitybox.components.utils.tryGet
+import ro.luca1152.gravitybox.utils.ColorScheme
+import ro.luca1152.gravitybox.utils.GameCamera
+import ro.luca1152.gravitybox.utils.GameStage
+import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -52,9 +57,10 @@ class RenderSystem(
         stage.act()
         gameViewport.apply()
         stage.batch.projectionMatrix = gameCamera.combined
+        shapeRenderer.setAutoShapeType(true)
         Gdx.gl20.glLineWidth(10f)
 
-        drawImages()
+//        drawImages()
 //        drawTiledMap()
         drawPhysicsDebug()
     }
@@ -73,7 +79,7 @@ class RenderSystem(
         }
 
         repositionImages()
-//        stage.draw()
+        stage.draw()
         repositionImages(restore = true)
     }
 
@@ -90,55 +96,43 @@ class RenderSystem(
 
     private fun drawPhysicsDebug() {
         fun drawXAtOrigins() {
-            shapeRenderer.projectionMatrix = gameCamera.combined
-            shapeRenderer.color = Color.RED
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line)
-            for (body in world.bodies) {
-                if (body.type == BodyDef.BodyType.DynamicBody)
+            shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+            for (entity in engine.getEntitiesFor(Family.all(PhysicsComponent::class.java).get())) {
+                val body = entity.physics.body
+                if (body.type == BodyDef.BodyType.DynamicBody) {
+                    (body.userData as Entity).run {
+                        when {
+                            this.tryGet(FinishComponent) != null -> shapeRenderer.color = Color.LIME
+                            this.tryGet(PointComponent) != null -> shapeRenderer.color = Color.BLUE
+                            this.tryGet(PlayerComponent) != null -> shapeRenderer.color = Color.RED
+                            this.tryGet(BulletComponent) != null -> shapeRenderer.color = Color.YELLOW
+                        }
+                    }
                     shapeRenderer.x(body.worldCenter, .05f)
+                }
             }
-            shapeRenderer.end()
-            shapeRenderer.color = Color.WHITE
         }
 
         fun drawPlatforms() {
             shapeRenderer.color = ColorScheme.currentDarkColor
-            // Draw static platforms
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
-            for (body in world.bodies) {
-                if (body.userData != null && body.userData is Entity) {
-                    val entity = body.userData as Entity
-                    if (entity.tryGet(PlatformComponent) != null && !entity.platform.isDynamic)
-                        shapeRenderer.rect(
-                            entity.mapObject.position.x,
-                            entity.mapObject.position.y,
-                            entity.mapObject.width,
-                            entity.mapObject.height
-                        )
+            for (entity in engine.getEntitiesFor(Family.all(PlatformComponent::class.java, MapObjectComponent::class.java).get())) {
+                when (entity.platform.isDynamic) {
+                    true -> shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+                    false -> shapeRenderer.set(ShapeRenderer.ShapeType.Filled)
                 }
+                shapeRenderer.rect(
+                    entity.mapObject.position.x,
+                    entity.mapObject.position.y,
+                    entity.mapObject.width,
+                    entity.mapObject.height
+                )
             }
-            // Draw dynamic platforms
-            shapeRenderer.setAutoShapeType(true)
-            shapeRenderer.set(ShapeRenderer.ShapeType.Line)
-            for (body in world.bodies) {
-                if (body.userData != null && body.userData is Entity) {
-                    val entity = body.userData as Entity
-                    if (entity.tryGet(PlatformComponent) != null && entity.platform.isDynamic)
-                        shapeRenderer.rect(
-                            entity.mapObject.position.x,
-                            entity.mapObject.position.y,
-                            entity.mapObject.width,
-                            entity.mapObject.height
-                        )
-
-                }
-            }
-            shapeRenderer.end()
-            shapeRenderer.color = Color.WHITE
         }
-
         b2DDebugRenderer.render(world, gameCamera.combined)
+        shapeRenderer.projectionMatrix = gameCamera.combined
+        shapeRenderer.begin()
         drawXAtOrigins()
         drawPlatforms()
+        shapeRenderer.end()
     }
 }

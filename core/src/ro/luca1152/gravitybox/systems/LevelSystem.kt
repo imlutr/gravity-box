@@ -21,12 +21,12 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.signals.Signal
-import com.badlogic.gdx.physics.box2d.World
-import ktx.actors.minus
 import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.GameEvent
-import ro.luca1152.gravitybox.utils.*
+import ro.luca1152.gravitybox.utils.ColorScheme
+import ro.luca1152.gravitybox.utils.approxEqualTo
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -37,9 +37,7 @@ class LevelSystem(
     private var mapEntity: Entity,
     private val finishEntity: Entity,
     private val playerEntity: Entity,
-    gameEventSignal: Signal<GameEvent> = Injekt.get(),
-    private val world: World = Injekt.get(),
-    private val stage: GameStage = Injekt.get()
+    gameEventSignal: Signal<GameEvent> = Injekt.get()
 ) : EntitySystem() {
     private val eventQueue = EventQueue()
 
@@ -51,58 +49,22 @@ class LevelSystem(
         eventQueue.getEvents().forEach { event ->
             if (event == GameEvent.LEVEL_RESTART) restartLevel()
         }
-        if (mapEntity.map.isFinished && ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(
-                ColorScheme.currentDarkLerpColor
-            )
-        )
+        if (mapEntity.map.isFinished && ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(ColorScheme.currentDarkLerpColor))
             nextLevel()
     }
 
     private fun restartLevel() {
         playerEntity.player.reset(playerEntity.physics.body)
-        removeBullets()
-        removeExplosions()
+        for (entity in engine.getEntitiesFor(
+            Family.one(PhysicsComponent::class.java, PlatformComponent::class.java)
+                .exclude(PlayerComponent::class.java, FinishComponent::class.java).get()
+        ))
+            engine.removeAndResetEntity(entity)
         mapEntity.map.set(mapEntity.map.levelNumber)
     }
 
     private fun nextLevel() {
-        fun removeAllBodies() {
-            removeBullets()
-            removeExplosions()
-            world.bodies.forEach { body -> world.destroyBody(body) }
-        }
-
-        removeAllBodies()
-        mapEntity.map.loadMap(mapEntity.map.levelNumber + 1)
-        playerEntity.run {
-            physics.body = MapBodyBuilder.buildPlayer(mapEntity.map.tiledMap).physics.body
-            image.color = ColorScheme.currentDarkColor
-        }
-        finishEntity.run {
-            physics.body = MapBodyBuilder.buildFinish(mapEntity.map.tiledMap).physics.body
-            image.color = ColorScheme.currentDarkColor
-        }
-    }
-
-    fun removeExplosions() {
-        engine.getEntitiesFor(Family.all(ExplosionComponent::class.java).get()).forEach { explosion ->
-            stage - explosion.image.img
-            engine.removeEntity(explosion)
-        }
-    }
-
-    /**
-     * Removes every bullet, including their Box2D body and ImageComponent.
-     */
-    private fun removeBullets() {
-        world.bodies.forEach { body ->
-            if (body.userData is Entity && (body.userData as Entity).tryGet(BulletComponent) != null && (body.userData as Entity).tryGet(
-                    ImageComponent
-                ) != null
-            ) {
-                stage - (body.userData as Entity).image.img
-                world.destroyBody(body)
-            }
-        }
+        mapEntity.map.levelNumber++
+        restartLevel()
     }
 }

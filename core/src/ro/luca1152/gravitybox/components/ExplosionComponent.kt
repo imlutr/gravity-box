@@ -19,12 +19,14 @@ package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
 /**
  * Indicates that the entity is an explosion (the circle that appears when the bullet
  * collides with a platform).
  */
 class ExplosionComponent : Component, Poolable {
+    /** Resets the component for reuse. */
     override fun reset() {}
 
     companion object : ComponentResolver<ExplosionComponent>(ExplosionComponent::class.java)

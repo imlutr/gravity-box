@@ -22,6 +22,7 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.utils.tryGet
 
 /**
  * Sync the position of the PhysicsComponent's Box2D body with other components.

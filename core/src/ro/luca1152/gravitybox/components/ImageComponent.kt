@@ -26,7 +26,9 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.actors.minus
 import ktx.actors.plus
+import ro.luca1152.gravitybox.components.utils.ComponentResolver
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.GameStage
 import uy.kohesive.injekt.Injekt
@@ -63,21 +65,20 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             img.color = value
         }
 
-    fun set(texture: Texture, x: Float, y: Float) {
+    /** Initializes the component. */
+    fun set(texture: Texture, position: Vector2) {
         img.run {
             drawable = TextureRegionDrawable(TextureRegion(texture))
-            setPosition(x, y)
+            setPosition(position.x, position.y)
             setSize(texture.width.pixelsToMeters, texture.height.pixelsToMeters)
             setOrigin(width / 2f, height / 2f)
         }
         stage + img
     }
 
-    fun set(texture: Texture, position: Vector2) {
-        set(texture, position.x, position.y)
-    }
-
+    /** Resets the component for reuse. */
     override fun reset() {
+        stage - img
         img.run {
             color = Color.WHITE
             rotation = 0f

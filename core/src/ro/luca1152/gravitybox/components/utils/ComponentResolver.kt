@@ -15,7 +15,9 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+@file:Suppress("PrivatePropertyName", "HasPlatformType")
+
+package ro.luca1152.gravitybox.components.utils
 
 
 import com.badlogic.ashley.core.Component
@@ -26,5 +28,3 @@ open class ComponentResolver<T : Component>(componentClass: Class<T>) {
     private val MAPPER = ComponentMapper.getFor(componentClass)!!
     operator fun get(entity: Entity) = MAPPER[entity]
 }
-
-fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? = componentResolver[this]

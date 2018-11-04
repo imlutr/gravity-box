@@ -22,6 +22,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
+import ro.luca1152.gravitybox.components.utils.ComponentResolver
 import ro.luca1152.gravitybox.pixelsToMeters
 
 class MapObjectComponent : Component, Pool.Poolable {
@@ -39,6 +40,7 @@ class MapObjectComponent : Component, Pool.Poolable {
         worldCenter.set(position.x + width / 2f, position.y + height / 2f)
     }
 
+    /** Resets the component for reuse. */
     override fun reset() {
         position.set(0f, 0f)
         worldCenter.set(0f, 0f)

@@ -19,36 +19,20 @@ package ro.luca1152.gravitybox.systems
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
-import com.badlogic.ashley.signals.Signal
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.physics.box2d.World
-import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.GameEvent
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import ro.luca1152.gravitybox.components.MapComponent
+import ro.luca1152.gravitybox.components.PhysicsComponent
+import ro.luca1152.gravitybox.components.PointComponent
+import ro.luca1152.gravitybox.components.point
+import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 
 class PointSystem(
-    private val map: MapComponent,
-    gameEventSignal: Signal<GameEvent> = Injekt.get(),
-    private val world: World = Injekt.get()
+    private val map: MapComponent
 ) : IteratingSystem(Family.all(PointComponent::class.java, PhysicsComponent::class.java).get()) {
-    private val eventQueue = EventQueue()
-
-    init {
-        gameEventSignal.add(eventQueue)
-    }
-
-    override fun update(deltaTime: Float) {
-        if (eventQueue.getEvents().contains(GameEvent.PLAYER_COLLECTED_POINT))
-            super.update(deltaTime)
-    }
-
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.point.isCollected) {
             map.collectedPoints++
-            world.destroyBody(entity.physics.body)
-            engine.removeEntity(entity)
+            engine.removeAndResetEntity(entity)
         }
     }
 }

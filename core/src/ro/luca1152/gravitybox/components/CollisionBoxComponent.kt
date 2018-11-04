@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
 /**
  * Used to detect when the player is in the finish point.
@@ -32,11 +33,13 @@ class CollisionBoxComponent : Component, Poolable {
 
     var size = 0f
 
+    /** Initializes the component. */
     fun set(size: Float) {
         this.size = size
         box.setSize(size)
     }
 
+    /** Resets the component for reuse. */
     override fun reset() {
         box.set(0f, 0f, 0f, 0f)
     }

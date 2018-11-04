@@ -23,25 +23,27 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.utils.bodies
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /**
  * Contains a Box2D body.
  */
-class PhysicsComponent(world: World = Injekt.get()) : Component, Poolable {
+class PhysicsComponent(private val world: World = Injekt.get()) : Component, Poolable {
     // Initialized with an empty body to avoid nullable type
     var body: Body = world.createBody(BodyDef())
 
+    /** Initializes the component. */
     fun set(body: Body) {
         this.body = body
     }
 
+    /** Resets the component for reuse. */
     override fun reset() {
-        body.setTransform(0f, 0f, 0f) // Reset the position
-        body.applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
-        body.setLinearVelocity(0f, 0f)
-        body.angularVelocity = 0f
+        if (world.bodies.contains(body, false))
+            world.destroyBody(body)
     }
 
     companion object : ComponentResolver<PhysicsComponent>(PhysicsComponent::class.java)

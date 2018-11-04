@@ -21,15 +21,12 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
 /**
  * Indicates that the entity is a player.
  */
 class PlayerComponent : Component, Poolable {
-    /**
-     * Reset the player to its initial state (initial position & no velocity).
-     * Used when restarting the level.
-     */
     fun reset(body: Body) {
         body.setTransform(0f, 0f, 0f) // Reset the position
         body.applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
@@ -37,6 +34,7 @@ class PlayerComponent : Component, Poolable {
         body.angularVelocity = 0f
     }
 
+    /** Resets the component for reuse. */
     override fun reset() {}
 
     companion object : ComponentResolver<PlayerComponent>(PlayerComponent::class.java)

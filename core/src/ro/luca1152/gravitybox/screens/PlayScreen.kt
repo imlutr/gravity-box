@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
@@ -49,7 +50,16 @@ class PlayScreen(
     private val stage = GameStage
 
     init {
-        Injekt.run { addSingleton(stage); addSingleton(world); addSingleton(gameEventSignal) }
+        // Load the Box2D native library
+        Box2D.init()
+
+        // Dependency injection
+        Injekt.run {
+            addSingleton(stage)
+            addSingleton(world)
+            addSingleton(gameEventSignal)
+        }
+
         world.setContactListener(WorldContactListener(gameEventSignal))
     }
 
@@ -65,7 +75,7 @@ class PlayScreen(
             addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
-            addSystem(BulletCollisionSystem(playerEntity))
+            addSystem(BulletCollisionSystem())
             addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
             addSystem(PointSystem(mapEntity.map))
@@ -79,6 +89,7 @@ class PlayScreen(
 
     override fun render(delta: Float) {
         clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
+        println(engine.entities.size())
         engine.update(delta)
     }
 
