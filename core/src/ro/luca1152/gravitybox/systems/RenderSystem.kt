@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.systems
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -51,6 +52,7 @@ class RenderSystem(
         stage.act()
         gameViewport.apply()
         stage.batch.projectionMatrix = gameCamera.combined
+        Gdx.gl20.glLineWidth(10f)
 
         drawImages()
 //        drawTiledMap()
@@ -128,6 +130,7 @@ class RenderSystem(
                             entity.mapObject.width,
                             entity.mapObject.height
                         )
+
                 }
             }
             shapeRenderer.end()
