@@ -70,7 +70,7 @@ class PlayScreen(
             addSystem(PlatformRemovalSystem())
             addSystem(PointSystem(mapEntity.map))
             addSystem(AutoRestartSystem())
-            addSystem(ColorSchemeSystem())
+            addSystem(ColorSchemeSystem(mapEntity))
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem(mapEntity, playerEntity))
             addSystem(RenderSystem(mapEntity))

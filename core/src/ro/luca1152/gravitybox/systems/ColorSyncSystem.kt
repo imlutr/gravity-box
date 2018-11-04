@@ -28,11 +28,10 @@ import ro.luca1152.gravitybox.utils.setWithoutAlpha
  * Sync the [ImageComponent]'s color with the [ColorComponent]'s color.
  * Used mostly to set the color of every object to the respective color from ColorScheme.
  */
-class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, ColorComponent::class.java).get()) {
+class ColorSyncSystem :
+    IteratingSystem(Family.all(ImageComponent::class.java, ColorComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        when (entity.color.colorType) {
-            ColorType.DARK -> entity.image.color.setWithoutAlpha(ColorScheme.currentDarkColor)
-            ColorType.LIGHT -> entity.image.color.setWithoutAlpha(ColorScheme.currentLightColor)
-        }
+        if (entity.color.colorType == ColorType.DARK) entity.image.color.setWithoutAlpha(ColorScheme.currentDarkColor)
+        else if (entity.color.colorType == ColorType.LIGHT) entity.image.color.setWithoutAlpha(ColorScheme.currentLightColor)
     }
 }
