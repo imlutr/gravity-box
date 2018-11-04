@@ -33,12 +33,14 @@ import uy.kohesive.injekt.api.get
 /**
  * Handles every event related to levels, such as restarting the level.
  */
-class LevelSystem(private var mapEntity: Entity,
-                  private val finishEntity: Entity,
-                  private val playerEntity: Entity,
-                  gameEventSignal: Signal<GameEvent> = Injekt.get(),
-                  private val world: World = Injekt.get(),
-                  private val stage: GameStage = Injekt.get()) : EntitySystem() {
+class LevelSystem(
+    private var mapEntity: Entity,
+    private val finishEntity: Entity,
+    private val playerEntity: Entity,
+    gameEventSignal: Signal<GameEvent> = Injekt.get(),
+    private val world: World = Injekt.get(),
+    private val stage: GameStage = Injekt.get()
+) : EntitySystem() {
     private val eventQueue = EventQueue()
 
     init {
@@ -49,7 +51,10 @@ class LevelSystem(private var mapEntity: Entity,
         eventQueue.getEvents().forEach { event ->
             if (event == GameEvent.LEVEL_RESTART) restartLevel()
         }
-        if (mapEntity.map.isFinished && ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(ColorScheme.currentDarkLerpColor))
+        if (mapEntity.map.isFinished && ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(
+                ColorScheme.currentDarkLerpColor
+            )
+        )
             nextLevel()
     }
 
@@ -91,7 +96,10 @@ class LevelSystem(private var mapEntity: Entity,
      */
     private fun removeBullets() {
         world.bodies.forEach { body ->
-            if (body.userData is Entity && (body.userData as Entity).tryGet(BulletComponent) != null && (body.userData as Entity).tryGet(ImageComponent) != null) {
+            if (body.userData is Entity && (body.userData as Entity).tryGet(BulletComponent) != null && (body.userData as Entity).tryGet(
+                    ImageComponent
+                ) != null
+            ) {
                 stage - (body.userData as Entity).image.img
                 world.destroyBody(body)
             }

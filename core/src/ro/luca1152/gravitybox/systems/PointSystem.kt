@@ -28,9 +28,11 @@ import ro.luca1152.gravitybox.events.GameEvent
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PointSystem(private val map: MapComponent,
-                  gameEventSignal: Signal<GameEvent> = Injekt.get(),
-                  private val world: World = Injekt.get()) : IteratingSystem(Family.all(PointComponent::class.java, PhysicsComponent::class.java).get()) {
+class PointSystem(
+    private val map: MapComponent,
+    gameEventSignal: Signal<GameEvent> = Injekt.get(),
+    private val world: World = Injekt.get()
+) : IteratingSystem(Family.all(PointComponent::class.java, PhysicsComponent::class.java).get()) {
     private val eventQueue = EventQueue()
 
     init {

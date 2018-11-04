@@ -30,9 +30,11 @@ import uy.kohesive.injekt.api.get
 /**
  * Dispatches the appropriate events for every Box2D collisions.
  */
-class WorldContactListener(private val gameEventSignal: Signal<GameEvent>,
-                           private val world: World = Injekt.get(),
-                           private val engine: PooledEngine = Injekt.get()) : ContactListener {
+class WorldContactListener(
+    private val gameEventSignal: Signal<GameEvent>,
+    private val world: World = Injekt.get(),
+    private val engine: PooledEngine = Injekt.get()
+) : ContactListener {
     /**
      * Called automatically when two Box2D bodies collide.
      */
@@ -77,8 +79,8 @@ class WorldContactListener(private val gameEventSignal: Signal<GameEvent>,
  * If none, returns null.
  */
 fun <T : Component> findEntity(componentResolver: ComponentResolver<T>, entityA: Entity, entityB: Entity) =
-        when {
-            entityA.tryGet(componentResolver) != null -> entityA
-            entityB.tryGet(componentResolver) != null -> entityB
-            else -> null
-        }
+    when {
+        entityA.tryGet(componentResolver) != null -> entityA
+        entityB.tryGet(componentResolver) != null -> entityB
+        else -> null
+    }

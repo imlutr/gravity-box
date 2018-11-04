@@ -35,8 +35,10 @@ import uy.kohesive.injekt.api.get
 object MapBodyBuilder {
     private val engine: PooledEngine = Injekt.get()
 
-    fun buildPlayer(tiledMap: TiledMap,
-                    world: World = Injekt.get()): Entity {
+    fun buildPlayer(
+        tiledMap: TiledMap,
+        world: World = Injekt.get()
+    ): Entity {
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
         }
@@ -55,8 +57,10 @@ object MapBodyBuilder {
         return body.userData as Entity
     }
 
-    fun buildFinish(tiledMap: TiledMap,
-                    world: World = Injekt.get()): Entity {
+    fun buildFinish(
+        tiledMap: TiledMap,
+        world: World = Injekt.get()
+    ): Entity {
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
         }
@@ -75,8 +79,10 @@ object MapBodyBuilder {
         return body.userData as Entity
     }
 
-    fun buildPlatforms(tiledMap: TiledMap,
-                       world: World = Injekt.get()) {
+    fun buildPlatforms(
+        tiledMap: TiledMap,
+        world: World = Injekt.get()
+    ) {
         fun buildPlatformsOfType(platformType: String) {
             tiledMap.layers.get(platformType).objects.forEach { mapObject ->
                 val bodyDef = BodyDef().apply {
@@ -94,8 +100,10 @@ object MapBodyBuilder {
         buildPlatformsOfType("Dynamic")
     }
 
-    fun buildPoints(map: MapComponent,
-                    world: World = Injekt.get()) {
+    fun buildPoints(
+        map: MapComponent,
+        world: World = Injekt.get()
+    ) {
         map.tiledMap.layers.get("Points").objects.forEach { mapObject ->
             // Increase the number points of the map
             map.totalPointsNumber++
@@ -122,6 +130,13 @@ object MapBodyBuilder {
     private fun getRectangle(rectangleObject: RectangleMapObject): PolygonShape {
         val rectangle = rectangleObject.rectangle
         val size = Vector2((rectangle.x + rectangle.width * 0.5f) / PPM, (rectangle.y + rectangle.height * 0.5f) / PPM)
-        return PolygonShape().apply { setAsBox(rectangle.width * 0.5f / PPM, rectangle.height * 0.5f / PPM, size, 0.0f) }
+        return PolygonShape().apply {
+            setAsBox(
+                rectangle.width * 0.5f / PPM,
+                rectangle.height * 0.5f / PPM,
+                size,
+                0.0f
+            )
+        }
     }
 }

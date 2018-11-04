@@ -29,12 +29,18 @@ import uy.kohesive.injekt.api.get
 /**
  * Make the game [gameCamera] follow the [playerEntity].
  */
-class PlayerCameraSystem(private val mapEntity: Entity,
-                         private val playerEntity: Entity,
-                         private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
+class PlayerCameraSystem(
+    private val mapEntity: Entity,
+    private val playerEntity: Entity,
+    private val gameCamera: GameCamera = Injekt.get()
+) : EntitySystem() {
     override fun update(deltaTime: Float) {
         // Smoothly move the camera towards the player
-        gameCamera.position.lerp(playerEntity.image.x + playerEntity.image.width / 2f, playerEntity.image.y + playerEntity.image.height / 2f, progress = .15f)
+        gameCamera.position.lerp(
+            playerEntity.image.x + playerEntity.image.width / 2f,
+            playerEntity.image.y + playerEntity.image.height / 2f,
+            progress = .15f
+        )
 
         // Keep the camera within the bounds of the map
         keepWithinBounds(gameCamera.zoom)

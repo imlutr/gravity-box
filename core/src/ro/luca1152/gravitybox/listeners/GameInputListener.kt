@@ -18,7 +18,6 @@
 package ro.luca1152.gravitybox.listeners
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.math.Vector2
@@ -36,10 +35,11 @@ import uy.kohesive.injekt.api.get
 /**
  * Trigger actions for every input event handled.
  */
-class GameInputListener(private val playerEntity: Entity,
-                        private val gameEventSignal: Signal<GameEvent> = Injekt.get(),
-                        private val gameCamera: GameCamera = Injekt.get(),
-                        private val engine: PooledEngine = Injekt.get()) : KtxInputAdapter {
+class GameInputListener(
+    private val playerEntity: Entity,
+    private val gameEventSignal: Signal<GameEvent> = Injekt.get(),
+    private val gameCamera: GameCamera = Injekt.get()
+) : KtxInputAdapter {
 
     private val worldCoordinates = Vector3()
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {

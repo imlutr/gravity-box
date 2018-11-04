@@ -31,7 +31,8 @@ import uy.kohesive.injekt.api.get
 /**
  * Restarts the level when the player is off-screen.
  */
-class AutoRestartSystem(private val gameEventSignal: Signal<GameEvent> = Injekt.get()) : IteratingSystem(Family.all(PlayerComponent::class.java, PhysicsComponent::class.java).get()) {
+class AutoRestartSystem(private val gameEventSignal: Signal<GameEvent> = Injekt.get()) :
+    IteratingSystem(Family.all(PlayerComponent::class.java, PhysicsComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.physics.body.worldCenter.y < -10f)
             gameEventSignal.dispatch(GameEvent.LEVEL_RESTART)

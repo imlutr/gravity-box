@@ -32,6 +32,7 @@ import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.listeners.GameInputListener
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.*
+import ro.luca1152.gravitybox.utils.ColorScheme.currentLightColor
 import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.GameViewport
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
@@ -39,8 +40,10 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
-class PlayScreen(private val engine: PooledEngine = Injekt.get(),
-                 private val gameViewport: GameViewport = Injekt.get()) : KtxScreen {
+class PlayScreen(
+    private val engine: PooledEngine = Injekt.get(),
+    private val gameViewport: GameViewport = Injekt.get()
+) : KtxScreen {
     private val world = World(Vector2(0f, GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
     private val stage = GameStage
@@ -58,7 +61,6 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
 
         // Handle input
         Gdx.input.inputProcessor = GameInputListener(playerEntity)
-
         engine.run {
             addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
             addSystem(PhysicsSystem())
@@ -76,8 +78,7 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
     }
 
     override fun render(delta: Float) {
-//        clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
-        clearScreen(40f / 255f, 40f / 255f, 40f / 255f)
+        clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
         engine.update(delta)
     }
 

@@ -35,13 +35,15 @@ import uy.kohesive.injekt.api.get
 /**
  * Used to render everything on the screen, excluding the UI.
  */
-class RenderSystem(private val mapEntity: Entity,
-                   private val world: World = Injekt.get(),
-                   private val stage: GameStage = Injekt.get(),
-                   private val batch: Batch = Injekt.get(),
-                   private val shapeRenderer: ShapeRenderer = Injekt.get(),
-                   private val gameCamera: GameCamera = Injekt.get(),
-                   private val gameViewport: GameViewport = Injekt.get()) : EntitySystem() {
+class RenderSystem(
+    private val mapEntity: Entity,
+    private val world: World = Injekt.get(),
+    private val stage: GameStage = Injekt.get(),
+    private val batch: Batch = Injekt.get(),
+    private val shapeRenderer: ShapeRenderer = Injekt.get(),
+    private val gameCamera: GameCamera = Injekt.get(),
+    private val gameViewport: GameViewport = Injekt.get()
+) : EntitySystem() {
     private val mapRenderer = OrthogonalTiledMapRenderer(mapEntity.map.tiledMap, 1 / PPM, batch)
     private val b2DDebugRenderer = Box2DDebugRenderer()
 
@@ -55,19 +57,19 @@ class RenderSystem(private val mapEntity: Entity,
         drawPhysicsDebug()
     }
 
-    /**
-     * Reposition the actors so they are drawn from the center (Box2D bodies' position is from center, not bottom-left)
-     * It subtracts half the size of the images and adds it back when restoring.
-     */
-    private fun repositionImages(restore: Boolean = false) {
-        for (i in 0 until stage.actors.size) {
-            val change = if (restore) 1 else -1
-            stage.actors[i].x += change * stage.actors[i].width / 2f
-            stage.actors[i].y += change * stage.actors[i].height / 2f
-        }
-    }
-
     private fun drawImages() {
+        /**
+         * Reposition the actors so they are drawn from the center (Box2D bodies' position is from center, not bottom-left)
+         * It subtracts half the size of the images and adds it back when restoring.
+         */
+        fun repositionImages(restore: Boolean = false) {
+            for (i in 0 until stage.actors.size) {
+                val change = if (restore) 1 else -1
+                stage.actors[i].x += change * stage.actors[i].width / 2f
+                stage.actors[i].y += change * stage.actors[i].height / 2f
+            }
+        }
+
         repositionImages()
 //        stage.draw()
         repositionImages(restore = true)
@@ -89,7 +91,7 @@ class RenderSystem(private val mapEntity: Entity,
             shapeRenderer.projectionMatrix = gameCamera.combined
             shapeRenderer.color = Color.RED
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line)
-            world.bodies.forEach { body ->
+            for (body in world.bodies) {
                 if (body.type == BodyDef.BodyType.DynamicBody)
                     shapeRenderer.x(body.worldCenter, .05f)
             }
@@ -97,13 +99,34 @@ class RenderSystem(private val mapEntity: Entity,
             shapeRenderer.color = Color.WHITE
         }
 
-        fun drawStaticPlatforms() {
-            shapeRenderer.color = Color.LIME
+        fun drawPlatforms() {
+            shapeRenderer.color = ColorScheme.currentDarkColor
+            // Draw static platforms
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
-            world.bodies.forEach { body ->
-                if (body.userData != null && body.userData is Entity && (body.userData as Entity).tryGet(PlatformComponent) != null && !(body.userData as Entity).platform.isDynamic) {
-                    val obj = (body.userData as Entity).mapObject
-                    shapeRenderer.rect(obj.position.x, obj.position.y, obj.width, obj.height)
+            for (body in world.bodies) {
+                if (body.userData != null && body.userData is Entity) {
+                    val entity = body.userData as Entity
+                    if (entity.tryGet(PlatformComponent) != null && !entity.platform.isDynamic)
+                        shapeRenderer.rect(
+                            entity.mapObject.position.x,
+                            entity.mapObject.position.y,
+                            entity.mapObject.width,
+                            entity.mapObject.height
+                        )
+                }
+            }
+            // Draw dynamic platforms
+            shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+            for (body in world.bodies) {
+                if (body.userData != null && body.userData is Entity) {
+                    val entity = body.userData as Entity
+                    if (entity.tryGet(PlatformComponent) != null && entity.platform.isDynamic)
+                        shapeRenderer.rect(
+                            entity.mapObject.position.x,
+                            entity.mapObject.position.y,
+                            entity.mapObject.width,
+                            entity.mapObject.height
+                        )
                 }
             }
             shapeRenderer.end()
@@ -112,6 +135,6 @@ class RenderSystem(private val mapEntity: Entity,
 
         b2DDebugRenderer.render(world, gameCamera.combined)
         drawXAtOrigins()
-        drawStaticPlatforms()
+        drawPlatforms()
     }
 }

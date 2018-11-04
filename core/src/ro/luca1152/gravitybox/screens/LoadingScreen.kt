@@ -97,10 +97,22 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
 
     private fun smoothTextures() {
         manager.run {
-            getAsset<Texture>("graphics/player.png").setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            getAsset<Texture>("graphics/bullet.png").setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            getAsset<Texture>("graphics/circle.png").setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            getAsset<Texture>("graphics/finish.png").setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+            getAsset<Texture>("graphics/player.png").setFilter(
+                Texture.TextureFilter.Linear,
+                Texture.TextureFilter.Linear
+            )
+            getAsset<Texture>("graphics/bullet.png").setFilter(
+                Texture.TextureFilter.Linear,
+                Texture.TextureFilter.Linear
+            )
+            getAsset<Texture>("graphics/circle.png").setFilter(
+                Texture.TextureFilter.Linear,
+                Texture.TextureFilter.Linear
+            )
+            getAsset<Texture>("graphics/finish.png").setFilter(
+                Texture.TextureFilter.Linear,
+                Texture.TextureFilter.Linear
+            )
         }
     }
 }

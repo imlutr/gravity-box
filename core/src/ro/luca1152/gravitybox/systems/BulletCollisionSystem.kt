@@ -36,9 +36,11 @@ import java.lang.Math.pow
 /**
  * Handles what happens when a bullet collides with a platform.
  */
-class BulletCollisionSystem(private val playerEntity: Entity,
-                            private val stage: GameStage = Injekt.get(),
-                            private val world: World = Injekt.get()) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
+class BulletCollisionSystem(
+    private val playerEntity: Entity,
+    private val stage: GameStage = Injekt.get(),
+    private val world: World = Injekt.get()
+) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
     override fun processEntity(bullet: Entity, deltaTime: Float) {
         if (bullet.bullet.collidedWithWall) {
             createExplosion(bullet)
@@ -64,10 +66,10 @@ class BulletCollisionSystem(private val playerEntity: Entity,
 
     private fun removeBullet(bullet: Entity) {
         stage.addAction(
-                sequence(
+            sequence(
 //                        delay(.01f), // With no delay there would be a gap between the bullet and the platform TODO
-                        removeActor(bullet.image.img)
-                )
+                removeActor(bullet.image.img)
+            )
         )
         world.destroyBody(bullet.physics.body)
         engine.removeEntity(bullet)

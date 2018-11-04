@@ -28,7 +28,8 @@ import ro.luca1152.gravitybox.components.platform
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PlatformRemovalSystem(private val world: World = Injekt.get()) : IteratingSystem(Family.all(PlatformComponent::class.java, PhysicsComponent::class.java).get()) {
+class PlatformRemovalSystem(private val world: World = Injekt.get()) :
+    IteratingSystem(Family.all(PlatformComponent::class.java, PhysicsComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.platform.remove) {
             world.destroyBody(entity.physics.body)
