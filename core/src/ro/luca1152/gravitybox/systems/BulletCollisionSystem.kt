@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
@@ -40,6 +41,9 @@ class BulletCollisionSystem(private val playerEntity: Entity) :
             // Create the actual explosion by applying a blast impulse
             val pBody = playerEntity.physics.body // Player's body
             pBody.applyBlastImpulse(bullet.physics.body.worldCenter, pBody.worldCenter, 150f)
+
+            // Vibrate
+            Gdx.input.vibrate(30)
 
             // Create the explosion (the image)
             EntityFactory.createExplosion(bullet.physics.body.worldCenter)
@@ -63,7 +67,8 @@ class BulletCollisionSystem(private val playerEntity: Entity) :
         val invDistance = 1f / distance
 
         // Calculate the impulse's magnitude
-        val impulseMag = Math.min(blastPower * invDistance * invDistance, 20f)
+        val impulseMag = Math.min(blastPower * invDistance * invDistance, 21f)
+        println(blastPower * invDistance * invDistance)
 
         // Apply the force
         this.applyLinearImpulse(blastDir.nor().scl(impulseMag), playerEntity.physics.body.worldCenter, true)
