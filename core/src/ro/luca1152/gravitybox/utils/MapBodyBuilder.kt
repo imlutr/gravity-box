@@ -28,6 +28,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
 import ro.luca1152.gravitybox.PPM
 import ro.luca1152.gravitybox.components.MapComponent
+import ro.luca1152.gravitybox.components.physics
 import ro.luca1152.gravitybox.entities.EntityFactory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -37,6 +38,7 @@ object MapBodyBuilder {
 
     fun buildPlayer(
         tiledMap: TiledMap,
+        existingPlayerEntity: Entity? = null,
         world: World = Injekt.get()
     ): Entity {
         val bodyDef = BodyDef().apply {
@@ -50,7 +52,13 @@ object MapBodyBuilder {
             filter.maskBits = EntityCategory.OBSTACLE.bits
         }
         val body = world.createBody(bodyDef).apply {
-            userData = EntityFactory.createPlayer(this)
+            if (existingPlayerEntity != null) {
+                world.destroyBody(existingPlayerEntity.physics.body)
+                existingPlayerEntity.physics.body = this
+                userData = existingPlayerEntity
+            } else
+                userData = EntityFactory.createPlayer(this)
+
             createFixture(fixtureDef)
         }
         fixtureDef.shape.dispose()
@@ -59,6 +67,7 @@ object MapBodyBuilder {
 
     fun buildFinish(
         tiledMap: TiledMap,
+        existingFinishEntity: Entity? = null,
         world: World = Injekt.get()
     ): Entity {
         val bodyDef = BodyDef().apply {
@@ -71,7 +80,12 @@ object MapBodyBuilder {
             filter.maskBits = EntityCategory.NONE.bits
         }
         val body = world.createBody(bodyDef).apply {
-            userData = EntityFactory.createFinish(this)
+            if (existingFinishEntity != null) {
+                world.destroyBody(existingFinishEntity.physics.body)
+                existingFinishEntity.physics.body = this
+                userData = existingFinishEntity
+            } else
+                userData = EntityFactory.createFinish(this)
             gravityScale = 0f
             createFixture(fixtureDef)
         }

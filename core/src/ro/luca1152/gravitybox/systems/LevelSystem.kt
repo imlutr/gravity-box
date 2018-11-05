@@ -26,6 +26,7 @@ import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.ColorScheme
+import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import ro.luca1152.gravitybox.utils.approxEqualTo
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -66,5 +67,7 @@ class LevelSystem(
     private fun nextLevel() {
         mapEntity.map.levelNumber++
         restartLevel()
+        MapBodyBuilder.buildPlayer(mapEntity.map.tiledMap, playerEntity)
+        MapBodyBuilder.buildFinish(mapEntity.map.tiledMap, finishEntity)
     }
 }

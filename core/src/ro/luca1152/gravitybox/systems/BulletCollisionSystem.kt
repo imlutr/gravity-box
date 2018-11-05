@@ -68,6 +68,5 @@ class BulletCollisionSystem(private val playerEntity: Entity) :
         // Apply the force
         this.applyLinearImpulse(blastDir.nor().scl(impulseMag), playerEntity.physics.body.worldCenter, true)
     }
-
 }
 
