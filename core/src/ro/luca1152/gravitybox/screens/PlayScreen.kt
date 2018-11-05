@@ -65,7 +65,7 @@ class PlayScreen(
 
     override fun show() {
         // Create entities
-        val mapEntity = EntityFactory.createMap(1)
+        val mapEntity = EntityFactory.createMap(4)
         val finishEntity = MapBodyBuilder.buildFinish(mapEntity.map.tiledMap)
         val playerEntity = MapBodyBuilder.buildPlayer(mapEntity.map.tiledMap)
 
@@ -75,7 +75,7 @@ class PlayScreen(
             addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
-            addSystem(BulletCollisionSystem())
+            addSystem(BulletCollisionSystem(playerEntity))
             addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
             addSystem(PointSystem(mapEntity.map))
@@ -89,7 +89,6 @@ class PlayScreen(
 
     override fun render(delta: Float) {
         clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
-        println(engine.entities.size())
         engine.update(delta)
     }
 
