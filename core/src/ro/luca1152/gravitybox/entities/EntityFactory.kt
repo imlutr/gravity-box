@@ -65,7 +65,7 @@ object EntityFactory {
         }
 
         fixtureDef.shape.dispose()
-        this.physics.set(body)
+        this.physics.set(body, this)
 
         // ImageComponent
         add(engine.createComponent(ImageComponent::class.java))
@@ -122,7 +122,7 @@ object EntityFactory {
 
         // PhysicsComponent
         add(engine.createComponent(PhysicsComponent::class.java))
-        this.physics.set(body)
+        this.physics.set(body, this)
 
         // CollisionBoxComponent
         add(engine.createComponent(CollisionBoxComponent::class.java))
@@ -158,22 +158,27 @@ object EntityFactory {
         this.map.set(levelNumber)
     }!!
 
-    fun createPlatform(mapObject: MapObject, isDynamic: Boolean, body: Body, engine: PooledEngine = Injekt.get()) =
-        engine.createEntity().apply {
-            // MapObjectComponent
-            add(engine.createComponent(MapObjectComponent::class.java))
-            this.mapObject.set(mapObject)
+    fun createPlatforms(
+        platforms: ArrayList<Pair<Body, MapObject>>,
+        engine: PooledEngine = Injekt.get()
+    ) {
+        for (platform in platforms) {
+            engine.createEntity().apply {
+                // MapObjectComponent
+                add(engine.createComponent(MapObjectComponent::class.java))
+                this.mapObject.set(platform.second)
 
-            // PlatformComponent
-            add(engine.createComponent(PlatformComponent::class.java))
-            this.platform.isDynamic = isDynamic
+                // PlatformComponent
+                add(engine.createComponent(PlatformComponent::class.java))
+                this.platform.isDynamic = platform.first.userData as Boolean
 
-            // PhysicsComponent
-            add(engine.createComponent(PhysicsComponent::class.java))
-            this.physics.set(body)
-
-            engine.addEntity(this)
-        }!!
+                // PhysicsComponent
+                add(engine.createComponent(PhysicsComponent::class.java))
+                this.physics.set(platform.first, this)
+                engine.addEntity(this)
+            }
+        }
+    }
 
     fun createPlayer(
         body: Body,
@@ -185,7 +190,7 @@ object EntityFactory {
 
         // PhysicsComponent
         add(engine.createComponent(PhysicsComponent::class.java))
-        this.physics.set(body)
+        this.physics.set(body, this)
 
         // CollisionBoxComponent
         add(engine.createComponent(CollisionBoxComponent::class.java))
@@ -203,21 +208,25 @@ object EntityFactory {
         engine.addEntity(this)
     }!!
 
-    fun createPoint(
-        body: Body,
+    fun createPoints(
+        bodies: ArrayList<Body>,
         engine: PooledEngine = Injekt.get()
-    ) = engine.createEntity().apply {
-        // PointComponent
-        add(engine.createComponent(PointComponent::class.java))
+    ) {
+        for (body in bodies) {
+            engine.createEntity().apply {
+                // PointComponent
+                add(engine.createComponent(PointComponent::class.java))
 
-        // PhysicsComponent
-        add(engine.createComponent(PhysicsComponent::class.java))
-        this.physics.set(body)
+                // PhysicsComponent
+                add(engine.createComponent(PhysicsComponent::class.java))
+                this.physics.set(body, this)
 
-        // CollisionBoxComponent
-        add(engine.createComponent(CollisionBoxComponent::class.java))
-        this.collisionBox.set(1f)
+                // CollisionBoxComponent
+                add(engine.createComponent(CollisionBoxComponent::class.java))
+                this.collisionBox.set(1f)
 
-        engine.addEntity(this)
-    }!!
+                engine.addEntity(this)
+            }
+        }
+    }
 }

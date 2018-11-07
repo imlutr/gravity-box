@@ -67,7 +67,13 @@ class LevelSystem(
     private fun nextLevel() {
         mapEntity.map.levelNumber++
         restartLevel()
-        MapBodyBuilder.buildPlayer(mapEntity.map.tiledMap, playerEntity)
-        MapBodyBuilder.buildFinish(mapEntity.map.tiledMap, finishEntity)
+        playerEntity.physics.run {
+            reset()
+            set(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap), playerEntity)
+        }
+        finishEntity.physics.run {
+            reset()
+            set(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap), finishEntity)
+        }
     }
 }

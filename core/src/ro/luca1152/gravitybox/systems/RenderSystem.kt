@@ -99,7 +99,7 @@ class RenderSystem(
             shapeRenderer.set(ShapeRenderer.ShapeType.Line)
             for (entity in engine.getEntitiesFor(Family.all(PhysicsComponent::class.java).get())) {
                 val body = entity.physics.body
-                if (body.type == BodyDef.BodyType.DynamicBody) {
+                if (body.type == BodyDef.BodyType.DynamicBody && body.userData != null) {
                     (body.userData as Entity).run {
                         when {
                             this.tryGet(FinishComponent) != null -> shapeRenderer.color = Color.LIME

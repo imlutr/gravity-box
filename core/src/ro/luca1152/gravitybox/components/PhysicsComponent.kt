@@ -36,8 +36,9 @@ class PhysicsComponent(private val world: World = Injekt.get()) : Component, Poo
     var body: Body = world.createBody(BodyDef())
 
     /** Initializes the component. */
-    fun set(body: Body) {
+    fun set(body: Body, userData: Entity) {
         this.body = body
+        body.userData = userData
     }
 
     /** Resets the component for reuse. */

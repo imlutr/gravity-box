@@ -17,30 +17,21 @@
 
 package ro.luca1152.gravitybox.utils
 
-import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.PooledEngine
+import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.BodyDef
-import com.badlogic.gdx.physics.box2d.FixtureDef
-import com.badlogic.gdx.physics.box2d.PolygonShape
-import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.physics.box2d.*
 import ro.luca1152.gravitybox.PPM
 import ro.luca1152.gravitybox.components.MapComponent
-import ro.luca1152.gravitybox.components.physics
-import ro.luca1152.gravitybox.entities.EntityFactory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object MapBodyBuilder {
-    private val engine: PooledEngine = Injekt.get()
-
-    fun buildPlayer(
+    fun buildPlayerBody(
         tiledMap: TiledMap,
-        existingPlayerEntity: Entity? = null,
         world: World = Injekt.get()
-    ): Entity {
+    ): Body {
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
         }
@@ -51,25 +42,16 @@ object MapBodyBuilder {
             filter.categoryBits = EntityCategory.PLAYER.bits
             filter.maskBits = EntityCategory.OBSTACLE.bits
         }
-        val body = world.createBody(bodyDef).apply {
-            if (existingPlayerEntity != null) {
-                world.destroyBody(existingPlayerEntity.physics.body)
-                existingPlayerEntity.physics.body = this
-                userData = existingPlayerEntity
-            } else
-                userData = EntityFactory.createPlayer(this)
-
+        return world.createBody(bodyDef).apply {
             createFixture(fixtureDef)
+            fixtureDef.shape.dispose()
         }
-        fixtureDef.shape.dispose()
-        return body.userData as Entity
     }
 
-    fun buildFinish(
+    fun buildFinishBody(
         tiledMap: TiledMap,
-        existingFinishEntity: Entity? = null,
         world: World = Injekt.get()
-    ): Entity {
+    ): Body {
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
         }
@@ -79,45 +61,45 @@ object MapBodyBuilder {
             filter.categoryBits = EntityCategory.FINISH.bits
             filter.maskBits = EntityCategory.NONE.bits
         }
-        val body = world.createBody(bodyDef).apply {
-            if (existingFinishEntity != null) {
-                world.destroyBody(existingFinishEntity.physics.body)
-                existingFinishEntity.physics.body = this
-                userData = existingFinishEntity
-            } else
-                userData = EntityFactory.createFinish(this)
+        return world.createBody(bodyDef).apply {
             gravityScale = 0f
             createFixture(fixtureDef)
+            fixtureDef.shape.dispose()
         }
-        fixtureDef.shape.dispose()
-        return body.userData as Entity
     }
 
     fun buildPlatforms(
         tiledMap: TiledMap,
         world: World = Injekt.get()
-    ) {
+    ): ArrayList<Pair<Body, MapObject>> {
+        val platforms = arrayListOf<Pair<Body, MapObject>>()
+
         fun buildPlatformsOfType(platformType: String) {
             tiledMap.layers.get(platformType).objects.forEach { mapObject ->
                 val bodyDef = BodyDef().apply {
                     type = BodyDef.BodyType.StaticBody
                 }
                 val platformShape = getRectangle(mapObject as RectangleMapObject)
-                world.createBody(bodyDef).apply {
-                    userData = EntityFactory.createPlatform(mapObject, platformType == "Dynamic", this)
-                    createFixture(platformShape, 1f)
-                }
-                platformShape.dispose()
+                platforms.add(
+                    Pair(world.createBody(bodyDef).apply {
+                        userData = platformType == "Dynamic"
+                        createFixture(platformShape, 1f)
+                        platformShape.dispose()
+                    }, mapObject)
+                )
             }
         }
+
         buildPlatformsOfType("Static")
         buildPlatformsOfType("Dynamic")
+        return platforms
     }
 
     fun buildPoints(
         map: MapComponent,
         world: World = Injekt.get()
-    ) {
+    ): ArrayList<Body> {
+        val bodies = arrayListOf<Body>()
         map.tiledMap.layers.get("Points")?.objects?.forEach { mapObject ->
             // Increase the number points of the map
             map.totalPointsNumber++
@@ -132,13 +114,13 @@ object MapBodyBuilder {
                 filter.categoryBits = EntityCategory.POINT.bits
                 filter.maskBits = EntityCategory.NONE.bits
             }
-            world.createBody(bodyDef).apply {
-                userData = EntityFactory.createPoint(this)
+            bodies.add(world.createBody(bodyDef).apply {
                 gravityScale = 0f
                 createFixture(fixtureDef)
-            }
-            fixtureDef.shape.dispose()
+                fixtureDef.shape.dispose()
+            })
         }
+        return bodies
     }
 
     private fun getRectangle(rectangleObject: RectangleMapObject): PolygonShape {

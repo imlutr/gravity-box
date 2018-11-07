@@ -66,8 +66,8 @@ class PlayScreen(
     override fun show() {
         // Create entities
         val mapEntity = EntityFactory.createMap(1)
-        val finishEntity = MapBodyBuilder.buildFinish(mapEntity.map.tiledMap)
-        val playerEntity = MapBodyBuilder.buildPlayer(mapEntity.map.tiledMap)
+        val playerEntity = EntityFactory.createPlayer(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap))
+        val finishEntity = EntityFactory.createFinish(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap))
 
         // Handle input
         Gdx.input.inputProcessor = GameInputListener(playerEntity)

@@ -24,6 +24,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.MapBodyBuilder
 import uy.kohesive.injekt.Injekt
@@ -59,8 +60,8 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
         tiledMap = manager.getAsset("maps/map-$levelNumber.tmx")
 
         // Build the platforms & points
-        MapBodyBuilder.buildPlatforms(tiledMap)
-        MapBodyBuilder.buildPoints(this)
+        EntityFactory.createPlatforms(MapBodyBuilder.buildPlatforms(tiledMap))
+        EntityFactory.createPoints(MapBodyBuilder.buildPoints(this))
 
         // Update the map properties
         width = tiledMap.properties.get("width") as Int

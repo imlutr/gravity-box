@@ -68,7 +68,6 @@ class BulletCollisionSystem(private val playerEntity: Entity) :
 
         // Calculate the impulse's magnitude
         val impulseMag = Math.min(blastPower * invDistance * invDistance, 21f)
-        println(blastPower * invDistance * invDistance)
 
         // Apply the force
         this.applyLinearImpulse(blastDir.nor().scl(impulseMag), playerEntity.physics.body.worldCenter, true)

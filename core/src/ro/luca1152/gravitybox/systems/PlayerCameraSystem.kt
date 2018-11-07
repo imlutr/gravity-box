@@ -46,13 +46,13 @@ class PlayerCameraSystem(
             )
 
         // Keep the camera within the bounds of the map
-        keepWithinBounds(gameCamera.zoom)
+        keepWithinBounds()
 
         // Apply the changes
         gameCamera.update()
     }
 
-    private fun keepWithinBounds(zoom: Float) {
+    private fun keepWithinBounds(zoom: Float = 1f) {
         var mapLeft = 0f
         var mapRight = mapEntity.map.width * zoom
         if (mapEntity.map.width * zoom > gameCamera.viewportWidth * zoom) {
