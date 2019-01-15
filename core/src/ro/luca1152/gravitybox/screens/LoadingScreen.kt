@@ -55,7 +55,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
 
     private fun loadGraphics() {
         manager.run {
-            load<Skin>("skin/skin.json")
+            load<Skin>("skins/uiskin.json")
             load<Texture>("graphics/player.png")
             load<Texture>("graphics/bullet.png")
             load<Texture>("graphics/bullet.png")
@@ -91,7 +91,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
         if (manager.update()) {
             smoothTextures()
             info { "Finished loading assets in ${(timer * 100).toInt() / 100f}s." }
-            Injekt.get<MyGame>().setScreen<PlayScreen>()
+            Injekt.get<MyGame>().setScreen<MainMenuScreen>()
         }
     }
 

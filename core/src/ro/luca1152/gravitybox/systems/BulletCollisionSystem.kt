@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
@@ -38,12 +37,9 @@ class BulletCollisionSystem(private val playerEntity: Entity) :
     IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
     override fun processEntity(bullet: Entity, deltaTime: Float) {
         if (bullet.bullet.collidedWithWall) {
-            // Create the actual explosion by applying a blast impulse
-            val pBody = playerEntity.physics.body // Player's body
+            // Create the blast
+            val pBody = playerEntity.physics.body
             pBody.applyBlastImpulse(bullet.physics.body.worldCenter, pBody.worldCenter, 150f)
-
-            // Vibrate
-            Gdx.input.vibrate(30)
 
             // Create the explosion (the image)
             EntityFactory.createExplosion(bullet.physics.body.worldCenter)

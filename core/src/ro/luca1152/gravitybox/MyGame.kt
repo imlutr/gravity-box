@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
 import ro.luca1152.gravitybox.screens.LoadingScreen
+import ro.luca1152.gravitybox.screens.MainMenuScreen
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.GameCamera
 import ro.luca1152.gravitybox.utils.GameViewport
@@ -49,8 +50,10 @@ class MyGame : KtxGame<Screen>() {
             addSingleton(PooledEngine())
         }
 
-        // Add the screens so setScreen<[Screen]>() can be used
-        addScreen(PlayScreen()); addScreen(LoadingScreen())
+        // Add screens so setScreen<[Screen]>() can be used
+        addScreen(LoadingScreen())
+        addScreen(MainMenuScreen())
+        addScreen(PlayScreen())
 
         setScreen<LoadingScreen>()
     }

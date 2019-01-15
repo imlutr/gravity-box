@@ -1,0 +1,13 @@
+{
+  BitmapFont: {
+    default-font: {
+      file: ../font/font.fnt
+    }
+  }
+  ButtonStyle: {
+    play-button: {
+      up: play-button,
+      down: play-button
+    }
+  }
+}
