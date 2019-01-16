@@ -3,11 +3,21 @@
     default-font: {
       file: ../font/font.fnt
     }
+    clear-sans: {
+      file: clear-sans.fnt
+    }
   }
   ButtonStyle: {
     play-button: {
       up: play-button,
       down: play-button
+    }
+  }
+  TextButtonStyle: {
+    level-button: {
+      font: clear-sans,
+      up: level-button,
+      down: level-button
     }
   }
 }

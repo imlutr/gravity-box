@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
+import ro.luca1152.gravitybox.screens.LevelSelectorScreen
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.screens.MainMenuScreen
 import ro.luca1152.gravitybox.screens.PlayScreen
@@ -38,6 +39,10 @@ import uy.kohesive.injekt.api.get
  * The main class of the game.
  */
 class MyGame : KtxGame<Screen>() {
+    companion object {
+        const val LEVELS_NUMBER = 4
+    }
+
     override fun create() {
         // Initialize Injekt, the dependency injection library
         Injekt.run {
@@ -53,6 +58,7 @@ class MyGame : KtxGame<Screen>() {
         // Add screens so setScreen<[Screen]>() can be used
         addScreen(LoadingScreen())
         addScreen(MainMenuScreen())
+        addScreen(LevelSelectorScreen())
         addScreen(PlayScreen())
 
         setScreen<LoadingScreen>()

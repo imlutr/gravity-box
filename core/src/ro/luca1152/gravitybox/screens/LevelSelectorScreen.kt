@@ -22,9 +22,9 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
@@ -34,38 +34,45 @@ import ro.luca1152.gravitybox.utils.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class MainMenuScreen(batch: Batch = Injekt.get(),
-                     private val manager: AssetManager = Injekt.get()) : KtxScreen {
+class LevelSelectorScreen(batch: Batch = Injekt.get(),
+                          private val manager: AssetManager = Injekt.get()) : KtxScreen {
+    companion object {
+        var chosenlevel = 0
+    }
+
     private val uiStage = Stage(ExtendViewport(720f, 1280f), batch)
-    private lateinit var playButton: Button
 
     override fun show() {
         val skin = manager.get<Skin>("skins/uiskin.json")
 
-        val table = Table(skin)
-        table.width = uiStage.width
-        table.setPosition(0f, uiStage.height / 2f)
-        table.center()
+        val table = Table()
+        table.width = 600f
+        table.setPosition(60f, 1280f)
+        table.center().top()
         uiStage.addActor(table)
 
-        playButton = Button(skin, "play-button")
-        playButton.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                Injekt.get<MyGame>().setScreen<LevelSelectorScreen>()
+        table.padTop(60f)
+
+        for (level in 1..MyGame.LEVELS_NUMBER) {
+            val button = TextButton(level.toString(), skin, "level-button")
+            button.color = ColorScheme.currentDarkColor
+            button.label.color = ColorScheme.currentDarkColor
+            button.addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    chosenlevel = level
+                    Injekt.get<MyGame>().setScreen<PlayScreen>()
+                }
+            })
+            when {
+                level % 4 != 0 -> table.add(button).padRight(20f)
+                else -> table.add(button).row()
             }
-        })
-        table.add(playButton)
+        }
 
         Gdx.input.inputProcessor = uiStage
     }
 
-    private fun update(delta: Float) {
-        uiStage.act(delta)
-        playButton.color = ColorScheme.currentDarkColor
-    }
-
     override fun render(delta: Float) {
-        update(delta)
         clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
         uiStage.draw()
     }

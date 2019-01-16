@@ -1,9 +1,23 @@
 
 uiskin.png
-size: 256,256
+size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+clear-sans
+  rotate: false
+  xy: 2, 230
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+level-button
+  rotate: false
+  xy: 516, 615
+  size: 127, 127
+  orig: 127, 127
+  offset: 0, 0
+  index: -1
 play-button
   rotate: false
   xy: 2, 2
