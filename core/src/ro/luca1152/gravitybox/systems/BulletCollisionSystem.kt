@@ -23,25 +23,39 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.World
 import ro.luca1152.gravitybox.components.BulletComponent
 import ro.luca1152.gravitybox.components.ImageComponent
 import ro.luca1152.gravitybox.components.bullet
 import ro.luca1152.gravitybox.components.physics
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.entities.EntityFactory
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
+
 
 /**
  * Handles what happens when a bullet collides with a platform.
  */
-class BulletCollisionSystem(private val playerEntity: Entity) :
-    IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
+class BulletCollisionSystem(private val playerEntity: Entity,
+                            private val world: World = Injekt.get()) :
+        IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
     override fun processEntity(bullet: Entity, deltaTime: Float) {
-        if (bullet.bullet.collidedWithWall) {
-            // Create the blast
-            val pBody = playerEntity.physics.body
-            pBody.applyBlastImpulse(bullet.physics.body.worldCenter, pBody.worldCenter, 150f)
+        if (bullet.bullet.collidedWithPlatform) {
+            val playerBody = playerEntity.physics.body
 
-            // Create the explosion (the image)
+            // Find the first body between the explosion and the player
+            var closestBody: Body? = null
+            world.rayCast({ fixture, _, _, fraction ->
+                closestBody = fixture.body
+                fraction
+            }, bullet.physics.body.worldCenter, playerBody.worldCenter)
+
+            // If there is no obstacle between the explosion and the player, apply the blast
+            if (closestBody == playerBody || closestBody == null)
+                playerBody.applyBlastImpulse(bullet.physics.body.worldCenter, playerBody.worldCenter, 150f)
+
+            // Create the explosion image
             EntityFactory.createExplosion(bullet.physics.body.worldCenter)
 
             // Remove the bullet

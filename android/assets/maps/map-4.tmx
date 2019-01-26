@@ -1,46 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="10" height="16" tilewidth="64" tileheight="64" infinite="0" nextobjectid="96">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="10" height="16" tilewidth="64" tileheight="64" infinite="0" nextlayerid="8" nextobjectid="102">
  <properties>
   <property name="hue" type="int" value="180"/>
  </properties>
  <tileset firstgid="1" source="tileset.tsx"/>
- <layer name="Tile Layer 1" width="10" height="16">
+ <layer id="1" name="Tile Layer 1" width="10" height="16">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,15,0,0,0,7,7,
-0,0,0,0,15,0,0,0,0,0,
-0,0,0,0,15,0,0,0,0,0,
-0,0,0,0,15,0,0,15,0,0,
-0,0,0,0,0,0,0,15,0,0,
-0,0,0,0,0,0,0,15,0,0,
-0,0,0,0,15,0,0,15,0,0,
-0,0,0,0,15,0,0,0,0,0,
-0,0,0,0,15,0,0,0,0,0,
-0,0,15,0,0,0,0,0,0,15,
-0,0,10,7,7,7,7,7,7,9,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,15,0,15,0,0,
+0,0,0,0,0,15,0,15,0,0,
+0,0,0,0,0,15,0,15,0,0,
+0,0,0,0,0,15,0,15,0,0,
+0,0,7,7,7,4,7,9,0,0,
 0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="Static"/>
- <objectgroup name="Dynamic">
-  <object id="79" x="87" y="767" width="16" height="88"/>
-  <object id="81" x="85" y="857" width="530" height="16"/>
-  <object id="87" x="279" y="575" width="18" height="194"/>
-  <object id="88" x="473" y="383" width="16" height="256"/>
-  <object id="90" x="281" y="193" width="16" height="256"/>
-  <object id="92" x="513" y="215" width="130" height="16"/>
-  <object id="94" x="599" y="769" width="16" height="88"/>
+ <objectgroup id="2" name="Static">
+  <object id="96" x="130" y="855" width="361" height="18"/>
+  <object id="97" x="345" y="574" width="16" height="280"/>
+  <object id="98" x="471" y="577" width="18" height="277"/>
  </objectgroup>
- <objectgroup name="Points">
-  <object id="85" x="470" y="792" width="64" height="64"/>
+ <objectgroup id="3" name="Dynamic"/>
+ <objectgroup id="4" name="Points"/>
+ <objectgroup id="5" name="Player">
+  <object id="83" x="192" y="768" width="64" height="64"/>
  </objectgroup>
- <objectgroup name="Player">
-  <object id="83" x="384" y="768" width="64" height="64"/>
- </objectgroup>
- <objectgroup name="Finish">
-  <object id="47" x="513" y="88" width="128" height="128"/>
+ <objectgroup id="6" name="Finish">
+  <object id="47" x="0" y="64" width="128" height="128"/>
  </objectgroup>
 </map>

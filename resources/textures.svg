@@ -5,9 +5,9 @@
         xmlns:dc="http://purl.org/dc/elements/1.1/"
         xmlns:cc="http://creativecommons.org/ns#"
         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns="http://www.w3.org/2000/svg"
         xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
         xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-        xmlns="http://www.w3.org/2000/svg"
         height="1122.5197"
         id="svg8"
         version="1.1"
@@ -32,9 +32,9 @@
             inkscape:bbox-nodes="true"
             inkscape:bbox-paths="true"
             inkscape:current-layer="layer1"
-            inkscape:cx="274.16096"
-            inkscape:cy="-277.59938"
-            inkscape:document-units="mm"
+            inkscape:cx="262.27098"
+            inkscape:cy="-512.82632"
+            inkscape:document-units="px"
             inkscape:measure-end="0,0"
             inkscape:measure-start="0,0"
             inkscape:object-nodes="false"
@@ -55,7 +55,7 @@
             inkscape:window-width="1920"
             inkscape:window-x="0"
             inkscape:window-y="0"
-            inkscape:zoom="2">
+            inkscape:zoom="2.8284271">
         <inkscape:grid
                 empcolor="#7a1919"
                 empopacity="0.25098039"
@@ -74,7 +74,7 @@
                 <dc:format>image/svg+xml</dc:format>
                 <dc:type
                         rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-                <dc:title/>
+                <dc:title></dc:title>
             </cc:Work>
         </rdf:RDF>
     </metadata>
@@ -1175,5 +1175,13 @@
                 inkscape:transform-center-y="-8.5414319e-06"
                 inkscape:export-xdpi="96"
                 inkscape:export-ydpi="96"/>
+        <path
+                style="fill:#6346cd;fill-opacity:1;stroke:none;stroke-width:3.10090828;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                d="m 54.865765,415.53333 c -2.501617,0 -4.515555,1.88806 -4.515555,4.23333 v 25.4 c 0,2.34527 2.013938,4.23333 4.515555,4.23333 H 79.70132 c 2.501619,0 4.515557,-1.88806 4.515557,-4.23333 v -25.4 c 0,-2.34527 -2.013938,-4.23333 -4.515557,-4.23333 z m 1.558288,2.81895 h 21.71843 c 1.803322,0 3.254928,1.36088 3.254928,3.05149 v 22.12578 c 0,1.69063 -1.451606,3.05149 -3.254928,3.05149 h -21.71843 c -1.803325,0 -3.255479,-1.36086 -3.255479,-3.05149 v -22.12578 c 0,-1.69061 1.452154,-3.05149 3.255479,-3.05149 z"
+                id="rect1474-4-3-3-3"
+                inkscape:export-xdpi="95"
+                inkscape:export-ydpi="95"
+                inkscape:connector-curvature="0"
+                inkscape:export-filename="./rect1474-4-3-3-3.png"/>
     </g>
 </svg>

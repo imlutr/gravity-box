@@ -26,12 +26,12 @@ import ro.luca1152.gravitybox.components.utils.ComponentResolver
  * Indicates that the entity is a bullet.
  */
 class BulletComponent : Component, Poolable {
-    var collidedWithWall = false
+    var collidedWithPlatform = false
     var collidedWith = Entity()
 
     /** Resets the component for reuse. */
     override fun reset() {
-        collidedWithWall = false
+        collidedWithPlatform = false
         collidedWith = Entity()
     }
 

@@ -62,7 +62,7 @@ class WorldContactListener(
         // A bullet and a platform collided
         if (bulletEntity != null && platformEntity != null) {
             // Remove the bullet
-            bulletEntity.bullet.collidedWithWall = true
+            bulletEntity.bullet.collidedWithPlatform = true
             bulletEntity.bullet.collidedWith = platformEntity
 
             // Remove the platform if it's dynamic
