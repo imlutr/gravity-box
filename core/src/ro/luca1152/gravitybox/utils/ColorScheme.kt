@@ -39,6 +39,8 @@ object ColorScheme {
     val currentDarkLerpColor
         get() = if (useDarkColorScheme) darkColor2 else darkColor
 
+    var darkerDarkColor = Color()
+
     init {
         // Load the initial colors
         updateColors(180) // 180 is the hue of the first level
@@ -51,12 +53,14 @@ object ColorScheme {
         fun getDarkColor(hue: Int) = Color().fromHsv(hue.toFloat(), 42f / 100f, 57f / 100f).apply { a = 1f }!!
         fun getLightColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f).apply { a = 1f }!!
         fun getDarkColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f).apply { a = 1f }!!
+        fun getDarkerDarkColor(hue: Int) = Color().fromHsv(hue.toFloat(), 42f / 100f, 37f / 100f).apply { a = 1f }!!
 
         // Store the new colors
         lightColor = getLightColor(hue)
         darkColor = getDarkColor(hue)
         lightColor2 = getLightColor2(hue)
         darkColor2 = getDarkColor2(hue)
+        darkerDarkColor = getDarkerDarkColor(hue)
 
         // Update the current colors too because this function is called when changing the levels
         // and there is no transition between levels' colors, only when the player enters/leaves the finish point.

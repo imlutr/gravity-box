@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
@@ -41,38 +42,60 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
 
         val table = Table(skin)
         table.width = uiStage.width
-        table.setPosition(0f, uiStage.height - 144f)
+        table.setPosition(0f, uiStage.height - 288f)
         table.center().top()
         uiStage.addActor(table)
 
-        val titleImage = Image(skin.getDrawable("gravity-box")).apply {
+        val titleImage = Image(skin, "gravity-box").apply {
             color = ColorScheme.currentDarkColor
         }
-        table.add(titleImage).width(592f).height(219f).padBottom(96f).row()
-
         val playButton = ImageButton(skin, "play-button").apply {
-            image.color = ColorScheme.currentDarkColor
-            color = ColorScheme.currentDarkColor
+            image.color = ColorScheme.darkerDarkColor
+            color = ColorScheme.darkerDarkColor
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    LevelSelectorScreen.chosenlevel = 1
+                    Injekt.get<MyGame>().setScreen<PlayScreen>()
+                }
+            })
+        }
+        val titleGroup = Group().apply {
+            addActor(titleImage)
+            addActor(playButton)
+            setSize(titleImage.width, titleImage.height)
+            titleImage.setPosition(0f, 18f)
+            playButton.setPosition(width / 2f - playButton.width / 2f, 0f)
+        }
+        table.add(titleGroup).height(titleGroup.height + 18f).padBottom(84f).row()
+
+//        val line1 = Image(manager.get<Texture>("graphics/pixel.png")).apply {
+//            setSize(13f, 84f)
+//            color = ColorScheme.darkerDarkColor
+//        }
+//        table.add(line1).width(13f).height(84f).padTop(-1f).padBottom(-1f).row()
+
+        val levelsButton = TextButton("LEVELS", skin, "menu-button").apply {
+            color = ColorScheme.darkerDarkColor
+            label.color = ColorScheme.darkerDarkColor
             addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     Injekt.get<MyGame>().setScreen<LevelSelectorScreen>()
                 }
             })
         }
-        table.add(playButton).padBottom(66f).row()
+        table.add(levelsButton).padTop(-1f).padBottom(-1f).padBottom(84f).row()
 
-
-        val levelsButton = TextButton("LEVELS", skin, "menu-button").apply {
-            color = ColorScheme.currentDarkColor
-            label.color = ColorScheme.currentDarkColor
-        }
-        table.add(levelsButton).padBottom(66f).row()
+//        val line2 = Image(manager.get<Texture>("graphics/pixel.png")).apply {
+//            setSize(13f, 84f)
+//            color = ColorScheme.darkerDarkColor
+//        }
+//        table.add(line2).width(13f).height(84f).row()
 
         val settingsButton = TextButton("OPTIONS", skin, "menu-button").apply {
-            color = ColorScheme.currentDarkColor
-            label.color = ColorScheme.currentDarkColor
+            color = ColorScheme.darkerDarkColor
+            label.color = ColorScheme.darkerDarkColor
         }
-        table.add(settingsButton)
+        table.add(settingsButton).padTop(-1f)
 
 //        table.debug(Table.Debug.all)
 

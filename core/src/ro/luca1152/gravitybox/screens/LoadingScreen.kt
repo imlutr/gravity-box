@@ -61,6 +61,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
             load<Texture>("graphics/bullet.png")
             load<Texture>("graphics/circle.png")
             load<Texture>("graphics/finish.png")
+            load<Texture>("graphics/pixel.png")
         }
     }
 
