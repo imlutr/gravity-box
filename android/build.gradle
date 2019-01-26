@@ -1,4 +1,12 @@
 android {
+    signingConfigs {
+        debug {
+            keyAlias 'androiddebugkey'
+            keyPassword '***REMOVED***'
+            storeFile file('/home/luca1152/.android/debug.keystore')
+            storePassword '***REMOVED***'
+        }
+    }
     buildToolsVersion "28.0.3"
     compileSdkVersion 28
     sourceSets {
@@ -28,9 +36,11 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.debug
+        }
     }
 }
-
 /*
  * This file is part of Gravity Box.
  *
@@ -47,7 +57,6 @@ android {
  * You should have received a copy of the GNU General Public License
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
 // so they get packed with the APK.
@@ -76,7 +85,6 @@ task copyAndroidNatives {
         }
     }
 }
-
 task run(type: Exec) {
     def path
     def localProperties = project.file("../local.properties")
@@ -98,7 +106,6 @@ task run(type: Exec) {
     def adb = path + "/platform-tools/adb"
     commandLine "$adb", 'shell', 'am', 'start', '-n', 'ro.luca1152.gravitybox/ro.luca1152.gravitybox.AndroidLauncher'
 }
-
 // sets up the Android Eclipse project, using the old Ant based build.
 eclipse {
     // need to specify Java source sets explicitly, SpringSource Gradle Eclipse plugin
@@ -129,7 +136,6 @@ eclipse {
         buildCommand "com.android.ide.eclipse.adt.ApkBuilder"
     }
 }
-
 // sets up the Android Idea project, using the old Ant based build.
 idea {
     module {
@@ -151,4 +157,7 @@ idea {
             }
         }
     }
+}
+
+dependencies {
 }

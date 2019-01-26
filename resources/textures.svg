@@ -32,8 +32,8 @@
             inkscape:bbox-nodes="true"
             inkscape:bbox-paths="true"
             inkscape:current-layer="layer1"
-            inkscape:cx="932.82403"
-            inkscape:cy="-419.23841"
+            inkscape:cx="1213.0737"
+            inkscape:cy="-521.53287"
             inkscape:document-units="px"
             inkscape:measure-end="1710.69,-1.125"
             inkscape:measure-start="1710.31,11.9375"
@@ -55,7 +55,7 @@
             inkscape:window-width="1920"
             inkscape:window-x="0"
             inkscape:window-y="0"
-            inkscape:zoom="0.5">
+            inkscape:zoom="0.70710678">
         <inkscape:grid
                 empcolor="#7a1919"
                 empopacity="0.25098039"
@@ -74,7 +74,7 @@
                 <dc:format>image/svg+xml</dc:format>
                 <dc:type
                         rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-                <dc:title/>
+                <dc:title></dc:title>
             </cc:Work>
         </rdf:RDF>
     </metadata>
@@ -1226,26 +1226,26 @@
                 id="rect4826-8-0"/>
         <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:-3.17235422px;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="229.20343"
+       style="font-style:normal;font-weight:normal;font-size:18.52083397px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:-3.17235422px;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="227.79263"
        y="449.30811"
        id="text4956"><tspan
          sodipodi:role="line"
          id="tspan4954"
-         x="229.20343"
+         x="227.79263"
          y="449.30811"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:17.63888931px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';fill:#549191;fill-opacity:1;stroke-width:0.26458332">LEVELS</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:18.52083397px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';fill:#549191;fill-opacity:1;stroke-width:0.26458332">LEVELS</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:-3.17235422px;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="222.2471"
-       y="496.26358"
+       x="220.1528"
+       y="496.57227"
        id="text4956-0"><tspan
          sodipodi:role="line"
          id="tspan4954-1"
-         x="222.2471"
-         y="496.26358"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:17.63888741px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';fill:#549191;fill-opacity:1;stroke-width:0.26458332">OPTIONS</tspan></text>
+         x="220.1528"
+         y="496.57227"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:18.52083397px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';fill:#549191;fill-opacity:1;stroke-width:0.26458332">OPTIONS</tspan></text>
         <rect
                 style="fill:#549191;fill-opacity:1;stroke:none;stroke-width:7.96179056;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                 id="rect5066"

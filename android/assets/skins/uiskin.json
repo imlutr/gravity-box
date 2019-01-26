@@ -1,19 +1,30 @@
 {
   BitmapFont: {
+    semibold-medium: {
+      file: montserrat-semibold-70.fnt
+    }
     default-font: {
-      file: ../font/font.fnt
+      file: font.fnt
     }
     clear-sans: {
       file: clear-sans.fnt
     }
   }
-  ButtonStyle: {
+  ImageButtonStyle: {
     play-button: {
-      up: play-button,
-      down: play-button
+      imageUp: play-button-triangle,
+      imageDown: play-button-triangle,
+      up: play-button-border,
+      down: play-button-border,
     }
   }
   TextButtonStyle: {
+    menu-button: {
+      font: semibold-medium,
+      up: menu-button,
+      down: menu-button,
+    }
+
     level-button: {
       font: clear-sans,
       up: level-button,
