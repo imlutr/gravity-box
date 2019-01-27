@@ -19,8 +19,6 @@ package ro.luca1152.gravitybox.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.graphics.Color;
-
 import ro.luca1152.gravitybox.MyGame;
 
 public class DesktopLauncher {
@@ -30,7 +28,6 @@ public class DesktopLauncher {
         config.width = 540;
         config.height = 960;
         config.resizable = false;
-        config.initialBackgroundColor = new Color(209 / 255f, 232 / 255f, 232 / 255f, 1);
         config.samples = 4;
         new LwjglApplication(new MyGame(), config);
     }

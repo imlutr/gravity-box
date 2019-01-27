@@ -3,24 +3,25 @@
     light-medium: {
       file: montserrat-light-70.fnt
     }
+    medium-medium: {
+      file: montserrat-medium-70.fnt
+    }
   }
-  ImageButtonStyle: {
-    play-button: {
-      imageUp: play-button-triangle,
-      imageDown: play-button-triangle,
+  ButtonStyle: {
+    menu-button: {
       up: button,
-      down: button,
+      down: button
     }
   }
   TextButtonStyle: {
     menu-button: {
-      font: light-medium,
+      font: medium-medium,
       up: button,
       down: button,
     }
 
     level-button: {
-      font: light-medium,
+      font: medium-medium,
       up: button,
       down: button
     }

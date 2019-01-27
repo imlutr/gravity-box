@@ -22,6 +22,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
@@ -60,7 +61,10 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
             button.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     chosenlevel = level
-                    Injekt.get<MyGame>().setScreen<PlayScreen>()
+                    uiStage.addAction(sequence(
+                            fadeOut(.5f),
+                            run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
+                    ))
                 }
             })
             when {
@@ -69,11 +73,14 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
             }
         }
 
+        uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
+
         Gdx.input.inputProcessor = uiStage
     }
 
     override fun render(delta: Float) {
         clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
+        uiStage.act(delta)
         uiStage.draw()
     }
 }

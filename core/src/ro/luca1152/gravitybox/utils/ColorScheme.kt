@@ -26,6 +26,8 @@ object ColorScheme {
     private var lightColor2 = Color()
     private var darkColor2 = Color()
 
+    var hue = 180f
+
     /** If true, the darker color scheme will be used. */
     var useDarkColorScheme = false
     /** Stores the current light color. Used in transitions between the two color schemes. */
@@ -43,17 +45,18 @@ object ColorScheme {
 
     init {
         // Load the initial colors
-        updateColors(180) // 180 is the hue of the first level
+        updateColors() // 180 is the hue of the first level
     }
 
-    fun updateColors(hue: Int) {
+    fun updateColors() {
+        val hue = hue.toInt()
         // Functions to generate the color scheme's colors based on a hue (1-360)
 
         fun getLightColor(hue: Int) = Color().fromHsv(hue.toFloat(), 10f / 100f, 91f / 100f).apply { a = 1f }!!
         fun getDarkColor(hue: Int) = Color().fromHsv(hue.toFloat(), 42f / 100f, 57f / 100f).apply { a = 1f }!!
         fun getLightColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f).apply { a = 1f }!!
         fun getDarkColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f).apply { a = 1f }!!
-        fun getDarkerDarkColor(hue: Int) = Color().fromHsv(hue.toFloat(), 42f / 100f, 37f / 100f).apply { a = 1f }!!
+        fun getDarkerDarkColor(hue: Int) = Color().fromHsv(hue.toFloat(), 42f / 100f, 33f / 100f).apply { a = 1f }!!
 
         // Store the new colors
         lightColor = getLightColor(hue)

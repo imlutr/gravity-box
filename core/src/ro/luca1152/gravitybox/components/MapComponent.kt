@@ -69,7 +69,8 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
         hue = tiledMap.properties.get("hue") as Int
 
         // The new map may have a different hue so the color scheme must be updated
-        ColorScheme.updateColors(hue)
+//        ColorScheme.hue = hue.toFloat()
+        ColorScheme.updateColors()
     }
 
     /** Resets the component for reuse. */

@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.ExtendViewport
@@ -49,22 +50,36 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
         val titleImage = Image(skin, "gravity-box").apply {
             color = ColorScheme.currentDarkColor
         }
-        val playButton = ImageButton(skin, "play-button").apply {
-            image.color = ColorScheme.darkerDarkColor
+        val playButton = Button(skin, "menu-button").apply {
             color = ColorScheme.darkerDarkColor
             addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     LevelSelectorScreen.chosenlevel = 1
-                    Injekt.get<MyGame>().setScreen<PlayScreen>()
+                    uiStage.addAction(sequence(
+                            fadeOut(.5f),
+                            run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
+                    ))
                 }
             })
         }
+        val playButtonImageEmpty = Image(skin, "play-button").apply {
+            color = ColorScheme.darkerDarkColor
+            addAction(repeat(-1, sequence(
+                    delay(.5f),
+                    fadeOut(1f),
+                    fadeIn(1f)
+            )))
+        }
         val titleGroup = Group().apply {
             addActor(titleImage)
+            addActor(playButtonImageEmpty)
             addActor(playButton)
+
             setSize(titleImage.width, titleImage.height)
+
             titleImage.setPosition(0f, 18f)
             playButton.setPosition(width / 2f - playButton.width / 2f, 0f)
+            playButtonImageEmpty.setPosition(width / 2f - playButtonImageEmpty.width / 2f, 33f)
         }
         table.add(titleGroup).height(titleGroup.height + 18f).padBottom(84f).row()
 
@@ -73,7 +88,10 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
             label.color = ColorScheme.darkerDarkColor
             addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    Injekt.get<MyGame>().setScreen<LevelSelectorScreen>()
+                    uiStage.addAction(sequence(
+                            fadeOut(.5f),
+                            run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() }))
+                    )
                 }
             })
         }
@@ -84,6 +102,11 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
             label.color = ColorScheme.darkerDarkColor
         }
         table.add(settingsButton).width(464f).height(112f)
+
+        uiStage.addAction(sequence(
+                fadeOut(0f),
+                fadeIn(.5f))
+        )
 
         Gdx.input.inputProcessor = uiStage
     }

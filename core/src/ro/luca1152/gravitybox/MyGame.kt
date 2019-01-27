@@ -23,12 +23,14 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
 import ro.luca1152.gravitybox.screens.LevelSelectorScreen
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.screens.MainMenuScreen
 import ro.luca1152.gravitybox.screens.PlayScreen
+import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.GameCamera
 import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
@@ -60,6 +62,9 @@ class MyGame : KtxGame<Screen>() {
         addScreen(MainMenuScreen())
         addScreen(LevelSelectorScreen())
         addScreen(PlayScreen())
+
+        ColorScheme.hue = MathUtils.random(0, 360).toFloat()
+        ColorScheme.updateColors()
 
         setScreen<LoadingScreen>()
     }

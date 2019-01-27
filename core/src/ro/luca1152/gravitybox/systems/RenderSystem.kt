@@ -60,9 +60,9 @@ class RenderSystem(
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl20.glLineWidth(10f)
 
-//        drawImages()
-//        drawTiledMap()
-        drawPhysicsDebug()
+        drawTiledMap()
+//        drawPhysicsDebug()
+        drawImages()
     }
 
     private fun drawImages() {
