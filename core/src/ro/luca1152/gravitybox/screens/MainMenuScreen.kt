@@ -24,7 +24,10 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.ui.Button
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
@@ -41,11 +44,11 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
     override fun show() {
         val skin = manager.get<Skin>("skins/uiskin.json")
 
-        val table = Table(skin)
-        table.width = uiStage.width
-        table.setPosition(0f, uiStage.height - 288f)
-        table.center().top()
-        uiStage.addActor(table)
+        val table = Table(skin).apply {
+            width = uiStage.width
+            setPosition(0f, uiStage.height)
+            center().top()
+        }
 
         val titleImage = Image(skin, "gravity-box").apply {
             color = ColorScheme.currentDarkColor
@@ -81,27 +84,30 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
             playButton.setPosition(width / 2f - playButton.width / 2f, 0f)
             playButtonImageEmpty.setPosition(width / 2f - playButtonImageEmpty.width / 2f, 33f)
         }
-        table.add(titleGroup).height(titleGroup.height + 18f).padBottom(84f).row()
 
-        val levelsButton = TextButton("LEVELS", skin, "menu-button").apply {
-            color = ColorScheme.darkerDarkColor
-            label.color = ColorScheme.darkerDarkColor
-            addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    uiStage.addAction(sequence(
-                            fadeOut(.5f),
-                            run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() }))
-                    )
-                }
-            })
-        }
-        table.add(levelsButton).width(464f).height(112f).padBottom(84f).row()
+        table.padTop((uiStage.height - titleGroup.height) / 2f)
+        uiStage.addActor(table)
+        table.add(titleGroup).height(titleGroup.height + 18f)
 
-        val settingsButton = TextButton("OPTIONS", skin, "menu-button").apply {
-            color = ColorScheme.darkerDarkColor
-            label.color = ColorScheme.darkerDarkColor
-        }
-        table.add(settingsButton).width(464f).height(112f)
+//        val levelsButton = TextButton("LEVELS", skin, "menu-button").apply {
+//            color = ColorScheme.darkerDarkColor
+//            label.color = ColorScheme.darkerDarkColor
+//            addListener(object : ClickListener() {
+//                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+//                    uiStage.addAction(sequence(
+//                            fadeOut(.5f),
+//                            run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() }))
+//                    )
+//                }
+//            })
+//        }
+//        table.add(levelsButton).width(464f).height(112f).padBottom(84f).row()co
+//
+//        val settingsButton = TextButton("OPTIONS", skin, "menu-button").apply {
+//            color = ColorScheme.darkerDarkColor
+//            label.color = ColorScheme.darkerDarkColor
+//        }
+//        table.add(settingsButton).width(464f).height(112f)
 
         uiStage.addAction(sequence(
                 fadeOut(0f),
