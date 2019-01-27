@@ -1,55 +1,43 @@
 
 uiskin.png
-size: 2048,1024
+size: 1024,1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-clear-sans
+button
   rotate: false
-  xy: 2, 446
-  size: 512, 512
-  orig: 512, 512
+  xy: 516, 721
+  size: 202, 202
+  split: 38, 38, 38, 38
+  pad: 0, 0, 0, 0
+  orig: 202, 202
   offset: 0, 0
   index: -1
 gravity-box
   rotate: false
-  xy: 2, 149
-  size: 577, 295
-  orig: 577, 295
-  offset: 0, 0
-  index: -1
-level-button
-  rotate: false
-  xy: 1030, 718
-  size: 127, 127
-  orig: 127, 127
+  xy: 2, 115
+  size: 568, 294
+  orig: 568, 294
   offset: 0, 0
   index: -1
 menu-button
   rotate: false
-  xy: 1030, 847
+  xy: 2, 2
   size: 459, 111
   orig: 459, 111
   offset: 0, 0
   index: -1
-montserrat-semibold-70
+montserrat-light-70
   rotate: false
-  xy: 516, 446
+  xy: 2, 411
   size: 512, 512
   orig: 512, 512
   offset: 0, 0
   index: -1
-play-button-border
-  rotate: false
-  xy: 581, 233
-  size: 211, 211
-  orig: 211, 211
-  offset: 0, 0
-  index: -1
 play-button-triangle
   rotate: false
-  xy: 2, 2
-  size: 130, 145
-  orig: 130, 145
+  xy: 516, 583
+  size: 122, 136
+  orig: 122, 136
   offset: 0, 0
   index: -1

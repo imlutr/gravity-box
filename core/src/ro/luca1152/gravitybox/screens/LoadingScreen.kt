@@ -18,11 +18,9 @@
 package ro.luca1152.gravitybox.screens
 
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.assets.loaders.TextureLoader
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -40,17 +38,9 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
     private var timer = 0f
 
     override fun show() {
-        loadFont()
         loadGraphics()
         loadAudio()
         loadMaps()
-    }
-
-    private fun loadFont() {
-        manager.run {
-            load<Texture>("font/font.png", TextureLoader.TextureParameter().apply { genMipMaps = true })
-            load<BitmapFont>("font/font.fnt")
-        }
     }
 
     private fun loadGraphics() {

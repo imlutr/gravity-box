@@ -55,8 +55,8 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
 
         for (level in 1..MyGame.LEVELS_NUMBER) {
             val button = TextButton(level.toString(), skin, "level-button")
-            button.color = ColorScheme.currentDarkColor
-            button.label.color = ColorScheme.currentDarkColor
+            button.color = ColorScheme.darkerDarkColor
+            button.label.color = ColorScheme.darkerDarkColor
             button.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     chosenlevel = level
@@ -64,8 +64,8 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
                 }
             })
             when {
-                level % 4 != 0 -> table.add(button).padRight(20f)
-                else -> table.add(button).row()
+                level % 4 != 0 -> table.add(button).width(120f).height(120f).padRight(20f)
+                else -> table.add(button).width(120f).height(120f).row()
             }
         }
 

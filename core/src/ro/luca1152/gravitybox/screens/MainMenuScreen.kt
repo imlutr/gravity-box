@@ -68,12 +68,6 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
         }
         table.add(titleGroup).height(titleGroup.height + 18f).padBottom(84f).row()
 
-//        val line1 = Image(manager.get<Texture>("graphics/pixel.png")).apply {
-//            setSize(13f, 84f)
-//            color = ColorScheme.darkerDarkColor
-//        }
-//        table.add(line1).width(13f).height(84f).padTop(-1f).padBottom(-1f).row()
-
         val levelsButton = TextButton("LEVELS", skin, "menu-button").apply {
             color = ColorScheme.darkerDarkColor
             label.color = ColorScheme.darkerDarkColor
@@ -83,21 +77,13 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
                 }
             })
         }
-        table.add(levelsButton).padTop(-1f).padBottom(-1f).padBottom(84f).row()
-
-//        val line2 = Image(manager.get<Texture>("graphics/pixel.png")).apply {
-//            setSize(13f, 84f)
-//            color = ColorScheme.darkerDarkColor
-//        }
-//        table.add(line2).width(13f).height(84f).row()
+        table.add(levelsButton).width(464f).height(112f).padBottom(84f).row()
 
         val settingsButton = TextButton("OPTIONS", skin, "menu-button").apply {
             color = ColorScheme.darkerDarkColor
             label.color = ColorScheme.darkerDarkColor
         }
-        table.add(settingsButton).padTop(-1f)
-
-//        table.debug(Table.Debug.all)
+        table.add(settingsButton).width(464f).height(112f)
 
         Gdx.input.inputProcessor = uiStage
     }
