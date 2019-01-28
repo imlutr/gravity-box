@@ -1,29 +1,40 @@
 {
   BitmapFont: {
-    light-medium: {
-      file: montserrat-light-70.fnt
+    bold-50: {
+      file: nunito-bold-50.fnt
     }
-    medium-medium: {
-      file: montserrat-medium-70.fnt
+    bold-57: {
+      file: nunito-bold-57.fnt
+    }
+    bold-65: {
+      file: nunito-bold-65.fnt
     }
   }
   ButtonStyle: {
-    menu-button: {
-      up: button,
-      down: button
+    back-button: {
+      up: back-button,
+      down: back-button
+    }
+    big-button: {
+      up: big-button,
+      down: big-button
+    }
+    small-button: {
+      up: small-button,
+      down: small-button
     }
   }
   TextButtonStyle: {
-    menu-button: {
-      font: medium-medium,
-      up: button,
-      down: button,
+    big-text-button: {
+      font: bold-50,
+      up: big-button,
+      down: big-button,
     }
 
-    level-button: {
-      font: medium-medium,
-      up: button,
-      down: button
+    small-text-button: {
+      font: bold-50,
+      up: small-button,
+      down: small-button
     }
   }
 }

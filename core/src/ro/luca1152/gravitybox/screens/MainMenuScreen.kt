@@ -53,14 +53,14 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
         val titleImage = Image(skin, "gravity-box").apply {
             color = ColorScheme.currentDarkColor
         }
-        val playButton = Button(skin, "menu-button").apply {
+        val playButton = Button(skin, "big-button").apply {
             color = ColorScheme.darkerDarkColor
             addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     LevelSelectorScreen.chosenlevel = 1
                     uiStage.addAction(sequence(
                             fadeOut(.5f),
-                            run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
+                            run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
                     ))
                 }
             })

@@ -23,9 +23,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
@@ -46,31 +44,75 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
     override fun show() {
         val skin = manager.get<Skin>("skins/uiskin.json")
 
-        val table = Table()
-        table.width = 600f
-        table.setPosition(60f, 1280f)
-        table.center().top()
+        val table = Table().apply {
+            pad(50f)
+//            debug = true
+            setFillParent(true)
+        }
         uiStage.addActor(table)
 
-        table.padTop(60f)
+        val topRow = Table().apply {
+            //            debug = true
+        }
 
-        for (level in 1..MyGame.LEVELS_NUMBER) {
-            val button = TextButton(level.toString(), skin, "level-button")
-            button.color = ColorScheme.darkerDarkColor
-            button.label.color = ColorScheme.darkerDarkColor
-            button.addListener(object : ClickListener() {
+        table.add(topRow).growX().row()
+
+        val backButton = Button(skin, "back-button").apply {
+            color = ColorScheme.darkerDarkColor
+            addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    chosenlevel = level
                     uiStage.addAction(sequence(
                             fadeOut(.5f),
-                            run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
+                            run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
                     ))
                 }
             })
-            when {
-                level % 4 != 0 -> table.add(button).width(120f).height(120f).padRight(20f)
-                else -> table.add(button).width(120f).height(120f).row()
+        }
+        topRow.add(backButton).expandX().left()
+
+        val bigEmptyStar = Image(skin, "big-empty-star").apply {
+            color = ColorScheme.darkerDarkColor
+        }
+        topRow.add(bigEmptyStar).right()
+
+        val starsNumber = Label("0/45", skin, "bold-65", ColorScheme.darkerDarkColor)
+        topRow.add(starsNumber).right().padLeft(20f)
+
+        val buttons = Table().apply {
+            width = 600f
+            center().top()
+            defaults().space(50f)
+        }
+        table.add(buttons).expand()
+
+        for (level in 1..15) {
+            val button = Button(skin, "small-button").apply {
+                color = ColorScheme.darkerDarkColor
+                top().padTop(18f)
+                addListener(object : ClickListener() {
+                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                        chosenlevel = level
+                        uiStage.addAction(sequence(
+                                fadeOut(.5f),
+                                run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
+                        ))
+                    }
+                })
             }
+
+            val numberLabel = Label(level.toString(), skin, "bold-57", ColorScheme.darkerDarkColor)
+            button.add(numberLabel).expand().center().row()
+
+            val stars = Table()
+            for (i in 0 until 3) {
+                val star = Image(skin, "empty-star").apply { color = ColorScheme.darkerDarkColor }
+                stars.add(star).spaceRight(3f)
+            }
+            button.add(stars).bottom().padBottom(26f)
+
+            buttons.add(button)
+            if (level % 3 == 0)
+                buttons.row()
         }
 
         uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
