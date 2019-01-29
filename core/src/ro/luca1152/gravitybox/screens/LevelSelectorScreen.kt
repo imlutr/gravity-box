@@ -18,6 +18,9 @@
 package ro.luca1152.gravitybox.screens
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.InputAdapter
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -42,19 +45,17 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
     private val uiStage = Stage(ExtendViewport(720f, 1280f), batch)
 
     override fun show() {
+        uiStage.actors.removeAll(uiStage.actors, true)
+
         val skin = manager.get<Skin>("skins/uiskin.json")
 
         val table = Table().apply {
             pad(50f)
-//            debug = true
             setFillParent(true)
         }
         uiStage.addActor(table)
 
-        val topRow = Table().apply {
-            //            debug = true
-        }
-
+        val topRow = Table()
         table.add(topRow).growX().row()
 
         val backButton = Button(skin, "back-button").apply {
@@ -83,7 +84,7 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
             center().top()
             defaults().space(50f)
         }
-        table.add(buttons).expand()
+        table.add(buttons).expand().row()
 
         for (level in 1..15) {
             val button = Button(skin, "small-button").apply {
@@ -108,16 +109,43 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
                 val star = Image(skin, "empty-star").apply { color = ColorScheme.darkerDarkColor }
                 stars.add(star).spaceRight(3f)
             }
-            button.add(stars).bottom().padBottom(26f)
+            button.add(stars).bottom().padBottom(23f)
 
             buttons.add(button)
             if (level % 3 == 0)
                 buttons.row()
         }
 
+        val bottomRow = Table().apply {
+            defaults().space(10f)
+        }
+//        table.debug = true
+        table.add(bottomRow).bottom().expandX().padBottom(20f)
+
+        for (i in 0 until 4) {
+            val smallCircle = when (i) {
+                0 -> Image(skin, "small-full-circle")
+                else -> Image(skin, "small-empty-circle")
+            }.apply { color = ColorScheme.darkerDarkColor }
+
+            bottomRow.add(smallCircle)
+        }
+
+
         uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
 
-        Gdx.input.inputProcessor = uiStage
+        Gdx.input.inputProcessor = InputMultiplexer(uiStage, object : InputAdapter() {
+            override fun keyDown(keycode: Int): Boolean {
+                if (keycode == Input.Keys.BACK) {
+                    uiStage.addAction(sequence(
+                            fadeOut(.5f),
+                            run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
+                    ))
+                }
+                return false
+            }
+        })
+        Gdx.input.isCatchBackKey = true
     }
 
     override fun render(delta: Float) {

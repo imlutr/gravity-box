@@ -42,12 +42,13 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
     private val uiStage = Stage(ExtendViewport(720f, 1280f), batch)
 
     override fun show() {
+        uiStage.actors.removeAll(uiStage.actors, true)
+
         val skin = manager.get<Skin>("skins/uiskin.json")
 
         val table = Table(skin).apply {
-            width = uiStage.width
-            setPosition(0f, uiStage.height)
-            center().top()
+            setFillParent(true)
+            center()
         }
 
         val titleImage = Image(skin, "gravity-box").apply {
@@ -68,7 +69,6 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
         val playButtonImageEmpty = Image(skin, "play-button").apply {
             color = ColorScheme.darkerDarkColor
             addAction(repeat(-1, sequence(
-                    delay(.5f),
                     fadeOut(1f),
                     fadeIn(1f)
             )))
@@ -85,29 +85,8 @@ class MainMenuScreen(batch: Batch = Injekt.get(),
             playButtonImageEmpty.setPosition(width / 2f - playButtonImageEmpty.width / 2f, 33f)
         }
 
-        table.padTop((uiStage.height - titleGroup.height) / 2f)
         uiStage.addActor(table)
         table.add(titleGroup).height(titleGroup.height + 18f)
-
-//        val levelsButton = TextButton("LEVELS", skin, "menu-button").apply {
-//            color = ColorScheme.darkerDarkColor
-//            label.color = ColorScheme.darkerDarkColor
-//            addListener(object : ClickListener() {
-//                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-//                    uiStage.addAction(sequence(
-//                            fadeOut(.5f),
-//                            run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() }))
-//                    )
-//                }
-//            })
-//        }
-//        table.add(levelsButton).width(464f).height(112f).padBottom(84f).row()co
-//
-//        val settingsButton = TextButton("OPTIONS", skin, "menu-button").apply {
-//            color = ColorScheme.darkerDarkColor
-//            label.color = ColorScheme.darkerDarkColor
-//        }
-//        table.add(settingsButton).width(464f).height(112f)
 
         uiStage.addAction(sequence(
                 fadeOut(0f),

@@ -1,19 +1,19 @@
 
 uiskin.png
-size: 1843,529
+size: 1639,532
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 back-button
   rotate: false
-  xy: 516, 16
+  xy: 1001, 21
   size: 56, 85
   orig: 56, 85
   offset: 0, 0
   index: -1
 big-button
   rotate: false
-  xy: 977, 2
+  xy: 516, 5
   size: 212, 212
   split: 45, 44, 45, 45
   pad: 0, 0, 0, 0
@@ -22,80 +22,87 @@ big-button
   index: -1
 button
   rotate: false
-  xy: 977, 2
+  xy: 516, 5
   size: 212, 212
   orig: 212, 212
   offset: 0, 0
   index: -1
 big-empty-star
   rotate: false
-  xy: 1705, 132
+  xy: 1001, 108
   size: 114, 109
   orig: 114, 109
   offset: 0, 0
   index: -1
 empty-star
   rotate: false
-  xy: 574, 76
-  size: 27, 25
-  orig: 27, 25
+  xy: 730, 2
+  size: 31, 30
+  orig: 31, 30
   offset: 0, 0
   index: -1
 full-star
   rotate: false
-  xy: 574, 49
-  size: 27, 25
-  orig: 27, 25
+  xy: 767, 41
+  size: 30, 28
+  orig: 30, 28
   offset: 0, 0
   index: -1
 gravity-box
   rotate: false
-  xy: 516, 216
+  xy: 516, 219
   size: 607, 311
   orig: 607, 311
   offset: 0, 0
   index: -1
-menu-button
-  rotate: false
-  xy: 516, 103
-  size: 459, 111
-  orig: 459, 111
-  offset: 0, 0
-  index: -1
 nunito-bold-50
   rotate: false
-  xy: 1125, 271
+  xy: 1125, 274
   size: 512, 256
   orig: 512, 256
   offset: 0, 0
   index: -1
 nunito-bold-57
   rotate: false
-  xy: 1191, 13
+  xy: 1125, 16
   size: 512, 256
   orig: 512, 256
   offset: 0, 0
   index: -1
 nunito-bold-65
   rotate: false
-  xy: 2, 15
+  xy: 2, 18
   size: 512, 512
   orig: 512, 512
   offset: 0, 0
   index: -1
 play-button
   rotate: false
-  xy: 1639, 381
+  xy: 730, 71
   size: 131, 146
   orig: 131, 146
   offset: 0, 0
   index: -1
 small-button
   rotate: false
-  xy: 1705, 243
+  xy: 863, 81
   size: 136, 136
   split: 31, 31, 30, 30
   pad: 0, 0, 0, 0
   orig: 136, 136
+  offset: 0, 0
+  index: -1
+small-empty-circle
+  rotate: false
+  xy: 730, 34
+  size: 35, 35
+  orig: 35, 35
+  offset: 0, 0
+  index: -1
+small-full-circle
+  rotate: false
+  xy: 1059, 71
+  size: 35, 35
+  orig: 35, 35
   offset: 0, 0
   index: -1
