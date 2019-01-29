@@ -25,6 +25,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
@@ -33,6 +34,7 @@ import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ColorScheme
+import ro.luca1152.gravitybox.utils.HorizontalSlidingPane
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -79,12 +81,16 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
         val starsNumber = Label("0/45", skin, "bold-65", ColorScheme.darkerDarkColor)
         topRow.add(starsNumber).right().padLeft(20f)
 
+        val horizontalSlidingPane = HorizontalSlidingPane()
+        table.add(horizontalSlidingPane).expand().row()
+
         val buttons = Table().apply {
-            width = 600f
-            center().top()
             defaults().space(50f)
+
+            // If it's not touchable, the HorizontalSlidingPane slides only if you tap on the buttons, and not on the whole area.
+            touchable = Touchable.enabled
         }
-        table.add(buttons).expand().row()
+        horizontalSlidingPane.addWidget(buttons)
 
         for (level in 1..15) {
             val button = Button(skin, "small-button").apply {
