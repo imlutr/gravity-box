@@ -17,72 +17,63 @@
 
 package ro.luca1152.gravitybox.utils
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener
 
 /**
  * @author Krustnic
  * https://github.com/krustnic/HorizontalSlidingPane
  */
-class HorizontalSlidingPane : Group() {
-    private val sectionWidth: Float
-    private val sectionHeight: Float
+class HorizontalSlidingPane(private val pageWidth: Float,
+                            private val pageHeight: Float) : Group() {
 
-    // Section container
-    private val sections: Group = Group()
+    private val pages: Group = Group() // The pages container. Contains each page.
 
-    // Offset container sections
+    // Offset container pages
     private var amountX = 0f
 
-    // Offset container sections
+    // Offset container pages
     private var transmission = 0
     private var stopSection = 0f
-    private var speed = 1500f
+    private var speed = 2500f
     private var currentSection = 1
 
     // Pixel speed / second after which we believe that the user wants to go to the next section
-    private var flingSpeed = 1000f
+    private var flingSpeed = 600f
 
-    private var overScrollDistance = 100f
-
-    private val cullingArea1 = Rectangle()
     private var touchFocusedChild: Actor? = null
     private val actorGestureListener: ActorGestureListener
 
-    val sectionsCount: Int
-        get() = sections.children.size
+    private val sectionsCount: Int
+        get() = pages.children.size
 
     init {
-        this.addActor(sections)
-        sectionWidth = Gdx.app.graphics.width.toFloat()
-        sectionHeight = Gdx.app.graphics.height.toFloat()
-        sections.touchable = Touchable.enabled
+        this.addActor(pages)
+
+        // Input Listener
         actorGestureListener = object : ActorGestureListener() {
             override fun tap(event: InputEvent?, x: Float, y: Float, count: Int, button: Int) {}
 
             override fun pan(event: InputEvent?, x: Float, y: Float, deltaX: Float, deltaY: Float) {
-                if (amountX < -overScrollDistance) {
+                if (amountX - deltaX < 0f) {
                     return
                 }
-                if (amountX > (sections.children.size - 1) * sectionWidth + overScrollDistance) return
+                if (amountX - deltaX > (pages.children.size - 1) * pageWidth) return
                 amountX -= deltaX
                 cancelTouchFocusedChild()
             }
-//
-//            override fun fling(event: InputEvent?, velocityX: Float, velocityY: Float, button: Int) {
-//                if (Math.abs(velocityX) > flingSpeed) {
-//                    if (velocityX > 0)
-//                        setStopSection(currentSection - 2)
-//                    else
-//                        setStopSection(currentSection)
-//                }
-//                cancelTouchFocusedChild()
-//            }
+
+            override fun fling(event: InputEvent?, velocityX: Float, velocityY: Float, button: Int) {
+                if (Math.abs(velocityX) > flingSpeed) {
+                    if (velocityX > 0)
+                        setStopSection(currentSection - 2)
+                    else
+                        setStopSection(currentSection)
+                }
+                cancelTouchFocusedChild()
+            }
 
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 println("touchDown")
@@ -92,22 +83,23 @@ class HorizontalSlidingPane : Group() {
         addListener(actorGestureListener)
     }
 
+
     fun addWidget(widget: Actor) {
-        sections.addActor(widget.apply {
-            setPosition(sections.children.size * sectionWidth - sectionWidth / 2f, -sectionHeight / 2f)
-            setSize(sectionWidth, sectionHeight)
+        pages.addActor(widget.apply {
+            setPosition(pages.children.size * pageWidth - pageWidth / 2f, -pageHeight / 2f)
+            setSize(pageWidth, pageHeight)
         })
     }
 
     /**
-     * Calculation of the current section based on the displacement of the container sections.
+     * Calculation of the current section based on the displacement of the container pages.
      */
     private fun calculateCurrentSection(): Int {
-        // Current section = (Current offset / length of section) + 1, because our sections are numbered from 1
-        val section = Math.round(amountX / sectionWidth) + 1
+        // Current section = (Current offset / length of section) + 1, because our pages are numbered from 1
+        val section = Math.round(amountX / pageWidth) + 1
 
-        // Current section = (Current offset / length of section) + 1, because our sections are numbered from 1
-        if (section > sections.children.size) return sections.children.size
+        // Current section = (Current offset / length of section) + 1, because our pages are numbered from 1
+        if (section > pages.children.size) return pages.children.size
         return if (section < 1) 1 else section
     }
 
@@ -117,7 +109,7 @@ class HorizontalSlidingPane : Group() {
         if (stopLineSection < 0) stopLineSection = 0
         if (stopLineSection > this.sectionsCount - 1) stopLineSection = this.sectionsCount - 1
 
-        stopSection = stopLineSection * sectionWidth
+        stopSection = stopLineSection * pageWidth
 
         // Determine the direction of movement
         // transmission ==  1 - to the right
@@ -157,11 +149,8 @@ class HorizontalSlidingPane : Group() {
     }
 
     override fun act(delta: Float) {
-        // We shift the container with sections
-        sections.x = -amountX
-
-        cullingArea1.set(-sections.x + 50, sections.y, sectionWidth - 100, sectionHeight)
-        sections.cullingArea = cullingArea1
+        // We shift the container with pages
+        pages.x = -amountX
 
         // If we drive a finger across the screen
         if (actorGestureListener.gestureDetector.isPanning) {
@@ -181,17 +170,4 @@ class HorizontalSlidingPane : Group() {
         }
         touchFocusedChild = null
     }
-
-    fun setFlingSpeed(_flingSpeed: Float) {
-        flingSpeed = _flingSpeed
-    }
-
-    fun setSpeed(_speed: Float) {
-        speed = _speed
-    }
-
-    fun setOverscrollDistance(_overscrollDistance: Float) {
-        overScrollDistance = _overscrollDistance
-    }
-
 }

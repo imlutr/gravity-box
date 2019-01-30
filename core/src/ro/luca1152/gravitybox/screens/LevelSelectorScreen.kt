@@ -81,51 +81,58 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
         val starsNumber = Label("0/45", skin, "bold-65", ColorScheme.darkerDarkColor)
         topRow.add(starsNumber).right().padLeft(20f)
 
-        val horizontalSlidingPane = HorizontalSlidingPane()
+        val horizontalSlidingPane = HorizontalSlidingPane(uiStage.camera.viewportWidth, 1000f)
         table.add(horizontalSlidingPane).expand().row()
 
-        val buttons = Table().apply {
-            defaults().space(50f)
+        val buttonsTableArray = ArrayList<Table>()
 
-            // If it's not touchable, the HorizontalSlidingPane slides only if you tap on the buttons, and not on the whole area.
-            touchable = Touchable.enabled
-        }
-        horizontalSlidingPane.addWidget(buttons)
+        var level = 1
+        for (section in 1..3) {
+            val buttons = Table().apply {
+                defaults().space(50f)
+                buttonsTableArray.add(this)
 
-        for (level in 1..15) {
-            val button = Button(skin, "small-button").apply {
-                color = ColorScheme.darkerDarkColor
-                top().padTop(18f)
-                addListener(object : ClickListener() {
-                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                        chosenlevel = level
-                        uiStage.addAction(sequence(
-                                fadeOut(.5f),
-                                run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
-                        ))
-                    }
-                })
+                // If it's not touchable, the HorizontalSlidingPane slides only if you tap on the buttons, and not on the whole area.
+                touchable = Touchable.enabled
             }
+            horizontalSlidingPane.addWidget(buttons)
 
-            val numberLabel = Label(level.toString(), skin, "bold-57", ColorScheme.darkerDarkColor)
-            button.add(numberLabel).expand().center().row()
+            for (i in 1..15) {
+                val button = Button(skin, "small-button").apply {
+                    color = ColorScheme.darkerDarkColor
+                    top().padTop(18f)
+                    addListener(object : ClickListener() {
+                        override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                            chosenlevel = level
+                            uiStage.addAction(sequence(
+                                    fadeOut(.5f),
+                                    run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
+                            ))
+                        }
+                    })
+                }
 
-            val stars = Table()
-            for (i in 0 until 3) {
-                val star = Image(skin, "empty-star").apply { color = ColorScheme.darkerDarkColor }
-                stars.add(star).spaceRight(3f)
+                val numberLabel = Label(level.toString(), skin, "bold-57", ColorScheme.darkerDarkColor)
+                button.add(numberLabel).expand().center().row()
+
+                val stars = Table()
+                for (i in 0 until 3) {
+                    val star = Image(skin, "empty-star").apply { color = ColorScheme.darkerDarkColor }
+                    stars.add(star).spaceRight(3f)
+                }
+                button.add(stars).bottom().padBottom(23f)
+
+                buttons.add(button)
+                if (level % 3 == 0)
+                    buttons.row()
+
+                level++
             }
-            button.add(stars).bottom().padBottom(23f)
-
-            buttons.add(button)
-            if (level % 3 == 0)
-                buttons.row()
         }
 
         val bottomRow = Table().apply {
             defaults().space(10f)
         }
-//        table.debug = true
         table.add(bottomRow).bottom().expandX().padBottom(20f)
 
         for (i in 0 until 4) {
