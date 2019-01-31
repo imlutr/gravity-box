@@ -17,157 +17,83 @@
 
 package ro.luca1152.gravitybox.utils
 
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener
 
-/**
- * @author Krustnic
- * https://github.com/krustnic/HorizontalSlidingPane
- */
 class HorizontalSlidingPane(private val pageWidth: Float,
                             private val pageHeight: Float) : Group() {
+    // The speed needed to fling to the next page
+    private val flingSpeedThreshold = 600f
 
-    private val pages: Group = Group() // The pages container. Contains each page.
+    // The pages container. Contains each page.
+    private val pages: Group = Group()
 
-    // Offset container pages
-    private var amountX = 0f
+    // The listener that automatically handles flings, pans, taps.
+    private val inputListener: ActorGestureListener
 
-    // Offset container pages
-    private var transmission = 0
-    private var stopSection = 0f
-    private var speed = 2500f
-    private var currentSection = 1
-
-    // Pixel speed / second after which we believe that the user wants to go to the next section
-    private var flingSpeed = 600f
-
-    private var touchFocusedChild: Actor? = null
-    private val actorGestureListener: ActorGestureListener
-
-    private val sectionsCount: Int
+    // The number of pages
+    private val pagesCount
         get() = pages.children.size
+
+    // The current page. It modifies when the player pans. It is float, so it can be compared with the target page.
+    // If it was int, and the player panned to page 1.5, it would get rounded to 2, and the check [currentPage != targetPage] from moveToTargetPage() would fail
+    private val currentPage
+        get() = MathUtils.clamp(Math.abs(pages.x / pageWidth) + 1, 1f, pagesCount.toFloat())
+
+    // The page to which it will be automatically scrolled
+    private var targetPage = 1
+
+    // The x to which it will be automatically scrolled
+    // It is -[...] because the x has values in [-((targetPage - 1) * pageWidth), 0] and not [0, (targetPage - 1) * pageWidth]
+    private val targetX
+        get() = -((targetPage - 1) * pageWidth)
 
     init {
         this.addActor(pages)
 
-        // Input Listener
-        actorGestureListener = object : ActorGestureListener() {
-            override fun tap(event: InputEvent?, x: Float, y: Float, count: Int, button: Int) {}
-
+        inputListener = object : ActorGestureListener() {
             override fun pan(event: InputEvent?, x: Float, y: Float, deltaX: Float, deltaY: Float) {
-                if (amountX - deltaX < 0f) {
-                    return
+                pages.run {
+                    moveBy(deltaX, 0f)
+
+                    // Don't over-pan
+                    this.x = MathUtils.clamp(pages.x, -((pages.children.size - 1) * pageWidth), 0f)
                 }
-                if (amountX - deltaX > (pages.children.size - 1) * pageWidth) return
-                amountX -= deltaX
-                cancelTouchFocusedChild()
             }
 
             override fun fling(event: InputEvent?, velocityX: Float, velocityY: Float, button: Int) {
-                if (Math.abs(velocityX) > flingSpeed) {
-                    if (velocityX > 0)
-                        setStopSection(currentSection - 2)
-                    else
-                        setStopSection(currentSection)
+                if (Math.abs(velocityX) > flingSpeedThreshold) {
+                    targetPage = when {
+                        velocityX > 0 -> MathUtils.clamp(Math.round(currentPage) - 1, 1, pagesCount) // The fling was to the left
+                        else -> MathUtils.clamp(Math.round(currentPage) + 1, 1, pagesCount) // The fling was to the right
+                    }
                 }
-                cancelTouchFocusedChild()
             }
-
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                println("touchDown")
-            }
-
         }
-        addListener(actorGestureListener)
+        addListener(inputListener)
     }
 
-
-    fun addWidget(widget: Actor) {
-        pages.addActor(widget.apply {
-            setPosition(pages.children.size * pageWidth - pageWidth / 2f, -pageHeight / 2f)
+    fun addPage(page: Actor) {
+        pages.addActor(page.apply {
+            setPosition(pagesCount * pageWidth - pageWidth / 2f, -pageHeight / 2f)
             setSize(pageWidth, pageHeight)
         })
     }
 
-    /**
-     * Calculation of the current section based on the displacement of the container pages.
-     */
-    private fun calculateCurrentSection(): Int {
-        // Current section = (Current offset / length of section) + 1, because our pages are numbered from 1
-        val section = Math.round(amountX / pageWidth) + 1
-
-        // Current section = (Current offset / length of section) + 1, because our pages are numbered from 1
-        if (section > pages.children.size) return pages.children.size
-        return if (section < 1) 1 else section
-    }
-
-    fun setStopSection(_stoplineSection: Int) {
-        var stopLineSection = _stoplineSection
-
-        if (stopLineSection < 0) stopLineSection = 0
-        if (stopLineSection > this.sectionsCount - 1) stopLineSection = this.sectionsCount - 1
-
-        stopSection = stopLineSection * pageWidth
-
-        // Determine the direction of movement
-        // transmission ==  1 - to the right
-        // transmission == -1 - to the left
-        if (amountX < stopSection) {
-            transmission = 1
-        } else {
-            transmission = -1
-        }
-    }
-
-    private fun move(delta: Float) {
-        // Determine the direction of the offset
-        if (amountX < stopSection) {
-            // Move right
-            // If you got here, but at the same time had to move to the left
-            // it means it's time to stop
-            if (transmission == -1) {
-                amountX = stopSection
-
-                // Fix the current section number
-                currentSection = calculateCurrentSection()
-
-                return
-            }
-
-            // Shift
-            amountX += speed * delta
-        } else if (amountX > stopSection) {
-            if (transmission == 1) {
-                amountX = stopSection
-                currentSection = calculateCurrentSection()
-                return
-            }
-            amountX -= speed * delta
-        }
-    }
-
+    // Called every frame, equivalent to update()
     override fun act(delta: Float) {
-        // We shift the container with pages
-        pages.x = -amountX
+        pages.act(delta)
 
-        // If we drive a finger across the screen
-        if (actorGestureListener.gestureDetector.isPanning) {
-            // Set the border to which we will animate the movement
-            // border = number of the previous section
-            setStopSection(calculateCurrentSection() - 1)
-        } else {
-            // If the finger is far from the screen - we animate the movement to a given point.
-            move(delta)
-        }
+        if (inputListener.gestureDetector.isPanning) targetPage = Math.round(currentPage)
+        else moveToTargetPage()
     }
 
-    internal fun cancelTouchFocusedChild() {
-        when (touchFocusedChild) {
-            null -> return
-            else -> stage.cancelTouchFocus(this)
-        }
-        touchFocusedChild = null
+    private fun moveToTargetPage() {
+        if (currentPage != targetPage.toFloat() && pages.actions.count() == 0)
+            pages.addAction(moveTo(targetX, 0f, .125f))
     }
 }
