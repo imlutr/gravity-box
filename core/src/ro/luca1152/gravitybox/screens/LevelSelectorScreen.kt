@@ -50,10 +50,13 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
     private lateinit var topRow: Table
     private lateinit var horizontalSlidingPane: HorizontalSlidingPane
     private lateinit var bottomRow: Table
+    private val pageIndicatorCircles = ArrayList<Image>()
 
     override fun show() {
-        skin = manager.get<Skin>("skins/uiskin.json")
         uiStage.actors.removeAll(uiStage.actors, true)
+        pageIndicatorCircles.clear()
+
+        skin = manager.get<Skin>("skins/uiskin.json")
         createRootTable()
         createTopRow()
         createHorizontalSlidingPane()
@@ -154,7 +157,7 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
 
         var level = 1
 
-        for (section in 1..3) {
+        for (pageNumber in 1..4) {
             val page = createPage()
             for (i in 1..15) {
                 val levelButton = createLevelButton(level)
@@ -174,18 +177,38 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
     }
 
     private fun createBottomRow() {
-        fun createSmallCircle() = Image(skin, "small-empty-circle").apply { color = ColorScheme.darkerDarkColor }
+        fun createSmallEmptyCircle() = Image(skin, "small-empty-circle").apply { color = ColorScheme.darkerDarkColor }
+        fun createSmallFullCircle() = Image(skin, "small-full-circle").apply { color = ColorScheme.darkerDarkColor }
 
         bottomRow = Table().apply { defaults().space(10f) }
         root.add(bottomRow).bottom().expandX().padBottom(20f)
 
-        for (i in 0 until 4)
-            bottomRow.add(createSmallCircle())
+        createSmallFullCircle().run {
+            bottomRow.add(this)
+            pageIndicatorCircles.add(this)
+        }
+        for (i in 1 until horizontalSlidingPane.pagesCount) {
+            createSmallEmptyCircle().run {
+                bottomRow.add(this)
+                pageIndicatorCircles.add(this)
+            }
+        }
     }
 
     override fun render(delta: Float) {
+        update(delta)
         clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
-        uiStage.act(delta)
         uiStage.draw()
+    }
+
+    private fun update(delta: Float) {
+        uiStage.act(delta)
+        updatePageIndicatorCircles()
+    }
+
+    private fun updatePageIndicatorCircles() {
+        for (i in 0 until horizontalSlidingPane.pagesCount)
+            pageIndicatorCircles[i].drawable = skin.getDrawable("small-empty-circle")
+        pageIndicatorCircles[Math.round(horizontalSlidingPane.currentPage) - 1].drawable = skin.getDrawable("small-full-circle")
     }
 }

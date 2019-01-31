@@ -36,12 +36,12 @@ class HorizontalSlidingPane(private val pageWidth: Float,
     private val inputListener: ActorGestureListener
 
     // The number of pages
-    private val pagesCount
+    val pagesCount
         get() = pages.children.size
 
     // The current page. It modifies when the player pans. It is float, so it can be compared with the target page.
     // If it was int, and the player panned to page 1.5, it would get rounded to 2, and the check [currentPage != targetPage] from moveToTargetPage() would fail
-    private val currentPage
+    val currentPage
         get() = MathUtils.clamp(Math.abs(pages.x / pageWidth) + 1, 1f, pagesCount.toFloat())
 
     // The page to which it will be automatically scrolled
