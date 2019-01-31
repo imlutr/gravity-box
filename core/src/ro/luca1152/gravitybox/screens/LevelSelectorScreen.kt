@@ -127,11 +127,13 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
             top().padTop(18f)
             addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    chosenlevel = level
-                    uiStage.addAction(sequence(
-                            fadeOut(.5f),
-                            run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
-                    ))
+                    if (!horizontalSlidingPane.isPanning) {
+                        chosenlevel = level
+                        uiStage.addAction(sequence(
+                                fadeOut(.5f),
+                                run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
+                        ))
+                    }
                 }
             })
         }

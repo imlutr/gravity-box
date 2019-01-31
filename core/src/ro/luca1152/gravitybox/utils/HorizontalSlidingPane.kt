@@ -52,6 +52,9 @@ class HorizontalSlidingPane(private val pageWidth: Float,
     private val targetX
         get() = -((targetPage - 1) * pageWidth)
 
+    val isPanning
+        get() = inputListener.gestureDetector.isPanning
+
     init {
         this.addActor(pages)
 
@@ -88,7 +91,7 @@ class HorizontalSlidingPane(private val pageWidth: Float,
     override fun act(delta: Float) {
         pages.act(delta)
 
-        if (inputListener.gestureDetector.isPanning) targetPage = Math.round(currentPage)
+        if (isPanning) targetPage = Math.round(currentPage)
         else moveToTargetPage()
     }
 
