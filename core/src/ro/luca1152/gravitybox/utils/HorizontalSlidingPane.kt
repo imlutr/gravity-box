@@ -71,8 +71,8 @@ class HorizontalSlidingPane(private val pageWidth: Float,
             override fun fling(event: InputEvent?, velocityX: Float, velocityY: Float, button: Int) {
                 if (Math.abs(velocityX) > flingSpeedThreshold) {
                     targetPage = when {
-                        velocityX > 0 -> MathUtils.clamp(Math.round(currentPage) - 1, 1, pagesCount) // The fling was to the left
-                        else -> MathUtils.clamp(Math.round(currentPage) + 1, 1, pagesCount) // The fling was to the right
+                        velocityX > 0 -> MathUtils.clamp(currentPage.toInt(), 1, pagesCount) // The fling was to the left
+                        else -> MathUtils.clamp(currentPage.toInt() + 1, 1, pagesCount) // The fling was to the right
                     }
                 }
             }
