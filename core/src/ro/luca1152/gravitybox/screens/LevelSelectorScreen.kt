@@ -22,6 +22,7 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -87,22 +88,30 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
 
     private fun createTopRow() {
         fun createBackButton() = Button(skin, "back-button").apply {
-            color = ColorScheme.darkerDarkColor
+            color = ColorScheme.currentDarkColor
             addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    uiStage.addAction(sequence(
-                            fadeOut(.5f),
-                            run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
-                    ))
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    color = ColorScheme.darkerDarkColor
+                    return true
+                }
+
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    color = ColorScheme.currentDarkColor
+                    if (isOver(this@apply, x, y)) {
+                        uiStage.addAction(sequence(
+                                fadeOut(.5f),
+                                run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
+                        ))
+                    }
                 }
             })
         }
 
         fun createBigEmptyStar() = Image(skin, "big-empty-star").apply {
-            color = ColorScheme.darkerDarkColor
+            color = ColorScheme.currentDarkColor
         }
 
-        fun createStarsNumberLabel() = Label("0/45", skin, "bold-65", ColorScheme.darkerDarkColor)
+        fun createStarsNumberLabel() = Label("0/45", skin, "bold-65", ColorScheme.currentDarkColor)
 
         topRow = Table()
         root.add(topRow).growX().row()
@@ -125,13 +134,54 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
             return page
         }
 
+        fun createStars(): Table {
+            val stars = Table()
+            for (i in 0 until 3) {
+                val star = Image(skin, "empty-star").apply { color = ColorScheme.currentDarkColor }
+                stars.add(star).spaceRight(3f)
+            }
+            return stars
+        }
+
+        fun createNumberLabel(level: Int) = Label(level.toString(), skin, "bold-57", ColorScheme.currentDarkColor)
+
         fun createLevelButton(level: Int) = Button(skin, "small-button").apply {
-            color = ColorScheme.darkerDarkColor
+            color = ColorScheme.currentDarkColor
             top().padTop(18f)
+
+            val numberLabel = createNumberLabel(level)
+            add(numberLabel).expand().center().row()
+
+            val stars = createStars()
+            add(stars).bottom().padBottom(23f)
+
+            fun setAllColors(color: Color) {
+                numberLabel.style.fontColor = color
+                this.color.set(color)
+                stars.cells.forEach { it.actor.color.set(color) }
+            }
+
+            addAction(forever(run(Runnable {
+                if (horizontalSlidingPane.isPanning)
+                    setAllColors(ColorScheme.currentDarkColor)
+            })))
+
             addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    if (!horizontalSlidingPane.isPanning) {
-                        chosenlevel = level
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    addAction(sequence(
+                            delay(.05f),
+                            run(Runnable {
+                                if (!horizontalSlidingPane.isPanning)
+                                    setAllColors(ColorScheme.darkerDarkColor)
+                            })
+                    ))
+                    return true
+                }
+
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    setAllColors(ColorScheme.currentDarkColor)
+                    if (!horizontalSlidingPane.isPanning && isOver(this@apply, x, y)) {
+                        chosenlevel = Math.min(level, MyGame.LEVELS_NUMBER)
                         uiStage.addAction(sequence(
                                 fadeOut(.5f),
                                 run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
@@ -139,17 +189,6 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
                     }
                 }
             })
-        }
-
-        fun createNumberLabel(level: Int) = Label(level.toString(), skin, "bold-57", ColorScheme.darkerDarkColor)
-
-        fun createStars(): Table {
-            val stars = Table()
-            for (i in 0 until 3) {
-                val star = Image(skin, "empty-star").apply { color = ColorScheme.darkerDarkColor }
-                stars.add(star).spaceRight(3f)
-            }
-            return stars
         }
 
         horizontalSlidingPane = HorizontalSlidingPane(uiStage.camera.viewportWidth, 1000f)
@@ -163,12 +202,6 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
                 val levelButton = createLevelButton(level)
                 page.add(levelButton)
 
-                val numberLabel = createNumberLabel(level)
-                levelButton.add(numberLabel).expand().center().row()
-
-                val stars = createStars()
-                levelButton.add(stars).bottom().padBottom(23f)
-
                 if (level % 3 == 0)
                     page.row()
                 level++
@@ -177,8 +210,8 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
     }
 
     private fun createBottomRow() {
-        fun createSmallEmptyCircle() = Image(skin, "small-empty-circle").apply { color = ColorScheme.darkerDarkColor }
-        fun createSmallFullCircle() = Image(skin, "small-full-circle").apply { color = ColorScheme.darkerDarkColor }
+        fun createSmallEmptyCircle() = Image(skin, "small-empty-circle").apply { color = ColorScheme.currentDarkColor }
+        fun createSmallFullCircle() = Image(skin, "small-full-circle").apply { color = ColorScheme.currentDarkColor }
 
         bottomRow = Table().apply { defaults().space(10f) }
         root.add(bottomRow).bottom().expandX().padBottom(20f)

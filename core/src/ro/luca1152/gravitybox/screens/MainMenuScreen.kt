@@ -82,6 +82,12 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
             val playButton = Button(skin, "big-button").apply {
                 color = ColorScheme.currentDarkColor
                 addListener(object : ClickListener() {
+                    override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                        color = ColorScheme.darkerDarkColor
+                        playButtonIcon.color = ColorScheme.darkerDarkColor
+                        return true
+                    }
+
                     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                         color = ColorScheme.currentDarkColor
                         playButtonIcon.color = ColorScheme.currentDarkColor
@@ -93,12 +99,6 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
                                     run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
                             ))
                         }
-                    }
-
-                    override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                        color = ColorScheme.darkerDarkColor
-                        playButtonIcon.color = ColorScheme.darkerDarkColor
-                        return true
                     }
                 })
             }
@@ -125,15 +125,15 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
         add(heartIcon)
 
         addListener(object : ClickListener() {
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                color = ColorScheme.currentDarkColor
-                heartIcon.color = ColorScheme.currentDarkColor
-            }
-
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 color = ColorScheme.darkerDarkColor
                 heartIcon.color = ColorScheme.darkerDarkColor
                 return true
+            }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                color = ColorScheme.currentDarkColor
+                heartIcon.color = ColorScheme.currentDarkColor
             }
         })
     }
@@ -146,15 +146,15 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
         add(settingsIcon)
 
         addListener(object : ClickListener() {
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                color = ColorScheme.currentDarkColor
-                settingsIcon.color = ColorScheme.currentDarkColor
-            }
-
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 color = ColorScheme.darkerDarkColor
                 settingsIcon.color = ColorScheme.darkerDarkColor
                 return true
+            }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                color = ColorScheme.currentDarkColor
+                settingsIcon.color = ColorScheme.currentDarkColor
             }
         })
     }
