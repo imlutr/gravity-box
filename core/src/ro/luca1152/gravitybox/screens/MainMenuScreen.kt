@@ -93,7 +93,7 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
                         playButtonIcon.color = ColorScheme.currentDarkColor
 
                         if (isOver(this@apply, x, y)) {
-                            LevelSelectorScreen.chosenlevel = 1
+                            LevelSelectorScreen.chosenLevel = 1
                             uiStage.addAction(sequence(
                                     fadeOut(.5f),
                                     run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })

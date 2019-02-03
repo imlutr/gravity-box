@@ -28,10 +28,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object MapBodyBuilder {
-    fun buildPlayerBody(
-        tiledMap: TiledMap,
-        world: World = Injekt.get()
-    ): Body {
+    fun buildPlayerBody(tiledMap: TiledMap, world: World = Injekt.get()): Body {
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
         }
@@ -48,10 +45,7 @@ object MapBodyBuilder {
         }
     }
 
-    fun buildFinishBody(
-        tiledMap: TiledMap,
-        world: World = Injekt.get()
-    ): Body {
+    fun buildFinishBody(tiledMap: TiledMap, world: World = Injekt.get()): Body {
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
         }
@@ -68,10 +62,7 @@ object MapBodyBuilder {
         }
     }
 
-    fun buildPlatforms(
-        tiledMap: TiledMap,
-        world: World = Injekt.get()
-    ): ArrayList<Pair<Body, MapObject>> {
+    fun buildPlatforms(tiledMap: TiledMap, world: World = Injekt.get()): ArrayList<Pair<Body, MapObject>> {
         val platforms = arrayListOf<Pair<Body, MapObject>>()
 
         fun buildPlatformsOfType(platformType: String) {
@@ -81,11 +72,11 @@ object MapBodyBuilder {
                 }
                 val platformShape = getRectangle(mapObject as RectangleMapObject)
                 platforms.add(
-                    Pair(world.createBody(bodyDef).apply {
-                        userData = platformType == "Dynamic"
-                        createFixture(platformShape, 1f)
-                        platformShape.dispose()
-                    }, mapObject)
+                        Pair(world.createBody(bodyDef).apply {
+                            userData = platformType == "Dynamic"
+                            createFixture(platformShape, 1f)
+                            platformShape.dispose()
+                        }, mapObject)
                 )
             }
         }
@@ -95,10 +86,7 @@ object MapBodyBuilder {
         return platforms
     }
 
-    fun buildPoints(
-        map: MapComponent,
-        world: World = Injekt.get()
-    ): ArrayList<Body> {
+    fun buildPoints(map: MapComponent, world: World = Injekt.get()): ArrayList<Body> {
         val bodies = arrayListOf<Body>()
         map.tiledMap.layers.get("Points")?.objects?.forEach { mapObject ->
             // Increase the number points of the map
@@ -128,10 +116,10 @@ object MapBodyBuilder {
         val size = Vector2((rectangle.x + rectangle.width * 0.5f) / PPM, (rectangle.y + rectangle.height * 0.5f) / PPM)
         return PolygonShape().apply {
             setAsBox(
-                rectangle.width * 0.5f / PPM,
-                rectangle.height * 0.5f / PPM,
-                size,
-                0.0f
+                    rectangle.width * 0.5f / PPM,
+                    rectangle.height * 0.5f / PPM,
+                    size,
+                    0.0f
             )
         }
     }

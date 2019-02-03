@@ -65,7 +65,7 @@ class PlayScreen(
 
     override fun show() {
         // Create entities
-        val mapEntity = EntityFactory.createMap(LevelSelectorScreen.chosenlevel)
+        val mapEntity = EntityFactory.createMap(LevelSelectorScreen.chosenLevel)
         val playerEntity = EntityFactory.createPlayer(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap))
         val finishEntity = EntityFactory.createFinish(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap))
 

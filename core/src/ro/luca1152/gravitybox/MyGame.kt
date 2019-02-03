@@ -37,9 +37,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
-/**
- * The main class of the game.
- */
+/** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
     companion object {
         const val LEVELS_NUMBER = 4
@@ -63,17 +61,20 @@ class MyGame : KtxGame<Screen>() {
         addScreen(LevelSelectorScreen())
         addScreen(PlayScreen())
 
+        // Randomize the color scheme every time the game starts
         ColorScheme.hue = MathUtils.random(0, 360).toFloat()
+
+        // Generate the actual colors based on the hue
         ColorScheme.updateColors()
 
         setScreen<LoadingScreen>()
     }
 
     override fun dispose() {
-        // Dispose every screen
+        // Dispose EVERY screen
         super.dispose()
 
-        // Dispose heavy objects
+        // Dispose heavy injected objects
         Injekt.run {
             get<Batch>().dispose()
             get<AssetManager>().dispose()

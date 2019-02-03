@@ -21,17 +21,14 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener
 
-class HorizontalSlidingPane(private val pageWidth: Float,
-                            private val pageHeight: Float) : Group() {
-    // The speed needed to fling to the next page
-    private val flingSpeedThreshold = 600f
-
-    // How much to the left can you scroll on the first page
-    private val overScrollDistance = 100f
-
+class HorizontalSlidingPane(private val pageWidth: Float, private val pageHeight: Float,
+                            private val flingSpeedThreshold: Float = 600f, // The speed needed to fling to the next page
+                            private val overScrollDistance: Float = 100f  // E.g. how much to the left can you scroll on the first page
+) : Group() {
     // The pages container. Contains each page.
     private val pages: Group = Group()
 
@@ -43,7 +40,7 @@ class HorizontalSlidingPane(private val pageWidth: Float,
         get() = pages.children.size
 
     // The current page. It modifies when the player pans. It is float, so it can be compared with the target page.
-    // If it was int, and the player panned to page 1.5, it would get rounded to 2, and the check [currentPage != targetPage] from moveToTargetPage() would fail
+    // If it was int, and the player panned to page 1.5, it would get rounded to 2, and the check [currentPage != targetPage] from scrollToTargetPage() would fail
     val currentPage
         get() = Math.abs(pages.x / pageWidth) + 1
 
@@ -85,6 +82,9 @@ class HorizontalSlidingPane(private val pageWidth: Float,
 
     fun addPage(page: Actor) {
         pages.addActor(page.apply {
+            // If it's not touchable, the pane slides only if you pan on the buttons, and not on the whole area.
+            touchable = Touchable.enabled
+
             setPosition(pagesCount * pageWidth - pageWidth / 2f, -pageHeight / 2f)
             setSize(pageWidth, pageHeight)
         })
@@ -95,10 +95,10 @@ class HorizontalSlidingPane(private val pageWidth: Float,
         pages.act(delta)
 
         if (isPanning) targetPage = Math.round(currentPage)
-        else moveToTargetPage()
+        else scrollToTargetPage()
     }
 
-    private fun moveToTargetPage() {
+    private fun scrollToTargetPage() {
         if (currentPage != targetPage.toFloat() && pages.actions.count() == 0) {
             pages.addAction(moveTo(targetX, 0f, .125f))
         }

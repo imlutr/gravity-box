@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
@@ -42,15 +41,13 @@ import uy.kohesive.injekt.api.get
 class LevelSelectorScreen(batch: Batch = Injekt.get(),
                           private val manager: AssetManager = Injekt.get()) : KtxScreen {
     companion object {
-        var chosenlevel = 0
+        var chosenLevel = 0
     }
 
     private val uiStage = Stage(ExtendViewport(720f, 1280f), batch)
     private lateinit var skin: Skin
     private lateinit var root: Table
-    private lateinit var topRow: Table
     private lateinit var horizontalSlidingPane: HorizontalSlidingPane
-    private lateinit var bottomRow: Table
     private val pageIndicatorCircles = ArrayList<Image>()
 
     override fun show() {
@@ -58,35 +55,27 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
         pageIndicatorCircles.clear()
 
         skin = manager.get<Skin>("skins/uiskin.json")
-        createRootTable()
-        createTopRow()
-        createHorizontalSlidingPane()
-        createBottomRow()
+        horizontalSlidingPane = createHorizontalSlidingPane()
+
+        // Add every widget
+        root = createRootTable().apply { uiStage.addActor(this) }
+        root.add(createTopRow()).growX().row()
+        root.add(horizontalSlidingPane).expand().row()
+        root.add(createBottomRow()).bottom().expandX().padBottom(20f)
+
+        // Make everything fade in
         uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
 
-        Gdx.input.inputProcessor = InputMultiplexer(uiStage, object : InputAdapter() {
-            override fun keyDown(keycode: Int): Boolean {
-                if (keycode == Input.Keys.BACK) {
-                    uiStage.addAction(sequence(
-                            fadeOut(.5f),
-                            run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
-                    ))
-                }
-                return false
-            }
-        })
-        Gdx.input.isCatchBackKey = true
+        // Make it so tapping the back key gets you to the main menu, instead of closing the game
+        overrideBackKey()
     }
 
-    private fun createRootTable() {
-        root = Table().apply {
-            pad(50f)
-            setFillParent(true)
-        }
-        uiStage.addActor(root)
+    private fun createRootTable() = Table().apply {
+        pad(50f)
+        setFillParent(true)
     }
 
-    private fun createTopRow() {
+    private fun createTopRow(): Table {
         fun createBackButton() = Button(skin, "back-button").apply {
             color = ColorScheme.currentDarkColor
             addListener(object : ClickListener() {
@@ -113,22 +102,17 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
 
         fun createStarsNumberLabel() = Label("0/45", skin, "bold-65", ColorScheme.currentDarkColor)
 
-        topRow = Table()
-        root.add(topRow).growX().row()
-
-        // Add widgets to the topRow
-        topRow.add(createBackButton()).expandX().left()
-        topRow.add(createBigEmptyStar()).right()
-        topRow.add(createStarsNumberLabel()).right().padLeft(20f)
+        return Table().apply {
+            add(createBackButton()).expandX().left()
+            add(createBigEmptyStar()).right()
+            add(createStarsNumberLabel()).right().padLeft(20f)
+        }
     }
 
-    private fun createHorizontalSlidingPane() {
+    private fun createHorizontalSlidingPane(): HorizontalSlidingPane {
         fun createPage(): Table {
             val page = Table().apply {
                 defaults().space(50f)
-
-                // If it's not touchable, the HorizontalSlidingPane slides only if you tap on the buttons, and not on the whole area.
-                touchable = Touchable.enabled
             }
             horizontalSlidingPane.addPage(page)
             return page
@@ -181,7 +165,7 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     setAllColors(ColorScheme.currentDarkColor)
                     if (!horizontalSlidingPane.isPanning && isOver(this@apply, x, y)) {
-                        chosenlevel = Math.min(level, MyGame.LEVELS_NUMBER)
+                        chosenLevel = Math.min(level, MyGame.LEVELS_NUMBER)
                         uiStage.addAction(sequence(
                                 fadeOut(.5f),
                                 run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
@@ -192,7 +176,6 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
         }
 
         horizontalSlidingPane = HorizontalSlidingPane(uiStage.camera.viewportWidth, 1000f)
-        root.add(horizontalSlidingPane).expand().row()
 
         var level = 1
 
@@ -207,14 +190,15 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
                 level++
             }
         }
+
+        return horizontalSlidingPane
     }
 
-    private fun createBottomRow() {
+    private fun createBottomRow(): Table {
         fun createSmallEmptyCircle() = Image(skin, "small-empty-circle").apply { color = ColorScheme.currentDarkColor }
         fun createSmallFullCircle() = Image(skin, "small-full-circle").apply { color = ColorScheme.currentDarkColor }
 
-        bottomRow = Table().apply { defaults().space(10f) }
-        root.add(bottomRow).bottom().expandX().padBottom(20f)
+        val bottomRow = Table().apply { defaults().space(10f) }
 
         createSmallFullCircle().run {
             bottomRow.add(this)
@@ -226,6 +210,23 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
                 pageIndicatorCircles.add(this)
             }
         }
+
+        return bottomRow
+    }
+
+    private fun overrideBackKey() {
+        Gdx.input.isCatchBackKey = true
+        Gdx.input.inputProcessor = InputMultiplexer(uiStage, object : InputAdapter() {
+            override fun keyDown(keycode: Int): Boolean {
+                if (keycode == Input.Keys.BACK) {
+                    uiStage.addAction(sequence(
+                            fadeOut(.5f),
+                            run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
+                    ))
+                }
+                return false
+            }
+        })
     }
 
     override fun render(delta: Float) {
