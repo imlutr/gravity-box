@@ -60,9 +60,9 @@ class RenderSystem(
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl20.glLineWidth(10f)
 
-        drawTiledMap()
-//        drawPhysicsDebug()
-        drawImages()
+//        drawTiledMap()
+        drawPhysicsDebug()
+//        drawImages()
     }
 
     private fun drawImages() {
@@ -87,7 +87,7 @@ class RenderSystem(
         // Update the map in case the level changed
         mapRenderer.map = mapEntity.map.tiledMap
 
-        // Make the platforms from the map have a color from the color scheme
+        // Make the map's platforms have the correct color
         batch.color = ColorScheme.currentDarkColor
         mapRenderer.setView(gameCamera)
         mapRenderer.render()
