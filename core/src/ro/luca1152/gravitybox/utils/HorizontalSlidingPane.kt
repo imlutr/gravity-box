@@ -29,6 +29,9 @@ class HorizontalSlidingPane(private val pageWidth: Float,
     // The speed needed to fling to the next page
     private val flingSpeedThreshold = 600f
 
+    // How much to the left can you scroll on the first page
+    private val overScrollDistance = 100f
+
     // The pages container. Contains each page.
     private val pages: Group = Group()
 
@@ -42,7 +45,7 @@ class HorizontalSlidingPane(private val pageWidth: Float,
     // The current page. It modifies when the player pans. It is float, so it can be compared with the target page.
     // If it was int, and the player panned to page 1.5, it would get rounded to 2, and the check [currentPage != targetPage] from moveToTargetPage() would fail
     val currentPage
-        get() = MathUtils.clamp(Math.abs(pages.x / pageWidth) + 1, 1f, pagesCount.toFloat())
+        get() = Math.abs(pages.x / pageWidth) + 1
 
     // The page to which it will be automatically scrolled
     private var targetPage = 1
@@ -64,7 +67,7 @@ class HorizontalSlidingPane(private val pageWidth: Float,
                     moveBy(deltaX, 0f)
 
                     // Don't over-pan
-                    this.x = MathUtils.clamp(pages.x, -((pages.children.size - 1) * pageWidth), 0f)
+                    this.x = MathUtils.clamp(pages.x, -((pages.children.size - 1) * pageWidth + overScrollDistance), overScrollDistance)
                 }
             }
 
@@ -96,7 +99,8 @@ class HorizontalSlidingPane(private val pageWidth: Float,
     }
 
     private fun moveToTargetPage() {
-        if (currentPage != targetPage.toFloat() && pages.actions.count() == 0)
+        if (currentPage != targetPage.toFloat() && pages.actions.count() == 0) {
             pages.addAction(moveTo(targetX, 0f, .125f))
+        }
     }
 }
