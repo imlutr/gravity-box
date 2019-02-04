@@ -41,10 +41,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
-class PlayScreen(
-        private val engine: PooledEngine = Injekt.get(),
-        private val gameViewport: GameViewport = Injekt.get()
-) : KtxScreen {
+class PlayScreen(private val engine: PooledEngine = Injekt.get(),
+                 private val gameViewport: GameViewport = Injekt.get()) : KtxScreen {
     private val world = World(Vector2(0f, GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
     private val stage = GameStage
@@ -77,7 +75,7 @@ class PlayScreen(
             addSystem(PhysicsSyncSystem())
             addSystem(BulletCollisionSystem(playerEntity))
             addSystem(CollisionBoxListener())
-            addSystem(PlatformRemovalSystem())
+            addSystem(PlatformRemovalSystem(mapEntity.map.tiledMap))
             addSystem(PointSystem(mapEntity.map))
             addSystem(AutoRestartSystem())
             addSystem(ColorSchemeSystem(mapEntity))
@@ -88,6 +86,7 @@ class PlayScreen(
     }
 
     override fun render(delta: Float) {
+        println(Gdx.graphics.deltaTime)
         clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
         engine.update(delta)
     }

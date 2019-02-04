@@ -6,7 +6,7 @@ filter: Linear,Linear
 repeat: none
 back-button
   rotate: false
-  xy: 1648, 254
+  xy: 1648, 174
   size: 56, 85
   orig: 56, 85
   offset: 0, 0
@@ -88,6 +88,13 @@ nunito-bold-65
   xy: 2, 17
   size: 512, 512
   orig: 512, 512
+  offset: 0, 0
+  index: -1
+pencil-icon
+  rotate: false
+  xy: 1648, 261
+  size: 77, 78
+  orig: 77, 78
   offset: 0, 0
   index: -1
 play-button-empty

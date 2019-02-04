@@ -50,7 +50,8 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
         root.add(createLogo()).expand().row()
         val bottomRow = Table().apply {
             add(createRateButton()).expandX().left()
-            add(createSettingsButton()).right()
+            add(createLevelEditorButton()).expandX()
+            add(createSettingsButton()).right().expandX()
         }
         root.add(bottomRow).bottom().growX().pad(0f).padTop(-140f - 0f)
 
@@ -155,6 +156,27 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 color = ColorScheme.currentDarkColor
                 settingsIcon.color = ColorScheme.currentDarkColor
+            }
+        })
+    }
+
+    private fun createLevelEditorButton() = Button(skin, "small-button").apply {
+        color = ColorScheme.currentDarkColor
+        val pencilIcon = Image(skin, "pencil-icon").apply {
+            color = ColorScheme.currentDarkColor
+        }
+        add(pencilIcon)
+
+        addListener(object : ClickListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                color = ColorScheme.darkerDarkColor
+                pencilIcon.color = ColorScheme.darkerDarkColor
+                return true
+            }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                color = ColorScheme.currentDarkColor
+                pencilIcon.color = ColorScheme.currentDarkColor
             }
         })
     }

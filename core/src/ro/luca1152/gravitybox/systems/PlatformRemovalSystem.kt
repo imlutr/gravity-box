@@ -20,15 +20,16 @@ package ro.luca1152.gravitybox.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.maps.tiled.TiledMap
 import ro.luca1152.gravitybox.components.PhysicsComponent
 import ro.luca1152.gravitybox.components.PlatformComponent
 import ro.luca1152.gravitybox.components.platform
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 
-class PlatformRemovalSystem :
-    IteratingSystem(Family.all(PlatformComponent::class.java, PhysicsComponent::class.java).get()) {
+class PlatformRemovalSystem(private val map: TiledMap) : IteratingSystem(Family.all(PlatformComponent::class.java, PhysicsComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.platform.remove) {
+            // Delete the entity, including all it's components, thus removing the Box2D body too
             engine.removeAndResetEntity(entity)
         }
     }
