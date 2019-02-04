@@ -17,22 +17,23 @@
 
 package ro.luca1152.gravitybox.screens
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ColorScheme
+import ro.luca1152.gravitybox.utils.ColorScheme.currentDarkColor
+import ro.luca1152.gravitybox.utils.ColorScheme.darkerDarkColor
+import ro.luca1152.gravitybox.utils.MyButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -49,36 +50,14 @@ class LevelEditorScreen(private val batch: Batch = Injekt.get(),
         root = createRootTable().apply { uiStage.addActor(this) }
         root.add(createBackButton()).pad(50f).expand().top().left().row()
         root.add(createBottomHalf()).grow().padTop(185f)
+
+        Gdx.input.inputProcessor = uiStage
     }
 
     private fun createRootTable() = Table().apply { setFillParent(true) }
 
-    private fun createBackButton() = Button(skin, "small-button").apply {
-        color = ColorScheme.currentDarkColor
-        val backIcon = Image(skin, "back-button").apply {
-            color = ColorScheme.currentDarkColor
-        }
-        add(backIcon).padLeft(-5f)
-
-        addListener(object : ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                color = ColorScheme.darkerDarkColor
-                backIcon.color = ColorScheme.darkerDarkColor
-                return true
-            }
-
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                color = ColorScheme.currentDarkColor
-                backIcon.color = ColorScheme.currentDarkColor
-                if (isOver(this@apply, x, y)) {
-                    uiStage.addAction(sequence(
-                            fadeOut(.5f),
-                            run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
-                    ))
-                }
-            }
-        })
-    }
+    private fun createBackButton() = MyButton(skin, "small-button", "back-button",
+            currentDarkColor, darkerDarkColor, Runnable { uiStage.addAction(sequence(fadeOut(.5f), run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() }))) })
 
     private fun createBottomHalf(): Table {
         fun createMidLine() = Image(manager.get<Texture>("graphics/pixel.png")).apply {
@@ -87,37 +66,13 @@ class LevelEditorScreen(private val batch: Batch = Injekt.get(),
             color = ColorScheme.currentDarkColor
         }
 
-        fun createUndoButton() = Button(skin, "small-button").apply {
-            color = ColorScheme.currentDarkColor
-            val undoIcon = Image(skin, "undo-icon").apply {
-                color = ColorScheme.currentDarkColor
-            }
-            add(undoIcon)
-        }
+        fun createUndoButton() = MyButton(skin, "small-button", "undo-icon", currentDarkColor, darkerDarkColor)
 
-        fun createEraseButton() = Button(skin, "small-button").apply {
-            color = ColorScheme.currentDarkColor
-            val eraseIcon = Image(skin, "erase-icon").apply {
-                color = ColorScheme.currentDarkColor
-            }
-            add(eraseIcon)
-        }
+        fun createEraseButton() = MyButton(skin, "small-button", "erase-icon", currentDarkColor, darkerDarkColor)
 
-        fun createMoveButton() = Button(skin, "small-button").apply {
-            color = ColorScheme.currentDarkColor
-            val moveIcon = Image(skin, "move-icon").apply {
-                color = ColorScheme.currentDarkColor
-            }
-            add(moveIcon)
-        }
+        fun createMoveButton() = MyButton(skin, "small-button", "move-icon", currentDarkColor, darkerDarkColor)
 
-        fun createRedoButton() = Button(skin, "small-button").apply {
-            color = ColorScheme.currentDarkColor
-            val redoIcon = Image(skin, "redo-icon").apply {
-                color = ColorScheme.currentDarkColor
-            }
-            add(redoIcon)
-        }
+        fun createRedoButton() = MyButton(skin, "small-button", "redo-icon", currentDarkColor, darkerDarkColor)
 
         val bottomHalf = Table()
         bottomHalf.add(createMidLine()).width(720f).height(32f).expand().top().row()
