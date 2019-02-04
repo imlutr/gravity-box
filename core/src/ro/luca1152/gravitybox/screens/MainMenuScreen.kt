@@ -177,6 +177,14 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 color = ColorScheme.currentDarkColor
                 pencilIcon.color = ColorScheme.currentDarkColor
+
+                if (isOver(this@apply, x, y)) {
+                    LevelSelectorScreen.chosenLevel = 1
+                    uiStage.addAction(sequence(
+                            fadeOut(.5f),
+                            run(Runnable { Injekt.get<MyGame>().setScreen<LevelEditorScreen>() })
+                    ))
+                }
             }
         })
     }
