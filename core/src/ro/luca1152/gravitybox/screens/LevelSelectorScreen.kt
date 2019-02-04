@@ -76,16 +76,23 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
     }
 
     private fun createTopRow(): Table {
-        fun createBackButton() = Button(skin, "back-button").apply {
+        fun createBackButton() = Button(skin, "small-button").apply {
             color = ColorScheme.currentDarkColor
+            val backIcon = Image(skin, "back-button").apply {
+                color = ColorScheme.currentDarkColor
+            }
+            add(backIcon).padLeft(-5f)
+
             addListener(object : ClickListener() {
                 override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                     color = ColorScheme.darkerDarkColor
+                    backIcon.color = ColorScheme.darkerDarkColor
                     return true
                 }
 
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     color = ColorScheme.currentDarkColor
+                    backIcon.color = ColorScheme.currentDarkColor
                     if (isOver(this@apply, x, y)) {
                         uiStage.addAction(sequence(
                                 fadeOut(.5f),
