@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.utils
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Button
+import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
@@ -28,10 +29,11 @@ class MyButton(skin: Skin, styleName: String, drawableName: String = "",
                upColor: Color = Color.WHITE, downColor: Color = Color.WHITE,
                touchUpRunnable: Runnable? = null) : Button(skin, styleName) {
     val image = if (drawableName != "") Image(skin, drawableName) else null
+    var imageCell: Cell<Image>? = null
 
     init {
         if (image != null)
-            add(image)
+            imageCell = add(image)
 
         color = upColor
         image?.color = upColor
