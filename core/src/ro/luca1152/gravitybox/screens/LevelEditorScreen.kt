@@ -177,7 +177,8 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     }
 
     override fun dispose() {
-        uiStage.dispose()
+        if (::uiStage.isInitialized)
+            uiStage.dispose()
         gameStage.dispose()
     }
 }
