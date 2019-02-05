@@ -21,7 +21,6 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
@@ -42,22 +41,19 @@ import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(private val engine: PooledEngine = Injekt.get(),
-                 private val gameViewport: GameViewport = Injekt.get()) : KtxScreen {
+                 private val gameViewport: GameViewport = Injekt.get(),
+                 private val gameStage: GameStage = Injekt.get()) : KtxScreen {
     private val world = World(Vector2(0f, GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
-    private val stage = GameStage
 
     init {
-        // Load the Box2D native library
-        Box2D.init()
-
         // Dependency injection
         Injekt.run {
-            addSingleton(stage)
             addSingleton(world)
             addSingleton(gameEventSignal)
         }
 
+        // Provide own implementation for what happens after collisions
         world.setContactListener(WorldContactListener(gameEventSignal))
     }
 
@@ -67,8 +63,7 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
         val playerEntity = EntityFactory.createPlayer(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap))
         val finishEntity = EntityFactory.createFinish(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap))
 
-        // Handle input
-        Gdx.input.inputProcessor = GameInputListener(playerEntity)
+        // Add systems
         engine.run {
             addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
             addSystem(PhysicsSystem())
@@ -81,12 +76,16 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
             addSystem(ColorSchemeSystem(mapEntity))
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem(mapEntity, playerEntity))
-            addSystem(RenderSystem(mapEntity))
+            addSystem(MapRenderingSystem(mapEntity))
+//            addSystem(PhysicsDebugRenderingSystem())
+            addSystem(ImageRenderingSystem())
         }
+
+        // Handle input
+        Gdx.input.inputProcessor = GameInputListener(playerEntity)
     }
 
     override fun render(delta: Float) {
-        println(Gdx.graphics.deltaTime)
         clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
         engine.update(delta)
     }
@@ -96,6 +95,6 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
     }
 
     override fun dispose() {
-        stage.dispose()
+        gameStage.dispose()
     }
 }

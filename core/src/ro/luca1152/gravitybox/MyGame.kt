@@ -24,11 +24,13 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
 import ro.luca1152.gravitybox.screens.*
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.GameCamera
+import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
@@ -41,6 +43,9 @@ class MyGame : KtxGame<Screen>() {
     }
 
     override fun create() {
+        // Load the Box2D native library
+        Box2D.init()
+
         // Initialize Injekt, the dependency injection library
         Injekt.run {
             addSingleton(this@MyGame)
@@ -49,6 +54,7 @@ class MyGame : KtxGame<Screen>() {
             addSingleton(AssetManager())
             addSingleton(GameCamera)
             addSingleton(GameViewport)
+            addSingleton(GameStage)
             addSingleton(PooledEngine())
         }
 
@@ -65,6 +71,7 @@ class MyGame : KtxGame<Screen>() {
         // Generate the actual colors based on the hue
         ColorScheme.updateColors()
 
+        // Go to the loading screen
         setScreen<LoadingScreen>()
     }
 
