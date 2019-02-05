@@ -87,7 +87,7 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
 
     override fun render(delta: Float) {
         clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
-        engine.update(delta)
+        engine.update(delta) // This MUST be after clearScreen() because draw functions may be called in engine.update()
     }
 
     override fun resize(width: Int, height: Int) {

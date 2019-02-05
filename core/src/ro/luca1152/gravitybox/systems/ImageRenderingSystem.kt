@@ -18,24 +18,16 @@
 package ro.luca1152.gravitybox.systems
 
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.gdx.graphics.g2d.Batch
-import ro.luca1152.gravitybox.utils.GameCamera
 import ro.luca1152.gravitybox.utils.GameStage
-import ro.luca1152.gravitybox.utils.GameViewport
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class ImageRenderingSystem(private val batch: Batch = Injekt.get(),
-                           private val gameViewport: GameViewport = Injekt.get(),
-                           private val gameCamera: GameCamera = Injekt.get(),
-                           private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
+class ImageRenderingSystem(private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
         // Equivalent to an update().
         // It is here since if the images are not rendered, then there is no point in updating them.
         gameStage.act()
 
-        gameViewport.apply()
-        batch.projectionMatrix = gameCamera.combined
         drawImages()
     }
 

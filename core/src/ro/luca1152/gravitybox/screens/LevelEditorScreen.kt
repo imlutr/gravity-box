@@ -17,11 +17,16 @@
 
 package ro.luca1152.gravitybox.screens
 
+import com.badlogic.ashley.core.PooledEngine
+import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -31,37 +36,81 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.pixelsToMeters
+import ro.luca1152.gravitybox.components.MapComponent
+import ro.luca1152.gravitybox.events.GameEvent
+import ro.luca1152.gravitybox.listeners.WorldContactListener
+import ro.luca1152.gravitybox.systems.GridRenderingSystem
+import ro.luca1152.gravitybox.systems.ImageRenderingSystem
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.ColorScheme.currentDarkColor
 import ro.luca1152.gravitybox.utils.ColorScheme.darkerDarkColor
+import ro.luca1152.gravitybox.utils.GameStage
+import ro.luca1152.gravitybox.utils.GameViewport
 import ro.luca1152.gravitybox.utils.MyButton
 import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
-class LevelEditorScreen(private val batch: Batch = Injekt.get(),
-                        private val manager: AssetManager = Injekt.get()) : KtxScreen {
+class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
+                        private val batch: Batch = Injekt.get(),
+                        private val manager: AssetManager = Injekt.get(),
+                        private val gameStage: GameStage = Injekt.get(),
+                        private val gameViewport: GameViewport = Injekt.get()) : KtxScreen {
+    // UI
     private lateinit var skin: Skin
-    private lateinit var gameStage: Stage
     private lateinit var uiStage: Stage
     private lateinit var root: Table
 
+    // Game
+    private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
+    private val gameEventSignal = Signal<GameEvent>()
+
+    // Input
+    private lateinit var inputMultiplexer: InputMultiplexer
+
     override fun show() {
+        createUI()
+        createGame()
+
+        // Handle input
+        Gdx.input.inputProcessor = inputMultiplexer
+    }
+
+    private fun createUI() {
         // Initialize lateinit vars
         skin = manager.get<Skin>("skins/uiskin.json")
-        gameStage = Stage(ExtendViewport(720f.pixelsToMeters, 1280f.pixelsToMeters))
         uiStage = Stage(ExtendViewport(720f, 1280f), batch)
 
         // The bottom half should not be transparent, so the grid lines can't be seen through it
         uiStage.addActor(addBackgroundColorToBottomHalf(ColorScheme.currentLightColor))
 
         // Add UI widgets
-        root = createRootTable().apply { uiStage.addActor(this) }
-        root.add(createTopHalf()).grow().row()
-        root.add(createBottomHalf()).grow().padTop(185f)
+        root = createRootTable().apply {
+            uiStage.addActor(this)
+            add(createTopHalf()).grow().row()
+            add(createBottomHalf()).grow().padTop(185f)
+        }
 
         // Handle input
-        Gdx.input.inputProcessor = uiStage
+        inputMultiplexer = InputMultiplexer().apply { addProcessor(uiStage) }
+    }
+
+    private fun createGame() {
+        // Dependency injection
+        Injekt.run {
+            addSingleton(world)
+            addSingleton(gameEventSignal)
+        }
+
+        // Provide own implementation for what happens after collisions
+        world.setContactListener(WorldContactListener(gameEventSignal))
+
+        // Add systems
+        engine.run {
+            addSystem(GridRenderingSystem())
+            addSystem(ImageRenderingSystem())
+        }
+
     }
 
     private fun createRootTable() = Table().apply { setFillParent(true) }
@@ -112,14 +161,23 @@ class LevelEditorScreen(private val batch: Batch = Injekt.get(),
     }
 
     private fun update(delta: Float) {
-        gameStage.act()
+        engine.update(delta)
         uiStage.act(delta)
+        gameStage.camera.update()
     }
 
     override fun render(delta: Float) {
-        update(delta)
         clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
-        gameStage.draw()
+        update(delta) // This MUST be after clearScreen() because draw functions may be called in engine.update()
         uiStage.draw()
+    }
+
+    override fun resize(width: Int, height: Int) {
+        gameViewport.update(width, height, true)
+    }
+
+    override fun dispose() {
+        uiStage.dispose()
+        gameStage.dispose()
     }
 }
