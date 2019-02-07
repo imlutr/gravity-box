@@ -30,7 +30,7 @@ import ktx.actors.minus
 import ktx.actors.plus
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 import ro.luca1152.gravitybox.pixelsToMeters
-import ro.luca1152.gravitybox.utils.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

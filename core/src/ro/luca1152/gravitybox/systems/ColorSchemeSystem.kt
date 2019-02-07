@@ -20,7 +20,7 @@ package ro.luca1152.gravitybox.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalSystem
 import ro.luca1152.gravitybox.components.map
-import ro.luca1152.gravitybox.utils.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
 
 /**
  * Smoothly transition between the colors of the color scheme,

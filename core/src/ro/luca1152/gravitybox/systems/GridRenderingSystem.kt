@@ -25,8 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.graphics.copy
 import ro.luca1152.gravitybox.pixelsToMeters
-import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils
+package ro.luca1152.gravitybox.utils.ui
 
 import com.badlogic.gdx.graphics.Color
 

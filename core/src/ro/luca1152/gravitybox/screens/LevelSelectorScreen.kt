@@ -33,9 +33,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.HorizontalSlidingPane
-import ro.luca1152.gravitybox.utils.MyButton
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.HorizontalSlidingPane
+import ro.luca1152.gravitybox.utils.ui.MyButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

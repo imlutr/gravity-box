@@ -30,9 +30,9 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.tryGet
-import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.GameCamera
-import ro.luca1152.gravitybox.utils.GameViewport
+import ro.luca1152.gravitybox.utils.kotlin.GameCamera
+import ro.luca1152.gravitybox.utils.kotlin.GameViewport
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

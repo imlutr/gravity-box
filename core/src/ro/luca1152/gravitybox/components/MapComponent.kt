@@ -25,8 +25,8 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 import ro.luca1152.gravitybox.entities.EntityFactory
-import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.MapBodyBuilder
+import ro.luca1152.gravitybox.utils.box2d.MapBodyBuilder
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

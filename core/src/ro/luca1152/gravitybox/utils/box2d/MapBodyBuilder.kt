@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils
+package ro.luca1152.gravitybox.utils.box2d
 
 import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
@@ -33,7 +33,7 @@ object MapBodyBuilder {
             type = BodyDef.BodyType.DynamicBody
         }
         val fixtureDef = FixtureDef().apply {
-            shape = MapBodyBuilder.getRectangle(tiledMap.layers.get("Player").objects[0] as RectangleMapObject)
+            shape = getRectangle(tiledMap.layers.get("Player").objects[0] as RectangleMapObject)
             density = 1.15f
             friction = 2f
             filter.categoryBits = EntityCategory.PLAYER.bits
@@ -50,7 +50,7 @@ object MapBodyBuilder {
             type = BodyDef.BodyType.DynamicBody
         }
         val fixtureDef = FixtureDef().apply {
-            shape = MapBodyBuilder.getRectangle(tiledMap.layers.get("Finish").objects.get(0) as RectangleMapObject)
+            shape = getRectangle(tiledMap.layers.get("Finish").objects.get(0) as RectangleMapObject)
             density = 100f
             filter.categoryBits = EntityCategory.FINISH.bits
             filter.maskBits = EntityCategory.NONE.bits
@@ -97,7 +97,7 @@ object MapBodyBuilder {
                 type = BodyDef.BodyType.DynamicBody
             }
             val fixtureDef = FixtureDef().apply {
-                shape = MapBodyBuilder.getRectangle(mapObject as RectangleMapObject)
+                shape = getRectangle(mapObject as RectangleMapObject)
                 density = 100f
                 filter.categoryBits = EntityCategory.POINT.bits
                 filter.maskBits = EntityCategory.NONE.bits

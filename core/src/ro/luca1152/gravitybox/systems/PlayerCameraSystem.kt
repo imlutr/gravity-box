@@ -23,8 +23,8 @@ import ro.luca1152.gravitybox.components.ImageComponent
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.components.map
 import ro.luca1152.gravitybox.components.utils.tryGet
-import ro.luca1152.gravitybox.utils.GameCamera
-import ro.luca1152.gravitybox.utils.lerp
+import ro.luca1152.gravitybox.utils.kotlin.GameCamera
+import ro.luca1152.gravitybox.utils.kotlin.lerp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

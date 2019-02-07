@@ -21,8 +21,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.setWithoutAlpha
+import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
 
 /**
  * Sync the [ImageComponent]'s color with the [ColorComponent]'s color.

@@ -18,7 +18,7 @@
 package ro.luca1152.gravitybox.systems
 
 import com.badlogic.ashley.core.EntitySystem
-import ro.luca1152.gravitybox.utils.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

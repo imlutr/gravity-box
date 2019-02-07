@@ -25,9 +25,9 @@ import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.GameEvent
-import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.MapBodyBuilder
-import ro.luca1152.gravitybox.utils.approxEqualTo
+import ro.luca1152.gravitybox.utils.box2d.MapBodyBuilder
+import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

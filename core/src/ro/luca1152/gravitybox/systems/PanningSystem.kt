@@ -23,7 +23,7 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter
 import ro.luca1152.gravitybox.pixelsToMeters
-import ro.luca1152.gravitybox.utils.GameCamera
+import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

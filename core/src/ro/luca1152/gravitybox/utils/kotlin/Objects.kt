@@ -15,19 +15,20 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils
+package ro.luca1152.gravitybox.utils.kotlin
 
-/**
- * Used for Box2D collision detection.
- * Every Box2D body stores its own bits (categoryBits) and the bits of the bodies it can collide with (maskBits).
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.utils.viewport.ExtendViewport
+import ro.luca1152.gravitybox.pixelsToMeters
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
+
+/* Used in dependency injection so I can inject more variables of the same type,
+ * such as an UICamera and a GameCamera, both being OrthographicCamera's.
  */
-enum class EntityCategory(bits: Int) {
-    NONE(0x0000),
-    FINISH(0x0001),
-    POINT(0x0001),
-    PLAYER(0x0002),
-    OBSTACLE(0x0003),
-    BULLET(0x0004);
+object GameCamera : OrthographicCamera(720.pixelsToMeters, 1280.pixelsToMeters)
 
-    var bits: Short = bits.toShort()
-}
+object GameViewport : ExtendViewport(720.pixelsToMeters, 1280.pixelsToMeters, GameCamera)
+
+object GameStage : Stage(GameViewport, Injekt.get())

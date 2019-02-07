@@ -32,10 +32,10 @@ import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.listeners.GameInputListener
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.*
-import ro.luca1152.gravitybox.utils.ColorScheme.currentLightColor
-import ro.luca1152.gravitybox.utils.GameStage
-import ro.luca1152.gravitybox.utils.GameViewport
-import ro.luca1152.gravitybox.utils.MapBodyBuilder
+import ro.luca1152.gravitybox.utils.box2d.MapBodyBuilder
+import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.GameViewport
+import ro.luca1152.gravitybox.utils.ui.ColorScheme.currentLightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get

@@ -28,7 +28,7 @@ import ro.luca1152.gravitybox.components.BulletComponent
 import ro.luca1152.gravitybox.components.physics
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
-import ro.luca1152.gravitybox.utils.GameCamera
+import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

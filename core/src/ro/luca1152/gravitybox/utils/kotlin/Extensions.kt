@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils
+package ro.luca1152.gravitybox.utils.kotlin
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3

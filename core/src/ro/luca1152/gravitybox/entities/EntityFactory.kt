@@ -29,8 +29,8 @@ import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
-import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.EntityCategory
+import ro.luca1152.gravitybox.utils.box2d.EntityCategory
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
