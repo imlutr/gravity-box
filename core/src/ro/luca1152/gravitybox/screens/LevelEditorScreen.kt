@@ -128,7 +128,6 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             addIcon("back-icon")
             iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setOpaque(true)
             addClickRunnable(Runnable {
                 uiStage.addAction(sequence(
                         fadeOut(.5f),
