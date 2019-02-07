@@ -15,20 +15,23 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.desktop;
+package ro.luca1152.gravitybox.desktop
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import ro.luca1152.gravitybox.MyGame;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
+import ro.luca1152.gravitybox.MyGame
 
-public class DesktopLauncher {
-    public static void main(String[] arg) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = "Gravity Box";
-        config.width = 540;
-        config.height = 960;
-        config.resizable = false;
-        config.samples = 4;
-        new LwjglApplication(new MyGame(), config);
+@Suppress("UnusedMainParameter")
+object DesktopLauncher {
+    @JvmStatic
+    fun main(arg: Array<String>) {
+        val config = LwjglApplicationConfiguration().apply {
+            title = "Gravity Box"
+            width = 540
+            height = 960
+            resizable = false
+            samples = 4
+        }
+        LwjglApplication(MyGame(), config)
     }
 }

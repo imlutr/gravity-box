@@ -15,21 +15,21 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox;
+package ro.luca1152.gravitybox
 
-import android.os.Bundle;
+import android.os.Bundle
 
-import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidApplication
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 
-public class AndroidLauncher extends AndroidApplication {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        config.numSamples = 4;
-        config.useAccelerometer = false;
-        config.useCompass = false;
-        initialize(new MyGame(), config);
+class AndroidLauncher : AndroidApplication() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val config = AndroidApplicationConfiguration().apply {
+            numSamples = 4 // Enable 4x MSAA
+            useAccelerometer = false
+            useCompass = false
+        }
+        initialize(MyGame(), config)
     }
 }
