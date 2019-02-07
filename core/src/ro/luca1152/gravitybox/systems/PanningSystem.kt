@@ -34,7 +34,9 @@ class PanningSystem(private val gameCamera: GameCamera = Injekt.get(),
     override fun addedToEngine(engine: Engine?) {
         gestureDetector = GestureDetector(object : GestureAdapter() {
             override fun pan(x: Float, y: Float, deltaX: Float, deltaY: Float): Boolean {
+                // Pan the camera taking account of zoom
                 gameCamera.position.add(-deltaX.pixelsToMeters * gameCamera.zoom, deltaY.pixelsToMeters * gameCamera.zoom, 0f)
+
                 return true
             }
         })
