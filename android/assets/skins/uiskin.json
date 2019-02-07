@@ -11,10 +11,6 @@
     }
   }
   ButtonStyle: {
-    back-button: {
-      up: back-button,
-      down: back-button
-    }
     big-button: {
       up: big-button,
       down: big-button
@@ -22,10 +18,6 @@
     small-button: {
       up: small-button,
       down: small-button
-    }
-    small-opaque-button: {
-      up: small-opaque-button,
-      down: small-opaque-button
     }
   }
   TextButtonStyle: {

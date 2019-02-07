@@ -78,7 +78,7 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
     private fun createTopRow(): Table {
         fun createBackButton() = Button(skin, "small-button").apply {
             color = ColorScheme.currentDarkColor
-            val backIcon = Image(skin, "back-button").apply {
+            val backIcon = Image(skin, "back-icon").apply {
                 color = ColorScheme.currentDarkColor
             }
             add(backIcon).padLeft(-5f)
