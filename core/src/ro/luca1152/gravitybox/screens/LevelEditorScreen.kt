@@ -42,8 +42,6 @@ import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.GridRenderingSystem
 import ro.luca1152.gravitybox.systems.ImageRenderingSystem
 import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.ColorScheme.currentDarkColor
-import ro.luca1152.gravitybox.utils.ColorScheme.darkerDarkColor
 import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.GameViewport
 import ro.luca1152.gravitybox.utils.MyButton
@@ -122,9 +120,17 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     }
 
     private fun createTopHalf(): Table {
-        fun createBackButton() = MyButton(skin, "small-opaque-button", "back-button",
-                currentDarkColor, darkerDarkColor, Runnable { uiStage.addAction(sequence(fadeOut(.5f), run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() }))) }, false).apply {
-            imageCell!!.padLeft(-5f)
+        fun createBackButton() = MyButton(skin, "small-button").apply {
+            addIcon("back-icon")
+            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setOpaque(true)
+            addClickRunnable(Runnable {
+                uiStage.addAction(sequence(
+                        fadeOut(.5f),
+                        run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
+                ))
+            })
         }
 
         return Table().apply {
@@ -136,15 +142,29 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     }
 
     private fun createBottomHalf(): Table {
-        fun createMidLine() = Image(manager.get<Texture>("graphics/pixel.png")).apply { color = ColorScheme.currentDarkColor }
+        fun createMidLine() = Image(manager.get<Texture>("graphics/pixel.png")).apply {
+            color = ColorScheme.currentDarkColor
+        }
 
-        fun createUndoButton() = MyButton(skin, "small-button", "undo-icon", currentDarkColor, darkerDarkColor)
+        fun createUndoButton() = MyButton(skin, "small-button").apply {
+            addIcon("undo-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        }
 
-        fun createEraseButton() = MyButton(skin, "small-button", "erase-icon", currentDarkColor, darkerDarkColor)
+        fun createEraseButton() = MyButton(skin, "small-button").apply {
+            addIcon("erase-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        }
 
-        fun createMoveButton() = MyButton(skin, "small-button", "move-icon", currentDarkColor, darkerDarkColor)
+        fun createMoveButton() = MyButton(skin, "small-button").apply {
+            addIcon("move-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        }
 
-        fun createRedoButton() = MyButton(skin, "small-button", "redo-icon", currentDarkColor, darkerDarkColor)
+        fun createRedoButton() = MyButton(skin, "small-button").apply {
+            addIcon("redo-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        }
 
         return Table().apply {
             add(createMidLine()).padLeft(-1f).width(720f).height(15f).expand().top().row()

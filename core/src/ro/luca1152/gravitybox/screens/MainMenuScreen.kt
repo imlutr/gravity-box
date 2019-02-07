@@ -33,6 +33,7 @@ import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ColorScheme
+import ro.luca1152.gravitybox.utils.MyButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -117,75 +118,25 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
             add(createPlayButton()).padTop(-214f + 18f).padLeft(-4f)
         }
     }
-
-    private fun createRateButton() = Button(skin, "small-button").apply {
-        color = ColorScheme.currentDarkColor
-        val heartIcon = Image(skin, "heart-icon").apply {
-            color = ColorScheme.currentDarkColor
-        }
-        add(heartIcon)
-
-        addListener(object : ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                color = ColorScheme.darkerDarkColor
-                heartIcon.color = ColorScheme.darkerDarkColor
-                return true
-            }
-
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                color = ColorScheme.currentDarkColor
-                heartIcon.color = ColorScheme.currentDarkColor
-            }
-        })
+    
+    private fun createRateButton() = MyButton(skin, "small-button").apply {
+        addIcon("heart-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
     }
 
-    private fun createSettingsButton() = Button(skin, "small-button").apply {
-        color = ColorScheme.currentDarkColor
-        val settingsIcon = Image(skin, "settings-icon").apply {
-            color = ColorScheme.currentDarkColor
-        }
-        add(settingsIcon)
-
-        addListener(object : ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                color = ColorScheme.darkerDarkColor
-                settingsIcon.color = ColorScheme.darkerDarkColor
-                return true
-            }
-
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                color = ColorScheme.currentDarkColor
-                settingsIcon.color = ColorScheme.currentDarkColor
-            }
-        })
+    private fun createSettingsButton() = MyButton(skin, "small-button").apply {
+        addIcon("settings-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
     }
 
-    private fun createLevelEditorButton() = Button(skin, "small-button").apply {
-        color = ColorScheme.currentDarkColor
-        val pencilIcon = Image(skin, "pencil-icon").apply {
-            color = ColorScheme.currentDarkColor
-        }
-        add(pencilIcon)
-
-        addListener(object : ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                color = ColorScheme.darkerDarkColor
-                pencilIcon.color = ColorScheme.darkerDarkColor
-                return true
-            }
-
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                color = ColorScheme.currentDarkColor
-                pencilIcon.color = ColorScheme.currentDarkColor
-
-                if (isOver(this@apply, x, y)) {
-                    LevelSelectorScreen.chosenLevel = 1
-                    uiStage.addAction(sequence(
-                            fadeOut(.5f),
-                            run(Runnable { Injekt.get<MyGame>().setScreen<LevelEditorScreen>() })
-                    ))
-                }
-            }
+    private fun createLevelEditorButton() = MyButton(skin, "small-button").apply {
+        addIcon("pencil-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            uiStage.addAction(sequence(
+                    fadeOut(.5f),
+                    run(Runnable { Injekt.get<MyGame>().setScreen<LevelEditorScreen>() })
+            ))
         })
     }
 

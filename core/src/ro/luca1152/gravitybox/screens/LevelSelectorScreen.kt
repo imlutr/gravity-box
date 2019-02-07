@@ -35,6 +35,7 @@ import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.HorizontalSlidingPane
+import ro.luca1152.gravitybox.utils.MyButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -76,30 +77,15 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
     }
 
     private fun createTopRow(): Table {
-        fun createBackButton() = Button(skin, "small-button").apply {
-            color = ColorScheme.currentDarkColor
-            val backIcon = Image(skin, "back-icon").apply {
-                color = ColorScheme.currentDarkColor
-            }
-            add(backIcon).padLeft(-5f)
-
-            addListener(object : ClickListener() {
-                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                    color = ColorScheme.darkerDarkColor
-                    backIcon.color = ColorScheme.darkerDarkColor
-                    return true
-                }
-
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    color = ColorScheme.currentDarkColor
-                    backIcon.color = ColorScheme.currentDarkColor
-                    if (isOver(this@apply, x, y)) {
-                        uiStage.addAction(sequence(
-                                fadeOut(.5f),
-                                run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
-                        ))
-                    }
-                }
+        fun createBackButton() = MyButton(skin, "small-button").apply {
+            addIcon("back-icon")
+            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            addClickRunnable(Runnable {
+                uiStage.addAction(sequence(
+                        fadeOut(.5f),
+                        run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
+                ))
             })
         }
 
