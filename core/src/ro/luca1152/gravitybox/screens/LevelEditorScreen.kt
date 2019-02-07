@@ -41,6 +41,7 @@ import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.GridRenderingSystem
 import ro.luca1152.gravitybox.systems.ImageRenderingSystem
+import ro.luca1152.gravitybox.systems.PanningSystem
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.GameViewport
@@ -64,7 +65,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private val gameEventSignal = Signal<GameEvent>()
 
     // Input
-    private lateinit var inputMultiplexer: InputMultiplexer
+    private val inputMultiplexer: InputMultiplexer = InputMultiplexer()
 
     override fun show() {
         createUI()
@@ -90,7 +91,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         }
 
         // Handle input
-        inputMultiplexer = InputMultiplexer().apply { addProcessor(uiStage) }
+        inputMultiplexer.addProcessor(uiStage)
     }
 
     private fun createGame() {
@@ -98,6 +99,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         Injekt.run {
             addSingleton(world)
             addSingleton(gameEventSignal)
+            addSingleton(inputMultiplexer)
         }
 
         // Provide own implementation for what happens after collisions
@@ -106,9 +108,9 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         // Add systems
         engine.run {
             addSystem(GridRenderingSystem())
+            addSystem(PanningSystem())
             addSystem(ImageRenderingSystem())
         }
-
     }
 
     private fun createRootTable() = Table().apply { setFillParent(true) }
