@@ -122,8 +122,8 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     }
 
     private fun createTopHalf(): Table {
-        fun createBackButton() = MyButton(skin, "small-button", "back-button",
-                currentDarkColor, darkerDarkColor, Runnable { uiStage.addAction(sequence(fadeOut(.5f), run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() }))) }).apply {
+        fun createBackButton() = MyButton(skin, "small-opaque-button", "back-button",
+                currentDarkColor, darkerDarkColor, Runnable { uiStage.addAction(sequence(fadeOut(.5f), run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() }))) }, false).apply {
             imageCell!!.padLeft(-5f)
         }
 

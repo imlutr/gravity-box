@@ -23,6 +23,10 @@
       up: small-button,
       down: small-button
     }
+    small-opaque-button: {
+      up: small-opaque-button,
+      down: small-opaque-button
+    }
   }
   TextButtonStyle: {
     big-text-button: {

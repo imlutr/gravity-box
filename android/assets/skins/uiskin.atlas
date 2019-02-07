@@ -1,12 +1,12 @@
 
 uiskin.png
-size: 1779,531
+size: 1820,531
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 back-button
   rotate: false
-  xy: 1043, 47
+  xy: 1762, 306
   size: 56, 85
   orig: 56, 85
   offset: 0, 0
@@ -29,28 +29,28 @@ button
   index: -1
 big-empty-star
   rotate: false
-  xy: 1646, 124
+  xy: 1646, 282
   size: 114, 109
   orig: 114, 109
   offset: 0, 0
   index: -1
 empty-star
   rotate: false
-  xy: 1720, 13
+  xy: 877, 37
   size: 31, 30
   orig: 31, 30
   offset: 0, 0
   index: -1
 erase-icon
   rotate: false
-  xy: 868, 131
+  xy: 1727, 115
   size: 76, 84
   orig: 76, 84
   offset: 0, 0
   index: -1
 full-star
   rotate: false
-  xy: 1731, 94
+  xy: 803, 2
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -64,21 +64,21 @@ gravity-box
   index: -1
 heart-icon
   rotate: false
-  xy: 815, 14
+  xy: 730, 4
   size: 71, 63
   orig: 71, 63
   offset: 0, 0
   index: -1
 heart-icon-empty
   rotate: false
-  xy: 730, 2
+  xy: 996, 2
   size: 83, 75
   orig: 83, 75
   offset: 0, 0
   index: -1
 move-icon
   rotate: false
-  xy: 888, 50
+  xy: 1733, 201
   size: 79, 79
   orig: 79, 79
   offset: 0, 0
@@ -92,7 +92,7 @@ nunito-bold-50
   index: -1
 nunito-bold-57
   rotate: false
-  xy: 1132, 15
+  xy: 1134, 15
   size: 512, 256
   orig: 512, 256
   offset: 0, 0
@@ -106,42 +106,42 @@ nunito-bold-65
   index: -1
 pencil-icon
   rotate: false
-  xy: 946, 137
+  xy: 1648, 123
   size: 77, 78
   orig: 77, 78
   offset: 0, 0
   index: -1
 play-button-empty
   rotate: false
-  xy: 1646, 383
+  xy: 730, 69
   size: 131, 146
   orig: 131, 146
   offset: 0, 0
   index: -1
 play-button-full
   rotate: false
-  xy: 1646, 235
+  xy: 863, 69
   size: 131, 146
   orig: 131, 146
   offset: 0, 0
   index: -1
 redo-icon
   rotate: false
-  xy: 969, 54
+  xy: 1648, 40
   size: 72, 81
   orig: 72, 81
   offset: 0, 0
   index: -1
 settings-icon
   rotate: false
-  xy: 1646, 45
+  xy: 1648, 203
   size: 83, 77
   orig: 83, 77
   offset: 0, 0
   index: -1
 small-button
   rotate: false
-  xy: 730, 79
+  xy: 996, 79
   size: 136, 136
   split: 31, 31, 30, 30
   pad: 0, 0, 0, 0
@@ -150,21 +150,30 @@ small-button
   index: -1
 small-empty-circle
   rotate: false
-  xy: 1646, 8
+  xy: 803, 32
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
   index: -1
 small-full-circle
   rotate: false
-  xy: 1683, 8
+  xy: 840, 32
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
   index: -1
+small-opaque-button
+  rotate: false
+  xy: 1648, 393
+  size: 136, 136
+  split: 31, 31, 31, 31
+  pad: 0, 0, 0, 0
+  orig: 136, 136
+  offset: 0, 0
+  index: -1
 undo-icon
   rotate: false
-  xy: 1043, 134
+  xy: 1722, 32
   size: 72, 81
   orig: 72, 81
   offset: 0, 0
