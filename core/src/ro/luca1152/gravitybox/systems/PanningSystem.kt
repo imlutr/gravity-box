@@ -22,7 +22,6 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter
-import com.badlogic.gdx.input.GestureDetector.GestureListener
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.GameCamera
 import uy.kohesive.injekt.Injekt
@@ -30,17 +29,19 @@ import uy.kohesive.injekt.api.get
 
 class PanningSystem(private val gameCamera: GameCamera = Injekt.get(),
                     private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
-    private lateinit var gestureListener: GestureListener
+    private lateinit var gestureDetector: GestureDetector
 
     override fun addedToEngine(engine: Engine?) {
-        gestureListener = object : GestureAdapter() {
+        gestureDetector = GestureDetector(object : GestureAdapter() {
             override fun pan(x: Float, y: Float, deltaX: Float, deltaY: Float): Boolean {
-                gameCamera.position.add(-deltaX.pixelsToMeters, deltaY.pixelsToMeters, 0f)
+                gameCamera.position.add(-deltaX.pixelsToMeters * gameCamera.zoom, deltaY.pixelsToMeters * gameCamera.zoom, 0f)
                 return true
             }
-        }
-        inputMultiplexer.addProcessor(GestureDetector(gestureListener))
+        })
+        inputMultiplexer.addProcessor(gestureDetector)
     }
 
-
+    override fun removedFromEngine(engine: Engine?) {
+        inputMultiplexer.removeProcessor(gestureDetector)
+    }
 }
