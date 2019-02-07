@@ -22,16 +22,26 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
-import ro.luca1152.gravitybox.utils.GameCamera
+import com.badlogic.gdx.math.MathUtils
+import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class ZoomingSystem(private val gameCamera: GameCamera = Injekt.get(),
                     private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+    companion object {
+        private const val DEFAULT_ZOOM = .75f
+        private const val MIN_ZOOM = .3f // The maximum you can zoom in
+        private const val MAX_ZOOM = 1.5f // The maximum you can zoom out
+    }
+
     private lateinit var gestureDetector: GestureDetector
-    private var currentZoom = 1f
+    private var currentZoom = DEFAULT_ZOOM
 
     override fun addedToEngine(engine: Engine?) {
+        gameCamera.zoom = DEFAULT_ZOOM
+
+        // Add gesture listener for zooming
         gestureDetector = GestureDetector(object : GestureDetector.GestureAdapter() {
             override fun zoom(initialDistance: Float, distance: Float): Boolean {
                 // If a finger was lifted then zooming should stop and the currentZoom should be updated, since it is
@@ -44,8 +54,11 @@ class ZoomingSystem(private val gameCamera: GameCamera = Injekt.get(),
                 // Apply the actual zoom
                 gameCamera.zoom = currentZoom * (initialDistance / distance)
 
+                // Keep the zoom within bounds
+                gameCamera.zoom = MathUtils.clamp(gameCamera.zoom, MIN_ZOOM, MAX_ZOOM)
+
                 // If true, the zooming gesture gets worse, meaning that there would occasionally be
-                // a sudden pan after you stop zooming.
+                // a sudden pan after you stop zooming, so I just return false.
                 return false
             }
 

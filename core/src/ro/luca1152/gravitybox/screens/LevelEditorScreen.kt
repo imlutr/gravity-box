@@ -43,10 +43,10 @@ import ro.luca1152.gravitybox.systems.GridRenderingSystem
 import ro.luca1152.gravitybox.systems.ImageRenderingSystem
 import ro.luca1152.gravitybox.systems.PanningSystem
 import ro.luca1152.gravitybox.systems.ZoomingSystem
-import ro.luca1152.gravitybox.utils.ColorScheme
-import ro.luca1152.gravitybox.utils.GameStage
-import ro.luca1152.gravitybox.utils.GameViewport
-import ro.luca1152.gravitybox.utils.MyButton
+import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.GameViewport
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.MyButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
