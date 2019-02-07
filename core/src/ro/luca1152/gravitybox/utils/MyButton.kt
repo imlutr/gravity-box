@@ -17,13 +17,7 @@
 
 package ro.luca1152.gravitybox.utils
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
@@ -31,100 +25,79 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 
-class MyButton(skin: Skin, styleName: String, drawableName: String = "",
-               upColor: Color = Color.WHITE, downColor: Color = Color.WHITE,
-               touchUpRunnable: Runnable? = null,
-               private val isTransparent: Boolean = true) : Button(skin, styleName) {
-    private val colorSwapVert = """
-        attribute vec4 a_position;
-        attribute vec4 a_color;
-        attribute vec2 a_texCoord0;
+class MyButton(skin: Skin, styleName: String) : Button(skin, styleName) {
+    var icon: Image? = null
+    var iconCell: Cell<Image>? = null
+    private var downColor = Color.WHITE
+    private var upColor = Color.WHITE
+    private var clickRunnable: Runnable? = null
 
-        uniform mat4 u_projTrans;
+    /**
+     * Set the colors for when the button is down (clicked) and up.
+     * Affects both the button and the icon inside, if any.
+     * @param [upColor] The color when the button is up. Default is [Color.WHITE].
+     * @param [downColor] The color when the button is down. Default is [Color.WHITE].
+     */
+    fun setColors(upColor: Color, downColor: Color) {
+        // Update the variables
+        this.upColor = upColor
+        this.downColor = downColor
 
-        varying vec4 v_color;
-        varying vec2 v_texCoords;
-
-        void main(){
-            v_color = a_color;
-            v_color.a = v_color.a * (255.0/254.0);
-            v_texCoords = a_texCoord0;
-            gl_Position =  u_projTrans * a_position;
-        }
-    """.trimIndent()
-
-    private val colorSwapFrag = """
-        #ifdef GL_ES
-            precision mediump float;
-        #endif
-
-        varying vec4 v_color;
-        varying vec2 v_texCoords;
-
-        uniform sampler2D u_texture;
-        uniform sampler2D u_colorTable;
-
-        void main()
-        {
-            vec4 color = texture2D(u_texture, v_texCoords);
-            vec4 swapColor = texture2D(u_colorTable, vec2(color.r, 0.0));
-            vec4 finalColor = mix(v_color * color, swapColor, swapColor.a);
-            finalColor.a = (v_color*color).a;
-            gl_FragColor = finalColor;
-//            gl_FragColor = vec4(swapColor.a);
-//            gl_FragColor = color;
-        }
-    """.trimIndent()
-
-    val image = if (drawableName != "") Image(skin, drawableName) else null
-    var imageCell: Cell<Image>? = null
-    private var colorSwapShader: ShaderProgram = ShaderProgram(colorSwapVert, colorSwapFrag)
-    private var colorTable: Texture? = null
-
-    init {
-        if (image != null)
-            imageCell = add(image)
-
-        if (!isTransparent) {
-            println(colorSwapShader.log)
-            val colorTablePixmap = Pixmap(256, 1, Pixmap.Format.RGBA8888)
-            colorTablePixmap.setColor(ColorScheme.currentLightColor)
-            colorTablePixmap.fillRectangle(254, 0, 1, 1)
-            colorTable = Texture(colorTablePixmap)
-            ShaderProgram.pedantic = false
-        }
-
+        // Update the colors of the button and icon
         color = upColor
-        image?.color = upColor
+        icon?.color = upColor
 
+        // Add listener so when the button is clicked, the colors change.
         addListener(object : ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 color = downColor
-                image?.color = downColor
+                icon?.color = downColor
                 return true
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 color = upColor
-                image?.color = upColor
+                icon?.color = upColor
 
+                // If there is any click runnable, it should be ran.
+                // It is here and not in addClickRunnable() because I can't override a function after an object (the listener) is created.
                 if (isOver(this@MyButton, x, y))
-                    touchUpRunnable?.run()
+                    clickRunnable?.run()
             }
         })
     }
 
-    override fun draw(batch: Batch, parentAlpha: Float) {
-        if (!isTransparent) {
-            batch.shader = colorSwapShader
-            colorTable?.bind(1)
-            colorSwapShader.setUniformi("u_colorTable", 1)
-            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0)
-            super.draw(batch, parentAlpha)
-            batch.shader = null
-        } else {
-            super.draw(batch, parentAlpha)
-        }
+    /**
+     * Adds an icon which is centered in the button.
+     * @param [drawableName] The name of the icon included in the [skin].
+     */
+    fun addIcon(drawableName: String) {
+        icon = Image(skin, drawableName)
+        iconCell = add(icon)
+    }
 
+    /**
+     * Set what happens after the button is clicked.
+     * @param [clickRunnable] Is ran after clicking the button, at touchUp().
+     */
+    fun addClickRunnable(clickRunnable: Runnable) {
+        this.clickRunnable = clickRunnable
+    }
+
+    /**
+     * Set whether the inside of the button should be opaque or transparent.
+     * @param [opaque] Is false by default.
+     */
+    fun setOpaque(opaque: Boolean) {
+        if (opaque) {
+            // Add the inside texture of the button and set its color to the background color
+            addActor(Image(skin.getDrawable("small-button-inside")).apply {
+                setPosition(this@MyButton.width / 2f - width / 2f, this@MyButton.width / 2f - height / 2f)
+                color = ColorScheme.currentLightColor
+            })
+
+            // Make the icon, if there's any, visible
+            icon?.toFront()
+        }
     }
 }
