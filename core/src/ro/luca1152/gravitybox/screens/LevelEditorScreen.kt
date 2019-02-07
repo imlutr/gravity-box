@@ -42,6 +42,7 @@ import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.GridRenderingSystem
 import ro.luca1152.gravitybox.systems.ImageRenderingSystem
 import ro.luca1152.gravitybox.systems.PanningSystem
+import ro.luca1152.gravitybox.systems.ZoomingSystem
 import ro.luca1152.gravitybox.utils.ColorScheme
 import ro.luca1152.gravitybox.utils.GameStage
 import ro.luca1152.gravitybox.utils.GameViewport
@@ -102,13 +103,14 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             addSingleton(inputMultiplexer)
         }
 
-        // Provide own implementation for what happens after collisions
+        // Provide own implementation for what happens after Box2D collisions
         world.setContactListener(WorldContactListener(gameEventSignal))
 
         // Add systems
         engine.run {
-            addSystem(GridRenderingSystem())
+            addSystem(ZoomingSystem())
             addSystem(PanningSystem())
+            addSystem(GridRenderingSystem())
             addSystem(ImageRenderingSystem())
         }
     }
