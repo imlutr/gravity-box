@@ -23,8 +23,10 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.map.Map
+import ro.luca1152.gravitybox.utils.map.MapObject
 import ro.luca1152.gravitybox.utils.map.objects.PlatformObject
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
@@ -35,19 +37,26 @@ class MyMapRenderingSystem(private val map: Map,
                            private val manager: AssetManager = Injekt.get()) : EntitySystem() {
     // Contains every map object's image. It's populated here.
     private val mapGroup = Group()
+    private val addedObjects = Array<MapObject>()
 
     override fun addedToEngine(engine: Engine?) {
-        map.objects.forEach {
-            mapGroup.addActor(when (it) {
-                is PlatformObject -> createPlatform(it)
-                else -> TODO()
-            })
-        }
         stage.addActor(mapGroup)
     }
 
+    override fun update(deltaTime: Float) {
+        // Search for objects that were not added to the [mapGroup] and add them
+        for (i in 0 until map.objects.size) {
+            val it = map.objects[i]
+            if (!addedObjects.contains(it, true))
+                mapGroup.addActor(when (it) {
+                    is PlatformObject -> createPlatform(it)
+                    else -> TODO()
+                })
+        }
+    }
+
     private fun createPlatform(platformObject: PlatformObject) = Image(manager.get<Texture>("graphics/pixel.png")).apply {
-        setPosition(platformObject.position.x, platformObject.position.y)
+        setPosition(platformObject.x, platformObject.y)
         setSize(platformObject.width, platformObject.height)
         color = ColorScheme.currentDarkColor
     }

@@ -185,6 +185,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
 
         // Add systems
         engine.run {
+            addSystem(PlatformPlacementSystem(map, buttonListener))
             addSystem(ZoomingSystem(buttonListener))
             addSystem(PanningSystem(buttonListener))
             addSystem(GridRenderingSystem())

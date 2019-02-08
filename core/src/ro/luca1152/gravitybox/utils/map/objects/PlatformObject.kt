@@ -17,15 +17,18 @@
 
 package ro.luca1152.gravitybox.utils.map.objects
 
-import com.badlogic.gdx.math.Vector2
 import ro.luca1152.gravitybox.utils.map.MapObject
 
 class PlatformObject(id: Int,
-                     val position: Vector2,
                      var type: PlatformType,
-                     var width: Float, var height: Float,
-                     var botLeftCorner: CornerType, var topLeftCorner: CornerType,
-                     var botRightCorner: CornerType, var topRightCorner: CornerType) : MapObject(id)
+                     var x: Float = 0f, var y: Float = 0f,
+                     var width: Float = DEFAULT_WIDTH,
+                     var height: Float = DEFAULT_HEIGHT) : MapObject(id) {
+    companion object {
+        const val DEFAULT_WIDTH = 1f
+        const val DEFAULT_HEIGHT = .25f
+    }
+}
 
 enum class PlatformType {
     FULL, // Full interior, can be destroyed
