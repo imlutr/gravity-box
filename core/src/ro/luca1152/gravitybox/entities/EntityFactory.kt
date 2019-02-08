@@ -30,7 +30,9 @@ import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
+import ro.luca1152.gravitybox.utils.kotlin.Reference
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.ToggleButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -204,4 +206,12 @@ object EntityFactory {
             }
         }
     }
+
+    fun createButtonListenerEntity(toggledButton: Reference<ToggleButton>,
+                                   engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+        // ButtonListenerComponent
+        add(ButtonListenerComponent(toggledButton))
+
+        engine.addEntity(this)
+    }!!
 }

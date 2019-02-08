@@ -18,16 +18,20 @@
 package ro.luca1152.gravitybox.systems
 
 import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
+import ro.luca1152.gravitybox.components.buttonListener
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
+import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class ZoomingSystem(private val gameCamera: GameCamera = Injekt.get(),
+class ZoomingSystem(private val buttonListenerEntity: Entity,
+                    private val gameCamera: GameCamera = Injekt.get(),
                     private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
     companion object {
         private const val DEFAULT_ZOOM = .75f
@@ -44,6 +48,10 @@ class ZoomingSystem(private val gameCamera: GameCamera = Injekt.get(),
         // Add gesture listener for zooming
         gestureDetector = GestureDetector(object : GestureDetector.GestureAdapter() {
             override fun zoom(initialDistance: Float, distance: Float): Boolean {
+                // If the move tool isn't in use, then you can't zoom
+                if (buttonListenerEntity.buttonListener.toggledButton.get()?.type != ButtonType.MOVE_TOOL_BUTTON)
+                    return false
+
                 // If a finger was lifted then zooming should stop and the currentZoom should be updated, since it is
                 // updated only when zooming stops, and you can't zoom with only one finger.
                 if (!Gdx.input.isTouched(1) || (!Gdx.input.isTouched(0) && Gdx.input.isTouched(1))) {

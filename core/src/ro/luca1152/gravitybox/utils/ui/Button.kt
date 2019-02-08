@@ -29,6 +29,7 @@ abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
     var iconCell: Cell<Image>? = null
     var toggledButton = Reference<ToggleButton>()
     var toggleOffButtons = false
+    var type = ButtonType.DEFAULT_BUTTON_TYPE
     var upColor: Color = Color.WHITE
     var downColor: Color = Color.WHITE
 
@@ -82,4 +83,9 @@ abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
             icon?.toFront()
         }
     }
+}
+
+enum class ButtonType {
+    DEFAULT_BUTTON_TYPE,
+    MOVE_TOOL_BUTTON
 }
