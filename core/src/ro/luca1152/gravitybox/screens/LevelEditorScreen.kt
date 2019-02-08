@@ -89,6 +89,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
 
         // Make everything fade in
         uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
+        gameStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
 
         // Handle input
         inputMultiplexer.addProcessor(uiStage)
