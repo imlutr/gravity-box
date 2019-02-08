@@ -18,19 +18,19 @@
 package ro.luca1152.gravitybox.utils.ui
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import ro.luca1152.gravitybox.utils.kotlin.Reference
 
-class MyButton(skin: Skin, styleName: String) : Button(skin, styleName) {
+abstract class MyButton(skin: Skin, styleName: String) : Button(skin, styleName) {
     var icon: Image? = null
     var iconCell: Cell<Image>? = null
-    private var downColor = Color.WHITE
-    private var upColor = Color.WHITE
-    private var clickRunnable: Runnable? = null
+    var toggledButton = Reference<MyToggleButton>()
+    var toggleOffButtons = false
+    var upColor: Color = Color.WHITE
+    var downColor: Color = Color.WHITE
 
     /**
      * Set the colors for when the button is down (clicked) and up.
@@ -38,34 +38,7 @@ class MyButton(skin: Skin, styleName: String) : Button(skin, styleName) {
      * @param [upColor] The color when the button is up. Default is [Color.WHITE].
      * @param [downColor] The color when the button is down. Default is [Color.WHITE].
      */
-    fun setColors(upColor: Color, downColor: Color) {
-        // Update the variables
-        this.upColor = upColor
-        this.downColor = downColor
-
-        // Update the colors of the button and icon
-        color = upColor
-        icon?.color = upColor
-
-        // Add listener so when the button is clicked, the colors change.
-        addListener(object : ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                color = downColor
-                icon?.color = downColor
-                return true
-            }
-
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                color = upColor
-                icon?.color = upColor
-
-                // If there is any click runnable, it should be ran.
-                // It is here and not in addClickRunnable() because I can't override a function after an object (the listener) is created.
-                if (isOver(this@MyButton, x, y))
-                    clickRunnable?.run()
-            }
-        })
-    }
+    abstract fun setColors(upColor: Color, downColor: Color)
 
     /**
      * Adds an icon which is centered in the button.
@@ -77,11 +50,20 @@ class MyButton(skin: Skin, styleName: String) : Button(skin, styleName) {
     }
 
     /**
-     * Set what happens after the button is clicked.
-     * @param [clickRunnable] Is ran after clicking the button, at touchUp().
+     * Sets whether it should toggle of every other MyToggleButton after you click on it.
+     * @param [toggleOff] Default is false.
      */
-    fun addClickRunnable(clickRunnable: Runnable) {
-        this.clickRunnable = clickRunnable
+    fun setToggleOffEveryOtherButton(toggleOff: Boolean) {
+        this.toggleOffButtons = toggleOff
+    }
+
+    /**
+     * Keep track of which button is currently toggled on (selected) to determine whether
+     * the button should be toggled off.
+     * @param [toggledButton] Its reference can be null.
+     */
+    fun setToggledButtonReference(toggledButton: Reference<MyToggleButton>) {
+        this.toggledButton = toggledButton
     }
 
     /**

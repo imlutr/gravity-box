@@ -35,7 +35,7 @@ import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import ro.luca1152.gravitybox.utils.ui.HorizontalSlidingPane
-import ro.luca1152.gravitybox.utils.ui.MyButton
+import ro.luca1152.gravitybox.utils.ui.MyClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import kotlin.math.roundToInt
@@ -48,7 +48,6 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
 
     private val uiStage = Stage(ExtendViewport(720f, 1280f), batch)
     private lateinit var skin: Skin
-    private lateinit var extendedRoot: Table
     private lateinit var root: Table
     private lateinit var horizontalSlidingPane: HorizontalSlidingPane
     private lateinit var leftArrow: Image
@@ -198,7 +197,7 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
     }
 
     private fun createBottomRow(): Table {
-        fun createBackButton() = MyButton(skin, "small-button").apply {
+        fun createBackButton() = MyClickButton(skin, "small-button").apply {
             addIcon("back-icon")
             iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
@@ -210,7 +209,7 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
             })
         }
 
-        fun createLevelEditorButton() = MyButton(skin, "small-button").apply {
+        fun createLevelEditorButton() = MyClickButton(skin, "small-button").apply {
             addIcon("pencil-icon")
             iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)

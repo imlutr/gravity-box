@@ -33,7 +33,7 @@ import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
-import ro.luca1152.gravitybox.utils.ui.MyButton
+import ro.luca1152.gravitybox.utils.ui.MyClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -117,25 +117,14 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
         }
     }
 
-    private fun createRateButton() = MyButton(skin, "small-button").apply {
+    private fun createRateButton() = MyClickButton(skin, "small-button").apply {
         addIcon("heart-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
     }
 
-    private fun createSettingsButton() = MyButton(skin, "small-button").apply {
+    private fun createSettingsButton() = MyClickButton(skin, "small-button").apply {
         addIcon("settings-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-    }
-
-    private fun createLevelEditorButton() = MyButton(skin, "small-button").apply {
-        addIcon("pencil-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        addClickRunnable(Runnable {
-            uiStage.addAction(sequence(
-                    fadeOut(.5f),
-                    run(Runnable { Injekt.get<MyGame>().setScreen<LevelEditorScreen>() })
-            ))
-        })
     }
 
     private fun update(delta: Float) {
