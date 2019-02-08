@@ -22,14 +22,11 @@ import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.viewport.ExtendViewport
@@ -45,6 +42,7 @@ import ro.luca1152.gravitybox.systems.PanningSystem
 import ro.luca1152.gravitybox.systems.ZoomingSystem
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
+import ro.luca1152.gravitybox.utils.map.Map
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import ro.luca1152.gravitybox.utils.ui.MyButton
 import uy.kohesive.injekt.Injekt
@@ -62,6 +60,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private lateinit var root: Table
 
     // Game
+    private val map = Map()
     private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
 
@@ -81,18 +80,73 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         skin = manager.get<Skin>("skins/uiskin.json")
         uiStage = Stage(ExtendViewport(720f, 1280f), batch)
 
-        // The bottom half should not be transparent, so the grid lines can't be seen through it
-        uiStage.addActor(addBackgroundColorToBottomHalf(ColorScheme.currentLightColor))
-
         // Add UI widgets
         root = createRootTable().apply {
             uiStage.addActor(this)
-            add(createTopHalf()).grow().row()
-            add(createBottomHalf()).grow().padTop(185f)
+            add(createLeftColumn()).growY().expandX().left()
+            add(createRightColumn()).growY().expandX().right()
         }
+
+        // Make everything fade in
+        uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
 
         // Handle input
         inputMultiplexer.addProcessor(uiStage)
+    }
+
+    private fun createRootTable() = Table().apply {
+        setFillParent(true)
+        padLeft(62f).padRight(62f)
+        padBottom(110f).padTop(110f)
+    }
+
+
+    private fun createLeftColumn(): Table {
+        fun createUndoButton() = MyButton(skin, "small-button").apply {
+            addIcon("undo-icon")
+            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        }
+
+        fun createEraseButton() = MyButton(skin, "small-button").apply {
+            addIcon("erase-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        }
+
+        fun createMoveButton() = MyButton(skin, "small-button").apply {
+            addIcon("move-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        }
+
+        fun createBackButton() = MyButton(skin, "small-button").apply {
+            addIcon("back-icon")
+            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            addClickRunnable(Runnable {
+                uiStage.addAction(sequence(
+                        fadeOut(.5f),
+                        run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
+                ))
+            })
+        }
+
+        return Table().apply {
+            add(createUndoButton()).top().spaceBottom(50f).row()
+            add(createEraseButton()).top().spaceBottom(50f).row()
+            add(createMoveButton()).top().row()
+            add(createBackButton()).expand().bottom()
+        }
+    }
+
+    private fun createRightColumn(): Table {
+        fun createRedoButton() = MyButton(skin, "small-button").apply {
+            addIcon("redo-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        }
+
+        return Table().apply {
+            add(createRedoButton()).expand().top()
+        }
     }
 
     private fun createGame() {
@@ -115,73 +169,6 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         }
     }
 
-    private fun createRootTable() = Table().apply { setFillParent(true) }
-
-    private fun addBackgroundColorToBottomHalf(color: Color) = Image(manager.get<Texture>("graphics/pixel.png")).apply {
-        this.color = color
-        width = 720f
-        height = 1280f / 2f - 185f / 2f
-    }
-
-    private fun createTopHalf(): Table {
-        fun createBackButton() = MyButton(skin, "small-button").apply {
-            addIcon("back-icon")
-            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            addClickRunnable(Runnable {
-                uiStage.addAction(sequence(
-                        fadeOut(.5f),
-                        run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
-                ))
-            })
-        }
-
-        return Table().apply {
-            val topRow = Table().apply {
-                add(createBackButton()).pad(50f).expand().left()
-            }
-            add(topRow).expand().fillX().top()
-        }
-    }
-
-    private fun createBottomHalf(): Table {
-        fun createMidLine() = Image(manager.get<Texture>("graphics/pixel.png")).apply {
-            color = ColorScheme.currentDarkColor
-        }
-
-        fun createUndoButton() = MyButton(skin, "small-button").apply {
-            addIcon("undo-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        }
-
-        fun createEraseButton() = MyButton(skin, "small-button").apply {
-            addIcon("erase-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        }
-
-        fun createMoveButton() = MyButton(skin, "small-button").apply {
-            addIcon("move-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        }
-
-        fun createRedoButton() = MyButton(skin, "small-button").apply {
-            addIcon("redo-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        }
-
-        return Table().apply {
-            add(createMidLine()).padLeft(-1f).width(720f).height(15f).expand().top().row()
-
-            val bottomRow = Table().apply {
-                defaults().space(35f)
-                add(createUndoButton())
-                add(createEraseButton())
-                add(createMoveButton())
-                add(createRedoButton())
-            }
-            add(bottomRow).fillX().bottom().pad(50f)
-        }
-    }
 
     private fun update(delta: Float) {
         engine.update(delta)

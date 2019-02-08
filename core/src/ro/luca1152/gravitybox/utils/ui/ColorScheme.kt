@@ -42,6 +42,7 @@ object ColorScheme {
         get() = if (useDarkColorScheme) darkColor2 else darkColor
 
     var darkerDarkColor = Color()
+    var lighterLightColor = Color()
 
     init {
         // Load the initial colors
@@ -57,6 +58,7 @@ object ColorScheme {
         fun getLightColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f).apply { a = 1f }!!
         fun getDarkColor2(hue: Int) = Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f).apply { a = 1f }!!
         fun getDarkerDarkColor(hue: Int) = Color().fromHsv(hue.toFloat(), 55f / 100f, 29f / 100f).apply { a = 1f }!!
+        fun getLighterLightColor(hue: Int) = Color().fromHsv(hue.toFloat(), 28 / 100f, 77 / 100f).apply { a = 1f }!!
 
         // Store the new colors
         lightColor = getLightColor(hue)
@@ -64,6 +66,7 @@ object ColorScheme {
         lightColor2 = getLightColor2(hue)
         darkColor2 = getDarkColor2(hue)
         darkerDarkColor = getDarkerDarkColor(hue)
+        lighterLightColor = getLighterLightColor(hue)
 
         // Update the current colors too because this function is called when changing the levels
         // and there is no transition between levels' colors, only when the player enters/leaves the finish point.

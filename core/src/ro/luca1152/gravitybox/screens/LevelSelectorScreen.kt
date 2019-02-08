@@ -38,6 +38,7 @@ import ro.luca1152.gravitybox.utils.ui.HorizontalSlidingPane
 import ro.luca1152.gravitybox.utils.ui.MyButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import kotlin.math.roundToInt
 
 class LevelSelectorScreen(batch: Batch = Injekt.get(),
                           private val manager: AssetManager = Injekt.get()) : KtxScreen {
@@ -47,13 +48,14 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
 
     private val uiStage = Stage(ExtendViewport(720f, 1280f), batch)
     private lateinit var skin: Skin
+    private lateinit var extendedRoot: Table
     private lateinit var root: Table
     private lateinit var horizontalSlidingPane: HorizontalSlidingPane
-    private val pageIndicatorCircles = ArrayList<Image>()
+    private lateinit var leftArrow: Image
+    private lateinit var rightArrow: Image
 
     override fun show() {
         uiStage.actors.removeAll(uiStage.actors, true)
-        pageIndicatorCircles.clear()
 
         skin = manager.get<Skin>("skins/uiskin.json")
         horizontalSlidingPane = createHorizontalSlidingPane()
@@ -61,8 +63,8 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
         // Add every widget
         root = createRootTable().apply { uiStage.addActor(this) }
         root.add(createTopRow()).growX().row()
-        root.add(horizontalSlidingPane).expand().row()
-        root.add(createBottomRow()).bottom().expandX().padBottom(20f)
+        root.add(createMiddleRow()).grow().row()
+        root.add(createBottomRow()).bottom().growX()
 
         // Make everything fade in
         uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
@@ -72,23 +74,12 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
     }
 
     private fun createRootTable() = Table().apply {
-        pad(50f)
         setFillParent(true)
+        padLeft(62f).padRight(62f)
+        padBottom(110f).padTop(110f)
     }
 
     private fun createTopRow(): Table {
-        fun createBackButton() = MyButton(skin, "small-button").apply {
-            addIcon("back-icon")
-            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            addClickRunnable(Runnable {
-                uiStage.addAction(sequence(
-                        fadeOut(.5f),
-                        run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
-                ))
-            })
-        }
-
         fun createBigEmptyStar() = Image(skin, "big-empty-star").apply {
             color = ColorScheme.currentDarkColor
         }
@@ -96,9 +87,8 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
         fun createStarsNumberLabel() = Label("0/45", skin, "bold-65", ColorScheme.currentDarkColor)
 
         return Table().apply {
-            add(createBackButton()).expandX().left()
-            add(createBigEmptyStar()).right()
-            add(createStarsNumberLabel()).right().padLeft(20f)
+            add(createBigEmptyStar()).padRight(20f).expand().right()
+            add(createStarsNumberLabel()).right()
         }
     }
 
@@ -174,7 +164,7 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
 
         for (pageNumber in 1..4) {
             val page = createPage()
-            for (i in 1..15) {
+            for (i in 1..12) {
                 val levelButton = createLevelButton(level)
                 page.add(levelButton)
 
@@ -187,24 +177,55 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
         return horizontalSlidingPane
     }
 
+    private fun createMiddleRow(): Table {
+        fun createLeftArrow() = Image(skin.getDrawable("left-arrow-icon")).apply {
+            color = ColorScheme.currentDarkColor
+            isVisible = false
+        }
+
+        fun createRightArrow() = Image(skin.getDrawable("right-arrow-icon")).apply {
+            color = ColorScheme.currentDarkColor
+        }
+
+        leftArrow = createLeftArrow()
+        rightArrow = createRightArrow()
+
+        return Table().apply {
+            add(leftArrow).left()
+            add(horizontalSlidingPane).expand()
+            add(rightArrow).right()
+        }
+    }
+
     private fun createBottomRow(): Table {
-        fun createSmallEmptyCircle() = Image(skin, "small-empty-circle").apply { color = ColorScheme.currentDarkColor }
-        fun createSmallFullCircle() = Image(skin, "small-full-circle").apply { color = ColorScheme.currentDarkColor }
-
-        val bottomRow = Table().apply { defaults().space(10f) }
-
-        createSmallFullCircle().run {
-            bottomRow.add(this)
-            pageIndicatorCircles.add(this)
-        }
-        for (i in 1 until horizontalSlidingPane.pagesCount) {
-            createSmallEmptyCircle().run {
-                bottomRow.add(this)
-                pageIndicatorCircles.add(this)
-            }
+        fun createBackButton() = MyButton(skin, "small-button").apply {
+            addIcon("back-icon")
+            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            addClickRunnable(Runnable {
+                uiStage.addAction(sequence(
+                        fadeOut(.5f),
+                        run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
+                ))
+            })
         }
 
-        return bottomRow
+        fun createLevelEditorButton() = MyButton(skin, "small-button").apply {
+            addIcon("pencil-icon")
+            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            addClickRunnable(Runnable {
+                uiStage.addAction(sequence(
+                        fadeOut(.5f),
+                        run(Runnable { Injekt.get<MyGame>().setScreen<LevelEditorScreen>() })
+                ))
+            })
+        }
+
+        return Table().apply {
+            add(createBackButton()).expand().left()
+            add(createLevelEditorButton()).right()
+        }
     }
 
     private fun overrideBackKey() {
@@ -230,12 +251,17 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
 
     private fun update(delta: Float) {
         uiStage.act(delta)
-        updatePageIndicatorCircles()
+        updateArrows()
     }
 
-    private fun updatePageIndicatorCircles() {
-        for (i in 0 until horizontalSlidingPane.pagesCount)
-            pageIndicatorCircles[i].drawable = skin.getDrawable("small-empty-circle")
-        pageIndicatorCircles[Math.round(horizontalSlidingPane.currentPage) - 1].drawable = skin.getDrawable("small-full-circle")
+    private fun updateArrows() {
+        leftArrow.isVisible = when {
+            horizontalSlidingPane.currentPage.roundToInt() == 1 -> false
+            else -> true
+        }
+        rightArrow.isVisible = when {
+            horizontalSlidingPane.currentPage.roundToInt() == horizontalSlidingPane.pagesCount -> false
+            else -> true
+        }
     }
 }

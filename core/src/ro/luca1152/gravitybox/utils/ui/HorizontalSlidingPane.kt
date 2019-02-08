@@ -90,7 +90,7 @@ class HorizontalSlidingPane(private val pageWidth: Float, private val pageHeight
         })
     }
 
-    // Called every frame, equivalent to update()
+    /** Called every frame, equivalent to update() */
     override fun act(delta: Float) {
         pages.act(delta)
 

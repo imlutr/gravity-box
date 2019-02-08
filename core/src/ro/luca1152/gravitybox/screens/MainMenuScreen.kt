@@ -48,15 +48,12 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
         skin = manager.get<Skin>("skins/uiskin.json")
 
         root = createRootTable().apply { uiStage.addActor(this) }
-        root.add(createLogo()).expand().row()
+        root.add(createLogo()).expand().padTop(140f).row()
         val bottomRow = Table().apply {
             add(createRateButton()).expandX().left()
-            add(createLevelEditorButton()).expandX()
-            add(createSettingsButton()).right().expandX()
+            add(createSettingsButton()).expandX().right()
         }
-        root.add(bottomRow).bottom().growX().pad(0f).padTop(-140f - 0f)
-
-//        root.debug = true
+        root.add(bottomRow).bottom().growX().pad(0f).padLeft(12f).padRight(12f)
 
         uiStage.addAction(sequence(
                 fadeOut(0f),
@@ -67,7 +64,8 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
     }
 
     private fun createRootTable() = Table(skin).apply {
-        pad(50f)
+        padLeft(50f).padRight(50f)
+        padBottom(110f).padTop(110f)
         setFillParent(true)
     }
 
@@ -118,7 +116,7 @@ class MainMenuScreen(private val batch: Batch = Injekt.get(),
             add(createPlayButton()).padTop(-214f + 18f).padLeft(-4f)
         }
     }
-    
+
     private fun createRateButton() = MyButton(skin, "small-button").apply {
         addIcon("heart-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
