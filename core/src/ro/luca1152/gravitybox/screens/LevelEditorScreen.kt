@@ -67,7 +67,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private val gameEventSignal = Signal<GameEvent>()
 
     // Input
-    private val inputMultiplexer: InputMultiplexer = InputMultiplexer()
+    private lateinit var inputMultiplexer: InputMultiplexer
 
     override fun show() {
         createUI()
@@ -82,6 +82,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         skin = manager.get<Skin>("skins/uiskin.json")
         uiStage = Stage(ExtendViewport(720f, 1280f), batch)
         toggledButton = Reference()
+        inputMultiplexer = InputMultiplexer()
 
         // Add UI widgets
         root = createRootTable().apply {
