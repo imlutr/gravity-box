@@ -17,5 +17,8 @@
 
 package ro.luca1152.gravitybox.utils.map
 
-/** The model for Gravity Box map objects. */
-abstract class Object(val id: Int)
+class MapProperties {
+    var width = 15
+    var height = 15
+    var objectsCount = 0
+}

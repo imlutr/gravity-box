@@ -20,5 +20,6 @@ package ro.luca1152.gravitybox.utils.map
 import com.badlogic.gdx.utils.Array
 
 class Map {
-    val objects = Array<Object>()
+    val objects = Array<MapObject>()
+    val properties = MapProperties()
 }

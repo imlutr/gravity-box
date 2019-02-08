@@ -18,7 +18,7 @@
 package ro.luca1152.gravitybox.utils.map.objects
 
 import com.badlogic.gdx.math.Vector2
-import ro.luca1152.gravitybox.utils.map.Object
+import ro.luca1152.gravitybox.utils.map.MapObject
 
 class FinishPointObject(id: Int,
-                        val position: Vector2) : Object(id)
+                        val position: Vector2) : MapObject(id)

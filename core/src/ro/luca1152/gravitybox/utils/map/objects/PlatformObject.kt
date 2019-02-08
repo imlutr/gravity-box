@@ -18,14 +18,14 @@
 package ro.luca1152.gravitybox.utils.map.objects
 
 import com.badlogic.gdx.math.Vector2
-import ro.luca1152.gravitybox.utils.map.Object
+import ro.luca1152.gravitybox.utils.map.MapObject
 
 class PlatformObject(id: Int,
                      val position: Vector2,
                      var type: PlatformType,
                      var width: Float, var height: Float,
                      var botLeftCorner: CornerType, var topLeftCorner: CornerType,
-                     var botRightCorner: CornerType, var topRightCorner: CornerType) : Object(id)
+                     var botRightCorner: CornerType, var topRightCorner: CornerType) : MapObject(id)
 
 enum class PlatformType {
     FULL, // Full interior, can be destroyed

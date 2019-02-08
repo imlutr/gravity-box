@@ -15,10 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.map.objects
+package ro.luca1152.gravitybox.utils.map
 
-import com.badlogic.gdx.math.Vector2
-import ro.luca1152.gravitybox.utils.map.MapObject
-
-class PlayerObject(id: Int,
-                   val position: Vector2) : MapObject(id)
+/** The model for Gravity Box map objects. */
+abstract class MapObject(val id: Int)
