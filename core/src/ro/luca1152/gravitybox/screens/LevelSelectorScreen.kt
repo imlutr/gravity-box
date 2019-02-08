@@ -33,9 +33,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
+import ro.luca1152.gravitybox.utils.ui.ClickButton
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import ro.luca1152.gravitybox.utils.ui.HorizontalSlidingPane
-import ro.luca1152.gravitybox.utils.ui.MyClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import kotlin.math.roundToInt
@@ -197,7 +197,7 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
     }
 
     private fun createBottomRow(): Table {
-        fun createBackButton() = MyClickButton(skin, "small-button").apply {
+        fun createBackButton() = ClickButton(skin, "small-button").apply {
             addIcon("back-icon")
             iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
@@ -209,7 +209,7 @@ class LevelSelectorScreen(batch: Batch = Injekt.get(),
             })
         }
 
-        fun createLevelEditorButton() = MyClickButton(skin, "small-button").apply {
+        fun createLevelEditorButton() = ClickButton(skin, "small-button").apply {
             addIcon("pencil-icon")
             iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)

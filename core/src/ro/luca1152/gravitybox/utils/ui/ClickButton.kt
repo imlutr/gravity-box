@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 
-class MyClickButton(skin: Skin, styleName: String) : MyButton(skin, styleName) {
+class ClickButton(skin: Skin, styleName: String) : Button(skin, styleName) {
     private var clickRunnable: Runnable? = null
 
     /**
@@ -56,12 +56,10 @@ class MyClickButton(skin: Skin, styleName: String) : MyButton(skin, styleName) {
 
                 // If there is any click runnable, it should be ran.
                 // It is here and not in addClickRunnable() because I can't override a function after an object (the listener) is created.
-                if (isOver(this@MyClickButton, x, y)) {
-                    // Toggle of every other button if the click button was set to do so
-                    if (toggleOffButtons) {
-                        toggledButton.get()?.toggleOff()
-                        toggledButton.set(null)
-                    }
+                if (isOver(this@ClickButton, x, y)) {
+                    // Toggle off every other button if the click button was set to do so
+                    if (toggleOffButtons)
+                        toggledButton.get()?.isToggled = false
 
                     clickRunnable?.run()
                 }

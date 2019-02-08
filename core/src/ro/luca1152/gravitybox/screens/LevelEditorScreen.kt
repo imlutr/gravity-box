@@ -44,9 +44,9 @@ import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.kotlin.Reference
 import ro.luca1152.gravitybox.utils.map.Map
+import ro.luca1152.gravitybox.utils.ui.ClickButton
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
-import ro.luca1152.gravitybox.utils.ui.MyClickButton
-import ro.luca1152.gravitybox.utils.ui.MyToggleButton
+import ro.luca1152.gravitybox.utils.ui.ToggleButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
@@ -60,7 +60,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private lateinit var skin: Skin
     private lateinit var uiStage: Stage
     private lateinit var root: Table
-    private lateinit var toggledButton: Reference<MyToggleButton>
+    private lateinit var toggledButton: Reference<ToggleButton>
 
     // Game
     private val map = Map()
@@ -107,31 +107,32 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
 
 
     private fun createLeftColumn(): Table {
-        fun createUndoButton(toggledButton: Reference<MyToggleButton>) = MyClickButton(skin, "small-button").apply {
+        fun createUndoButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
             addIcon("undo-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             setToggledButtonReference(toggledButton)
         }
 
-        fun createEraseButton(toggledButton: Reference<MyToggleButton>) = MyToggleButton(skin, "small-button").apply {
+        fun createEraseButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
             addIcon("erase-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             setToggledButtonReference(toggledButton)
         }
 
-        fun createMoveButton(toggledButton: Reference<MyToggleButton>) = MyToggleButton(skin, "small-button").apply {
+        fun createMoveButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
             addIcon("move-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             setToggledButtonReference(toggledButton)
+            isToggled = true
         }
 
-        fun createSelectedItemButton(toggledButton: Reference<MyToggleButton>) = MyToggleButton(skin, "small-button").apply {
+        fun createSelectedItemButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
             addIcon("platform-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             setToggledButtonReference(toggledButton)
         }
 
-        fun createBackButton(toggledButton: Reference<MyToggleButton>) = MyClickButton(skin, "small-button").apply {
+        fun createBackButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
             addIcon("back-icon")
             iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
@@ -156,7 +157,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     }
 
     private fun createRightColumn(): Table {
-        fun createRedoButton() = MyClickButton(skin, "small-button").apply {
+        fun createRedoButton() = ClickButton(skin, "small-button").apply {
             addIcon("redo-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         }

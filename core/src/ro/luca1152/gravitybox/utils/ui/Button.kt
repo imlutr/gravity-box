@@ -24,10 +24,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ro.luca1152.gravitybox.utils.kotlin.Reference
 
-abstract class MyButton(skin: Skin, styleName: String) : Button(skin, styleName) {
+abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
     var icon: Image? = null
     var iconCell: Cell<Image>? = null
-    var toggledButton = Reference<MyToggleButton>()
+    var toggledButton = Reference<ToggleButton>()
     var toggleOffButtons = false
     var upColor: Color = Color.WHITE
     var downColor: Color = Color.WHITE
@@ -50,7 +50,7 @@ abstract class MyButton(skin: Skin, styleName: String) : Button(skin, styleName)
     }
 
     /**
-     * Sets whether it should toggle of every other MyToggleButton after you click on it.
+     * Sets whether it should toggle of every other ToggleButton after you click on it.
      * @param [toggleOff] Default is false.
      */
     fun setToggleOffEveryOtherButton(toggleOff: Boolean) {
@@ -62,7 +62,7 @@ abstract class MyButton(skin: Skin, styleName: String) : Button(skin, styleName)
      * the button should be toggled off.
      * @param [toggledButton] Its reference can be null.
      */
-    fun setToggledButtonReference(toggledButton: Reference<MyToggleButton>) {
+    fun setToggledButtonReference(toggledButton: Reference<ToggleButton>) {
         this.toggledButton = toggledButton
     }
 
@@ -74,7 +74,7 @@ abstract class MyButton(skin: Skin, styleName: String) : Button(skin, styleName)
         if (opaque) {
             // Add the inside texture of the button and set its color to the background color
             addActor(Image(skin.getDrawable("small-button-inside")).apply {
-                setPosition(this@MyButton.width / 2f - width / 2f, this@MyButton.width / 2f - height / 2f)
+                setPosition(this@Button.width / 2f - width / 2f, this@Button.width / 2f - height / 2f)
                 color = ColorScheme.currentLightColor
             })
 
