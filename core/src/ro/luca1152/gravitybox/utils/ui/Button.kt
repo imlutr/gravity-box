@@ -87,5 +87,6 @@ abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
 
 enum class ButtonType {
     DEFAULT_BUTTON_TYPE,
-    MOVE_TOOL_BUTTON
+    MOVE_TOOL_BUTTON,
+    PLACE_TOOL_BUTTON
 }

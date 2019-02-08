@@ -37,10 +37,7 @@ import ro.luca1152.gravitybox.components.MapComponent
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
-import ro.luca1152.gravitybox.systems.GridRenderingSystem
-import ro.luca1152.gravitybox.systems.ImageRenderingSystem
-import ro.luca1152.gravitybox.systems.PanningSystem
-import ro.luca1152.gravitybox.systems.ZoomingSystem
+import ro.luca1152.gravitybox.systems.*
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.kotlin.Reference
@@ -121,7 +118,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             setToggledButtonReference(toggledButton)
         }
 
-        fun createMoveButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
+        fun createMoveToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
             addIcon("move-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             setToggledButtonReference(toggledButton)
@@ -129,10 +126,11 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             isToggled = true
         }
 
-        fun createSelectedItemButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
+        fun createPlaceToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
             addIcon("platform-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             setToggledButtonReference(toggledButton)
+            type = ButtonType.PLACE_TOOL_BUTTON
         }
 
         fun createBackButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
@@ -153,8 +151,8 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             // If I don't pass [toggledButton] as an argument it doesn't work
             add(createUndoButton(toggledButton)).top().space(50f).row()
             add(createEraseButton(toggledButton)).top().space(50f).row()
-            add(createMoveButton(toggledButton)).top().space(50f).row()
-            add(createSelectedItemButton(toggledButton)).top().row()
+            add(createMoveToolButton(toggledButton)).top().space(50f).row()
+            add(createPlaceToolButton(toggledButton)).top().row()
             add(createBackButton(toggledButton)).expand().bottom()
         }
     }
@@ -183,6 +181,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
 
         // Create entities
         val buttonListener = EntityFactory.createButtonListenerEntity(toggledButton)
+        val map = Map()
 
         // Add systems
         engine.run {
@@ -190,6 +189,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             addSystem(PanningSystem(buttonListener))
             addSystem(GridRenderingSystem())
             addSystem(ImageRenderingSystem())
+            addSystem(MyMapRenderingSystem(map))
         }
     }
 

@@ -20,5 +20,4 @@ package ro.luca1152.gravitybox.utils.map
 class MapProperties {
     var width = 15
     var height = 15
-    var objectsCount = 0
 }
