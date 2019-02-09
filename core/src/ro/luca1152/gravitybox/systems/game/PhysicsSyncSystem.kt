@@ -27,28 +27,22 @@ import ro.luca1152.gravitybox.components.utils.tryGet
 /**
  * Sync the position of the PhysicsComponent's Box2D body with other components.
  */
-class PhysicsSyncSystem : IteratingSystem(
-    Family.all(PhysicsComponent::class.java).one(
-        ImageComponent::class.java,
-        CollisionBoxComponent::class.java
-    ).get()
-) {
+class PhysicsSyncSystem : IteratingSystem(Family.all(PhysicsComponent::class.java).one(ImageComponent::class.java, CollisionBoxComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val body = entity.physics.body
 
         // Sync the Image's position
-        entity.tryGet(ImageComponent)?.let { _ ->
-            entity.image.img.run {
-                setPosition(body.worldCenter.x, body.worldCenter.y)
-                rotation = body.angle * MathUtils.radDeg
-            }
+        entity.tryGet(ImageComponent)?.let {
+            entity.image.setPosition(body.worldCenter.x, body.worldCenter.y)
+            entity.image.img.rotation = body.angle * MathUtils.radDeg
         }
+
 
         // Sync the CollisionBox's position
         entity.tryGet(CollisionBoxComponent)?.let {
             entity.collisionBox.box.setPosition(
-                body.worldCenter.x - entity.collisionBox.size / 2f,
-                body.worldCenter.y - entity.collisionBox.size / 2f
+                    body.worldCenter.x - entity.collisionBox.size / 2f,
+                    body.worldCenter.y - entity.collisionBox.size / 2f
             )
         }
     }

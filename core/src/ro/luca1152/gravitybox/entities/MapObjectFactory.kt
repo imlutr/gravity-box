@@ -34,9 +34,7 @@ object MapObjectFactory {
         }
         add(engine.createComponent(PlatformComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(manager.get<Texture>("graphics/pixel.png"), x, y)
-            image.width = 1f
-            image.height = .25f
+            image.set(manager.get<Texture>("graphics/pixel.png"), x, y, 1f, .25f)
             image.img.userObject = this
         }
         add(engine.createComponent(ColorComponent::class.java)).run {

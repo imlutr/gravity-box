@@ -55,37 +55,62 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
         set(value) {
             img.height = value
         }
+
+    /** The X position of the Image's center. */
     var x: Float
-        get() = img.x
-        set(value) {
-            img.x = value
+        get() {
+            if (width == 0f)
+                throw IllegalStateException("The width can't be 0.")
+            return img.x + width / 2f
         }
+        set(value) {
+            if (width == 0f)
+                throw IllegalStateException("The width can't be 0.")
+            img.x = value - width / 2f
+        }
+
+    /** The Y position of the Image's center. */
     var y: Float
-        get() = img.y
-        set(value) {
-            img.y = value
+        get() {
+            if (height == 0f)
+                throw IllegalStateException("The height can't be 0.")
+            return img.y - height / 2f
         }
+        set(value) {
+            if (height == 0f)
+                throw java.lang.IllegalStateException("The height can't be 0.")
+            img.y = value - height / 2f
+        }
+
     var color: Color
         get() = img.color
         set(value) {
             img.color = value
         }
 
-    /** Initializes the component. */
-    fun set(texture: Texture, x: Float, y: Float) {
+    fun set(texture: Texture, x: Float, y: Float, width: Float = 0f, height: Float = 0f) {
         img.run {
             drawable = TextureRegionDrawable(TextureRegion(texture))
-            setPosition(x, y)
-            setSize(texture.width.pixelsToMeters, texture.height.pixelsToMeters)
-            setOrigin(width / 2f, height / 2f)
+            when (width == 0f && height == 0f) {
+                true -> setSize(texture.width.pixelsToMeters, texture.height.pixelsToMeters)
+                false -> setSize(width, height)
+            }
+            setOrigin(this.width / 2f, this.height / 2f)
         }
+
+        // ImageComponent.setX() should be used, and not img.setPosition()
+        setPosition(x, y)
+
         stage + img
     }
 
-    /** Initializes the component. */
     fun set(texture: Texture, position: Vector2) = set(texture, position.x, position.y)
 
-    /** Resets the component for reuse. */
+    fun setPosition(x: Float, y: Float) {
+        this.x = x
+        this.y = y
+    }
+
     override fun reset() {
         stage - img
         img.run {

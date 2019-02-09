@@ -76,8 +76,10 @@ class PhysicsDebugRenderingSystem(private val world: World = Injekt.get(),
                         this.tryGet(PlayerComponent) != null -> shapeRenderer.color = Color.RED
                         this.tryGet(BulletComponent) != null -> shapeRenderer.color = Color.YELLOW
                     }
+                    if (this.tryGet(PlayerComponent) != null)
+                        shapeRenderer.x(image.img.x + image.img.originX, image.img.y + image.img.originY, .05f)
                 }
-                shapeRenderer.x(body.worldCenter, .05f)
+
             }
         }
     }

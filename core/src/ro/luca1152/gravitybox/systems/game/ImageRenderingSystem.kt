@@ -24,28 +24,7 @@ import uy.kohesive.injekt.api.get
 
 class ImageRenderingSystem(private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
-        // Equivalent to an update().
-        // It is here since if the images are not rendered, then there is no point in updating them.
         gameStage.act()
-
-        drawImages()
-    }
-
-    private fun drawImages() {
-        repositionImages()
         gameStage.draw()
-        repositionImages(restore = true)
-    }
-
-    /**
-     * Reposition the actors so they are drawn from the center (Box2D bodies' position is from center, not bottom-left)
-     * It subtracts half the size of the images and adds it back when restoring.
-     */
-    private fun repositionImages(restore: Boolean = false) {
-        for (i in 0 until gameStage.actors.size) {
-            val change = if (restore) 1 else -1
-            gameStage.actors[i].x += change * gameStage.actors[i].width / 2f
-            gameStage.actors[i].y += change * gameStage.actors[i].height / 2f
-        }
     }
 }
