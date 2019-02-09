@@ -21,6 +21,8 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
@@ -34,13 +36,17 @@ class ZoomingSystem(private val buttonListenerEntity: Entity,
                     private val gameCamera: GameCamera = Injekt.get(),
                     private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
     companion object {
-        private const val DEFAULT_ZOOM = .75f
+        //        private const val DEFAULT_ZOOM = .75f
+        private const val DEFAULT_ZOOM = 1f
         private const val MIN_ZOOM = .3f // The maximum you can zoom in
         private const val MAX_ZOOM = 1.5f // The maximum you can zoom out
     }
 
     private lateinit var gestureDetector: GestureDetector
+    private lateinit var keyListener: InputAdapter
     private var currentZoom = DEFAULT_ZOOM
+    private var isRightBracketPressed = false
+    private var isLeftBracketPressed = false
 
     override fun addedToEngine(engine: Engine?) {
         gameCamera.zoom = DEFAULT_ZOOM
@@ -62,9 +68,6 @@ class ZoomingSystem(private val buttonListenerEntity: Entity,
                 // Apply the actual zoom
                 gameCamera.zoom = currentZoom * (initialDistance / distance)
 
-                // Keep the zoom within bounds
-                gameCamera.zoom = MathUtils.clamp(gameCamera.zoom, MIN_ZOOM, MAX_ZOOM)
-
                 // If true, the zooming gesture gets worse, meaning that there would occasionally be
                 // a sudden pan after you stop zooming, so I just return false.
                 return false
@@ -78,9 +81,57 @@ class ZoomingSystem(private val buttonListenerEntity: Entity,
             }
         })
         inputMultiplexer.addProcessor(gestureDetector)
+
+        keyListener = object : InputAdapter() {
+            override fun keyDown(keycode: Int): Boolean {
+                when (keycode) {
+                    Input.Keys.RIGHT_BRACKET -> {
+                        isRightBracketPressed = true
+                        return true
+                    }
+                    Input.Keys.LEFT_BRACKET -> {
+                        isLeftBracketPressed = true
+                        return true
+                    }
+                }
+                return false
+            }
+
+            override fun keyUp(keycode: Int): Boolean {
+                when (keycode) {
+                    Input.Keys.RIGHT_BRACKET -> {
+                        isRightBracketPressed = false
+                        return true
+                    }
+                    Input.Keys.LEFT_BRACKET -> {
+                        isLeftBracketPressed = false
+                        return true
+                    }
+                }
+                return false
+            }
+        }
+        inputMultiplexer.addProcessor(keyListener)
+    }
+
+    override fun update(deltaTime: Float) {
+        zoomFromKeyboard()
+        keepZoomWithinBounds()
+    }
+
+    private fun zoomFromKeyboard() {
+        when {
+            isRightBracketPressed -> gameCamera.zoom /= 1.035f
+            isLeftBracketPressed -> gameCamera.zoom *= 1.035f
+        }
+    }
+
+    private fun keepZoomWithinBounds() {
+        gameCamera.zoom = MathUtils.clamp(gameCamera.zoom, MIN_ZOOM, MAX_ZOOM)
     }
 
     override fun removedFromEngine(engine: Engine?) {
         inputMultiplexer.removeProcessor(gestureDetector)
+        inputMultiplexer.removeProcessor(keyListener)
     }
 }
