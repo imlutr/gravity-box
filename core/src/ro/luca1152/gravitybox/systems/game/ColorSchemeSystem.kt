@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.systems
+package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalSystem

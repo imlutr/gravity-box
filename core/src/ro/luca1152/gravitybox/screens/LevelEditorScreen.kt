@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.viewport.ExtendViewport
@@ -37,7 +38,12 @@ import ro.luca1152.gravitybox.components.MapComponent
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
-import ro.luca1152.gravitybox.systems.*
+import ro.luca1152.gravitybox.systems.editor.PanningSystem
+import ro.luca1152.gravitybox.systems.editor.PlatformPlacementSystem
+import ro.luca1152.gravitybox.systems.editor.ZoomingSystem
+import ro.luca1152.gravitybox.systems.game.GridRenderingSystem
+import ro.luca1152.gravitybox.systems.game.ImageRenderingSystem
+import ro.luca1152.gravitybox.systems.game.MyMapRenderingSystem
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.kotlin.Reference
@@ -60,9 +66,10 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private lateinit var uiStage: Stage
     private lateinit var root: Table
     private lateinit var toggledButton: Reference<ToggleButton>
+    private lateinit var focusedObject: Reference<Image>
 
     // Game
-    private val map = Map()
+    private lateinit var map: Map
     private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
 
@@ -182,7 +189,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
 
         // Create entities
         val buttonListener = EntityFactory.createButtonListenerEntity(toggledButton)
-        val map = Map()
+        map = Map()
 
         // Handle Input
         inputMultiplexer.addProcessor(gameStage)

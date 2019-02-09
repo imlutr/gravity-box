@@ -31,7 +31,7 @@ import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.listeners.GameInputListener
 import ro.luca1152.gravitybox.listeners.WorldContactListener
-import ro.luca1152.gravitybox.systems.*
+import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.box2d.MapBodyBuilder
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport

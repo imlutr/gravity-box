@@ -15,23 +15,21 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.systems
+package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import ro.luca1152.gravitybox.components.MapComponent
+import com.badlogic.gdx.maps.tiled.TiledMap
 import ro.luca1152.gravitybox.components.PhysicsComponent
-import ro.luca1152.gravitybox.components.PointComponent
-import ro.luca1152.gravitybox.components.point
+import ro.luca1152.gravitybox.components.PlatformComponent
+import ro.luca1152.gravitybox.components.platform
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 
-class PointSystem(
-    private val map: MapComponent
-) : IteratingSystem(Family.all(PointComponent::class.java, PhysicsComponent::class.java).get()) {
+class PlatformRemovalSystem(private val map: TiledMap) : IteratingSystem(Family.all(PlatformComponent::class.java, PhysicsComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (entity.point.isCollected) {
-            map.collectedPoints++
+        if (entity.platform.remove) {
+            // Delete the entity, including all it's components, thus removing the Box2D body too
             engine.removeAndResetEntity(entity)
         }
     }
