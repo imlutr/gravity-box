@@ -15,9 +15,15 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.map
+package ro.luca1152.gravitybox.components
 
-class MapProperties {
-    var width = 15
-    var height = 15
+import com.badlogic.ashley.core.Component
+import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.utils.ComponentResolver
+
+/** Indicates that the object was selected (mainly in the level editor, when you tap on an object).  */
+class SelectedObjectComponent : Component, Poolable {
+    override fun reset() {}
+
+    companion object : ComponentResolver<SelectedObjectComponent>(SelectedObjectComponent::class.java)
 }

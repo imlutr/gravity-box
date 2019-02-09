@@ -23,19 +23,18 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Vector3
 import ro.luca1152.gravitybox.components.buttonListener
 import ro.luca1152.gravitybox.entities.MapObjectFactory
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
+import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PlatformPlacementSystem(private val buttonListenerEntity: Entity,
-                              private val inputMultiplexer: InputMultiplexer = Injekt.get(),
-                              private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
+class ObjectPlacementSystem(private val buttonListenerEntity: Entity,
+                            private val inputMultiplexer: InputMultiplexer = Injekt.get(),
+                            private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
     private lateinit var inputAdapter: InputAdapter
-    private var coords = Vector3()
 
     override fun addedToEngine(engine: Engine?) {
         inputAdapter = object : InputAdapter() {
@@ -51,15 +50,6 @@ class PlatformPlacementSystem(private val buttonListenerEntity: Entity,
     }
 
     fun placeToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.PLACE_TOOL_BUTTON
-
-    fun screenToWorldCoordinates(screenX: Int, screenY: Int): Vector3 {
-        coords.run {
-            x = screenX.toFloat()
-            y = screenY.toFloat()
-        }
-        gameCamera.unproject(coords)
-        return coords
-    }
 
     override fun removedFromEngine(engine: Engine?) {
         inputMultiplexer.removeProcessor(inputAdapter)

@@ -22,6 +22,8 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Array
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 /**
  * Linearly interpolates to the target values.
@@ -55,3 +57,14 @@ val World.bodies: Array<Body>
         getBodies(bodyArray)
         return bodyArray
     }
+
+private var coords = Vector3()
+fun screenToWorldCoordinates(screenX: Int, screenY: Int,
+                             gameCamera: GameCamera = Injekt.get()): Vector3 {
+    coords.run {
+        x = screenX.toFloat()
+        y = screenY.toFloat()
+    }
+    gameCamera.unproject(coords)
+    return coords
+}

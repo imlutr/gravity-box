@@ -37,6 +37,7 @@ object MapObjectFactory {
             image.set(manager.get<Texture>("graphics/pixel.png"), x, y)
             image.width = 1f
             image.height = .25f
+            image.img.userObject = this
         }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)
