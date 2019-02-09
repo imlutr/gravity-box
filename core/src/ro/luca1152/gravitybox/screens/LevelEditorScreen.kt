@@ -184,6 +184,9 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         val buttonListener = EntityFactory.createButtonListenerEntity(toggledButton)
         val map = Map()
 
+        // Handle Input
+        inputMultiplexer.addProcessor(gameStage)
+
         // Add systems
         engine.run {
             addSystem(PlatformPlacementSystem(map, buttonListener))

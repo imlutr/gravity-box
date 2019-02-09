@@ -35,7 +35,6 @@ import uy.kohesive.injekt.api.get
 class MyMapRenderingSystem(private val map: Map,
                            private val stage: GameStage = Injekt.get(),
                            private val manager: AssetManager = Injekt.get()) : EntitySystem() {
-    // Contains every map object's image. It's populated here.
     private val mapGroup = Group()
     private val addedObjects = Array<MapObject>()
 
@@ -47,11 +46,13 @@ class MyMapRenderingSystem(private val map: Map,
         // Search for objects that were not added to the [mapGroup] and add them
         for (i in 0 until map.objects.size) {
             val it = map.objects[i]
-            if (!addedObjects.contains(it, true))
-                mapGroup.addActor(when (it) {
+            if (!addedObjects.contains(it, true)) {
+                val actor = when (it) {
                     is PlatformObject -> createPlatform(it)
                     else -> TODO()
-                })
+                }
+                mapGroup.addActor(actor)
+            }
         }
     }
 
