@@ -44,10 +44,12 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
     private val overlayGroup = Group()
     private val leftArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-left-arrow-icon")
+        iconCell!!.padLeft(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
     }
     private val rightArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-right-arrow-icon")
+        iconCell!!.padRight(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
     }
     private val rotateButton: ClickButton = ClickButton(skin, "small-round-button").apply {
@@ -88,7 +90,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
         leftArrowButton.setPosition(coords.x - leftArrowButton.width - 20f, coords.y + zoomedHeight / 2f - leftArrowButton.height / 2f)
         rightArrowButton.setPosition(coords.x + zoomedWidth + 20f, coords.y + zoomedHeight / 2f - rightArrowButton.height / 2f)
-        rotateButton.setPosition(rightArrowButton.x, rightArrowButton.y + rightArrowButton.height + 40f)
+        rotateButton.setPosition(rightArrowButton.x, rightArrowButton.y + rightArrowButton.height + 50f)
     }
 
     private fun worldToOverlayCameraCoordinates(x: Float, y: Float): Vector3 {

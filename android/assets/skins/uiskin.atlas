@@ -50,7 +50,7 @@ erase-icon
   index: -1
 full-star
   rotate: false
-  xy: 1646, 24
+  xy: 897, 104
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -64,7 +64,7 @@ gravity-box
   index: -1
 heart-icon
   rotate: false
-  xy: 649, 10
+  xy: 722, 10
   size: 71, 63
   orig: 71, 63
   offset: 0, 0
@@ -78,7 +78,7 @@ heart-icon-empty
   index: -1
 left-arrow-icon
   rotate: false
-  xy: 861, 59
+  xy: 1841, 70
   size: 27, 42
   orig: 27, 42
   offset: 0, 0
@@ -120,7 +120,7 @@ pencil-icon
   index: -1
 platform-icon
   rotate: false
-  xy: 516, 42
+  xy: 1646, 31
   size: 85, 21
   orig: 85, 21
   offset: 0, 0
@@ -141,14 +141,14 @@ play-button-full
   index: -1
 redo-icon
   rotate: false
-  xy: 897, 51
+  xy: 795, 20
   size: 72, 81
   orig: 72, 81
   offset: 0, 0
   index: -1
 right-arrow-icon
   rotate: false
-  xy: 910, 7
+  xy: 553, 21
   size: 27, 42
   orig: 27, 42
   offset: 0, 0
@@ -178,35 +178,35 @@ small-button-inside
   index: -1
 small-left-arrow-icon
   rotate: false
-  xy: 516, 14
-  size: 18, 26
-  orig: 18, 26
+  xy: 582, 25
+  size: 26, 38
+  orig: 26, 38
   offset: 0, 0
   index: -1
 small-right-arrow-icon
   rotate: false
-  xy: 722, 47
-  size: 18, 26
-  orig: 18, 26
+  xy: 610, 25
+  size: 26, 38
+  orig: 26, 38
   offset: 0, 0
   index: -1
 small-rotate-icon
   rotate: false
-  xy: 1841, 86
-  size: 26, 26
-  orig: 26, 26
+  xy: 516, 28
+  size: 35, 35
+  orig: 35, 35
   offset: 0, 0
   index: -1
 small-round-button
   rotate: false
-  xy: 861, 2
-  size: 47, 47
-  orig: 47, 47
+  xy: 649, 2
+  size: 71, 71
+  orig: 71, 71
   offset: 0, 0
   index: -1
 undo-icon
   rotate: false
-  xy: 787, 20
+  xy: 869, 20
   size: 72, 81
   orig: 72, 81
   offset: 0, 0
