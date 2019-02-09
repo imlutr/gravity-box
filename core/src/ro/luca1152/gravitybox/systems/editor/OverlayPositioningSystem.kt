@@ -52,7 +52,6 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                     image.width += .5f
                     image.x -= .5f
                 }
-                overlayGroup.width += .5f
             }
         })
     }
@@ -63,23 +62,29 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         addClickRunnable(Runnable {
             if (userObject != null) {
                 (userObject as Entity).image.width += .5f
-                overlayGroup.width += .5f.metersToPixels
             }
         })
     }
     private val rotateButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-rotate-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            if (userObject != null) {
+                (userObject as Entity).image.img.rotateBy(5f)
+                overlayGroup.rotateBy(5f)
+            }
+        })
     }
     private var selectedObject: Entity? = null
+    private val paddingX = 20f
+    private val paddingY = 50f
+
 
     init {
         overlayGroup.run {
             addActor(leftArrowButton)
             addActor(rightArrowButton)
             addActor(rotateButton)
-            width = leftArrowButton.width * 3 + 2 * 20f + 64f
-            height = leftArrowButton.height * 2 + 50f
         }
     }
 
@@ -95,7 +100,9 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         } else {
             overlayGroup.isVisible = true
             setUserObjectForButtons(selectedObject)
-            repositionButtons(selectedObject!!.image)
+            updateButtonsPositionInGroup(selectedObject!!.image)
+            updateGroupSize(selectedObject!!.image)
+            repositionGroup(selectedObject!!.image)
         }
     }
 
@@ -105,16 +112,38 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         rotateButton.userObject = obj
     }
 
-    private val coords = Vector3()
-    private fun repositionButtons(image: ImageComponent) {
-        // The coordinates of the bottom left corner of the image
-        val coords = worldToOverlayCameraCoordinates(image.img.x, image.img.y)
-        val zoomedWidth = image.width.metersToPixels / gameCamera.zoom
-        val zoomedHeight = image.height.metersToPixels / gameCamera.zoom
+    private fun updateButtonsPositionInGroup(objectImage: ImageComponent) {
+        leftArrowButton.run {
+            x = 0f
+            y = 0f
+        }
 
-        leftArrowButton.setPosition(coords.x - leftArrowButton.width - 20f, coords.y + zoomedHeight / 2f - leftArrowButton.height / 2f)
-        rightArrowButton.setPosition(coords.x + zoomedWidth + 20f, coords.y + zoomedHeight / 2f - rightArrowButton.height / 2f)
-        rotateButton.setPosition(rightArrowButton.x, rightArrowButton.y + rightArrowButton.height + 50f)
+        rightArrowButton.run {
+            x = leftArrowButton.width + paddingX + objectImage.width.metersToPixels / gameCamera.zoom + paddingX
+            y = 0f
+        }
+
+        rotateButton.run {
+            x = rightArrowButton.x
+            y = rightArrowButton.y + rightArrowButton.height + paddingY
+        }
+    }
+
+    private fun updateGroupSize(image: ImageComponent) {
+        overlayGroup.width = leftArrowButton.width + paddingX + (image.width.metersToPixels / gameCamera.zoom) + paddingX + rightArrowButton.width
+        overlayGroup.height = rightArrowButton.height + paddingY + rotateButton.height
+        overlayGroup.originX = overlayGroup.width / 2f
+        overlayGroup.originY = leftArrowButton.height / 2f
+    }
+
+    private val coords = Vector3()
+    private fun repositionGroup(objectImage: ImageComponent) {
+        // The coordinates of the center of the object
+        val coords = worldToOverlayCameraCoordinates(objectImage.x, objectImage.y)
+        overlayGroup.run {
+            x = coords.x - overlayGroup.width / 2f
+            y = coords.y - leftArrowButton.height / 2f
+        }
     }
 
     private fun worldToOverlayCameraCoordinates(x: Float, y: Float): Vector3 {
