@@ -15,10 +15,26 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.map
+package ro.luca1152.gravitybox.components
 
-import com.badlogic.gdx.utils.Array
+import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
-class Map(val properties: MapProperties = MapProperties()) {
-    val objects = Array<MapObject>()
+class IdComponent : Component, Poolable {
+    var id = -1
+
+    fun set(id: Int) {
+        this.id = id
+    }
+
+    override fun reset() {
+        id = -1
+    }
+
+    companion object : ComponentResolver<IdComponent>(IdComponent::class.java)
 }
+
+val Entity.id: IdComponent
+    get() = IdComponent[this]

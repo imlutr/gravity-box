@@ -45,10 +45,16 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
 
     // Getters and setters for easier access (entity.image.[x] instead of entity.image.img.[x])
     // Entity.image returns ImageComponent and not Image so set(texture, x, y) can be used
-    val width: Float
+    var width: Float
         get() = img.width
-    val height: Float
+        set(value) {
+            img.width = value
+        }
+    var height: Float
         get() = img.height
+        set(value) {
+            img.height = value
+        }
     var x: Float
         get() = img.x
         set(value) {
@@ -66,15 +72,18 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
         }
 
     /** Initializes the component. */
-    fun set(texture: Texture, position: Vector2) {
+    fun set(texture: Texture, x: Float, y: Float) {
         img.run {
             drawable = TextureRegionDrawable(TextureRegion(texture))
-            setPosition(position.x, position.y)
+            setPosition(x, y)
             setSize(texture.width.pixelsToMeters, texture.height.pixelsToMeters)
             setOrigin(width / 2f, height / 2f)
         }
         stage + img
     }
+
+    /** Initializes the component. */
+    fun set(texture: Texture, position: Vector2) = set(texture, position.x, position.y)
 
     /** Resets the component for reuse. */
     override fun reset() {

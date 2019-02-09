@@ -25,7 +25,6 @@ import ro.luca1152.gravitybox.components.utils.ComponentResolver
 class PointComponent : Component, Pool.Poolable {
     var isCollected = false
 
-    /** Resets the component for reuse. */
     override fun reset() {
         isCollected = false
     }

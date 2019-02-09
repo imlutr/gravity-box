@@ -22,19 +22,14 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
-/**
- * Every entity that has this component will have its color in sync with the color scheme.
- */
+/** Every entity that has this component will have its color in sync with the color scheme. */
 class ColorComponent : Component, Poolable {
-    // Initialized with null ColorType to avoid nullable type
     var colorType = ColorType.NULL
 
-    /** Initializes the component. */
     fun set(colorType: ColorType) {
         this.colorType = colorType
     }
 
-    /** Resets the component for reuse. */
     override fun reset() {
         colorType = ColorType.NULL
     }

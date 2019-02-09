@@ -61,7 +61,6 @@ object EntityFactory {
             gravityScale = .5f
             userData = this@label
         }
-
         fixtureDef.shape.dispose()
         this.physics.set(body, this)
 

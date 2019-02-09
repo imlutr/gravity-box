@@ -38,16 +38,13 @@ import ro.luca1152.gravitybox.components.MapComponent
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
+import ro.luca1152.gravitybox.systems.editor.GridRenderingSystem
 import ro.luca1152.gravitybox.systems.editor.PanningSystem
 import ro.luca1152.gravitybox.systems.editor.PlatformPlacementSystem
 import ro.luca1152.gravitybox.systems.editor.ZoomingSystem
-import ro.luca1152.gravitybox.systems.game.GridRenderingSystem
+import ro.luca1152.gravitybox.systems.game.ColorSyncSystem
 import ro.luca1152.gravitybox.systems.game.ImageRenderingSystem
-import ro.luca1152.gravitybox.systems.game.MyMapRenderingSystem
-import ro.luca1152.gravitybox.utils.kotlin.GameStage
-import ro.luca1152.gravitybox.utils.kotlin.GameViewport
-import ro.luca1152.gravitybox.utils.kotlin.Reference
-import ro.luca1152.gravitybox.utils.map.Map
+import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.ButtonType
 import ro.luca1152.gravitybox.utils.ui.ClickButton
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
@@ -69,7 +66,6 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private lateinit var focusedObject: Reference<Image>
 
     // Game
-    private lateinit var map: Map
     private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
 
@@ -182,6 +178,10 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             addSingleton(world)
             addSingleton(gameEventSignal)
             addSingleton(inputMultiplexer)
+            addSingleton(skin)
+            addSingleton(OverlayCamera)
+            addSingleton(OverlayViewport)
+            addSingleton(OverlayStage)
         }
 
         // Provide own implementation for what happens after Box2D collisions
@@ -189,22 +189,20 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
 
         // Create entities
         val buttonListener = EntityFactory.createButtonListenerEntity(toggledButton)
-        map = Map()
 
         // Handle Input
         inputMultiplexer.addProcessor(gameStage)
 
         // Add systems
         engine.run {
-            addSystem(PlatformPlacementSystem(map, buttonListener))
+            addSystem(ColorSyncSystem())
+            addSystem(PlatformPlacementSystem(buttonListener))
             addSystem(ZoomingSystem(buttonListener))
             addSystem(PanningSystem(buttonListener))
             addSystem(GridRenderingSystem())
             addSystem(ImageRenderingSystem())
-            addSystem(MyMapRenderingSystem(map))
         }
     }
-
 
     private fun update(delta: Float) {
         engine.update(delta)

@@ -25,45 +25,40 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
 import ro.luca1152.gravitybox.components.buttonListener
+import ro.luca1152.gravitybox.entities.MapObjectFactory
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
-import ro.luca1152.gravitybox.utils.map.Map
-import ro.luca1152.gravitybox.utils.map.objects.PlatformObject
-import ro.luca1152.gravitybox.utils.map.objects.PlatformType
 import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PlatformPlacementSystem(private val map: Map,
-                              private val buttonListenerEntity: Entity,
+class PlatformPlacementSystem(private val buttonListenerEntity: Entity,
                               private val inputMultiplexer: InputMultiplexer = Injekt.get(),
                               private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
     private lateinit var inputAdapter: InputAdapter
-    private val coords = Vector3()
+    private var coords = Vector3()
 
     override fun addedToEngine(engine: Engine?) {
         inputAdapter = object : InputAdapter() {
             override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-                // Place platforms only if the place tool is selected
-                if (buttonListenerEntity.buttonListener.toggledButton.get()?.type != ButtonType.PLACE_TOOL_BUTTON)
+                if (!placeToolIsUsed())
                     return false
-
-                // Translate the screen coordinates to world coordinates
-                coords.run {
-                    x = screenX.toFloat()
-                    y = screenY.toFloat()
-                }
-                gameCamera.unproject(coords)
-
-                // Create and add the platform to the map
-                map.objects.add(PlatformObject(map.objects.size, PlatformType.FULL).apply {
-                    x = MathUtils.floor(coords.x).toFloat()
-                    y = MathUtils.floor(coords.y) + .5f - PlatformObject.DEFAULT_HEIGHT / 2f
-                })
-
+                val coords = screenToWorldCoordinates(screenX, screenY)
+                MapObjectFactory.createPlatform(0, MathUtils.floor(coords.x).toFloat() + .5f, MathUtils.floor(coords.y).toFloat() + .5f)
                 return true
             }
         }
         inputMultiplexer.addProcessor(inputAdapter)
+    }
+
+    fun placeToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.PLACE_TOOL_BUTTON
+
+    fun screenToWorldCoordinates(screenX: Int, screenY: Int): Vector3 {
+        coords.run {
+            x = screenX.toFloat()
+            y = screenY.toFloat()
+        }
+        gameCamera.unproject(coords)
+        return coords
     }
 
     override fun removedFromEngine(engine: Engine?) {

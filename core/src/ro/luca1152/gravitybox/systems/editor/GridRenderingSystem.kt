@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.systems.game
+package ro.luca1152.gravitybox.systems.editor
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.EntitySystem
