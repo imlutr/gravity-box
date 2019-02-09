@@ -107,6 +107,9 @@ class ZoomingSystem(private val buttonListenerEntity: Entity,
                         isLeftBracketPressed = false
                         return true
                     }
+                    Input.Keys.SPACE -> {
+                        gameCamera.zoom = 1f
+                    }
                 }
                 return false
             }
