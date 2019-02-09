@@ -74,7 +74,7 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
         get() {
             if (height == 0f)
                 throw IllegalStateException("The height can't be 0.")
-            return img.y - height / 2f
+            return img.y + height / 2f
         }
         set(value) {
             if (height == 0f)
