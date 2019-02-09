@@ -46,11 +46,26 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         addIcon("small-left-arrow-icon")
         iconCell!!.padLeft(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            if (userObject != null) {
+                (userObject as Entity).run {
+                    image.width += .5f
+                    image.x -= .5f
+                }
+                overlayGroup.width += .5f
+            }
+        })
     }
     private val rightArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-right-arrow-icon")
         iconCell!!.padRight(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            if (userObject != null) {
+                (userObject as Entity).image.width += .5f
+                overlayGroup.width += .5f.metersToPixels
+            }
+        })
     }
     private val rotateButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-rotate-icon")
@@ -63,6 +78,8 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             addActor(leftArrowButton)
             addActor(rightArrowButton)
             addActor(rotateButton)
+            width = leftArrowButton.width * 3 + 2 * 20f + 64f
+            height = leftArrowButton.height * 2 + 50f
         }
     }
 
@@ -74,14 +91,21 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         selectedObject = getSelectedObject()
         if (selectedObject == null) {
             overlayGroup.isVisible = false
+            setUserObjectForButtons(null)
         } else {
             overlayGroup.isVisible = true
+            setUserObjectForButtons(selectedObject)
             repositionButtons(selectedObject!!.image)
         }
     }
 
-    private val coords = Vector3()
+    private fun setUserObjectForButtons(obj: Any?) {
+        leftArrowButton.userObject = obj
+        rightArrowButton.userObject = obj
+        rotateButton.userObject = obj
+    }
 
+    private val coords = Vector3()
     private fun repositionButtons(image: ImageComponent) {
         // The coordinates of the bottom left corner of the image
         val coords = worldToOverlayCameraCoordinates(image.img.x, image.img.y)
