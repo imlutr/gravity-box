@@ -41,7 +41,8 @@ val Entity.color: ColorComponent
     get() = ColorComponent[this]
 
 enum class ColorType {
-    DARK,
     LIGHT,
+    DARK,
+    DARKER_DARK,
     NULL
 }

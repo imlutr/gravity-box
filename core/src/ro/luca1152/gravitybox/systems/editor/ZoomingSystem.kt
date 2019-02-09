@@ -36,8 +36,7 @@ class ZoomingSystem(private val buttonListenerEntity: Entity,
                     private val gameCamera: GameCamera = Injekt.get(),
                     private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
     companion object {
-        //        private const val DEFAULT_ZOOM = .75f
-        private const val DEFAULT_ZOOM = 1f
+        private const val DEFAULT_ZOOM = .75f
         private const val MIN_ZOOM = .3f // The maximum you can zoom in
         private const val MAX_ZOOM = 1.5f // The maximum you can zoom out
     }

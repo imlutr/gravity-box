@@ -97,3 +97,6 @@ val Int.pixelsToMeters: Float
 
 val Float.pixelsToMeters: Float
     get() = this / PPM
+
+val Float.metersToPixels: Float
+    get() = this * PPM

@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.graphics.Color
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
@@ -30,7 +31,11 @@ import ro.luca1152.gravitybox.utils.ui.ColorScheme
  */
 class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, ColorComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (entity.color.colorType == ColorType.DARK) entity.image.color.setWithoutAlpha(ColorScheme.currentDarkColor)
-        else if (entity.color.colorType == ColorType.LIGHT) entity.image.color.setWithoutAlpha(ColorScheme.currentLightColor)
+        entity.image.color.setWithoutAlpha(when (entity.color.colorType) {
+            ColorType.LIGHT -> ColorScheme.currentLightColor
+            ColorType.DARK -> ColorScheme.currentDarkColor
+            ColorType.DARKER_DARK -> ColorScheme.darkerDarkColor
+            else -> Color.RED
+        })
     }
 }

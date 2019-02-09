@@ -18,13 +18,16 @@
 package ro.luca1152.gravitybox.systems.editor
 
 import com.badlogic.ashley.core.EntitySystem
-import ro.luca1152.gravitybox.utils.kotlin.OverlayStage
+import ro.luca1152.gravitybox.metersToPixels
+import ro.luca1152.gravitybox.utils.kotlin.GameCamera
+import ro.luca1152.gravitybox.utils.kotlin.OverlayCamera
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class OverlayRenderingSystem(private val overlayStage: OverlayStage = Injekt.get()) : EntitySystem() {
+class OverlayCameraSyncSystem(private val overlayCamera: OverlayCamera = Injekt.get(),
+                              private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
-        overlayStage.act()
-        overlayStage.draw()
+        overlayCamera.position.set(gameCamera.position.x.metersToPixels, gameCamera.position.y.metersToPixels, 0f)
+        overlayCamera.update()
     }
 }

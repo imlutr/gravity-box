@@ -15,16 +15,15 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.systems.editor
+package ro.luca1152.gravitybox.systems
 
 import com.badlogic.ashley.core.EntitySystem
-import ro.luca1152.gravitybox.utils.kotlin.OverlayStage
+import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class OverlayRenderingSystem(private val overlayStage: OverlayStage = Injekt.get()) : EntitySystem() {
+class UpdateGameCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
-        overlayStage.act()
-        overlayStage.draw()
+        gameCamera.update()
     }
 }

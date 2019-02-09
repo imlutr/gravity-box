@@ -60,8 +60,8 @@ class PlayScreen(private val engine: PooledEngine = Injekt.get(),
     override fun show() {
         // Create entities
         val mapEntity = EntityFactory.createMap(LevelSelectorScreen.chosenLevel)
-        val playerEntity = EntityFactory.createPlayer(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap))
         val finishEntity = EntityFactory.createFinish(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap))
+        val playerEntity = EntityFactory.createPlayer(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap))
 
         // Add systems
         engine.run {

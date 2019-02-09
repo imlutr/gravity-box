@@ -18,22 +18,28 @@
 package ro.luca1152.gravitybox.systems.editor
 
 import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.core.Family
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import ro.luca1152.gravitybox.components.ImageComponent
+import ro.luca1152.gravitybox.components.SelectedObjectComponent
+import ro.luca1152.gravitybox.components.image
+import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
+import ro.luca1152.gravitybox.utils.kotlin.OverlayCamera
 import ro.luca1152.gravitybox.utils.kotlin.OverlayStage
-import ro.luca1152.gravitybox.utils.kotlin.Reference
 import ro.luca1152.gravitybox.utils.ui.ClickButton
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-@Suppress("CanBeParameter")
-class OverlayPositioningSystem(private val focusedObject: Reference<Image>,
-                               private val skin: Skin = Injekt.get(),
+class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                                private val gameCamera: GameCamera = Injekt.get(),
+                               private val overlayCamera: OverlayCamera = Injekt.get(),
                                private val overlayStage: OverlayStage = Injekt.get()) : EntitySystem() {
     private val overlayGroup = Group()
     private val leftArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
@@ -48,6 +54,7 @@ class OverlayPositioningSystem(private val focusedObject: Reference<Image>,
         addIcon("small-rotate-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
     }
+    private var selectedObject: Entity? = null
 
     init {
         overlayGroup.run {
@@ -62,18 +69,52 @@ class OverlayPositioningSystem(private val focusedObject: Reference<Image>,
     }
 
     override fun update(deltaTime: Float) {
-        repositionButtons()
+        selectedObject = getSelectedObject()
+        if (selectedObject == null) {
+            overlayGroup.isVisible = false
+        } else {
+            overlayGroup.isVisible = true
+            repositionButtons(selectedObject!!.image)
+        }
     }
 
-    private fun repositionButtons() {
-        if (focusedObject.get() == null) {
-            leftArrowButton.isVisible = false
-            rightArrowButton.isVisible = false
-            rotateButton.isVisible = false
-        } else {
-            leftArrowButton.isVisible = true
-            rightArrowButton.isVisible = true
-            rotateButton.isVisible = true
+    private val coords = Vector3()
+
+    private fun repositionButtons(image: ImageComponent) {
+        // The coordinates of the bottom left corner of the image
+        val coords = worldToOverlayCameraCoordinates(image.img.x, image.img.y)
+        val zoomedWidth = image.width.metersToPixels / gameCamera.zoom
+        val zoomedHeight = image.height.metersToPixels / gameCamera.zoom
+
+        leftArrowButton.setPosition(coords.x - leftArrowButton.width - 20f, coords.y + zoomedHeight / 2f - leftArrowButton.height / 2f)
+        rightArrowButton.setPosition(coords.x + zoomedWidth + 20f, coords.y + zoomedHeight / 2f - rightArrowButton.height / 2f)
+        rotateButton.setPosition(rightArrowButton.x, rightArrowButton.y + rightArrowButton.height + 40f)
+    }
+
+    private fun worldToOverlayCameraCoordinates(x: Float, y: Float): Vector3 {
+        coords.run {
+            this.x = x
+            this.y = y
+        }
+
+        // [coords] are now in screen coordinates
+        gameCamera.project(coords)
+
+        // When you unproject coordinates, the (0;0) is in the top left corner, when usually
+        // it is in the bottom left corner, so this must be corrected for the function to work
+        coords.y = Gdx.graphics.height - coords.y
+
+        // [coords] are now in overlayCamera coordinates
+        overlayCamera.unproject(coords)
+
+        return coords
+    }
+
+    private fun getSelectedObject(): Entity? {
+        val entities = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())
+        return when {
+            entities.size() == 0 -> null
+            else -> entities.first()
         }
     }
 
