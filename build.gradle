@@ -36,7 +36,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '1.0'
+    version = '0.1'
     ext {
         appName = "Gravity Box"
         kotlinVersion = '1.3.11'
