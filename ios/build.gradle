@@ -1,10 +1,26 @@
-sourceSets.main.java.srcDirs = [ "src/" ]
+/*
+ * This file is part of Gravity Box.
+ *
+ * Gravity Box is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Gravity Box is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
-sourceCompatibility = '1.7'
+apply plugin: 'robovm'
+
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 ext {
-	mainClassName = "ro.luca1152.gravitybox.IOSLauncher"
+	mainClassName = "ro.luca1152.gravitybox.ios.IOSLauncher"
 }
 
 launchIPhoneSimulator.dependsOn build
@@ -12,11 +28,16 @@ launchIPadSimulator.dependsOn build
 launchIOSDevice.dependsOn build
 createIPA.dependsOn build
 
-robovm {
-	archs = "thumbv7:arm64"
+eclipse.project {
+  name = appName + "-ios"
+  natures 'org.robovm.eclipse.RoboVMNature'
 }
 
-eclipse.project {
-    name = appName + "-ios"
-    natures 'org.robovm.eclipse.RoboVMNature'
+dependencies {
+  api project(':core')
+  api "com.mobidevelop.robovm:robovm-rt:$robovmVersion"
+  api "com.mobidevelop.robovm:robovm-cocoatouch:$robovmVersion"
+  api "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
+  api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+  api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
 }

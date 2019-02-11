@@ -1,0 +1,40 @@
+{
+  BitmapFont: {
+    bold-50: {
+      file: nunito-bold-50.fnt
+    }
+    bold-57: {
+      file: nunito-bold-57.fnt
+    }
+    bold-65: {
+      file: nunito-bold-65.fnt
+    }
+  }
+  ButtonStyle: {
+    big-button: {
+      up: big-button,
+      down: big-button
+    }
+    small-button: {
+      up: small-button,
+      down: small-button
+    }
+    small-round-button: {
+      up: small-round-button,
+      down: small-round-button
+    }
+  }
+  TextButtonStyle: {
+    big-text-button: {
+      font: bold-50,
+      up: big-button,
+      down: big-button
+    }
+
+    small-text-button: {
+      font: bold-50,
+      up: small-button,
+      down: small-button
+    }
+  }
+}

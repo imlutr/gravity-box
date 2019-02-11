@@ -1,46 +1,74 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
 android {
     signingConfigs {
         debug {
             keyAlias 'androiddebugkey'
-            keyPassword '***REMOVED***'
+            keyPassword 'android'
             storeFile file('/home/luca1152/.android/debug.keystore')
-            storePassword '***REMOVED***'
+            storePassword 'android'
         }
     }
-    buildToolsVersion "28.0.3"
-    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+    compileSdkVersion 23
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
+            java.srcDirs = ['src/main/java']
+            aidl.srcDirs = ['src/main/java']
+            renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
+            assets.srcDirs = ['../assets']
             jniLibs.srcDirs = ['libs']
         }
 
+        androidTest.setRoot('tests')
     }
     packagingOptions {
+        // Preventing from license violations (more or less):
+        pickFirst 'META-INF/LICENSE.txt'
+        pickFirst 'META-INF/LICENSE'
+        pickFirst 'META-INF/license.txt'
+        pickFirst 'META-INF/LGPL2.1'
+        pickFirst 'META-INF/NOTICE.txt'
+        pickFirst 'META-INF/NOTICE'
+        pickFirst 'META-INF/notice.txt'
+        // Excluding unnecessary meta-data:
         exclude 'META-INF/robovm/ios/robovm.xml'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/dependencies.txt'
     }
     defaultConfig {
-        applicationId "ro.luca1152.gravitybox"
-        minSdkVersion 9
-        targetSdkVersion 28
-        versionCode 1
-        versionName "0.1"
+        applicationId 'ro.luca1152.gravitybox'
+        minSdkVersion 14
+        targetSdkVersion 23
     }
     buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
         debug {
             signingConfig signingConfigs.debug
         }
     }
 }
+
+configurations { natives }
+
+dependencies {
+    api project(':core')
+    api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
+}
+
 /*
  * This file is part of Gravity Box.
  *
@@ -57,10 +85,11 @@ android {
  * You should have received a copy of the GNU General Public License
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
-// called every time gradle gets executed, takes the native dependencies of
+
+// Called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
 // so they get packed with the APK.
-task copyAndroidNatives {
+task copyAndroidNatives() {
     doFirst {
         file("libs/armeabi/").mkdirs()
         file("libs/armeabi-v7a/").mkdirs()
@@ -75,7 +104,7 @@ task copyAndroidNatives {
             if (jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
             if (jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
             if (jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
-            if (outputDibr != null) {
+            if (outputDir != null) {
                 copy {
                     from zipTree(jar)
                     into outputDir
@@ -85,6 +114,7 @@ task copyAndroidNatives {
         }
     }
 }
+
 task run(type: Exec) {
     def path
     def localProperties = project.file("../local.properties")
@@ -104,15 +134,16 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'ro.luca1152.gravitybox/ro.luca1152.gravitybox.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'ro.luca1152.gravitybox/ro.luca1152.gravitybox.android.AndroidLauncher'
 }
-// sets up the Android Eclipse project, using the old Ant based build.
+
+// Sets up the Android Eclipse project using the old Ant based build.
 eclipse {
-    // need to specify Java source sets explicitly, SpringSource Gradle Eclipse plugin
+    // needs to specify Java source sets explicitly, SpringSource Gradle Eclipse plugin
     // ignores any nodes added in classpath.file.withXml
     sourceSets {
         main {
-            java.srcDirs "src", 'gen'
+            java.srcDirs 'src/main/java', 'gen'
         }
     }
 
@@ -136,12 +167,12 @@ eclipse {
         buildCommand "com.android.ide.eclipse.adt.ApkBuilder"
     }
 }
-// sets up the Android Idea project, using the old Ant based build.
+
+// Sets up the Android Idea project using the old Ant based build.
 idea {
     module {
-        sourceDirs += file("src")
+        sourceDirs += file("src/main/java")
         scopes = [COMPILE: [plus: [project.configurations.compile]]]
-
         iml {
             withXml {
                 def node = it.asNode()
@@ -157,7 +188,4 @@ idea {
             }
         }
     }
-}
-
-dependencies {
 }
