@@ -46,10 +46,9 @@ class ObjectSelectionSystem(private val buttonListenerEntity: Entity,
             if (!moveToolIsSelected())
                 return false
 
+            touchedActor = gameStage.hit(x, y, true)
             if (!isMapObject(touchedActor))
                 return false
-            touchedActor = gameStage.hit(x, y, true)
-
 
             // Return true so touchUp() will be called
             return true
@@ -70,7 +69,7 @@ class ObjectSelectionSystem(private val buttonListenerEntity: Entity,
             }
         }
 
-        private fun isMapObject(actor: Actor?) = actor == null || actor.userObject == null || actor.userObject !is Entity
+        private fun isMapObject(actor: Actor?) = (actor != null && actor.userObject != null && actor.userObject is Entity)
     }
 
     override fun addedToEngine(engine: Engine?) {
