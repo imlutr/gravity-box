@@ -26,27 +26,36 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import ro.luca1152.gravitybox.components.ColorType
 import ro.luca1152.gravitybox.components.SelectedObjectComponent
+import ro.luca1152.gravitybox.components.buttonListener
 import ro.luca1152.gravitybox.components.color
 import ro.luca1152.gravitybox.components.utils.tryGet
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Updates the selected object (the entity that has a [SelectedObjectComponent]) when a platform is touched. */
-class ObjectSelectionSystem(private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
+class ObjectSelectionSystem(private val buttonListenerEntity: Entity,
+                            private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
     var selectedObject: Entity? = null
 
     private val inputListener = object : InputListener() {
         var touchedActor: Actor? = null
 
         override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-            touchedActor = gameStage.hit(x, y, true)
+            if (!moveToolIsSelected())
+                return false
+
             if (!isMapObject(touchedActor))
                 return false
+            touchedActor = gameStage.hit(x, y, true)
+
 
             // Return true so touchUp() will be called
             return true
         }
+
+        private fun moveToolIsSelected() = buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
 
         override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
             val entity = (touchedActor!!.userObject) as Entity

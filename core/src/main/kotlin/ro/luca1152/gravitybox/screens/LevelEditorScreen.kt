@@ -27,7 +27,6 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.viewport.ExtendViewport
@@ -51,19 +50,16 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
-class LevelEditorScreen(
-    private val engine: PooledEngine = Injekt.get(),
-    private val batch: Batch = Injekt.get(),
-    private val manager: AssetManager = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get(),
-    private val gameViewport: GameViewport = Injekt.get()
-) : KtxScreen {
+class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
+                        private val batch: Batch = Injekt.get(),
+                        private val manager: AssetManager = Injekt.get(),
+                        private val gameStage: GameStage = Injekt.get(),
+                        private val gameViewport: GameViewport = Injekt.get()) : KtxScreen {
     // UI
     private lateinit var skin: Skin
     private lateinit var uiStage: Stage
     private lateinit var root: Table
     private lateinit var toggledButton: Reference<ToggleButton>
-    private lateinit var focusedObject: Reference<Image>
 
     // Game
     private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
@@ -110,53 +106,48 @@ class LevelEditorScreen(
 
 
     private fun createLeftColumn(): Table {
-        fun createUndoButton(toggledButton: Reference<ToggleButton>) =
-            ClickButton(skin, "small-button").apply {
-                addIcon("undo-icon")
-                setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                setToggledButtonReference(toggledButton)
-            }
+        fun createUndoButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
+            addIcon("undo-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setToggledButtonReference(toggledButton)
+        }
 
-        fun createEraseButton(toggledButton: Reference<ToggleButton>) =
-            ToggleButton(skin, "small-button").apply {
-                addIcon("erase-icon")
-                setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                setToggledButtonReference(toggledButton)
-            }
+        fun createEraseButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
+            addIcon("erase-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setToggledButtonReference(toggledButton)
+        }
 
-        fun createMoveToolButton(toggledButton: Reference<ToggleButton>) =
-            ToggleButton(skin, "small-button").apply {
-                addIcon("move-icon")
-                setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                setToggledButtonReference(toggledButton)
-                type = ButtonType.MOVE_TOOL_BUTTON
-                isToggled = true
-            }
+        fun createMoveToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
+            addIcon("move-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setToggledButtonReference(toggledButton)
+            type = ButtonType.MOVE_TOOL_BUTTON
+            isToggled = true
+        }
 
-        fun createPlaceToolButton(toggledButton: Reference<ToggleButton>) =
-            ToggleButton(skin, "small-button").apply {
-                addIcon("platform-icon")
-                setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                setToggledButtonReference(toggledButton)
-                type = ButtonType.PLACE_TOOL_BUTTON
-            }
+        fun createPlaceToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
+            addIcon("platform-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setToggledButtonReference(toggledButton)
+            type = ButtonType.PLACE_TOOL_BUTTON
+        }
 
-        fun createBackButton(toggledButton: Reference<ToggleButton>) =
-            ClickButton(skin, "small-button").apply {
-                addIcon("back-icon")
-                iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
-                setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                setToggledButtonReference(toggledButton)
-                setToggleOffEveryOtherButton(true)
-                addClickRunnable(Runnable {
-                    uiStage.addAction(
+        fun createBackButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
+            addIcon("back-icon")
+            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setToggledButtonReference(toggledButton)
+            setToggleOffEveryOtherButton(true)
+            addClickRunnable(Runnable {
+                uiStage.addAction(
                         sequence(
-                            fadeOut(.5f),
-                            run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
+                                fadeOut(.5f),
+                                run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
                         )
-                    )
-                })
-            }
+                )
+            })
+        }
 
         return Table().apply {
             // If I don't pass [toggledButton] as an argument it doesn't work
@@ -204,7 +195,7 @@ class LevelEditorScreen(
         // Add systems
         engine.run {
             addSystem(ColorSyncSystem())
-            addSystem(ObjectSelectionSystem())
+            addSystem(ObjectSelectionSystem(buttonListener))
             addSystem(ObjectPlacementSystem(buttonListener))
             addSystem(ZoomingSystem(buttonListener))
             addSystem(PanningSystem(buttonListener))
@@ -224,11 +215,7 @@ class LevelEditorScreen(
     }
 
     override fun render(delta: Float) {
-        clearScreen(
-            ColorScheme.currentLightColor.r,
-            ColorScheme.currentLightColor.g,
-            ColorScheme.currentLightColor.b
-        )
+        clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
         update(delta) // This MUST be after clearScreen() because draw functions may be called in engine.update()
         uiStage.draw()
     }

@@ -44,7 +44,7 @@ class PanningSystem(private val buttonListenerEntity: Entity,
             return true
         }
 
-        private fun moveToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type != ButtonType.MOVE_TOOL_BUTTON
+        private fun moveToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
 
         private fun panCamera(deltaX: Float, deltaY: Float) {
             gameCamera.position.add(-deltaX.pixelsToMeters * gameCamera.zoom, deltaY.pixelsToMeters * gameCamera.zoom, 0f)
