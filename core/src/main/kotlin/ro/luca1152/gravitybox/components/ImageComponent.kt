@@ -45,11 +45,13 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
         get() = img.width
         set(value) {
             img.width = value
+            updateOrigin()
         }
     var height: Float
         get() = img.height
         set(value) {
             img.height = value
+            updateOrigin()
         }
 
     /** The X position of the Image's center. */
@@ -105,6 +107,13 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
     fun setPosition(x: Float, y: Float) {
         this.x = x
         this.y = y
+    }
+
+    private fun updateOrigin() {
+        img.run {
+            originX = width / 2f
+            originY = height / 2f
+        }
     }
 
     override fun reset() {
