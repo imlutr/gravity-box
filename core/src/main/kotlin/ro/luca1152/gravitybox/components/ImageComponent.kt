@@ -39,12 +39,8 @@ import uy.kohesive.injekt.api.get
  * Is an Image (from Scene2D) in order to be able to use Actions.
  */
 class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, Poolable {
-    // Initialized with an empty image to avoid nullable type
-    // Called img to avoid confusion between entity.image and entity.image.img
     var img: Image = Image()
 
-    // Getters and setters for easier access (entity.image.[x] instead of entity.image.img.[x])
-    // Entity.image returns ImageComponent and not Image so set(texture, x, y) can be used
     var width: Float
         get() = img.width
         set(value) {
@@ -60,12 +56,12 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
     var x: Float
         get() {
             if (width == 0f)
-                throw IllegalStateException("The width can't be 0.")
+                error { "The width can't be 0." }
             return img.x + width / 2f
         }
         set(value) {
             if (width == 0f)
-                throw IllegalStateException("The width can't be 0.")
+                error { "The width can't be 0." }
             img.x = value - width / 2f
         }
 
@@ -73,12 +69,12 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
     var y: Float
         get() {
             if (height == 0f)
-                throw IllegalStateException("The height can't be 0.")
+                error { "The height can't be 0." }
             return img.y + height / 2f
         }
         set(value) {
             if (height == 0f)
-                throw java.lang.IllegalStateException("The height can't be 0.")
+                error { "The height can't be 0." }
             img.y = value - height / 2f
         }
 

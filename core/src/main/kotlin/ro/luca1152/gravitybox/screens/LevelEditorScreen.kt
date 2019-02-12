@@ -38,10 +38,10 @@ import ro.luca1152.gravitybox.components.MapComponent
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
-import ro.luca1152.gravitybox.systems.UpdateGameCameraSystem
 import ro.luca1152.gravitybox.systems.editor.*
 import ro.luca1152.gravitybox.systems.game.ColorSyncSystem
 import ro.luca1152.gravitybox.systems.game.ImageRenderingSystem
+import ro.luca1152.gravitybox.systems.game.UpdateGameCameraSystem
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.ButtonType
 import ro.luca1152.gravitybox.utils.ui.ClickButton
@@ -192,7 +192,7 @@ class LevelEditorScreen(
         }
 
         // Provide own implementation for what happens after Box2D collisions
-        world.setContactListener(WorldContactListener(gameEventSignal))
+        world.setContactListener(WorldContactListener())
 
         // Create entities
         val buttonListener = EntityFactory.createButtonListenerEntity(toggledButton)
@@ -204,7 +204,7 @@ class LevelEditorScreen(
         // Add systems
         engine.run {
             addSystem(ColorSyncSystem())
-            addSystem(ObjectSelectionSystem(buttonListener))
+            addSystem(ObjectSelectionSystem())
             addSystem(ObjectPlacementSystem(buttonListener))
             addSystem(ZoomingSystem(buttonListener))
             addSystem(PanningSystem(buttonListener))

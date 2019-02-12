@@ -31,15 +31,11 @@ import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/**
- * Handles every event related to levels, such as restarting the level.
- */
-class LevelSystem(
-    private var mapEntity: Entity,
-    private val finishEntity: Entity,
-    private val playerEntity: Entity,
-    gameEventSignal: Signal<GameEvent> = Injekt.get()
-) : EntitySystem() {
+/** Handles every event related to levels, such as restarting the level. */
+class LevelSystem(private var mapEntity: Entity,
+                  private val finishEntity: Entity,
+                  private val playerEntity: Entity,
+                  gameEventSignal: Signal<GameEvent> = Injekt.get()) : EntitySystem() {
     private val eventQueue = EventQueue()
 
     init {
@@ -50,19 +46,19 @@ class LevelSystem(
         eventQueue.getEvents().forEach { event ->
             if (event == GameEvent.LEVEL_RESTART) restartLevel()
         }
-        if (mapEntity.map.isFinished && ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(
-                ColorScheme.currentDarkLerpColor
-            )
-        )
+
+        if (levelFinished())
             nextLevel()
+    }
+
+    private fun levelFinished(): Boolean {
+        return mapEntity.map.isFinished && ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(ColorScheme.currentDarkLerpColor)
     }
 
     private fun restartLevel() {
         playerEntity.player.reset(playerEntity.physics.body)
-        for (entity in engine.getEntitiesFor(
-            Family.one(PhysicsComponent::class.java, PlatformComponent::class.java)
-                .exclude(PlayerComponent::class.java, FinishComponent::class.java).get()
-        ))
+        for (entity in engine.getEntitiesFor(Family.one(PhysicsComponent::class.java, PlatformComponent::class.java)
+                .exclude(PlayerComponent::class.java, FinishComponent::class.java).get()))
             engine.removeAndResetEntity(entity)
         mapEntity.map.set(mapEntity.map.levelNumber)
     }
@@ -70,6 +66,10 @@ class LevelSystem(
     private fun nextLevel() {
         mapEntity.map.levelNumber++
         restartLevel()
+        resetEntities()
+    }
+
+    private fun resetEntities() {
         playerEntity.physics.run {
             reset()
             set(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap), playerEntity)

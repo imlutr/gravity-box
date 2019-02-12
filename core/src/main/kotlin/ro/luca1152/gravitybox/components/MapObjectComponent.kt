@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.Pool
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 import ro.luca1152.gravitybox.pixelsToMeters
 
+/** Indicates that the entity is a (Tiled) map object.*/
 class MapObjectComponent : Component, Pool.Poolable {
     var obj: MapObject = MapObject()
     val position = Vector2()
@@ -34,16 +35,12 @@ class MapObjectComponent : Component, Pool.Poolable {
 
     fun set(mapObject: MapObject) {
         this.obj = mapObject
-        width = (obj.properties["width"] as Float).pixelsToMeters
-        height = (obj.properties["height"] as Float).pixelsToMeters
-        position.set(
-            (obj.properties["x"] as Float).pixelsToMeters,
-            (obj.properties["y"] as Float).pixelsToMeters
-        )
+        width = (obj.properties["widthInTiles"] as Float).pixelsToMeters
+        height = (obj.properties["heightInTiles"] as Float).pixelsToMeters
+        position.set((obj.properties["x"] as Float).pixelsToMeters, (obj.properties["y"] as Float).pixelsToMeters)
         worldCenter.set(position.x + width / 2f, position.y + height / 2f)
     }
 
-    /** Resets the component for reuse. */
     override fun reset() {
         position.set(0f, 0f)
         worldCenter.set(0f, 0f)

@@ -37,13 +37,11 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 @Suppress("LibGDXFlushInsideLoop")
-class PhysicsDebugRenderingSystem(
-    private val world: World = Injekt.get(),
-    private val batch: Batch = Injekt.get(),
-    private val shapeRenderer: ShapeRenderer = Injekt.get(),
-    private val gameViewport: GameViewport = Injekt.get(),
-    private val gameCamera: GameCamera = Injekt.get()
-) : EntitySystem() {
+class PhysicsDebugRenderingSystem(private val world: World = Injekt.get(),
+                                  private val batch: Batch = Injekt.get(),
+                                  private val shapeRenderer: ShapeRenderer = Injekt.get(),
+                                  private val gameViewport: GameViewport = Injekt.get(),
+                                  private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
     private val b2DDebugRenderer = Box2DDebugRenderer()
 
     override fun addedToEngine(engine: Engine?) {
@@ -55,14 +53,14 @@ class PhysicsDebugRenderingSystem(
         gameViewport.apply()
         batch.projectionMatrix = gameCamera.combined
         shapeRenderer.projectionMatrix = gameCamera.combined
-        drawDebug()
+        drawDebugPhysics()
     }
 
-    private fun drawDebug() {
+    private fun drawDebugPhysics() {
         b2DDebugRenderer.render(world, gameCamera.combined)
         shapeRenderer.begin()
         drawXAtOrigins()
-        drawPlatforms()
+        drawFullAndEmptyPlatforms()
         shapeRenderer.end()
     }
 
@@ -80,9 +78,9 @@ class PhysicsDebugRenderingSystem(
                     }
                     if (this.tryGet(PlayerComponent) != null)
                         shapeRenderer.x(
-                            image.img.x + image.img.originX,
-                            image.img.y + image.img.originY,
-                            .05f
+                                image.img.x + image.img.originX,
+                                image.img.y + image.img.originY,
+                                .05f
                         )
                 }
 
@@ -90,28 +88,14 @@ class PhysicsDebugRenderingSystem(
         }
     }
 
-    /**
-     * While Box2DDebugRenderer could draw this automatically, this way dynamic platforms
-     * are drawn hollowly, while the static ones are drawn fully.
-     */
-    private fun drawPlatforms() {
+    private fun drawFullAndEmptyPlatforms() {
         shapeRenderer.color = ColorScheme.currentDarkColor
-        for (entity in engine.getEntitiesFor(
-            Family.all(
-                PlatformComponent::class.java,
-                MapObjectComponent::class.java
-            ).get()
-        )) {
+        for (entity in engine.getEntitiesFor(Family.all(PlatformComponent::class.java, MapObjectComponent::class.java).get())) {
             when (entity.platform.isDynamic) {
                 true -> shapeRenderer.set(ShapeRenderer.ShapeType.Line)
                 false -> shapeRenderer.set(ShapeRenderer.ShapeType.Filled)
             }
-            shapeRenderer.rect(
-                entity.mapObject.position.x,
-                entity.mapObject.position.y,
-                entity.mapObject.width,
-                entity.mapObject.height
-            )
+            shapeRenderer.rect(entity.mapObject.position.x, entity.mapObject.position.y, entity.mapObject.width, entity.mapObject.height)
         }
     }
 }

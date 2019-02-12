@@ -288,7 +288,7 @@ class LevelSelectorScreen(
             else -> true
         }
         rightArrow.isVisible = when {
-            horizontalSlidingPane.currentPage.roundToInt() == horizontalSlidingPane.pagesCount -> false
+            horizontalSlidingPane.currentPage.roundToInt() == horizontalSlidingPane.pageCount -> false
             else -> true
         }
     }

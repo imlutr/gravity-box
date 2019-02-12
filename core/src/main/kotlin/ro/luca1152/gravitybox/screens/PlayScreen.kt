@@ -56,7 +56,7 @@ class PlayScreen(
         }
 
         // Provide own implementation for what happens after collisions
-        world.setContactListener(WorldContactListener(gameEventSignal))
+        world.setContactListener(WorldContactListener())
     }
 
     override fun show() {
@@ -74,12 +74,13 @@ class PlayScreen(
             addSystem(PhysicsSyncSystem())
             addSystem(BulletCollisionSystem(playerEntity))
             addSystem(CollisionBoxListener())
-            addSystem(PlatformRemovalSystem(mapEntity.map.tiledMap))
+            addSystem(PlatformRemovalSystem())
             addSystem(PointSystem(mapEntity.map))
             addSystem(AutoRestartSystem())
             addSystem(ColorSchemeSystem(mapEntity))
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem(mapEntity, playerEntity))
+            addSystem(UpdateGameCameraSystem())
             addSystem(MapRenderingSystem(mapEntity))
 //            addSystem(PhysicsDebugRenderingSystem())
             addSystem(ImageRenderingSystem())

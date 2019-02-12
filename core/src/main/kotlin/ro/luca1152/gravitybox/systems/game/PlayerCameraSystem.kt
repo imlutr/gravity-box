@@ -19,48 +19,39 @@ package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import ro.luca1152.gravitybox.components.ImageComponent
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.components.map
-import ro.luca1152.gravitybox.components.utils.tryGet
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.lerp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/**
- * Make the game [gameCamera] follow the [playerEntity].
- */
-class PlayerCameraSystem(
-    private val mapEntity: Entity,
-    private val playerEntity: Entity,
-    private val gameCamera: GameCamera = Injekt.get()
-) : EntitySystem() {
+/** Makes the game [gameCamera] follow the [playerEntity]. */
+class PlayerCameraSystem(private val mapEntity: Entity,
+                         private val playerEntity: Entity,
+                         private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
-        if (playerEntity.tryGet(ImageComponent) != null)
-        // Smoothly move the camera towards the player
-            gameCamera.position.lerp(
+        smoothlyFollowPlayer()
+        keepCameraWithinBounds()
+    }
+
+    private fun smoothlyFollowPlayer() {
+        gameCamera.position.lerp(
                 playerEntity.image.x + playerEntity.image.width / 2f,
                 playerEntity.image.y + playerEntity.image.height / 2f,
                 progress = .15f
-            )
-
-        // Keep the camera within the bounds of the map
-        keepWithinBounds()
-
-        // Apply the changes
-        gameCamera.update()
+        )
     }
 
-    private fun keepWithinBounds(zoom: Float = 1f) {
+    private fun keepCameraWithinBounds(zoom: Float = 1f) {
         var mapLeft = 0f
-        var mapRight = mapEntity.map.width * zoom
-        if (mapEntity.map.width * zoom > gameCamera.viewportWidth * zoom) {
+        var mapRight = mapEntity.map.widthInTiles * zoom
+        if (mapEntity.map.widthInTiles * zoom > gameCamera.viewportWidth * zoom) {
             mapLeft = (-1) * zoom
-            mapRight = (mapEntity.map.width + 1) * zoom
+            mapRight = (mapEntity.map.widthInTiles + 1) * zoom
         }
         val mapBottom = 0 * zoom
-        val mapTop = mapEntity.map.height * zoom
+        val mapTop = mapEntity.map.heightInTiles * zoom
         val cameraHalfWidth = gameCamera.viewportWidth / 2f * zoom
         val cameraHalfHeight = gameCamera.viewportHeight / 2f * zoom
         val cameraLeft = gameCamera.position.x - cameraHalfWidth

@@ -24,15 +24,13 @@ import ro.luca1152.gravitybox.components.utils.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.Reference
 import ro.luca1152.gravitybox.utils.ui.ToggleButton
 
-/** Keeps track of which button is currently toggled (mainly in the LevelEditorScreen) */
+/** Keeps track of which UI button is currently toggled. */
 class ButtonListenerComponent(var toggledButton: Reference<ToggleButton>) : Component, Poolable {
-    /** Resets the component for reuse. */
     override fun reset() {
         toggledButton = Reference()
     }
 
-    companion object :
-        ComponentResolver<ButtonListenerComponent>(ButtonListenerComponent::class.java)
+    companion object : ComponentResolver<ButtonListenerComponent>(ButtonListenerComponent::class.java)
 }
 
 val Entity.buttonListener: ButtonListenerComponent

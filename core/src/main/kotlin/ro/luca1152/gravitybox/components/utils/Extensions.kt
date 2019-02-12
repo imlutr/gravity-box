@@ -26,8 +26,7 @@ import com.badlogic.gdx.utils.Pool.Poolable
  * Returns the component if the has the [componentResolver].
  * Otherwise, it returns null.
  */
-fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? =
-    componentResolver[this]
+fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? = componentResolver[this]
 
 /** Removes the [entity] from the engine and resets each of its components. */
 fun Engine.removeAndResetEntity(entity: Entity) {

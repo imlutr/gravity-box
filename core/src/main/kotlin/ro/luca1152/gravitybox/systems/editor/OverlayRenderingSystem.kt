@@ -22,8 +22,8 @@ import ro.luca1152.gravitybox.utils.kotlin.OverlayStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class OverlayRenderingSystem(private val overlayStage: OverlayStage = Injekt.get()) :
-    EntitySystem() {
+/** Renders every image from the overlay. */
+class OverlayRenderingSystem(private val overlayStage: OverlayStage = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
         overlayStage.act()
         overlayStage.draw()

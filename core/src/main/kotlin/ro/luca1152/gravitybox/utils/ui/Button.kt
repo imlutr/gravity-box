@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ro.luca1152.gravitybox.utils.kotlin.Reference
 
+/** Own extension of the [Button] class. */
 abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
     var icon: Image? = null
     var iconCell: Cell<Image>? = null
@@ -33,12 +34,7 @@ abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
     var upColor: Color = Color.WHITE
     var downColor: Color = Color.WHITE
 
-    /**
-     * Set the colors for when the button is down (clicked) and up.
-     * Affects both the button and the icon inside, if any.
-     * @param [upColor] The color when the button is up. Default is [Color.WHITE].
-     * @param [downColor] The color when the button is down. Default is [Color.WHITE].
-     */
+    /** Set the colors for when the button is down (clicked) and up.     */
     abstract fun setColors(upColor: Color, downColor: Color)
 
     /**
@@ -76,8 +72,8 @@ abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
             // Add the inside texture of the button and set its color to the background color
             addActor(Image(skin.getDrawable("small-button-inside")).apply {
                 setPosition(
-                    this@Button.width / 2f - width / 2f,
-                    this@Button.width / 2f - height / 2f
+                        this@Button.width / 2f - width / 2f,
+                        this@Button.width / 2f - height / 2f
                 )
                 color = ColorScheme.currentLightColor
             })

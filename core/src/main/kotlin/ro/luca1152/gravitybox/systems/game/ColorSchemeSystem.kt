@@ -22,10 +22,7 @@ import com.badlogic.ashley.systems.IntervalSystem
 import ro.luca1152.gravitybox.components.map
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 
-/**
- * Smoothly transition between the colors of the color scheme,
- * mainly the lighter and the darker color scheme.
- */
+/** Transitions to the new color scheme when the hue changes. */
 class ColorSchemeSystem(private val mapEntity: Entity) : IntervalSystem(1 / 70f) {
     override fun updateInterval() {
         if (mapEntity.map.isFinished) {

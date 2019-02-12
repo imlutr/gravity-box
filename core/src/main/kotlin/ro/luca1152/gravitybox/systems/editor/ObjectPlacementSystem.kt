@@ -25,38 +25,36 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.components.buttonListener
 import ro.luca1152.gravitybox.entities.MapObjectFactory
-import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class ObjectPlacementSystem(
-    private val buttonListenerEntity: Entity,
-    private val inputMultiplexer: InputMultiplexer = Injekt.get(),
-    private val gameCamera: GameCamera = Injekt.get()
-) : EntitySystem() {
-    private lateinit var inputAdapter: InputAdapter
+/** Places objects at touch when the place tool is used. */
+class ObjectPlacementSystem(private val buttonListenerEntity: Entity,
+                            private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+    private val inputAdapter = object : InputAdapter() {
+        override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+            if (!placeToolIsUsed())
+                return false
+
+            createPlatformAt(screenX, screenY)
+
+            return true
+        }
+
+        private fun placeToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.PLACE_TOOL_BUTTON
+
+        private fun createPlatformAt(screenX: Int, screenY: Int) {
+            val coords = screenToWorldCoordinates(screenX, screenY)
+            MapObjectFactory.createPlatform(0, MathUtils.floor(coords.x).toFloat() + .5f, MathUtils.floor(coords.y).toFloat() + .5f)
+        }
+    }
 
     override fun addedToEngine(engine: Engine?) {
-        inputAdapter = object : InputAdapter() {
-            override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-                if (!placeToolIsUsed())
-                    return false
-                val coords = screenToWorldCoordinates(screenX, screenY)
-                MapObjectFactory.createPlatform(
-                    0,
-                    MathUtils.floor(coords.x).toFloat() + .5f,
-                    MathUtils.floor(coords.y).toFloat() + .5f
-                )
-                return true
-            }
-        }
         inputMultiplexer.addProcessor(inputAdapter)
     }
 
-    fun placeToolIsUsed() =
-        buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.PLACE_TOOL_BUTTON
 
     override fun removedFromEngine(engine: Engine?) {
         inputMultiplexer.removeProcessor(inputAdapter)

@@ -38,10 +38,8 @@ import uy.kohesive.injekt.api.get
 
 
 object EntityFactory {
-    fun createBullet(
-        playerEntity: Entity, world: World = Injekt.get(),
-        manager: AssetManager = Injekt.get(), engine: PooledEngine = Injekt.get()
-    ) = engine.createEntity().apply label@{
+    fun createBullet(playerEntity: Entity, world: World = Injekt.get(),
+                     manager: AssetManager = Injekt.get(), engine: PooledEngine = Injekt.get()) = engine.createEntity().apply label@{
         // BulletComponent
         add(engine.createComponent(BulletComponent::class.java))
 
@@ -78,11 +76,9 @@ object EntityFactory {
         engine.addEntity(this)
     }!!
 
-    fun createExplosion(
-        position: Vector2,
-        manager: AssetManager = Injekt.get(),
-        engine: PooledEngine = Injekt.get()
-    ) = engine.createEntity().apply {
+    fun createExplosionImage(position: Vector2,
+                             manager: AssetManager = Injekt.get(),
+                             engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         // ExplosionComponent
         add(engine.createComponent(ExplosionComponent::class.java))
 
@@ -92,14 +88,14 @@ object EntityFactory {
         this.image.img.run {
             setScale(1f)
             addAction(
-                Actions.sequence(
-                    Actions.parallel(
-                        Actions.scaleBy(3f, 3f, .25f),
-                        Actions.fadeOut(.25f, Interpolation.exp5)
-                    ),
-                    Actions.run { engine.removeAndResetEntity(this@apply) },
-                    Actions.removeActor()
-                )
+                    Actions.sequence(
+                            Actions.parallel(
+                                    Actions.scaleBy(3f, 3f, .25f),
+                                    Actions.fadeOut(.25f, Interpolation.exp5)
+                            ),
+                            Actions.run { engine.removeAndResetEntity(this@apply) },
+                            Actions.removeActor()
+                    )
             )
         }
 
@@ -111,11 +107,9 @@ object EntityFactory {
         engine.addEntity(this)
     }!!
 
-    fun createFinish(
-        body: Body,
-        manager: AssetManager = Injekt.get(),
-        engine: PooledEngine = Injekt.get()
-    ) = engine.createEntity().apply {
+    fun createFinish(body: Body,
+                     manager: AssetManager = Injekt.get(),
+                     engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         // FinishComponent
         add(engine.createComponent(FinishComponent::class.java))
 
@@ -133,8 +127,8 @@ object EntityFactory {
         this.image.img.run {
             addAction(RepeatAction().apply {
                 action = Actions.sequence(
-                    Actions.fadeOut(1f),
-                    Actions.fadeIn(1f)
+                        Actions.fadeOut(1f),
+                        Actions.fadeIn(1f)
                 )
                 count = RepeatAction.FOREVER
             })
@@ -149,16 +143,14 @@ object EntityFactory {
     }!!
 
     fun createMap(levelNumber: Int, engine: PooledEngine = Injekt.get()) =
-        engine.createEntity().apply {
-            // MapComponent
-            add(engine.createComponent(MapComponent::class.java))
-            this.map.set(levelNumber)
-        }!!
+            engine.createEntity().apply {
+                // MapComponent
+                add(engine.createComponent(MapComponent::class.java))
+                this.map.set(levelNumber)
+            }!!
 
-    fun createPlatforms(
-        platforms: ArrayList<Pair<Body, MapObject>>,
-        engine: PooledEngine = Injekt.get()
-    ) {
+    fun createPlatforms(platforms: ArrayList<Pair<Body, MapObject>>,
+                        engine: PooledEngine = Injekt.get()) {
         for (platform in platforms) {
             engine.createEntity().apply {
                 // MapObjectComponent
@@ -177,11 +169,9 @@ object EntityFactory {
         }
     }
 
-    fun createPlayer(
-        body: Body,
-        manager: AssetManager = Injekt.get(),
-        engine: PooledEngine = Injekt.get()
-    ) = engine.createEntity().apply {
+    fun createPlayer(body: Body,
+                     manager: AssetManager = Injekt.get(),
+                     engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         // PlayerComponent
         add(engine.createComponent(PlayerComponent::class.java))
 
@@ -224,10 +214,8 @@ object EntityFactory {
         }
     }
 
-    fun createButtonListenerEntity(
-        toggledButton: Reference<ToggleButton>,
-        engine: PooledEngine = Injekt.get()
-    ) = engine.createEntity().apply {
+    fun createButtonListenerEntity(toggledButton: Reference<ToggleButton>,
+                                   engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         // ButtonListenerComponent
         add(ButtonListenerComponent(toggledButton))
 

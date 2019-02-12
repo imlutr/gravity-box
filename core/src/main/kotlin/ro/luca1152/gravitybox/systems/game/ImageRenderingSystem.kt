@@ -22,6 +22,7 @@ import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/** Renders every ImageComponent. */
 class ImageRenderingSystem(private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
         gameStage.act()

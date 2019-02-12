@@ -28,18 +28,15 @@ import ro.luca1152.gravitybox.components.utils.ComponentResolver
  * Box2D collisions can't be used because the player doesn't collide with the finish point.
  */
 class CollisionBoxComponent : Component, Poolable {
-    // Initialized with an empty rectangle to avoid nullable type
     val box = Rectangle()
 
     var size = 0f
 
-    /** Initializes the component. */
     fun set(size: Float) {
         this.size = size
         box.setSize(size)
     }
 
-    /** Resets the component for reuse. */
     override fun reset() {
         box.set(0f, 0f, 0f, 0f)
     }

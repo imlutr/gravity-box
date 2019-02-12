@@ -28,20 +28,15 @@ import ro.luca1152.gravitybox.utils.kotlin.bodies
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/**
- * Contains a Box2D body.
- */
+/** Contains a Box2D body. */
 class PhysicsComponent(private val world: World = Injekt.get()) : Component, Poolable {
-    // Initialized with an empty body to avoid nullable type
     var body: Body = world.createBody(BodyDef())
 
-    /** Initializes the component. */
     fun set(body: Body, userData: Entity) {
         this.body = body
         body.userData = userData
     }
 
-    /** Resets the component for reuse. */
     override fun reset() {
         if (world.bodies.contains(body, false))
             world.destroyBody(body)

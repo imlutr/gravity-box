@@ -30,29 +30,18 @@ import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/**
- * Contains the data of a TiledMap, such as its width, height, hue.
- */
+/** Contains a [TiledMap]. */
 class MapComponent(private val manager: AssetManager = Injekt.get()) : Component, Poolable {
-    var tiledMap = TiledMap() // Initialized with an empty TiledMap to avoid nullable type
-
-    // Properties
+    var tiledMap = TiledMap()
     var levelNumber = 0
-    /** The width of the map, in tiles. */
-    var width = 0
-    /** The height of the map, in tiles. */
-    var height = 0
-    /** The hue of the color of the map, in [0, 360] range. */
-    var hue = 180 // The initial hue is 180
-    /** How many points a map has. */
+    var widthInTiles = 0
+    var heightInTiles = 0
+    var hue = 180
     var totalPointsNumber = 0
-    /** The number of points the player collected. */
     var collectedPoints = 0
-    /** True if the player collected every point. */
     val isFinished
         get() = collectedPoints == totalPointsNumber
 
-    /** Initializes the component. */
     fun set(levelNumber: Int) {
         this.levelNumber = levelNumber
 
@@ -64,8 +53,8 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
         EntityFactory.createPoints(MapBodyBuilder.buildPoints(this))
 
         // Update the map properties
-        width = tiledMap.properties.get("width") as Int
-        height = tiledMap.properties.get("height") as Int
+        widthInTiles = tiledMap.properties.get("widthInTiles") as Int
+        heightInTiles = tiledMap.properties.get("heightInTiles") as Int
         hue = tiledMap.properties.get("hue") as Int
 
         // The new map may have a different hue so the color scheme must be updated
@@ -76,7 +65,7 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
     /** Resets the component for reuse. */
     override fun reset() {
         levelNumber = 0
-        width = 0; height = 0; hue = 180
+        widthInTiles = 0; heightInTiles = 0; hue = 180
         totalPointsNumber = 0; collectedPoints = 0
     }
 

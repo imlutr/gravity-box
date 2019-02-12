@@ -22,6 +22,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
+/** Indicates that the entity is a point. */
 class PointComponent : Component, Pool.Poolable {
     var isCollected = false
 

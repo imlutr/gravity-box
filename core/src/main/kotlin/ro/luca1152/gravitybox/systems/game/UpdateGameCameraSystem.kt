@@ -15,13 +15,14 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.systems
+package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.ashley.core.EntitySystem
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/** Applies all the changes made to the [gameCamera]. */
 class UpdateGameCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
         gameCamera.update()

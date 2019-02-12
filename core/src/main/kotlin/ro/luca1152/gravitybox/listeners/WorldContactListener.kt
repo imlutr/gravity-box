@@ -19,35 +19,23 @@ package ro.luca1152.gravitybox.listeners
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.PooledEngine
-import com.badlogic.ashley.signals.Signal
-import com.badlogic.gdx.physics.box2d.*
+import com.badlogic.gdx.physics.box2d.Contact
+import com.badlogic.gdx.physics.box2d.ContactImpulse
+import com.badlogic.gdx.physics.box2d.ContactListener
+import com.badlogic.gdx.physics.box2d.Manifold
 import ro.luca1152.gravitybox.components.BulletComponent
 import ro.luca1152.gravitybox.components.PlatformComponent
 import ro.luca1152.gravitybox.components.bullet
 import ro.luca1152.gravitybox.components.platform
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 import ro.luca1152.gravitybox.components.utils.tryGet
-import ro.luca1152.gravitybox.events.GameEvent
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
-/**
- * Dispatches the appropriate events for every Box2D collisions.
- */
-class WorldContactListener(
-    private val gameEventSignal: Signal<GameEvent>,
-    private val world: World = Injekt.get(),
-    private val engine: PooledEngine = Injekt.get()
-) : ContactListener {
-    /**
-     * Called automatically when two Box2D bodies collide.
-     */
+/** Dispatches the appropriate events for every Box2D collisions. */
+class WorldContactListener : ContactListener {
     override fun beginContact(contact: Contact) {
         val bodyA = contact.fixtureA.body
         val bodyB = contact.fixtureB.body
 
-        // The collision isn't between two entities
         if (bodyA.userData !is Entity || bodyB.userData !is Entity)
             return
 
@@ -71,7 +59,6 @@ class WorldContactListener(
         }
     }
 
-    // --------------- Unused ContactListener functions ---------------
     override fun endContact(contact: Contact?) {}
 
     override fun preSolve(contact: Contact?, oldManifold: Manifold?) {}
@@ -83,13 +70,8 @@ class WorldContactListener(
  * Returns which of [entityA] and [entityB] has the [componentResolver] component.
  * If none, returns null.
  */
-fun <T : Component> findEntity(
-    componentResolver: ComponentResolver<T>,
-    entityA: Entity,
-    entityB: Entity
-) =
-    when {
-        entityA.tryGet(componentResolver) != null -> entityA
-        entityB.tryGet(componentResolver) != null -> entityB
-        else -> null
-    }
+fun <T : Component> findEntity(componentResolver: ComponentResolver<T>, entityA: Entity, entityB: Entity) = when {
+    entityA.tryGet(componentResolver) != null -> entityA
+    entityB.tryGet(componentResolver) != null -> entityB
+    else -> null
+}

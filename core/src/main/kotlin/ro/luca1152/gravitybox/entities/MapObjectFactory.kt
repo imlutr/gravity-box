@@ -26,11 +26,9 @@ import uy.kohesive.injekt.api.get
 
 /** Create map objects using the Entity Component System pattern. */
 object MapObjectFactory {
-    fun createPlatform(
-        id: Int, x: Float, y: Float,
-        engine: PooledEngine = Injekt.get(),
-        manager: AssetManager = Injekt.get()
-    ) = engine.createEntity().apply {
+    fun createPlatform(id: Int, x: Float, y: Float,
+                       engine: PooledEngine = Injekt.get(),
+                       manager: AssetManager = Injekt.get()) = engine.createEntity().apply {
         add(engine.createComponent(IdComponent::class.java)).run {
             this.id.set(id)
         }

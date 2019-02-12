@@ -21,43 +21,32 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.math.Vector3
 import ktx.app.KtxInputAdapter
 import ktx.math.times
 import ro.luca1152.gravitybox.components.BulletComponent
 import ro.luca1152.gravitybox.components.physics
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
-import ro.luca1152.gravitybox.utils.kotlin.GameCamera
+import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/**
- * Trigger actions for every input event handled.
- */
-class GameInputListener(
-    private val playerEntity: Entity,
-    private val gameEventSignal: Signal<GameEvent> = Injekt.get(),
-    private val gameCamera: GameCamera = Injekt.get()
-) : KtxInputAdapter {
-
-    private val worldCoordinates = Vector3()
+/** Triggers actions for every input event handled. */
+class GameInputListener(private val playerEntity: Entity,
+                        private val gameEventSignal: Signal<GameEvent> = Injekt.get()) : KtxInputAdapter {
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        // Translate the screen coordinates to world coordinates
-        worldCoordinates.x = screenX.toFloat(); worldCoordinates.y = screenY.toFloat()
-        gameCamera.unproject(worldCoordinates)
+        val coords = screenToWorldCoordinates(screenX, screenY)
+        createBullet(coords.x, coords.y)
 
-        // Create a bullet with a trajectory towards worldCoordinates
-        createBullet(worldCoordinates.x, worldCoordinates.y)
-
-        return true // The touchDown event was handled
+        return true
     }
 
     override fun keyDown(keycode: Int): Boolean {
-        if (keycode == Input.Keys.R)
+        if (keycode == Input.Keys.R) {
             gameEventSignal.dispatch(GameEvent.LEVEL_RESTART)
-
-        return true // the keyDown event was handled
+            return true
+        }
+        return false
     }
 
     private var velocity = Vector2()

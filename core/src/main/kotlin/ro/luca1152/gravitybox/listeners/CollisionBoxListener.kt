@@ -21,17 +21,12 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
-import com.badlogic.ashley.signals.Signal
 import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
-class CollisionBoxListener(private val gameEventSignal: Signal<GameEvent> = Injekt.get()) :
-    EntitySystem() {
+class CollisionBoxListener : EntitySystem() {
     var entities: ImmutableArray<Entity> = ImmutableArray(Array.of(Entity::class.java))
 
     override fun addedToEngine(engine: Engine) {

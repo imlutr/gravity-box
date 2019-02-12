@@ -24,16 +24,11 @@ import ro.luca1152.gravitybox.utils.kotlin.OverlayCamera
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class OverlayCameraSyncSystem(
-    private val overlayCamera: OverlayCamera = Injekt.get(),
-    private val gameCamera: GameCamera = Injekt.get()
-) : EntitySystem() {
+/** Moves the [overlayCamera] along with the [gameCamera].*/
+class OverlayCameraSyncSystem(private val overlayCamera: OverlayCamera = Injekt.get(),
+                              private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
     override fun update(deltaTime: Float) {
-        overlayCamera.position.set(
-            gameCamera.position.x.metersToPixels,
-            gameCamera.position.y.metersToPixels,
-            0f
-        )
+        overlayCamera.position.set(gameCamera.position.x.metersToPixels, gameCamera.position.y.metersToPixels, 0f)
         overlayCamera.update()
     }
 }

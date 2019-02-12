@@ -44,25 +44,13 @@ class ClickButton(skin: Skin, styleName: String) : Button(skin, styleName) {
 
         // Add listener so when the button is clicked, the colors change.
         addListener(object : ClickListener() {
-            override fun touchDown(
-                event: InputEvent?,
-                x: Float,
-                y: Float,
-                pointer: Int,
-                button: Int
-            ): Boolean {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 color = downColor
                 icon?.color = downColor
                 return true
             }
 
-            override fun touchUp(
-                event: InputEvent?,
-                x: Float,
-                y: Float,
-                pointer: Int,
-                button: Int
-            ) {
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 color = upColor
                 icon?.color = upColor
 

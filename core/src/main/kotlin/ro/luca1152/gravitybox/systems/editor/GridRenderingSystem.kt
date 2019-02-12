@@ -31,10 +31,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 @Suppress("PrivatePropertyName")
-class GridRenderingSystem(
-    private val gameStage: GameStage = Injekt.get(),
-    private val manager: AssetManager = Injekt.get()
-) : EntitySystem() {
+class GridRenderingSystem(private val gameStage: GameStage = Injekt.get(),
+                          private val manager: AssetManager = Injekt.get()) : EntitySystem() {
     private val LINE_COLOR = ColorScheme.currentDarkColor.copy(alpha = .2f)
     private val LINE_WIDTH = 2f.pixelsToMeters
     private lateinit var grid: Group
@@ -42,20 +40,28 @@ class GridRenderingSystem(
     override fun addedToEngine(engine: Engine?) {
         grid = Group().apply {
             gameStage.addActor(this)
-            for (x in 0 until 50) {
-                addActor(Image(manager.get<Texture>("graphics/pixel.png")).apply {
-                    color = LINE_COLOR
-                    setSize(LINE_WIDTH, 50f)
-                    setPosition(x.toFloat(), 0f)
-                })
-            }
-            for (y in 0 until 50) {
-                addActor(Image(manager.get<Texture>("graphics/pixel.png")).apply {
-                    color = LINE_COLOR
-                    setSize(50f, LINE_WIDTH)
-                    setPosition(0f, y.toFloat())
-                })
-            }
+            addActor(createVerticalLines())
+            addActor(createHorizontalLines())
+        }
+    }
+
+    private fun createVerticalLines() = Group().apply {
+        for (x in 0 until 50) {
+            addActor(Image(manager.get<Texture>("graphics/pixel.png")).apply {
+                color = LINE_COLOR
+                setSize(LINE_WIDTH, 50f)
+                setPosition(x.toFloat(), 0f)
+            })
+        }
+    }
+
+    private fun createHorizontalLines() = Group().apply {
+        for (y in 0 until 50) {
+            addActor(Image(manager.get<Texture>("graphics/pixel.png")).apply {
+                color = LINE_COLOR
+                setSize(50f, LINE_WIDTH)
+                setPosition(0f, y.toFloat())
+            })
         }
     }
 

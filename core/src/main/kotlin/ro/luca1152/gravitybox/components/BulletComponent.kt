@@ -22,14 +22,11 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
-/**
- * Indicates that the entity is a bullet.
- */
+/** Indicates that the entity is a bullet. */
 class BulletComponent : Component, Poolable {
     var collidedWithPlatform = false
     var collidedWith = Entity()
 
-    /** Resets the component for reuse. */
     override fun reset() {
         collidedWithPlatform = false
         collidedWith = Entity()

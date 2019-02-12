@@ -37,13 +37,15 @@ import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class OverlayPositioningSystem(
-    skin: Skin = Injekt.get(),
-    private val gameCamera: GameCamera = Injekt.get(),
-    private val overlayCamera: OverlayCamera = Injekt.get(),
-    private val overlayStage: OverlayStage = Injekt.get()
-) : EntitySystem() {
+/** Positions the overlay over the selected platform. */
+class OverlayPositioningSystem(skin: Skin = Injekt.get(),
+                               private val gameCamera: GameCamera = Injekt.get(),
+                               private val overlayCamera: OverlayCamera = Injekt.get(),
+                               private val overlayStage: OverlayStage = Injekt.get()) : EntitySystem() {
     private val overlayGroup = Group()
+    private var selectedObject: Entity? = null
+    private val paddingX = 20f
+    private val paddingY = 50f
     private val leftArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-left-arrow-icon")
         iconCell!!.padLeft(-4f) // The icon doesn't LOOK centered
@@ -77,10 +79,6 @@ class OverlayPositioningSystem(
             }
         })
     }
-    private var selectedObject: Entity? = null
-    private val paddingX = 20f
-    private val paddingY = 50f
-
 
     init {
         overlayGroup.run {
@@ -103,8 +101,16 @@ class OverlayPositioningSystem(
             overlayGroup.isVisible = true
             setUserObjectForButtons(selectedObject)
             updateButtonsPositionInGroup(selectedObject!!.image)
-            updateGroupSize(selectedObject!!.image)
-            repositionGroup(selectedObject!!.image)
+            updateOverlaySize(selectedObject!!.image)
+            repositionOverlay(selectedObject!!.image)
+        }
+    }
+
+    private fun getSelectedObject(): Entity? {
+        val entities = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())
+        return when {
+            entities.size() == 0 -> null
+            else -> entities.first()
         }
     }
 
@@ -119,34 +125,31 @@ class OverlayPositioningSystem(
             x = 0f
             y = 0f
         }
-
         rightArrowButton.run {
-            x =
-                leftArrowButton.width + paddingX + objectImage.width.metersToPixels / gameCamera.zoom + paddingX
+            x = leftArrowButton.width + paddingX + objectImage.width.metersToPixels / gameCamera.zoom + paddingX
             y = 0f
         }
-
         rotateButton.run {
             x = rightArrowButton.x
             y = rightArrowButton.y + rightArrowButton.height + paddingY
         }
     }
 
-    private fun updateGroupSize(image: ImageComponent) {
-        overlayGroup.width =
-            leftArrowButton.width + paddingX + (image.width.metersToPixels / gameCamera.zoom) + paddingX + rightArrowButton.width
-        overlayGroup.height = rightArrowButton.height + paddingY + rotateButton.height
-        overlayGroup.originX = overlayGroup.width / 2f
-        overlayGroup.originY = leftArrowButton.height / 2f
+    private fun updateOverlaySize(image: ImageComponent) {
+        overlayGroup.run {
+            width = leftArrowButton.width + paddingX + (image.width.metersToPixels / gameCamera.zoom) + paddingX + rightArrowButton.width
+            height = rightArrowButton.height + paddingY + rotateButton.height
+            originX = overlayGroup.width / 2f
+            originY = leftArrowButton.height / 2f
+        }
     }
 
     private val coords = Vector3()
-    private fun repositionGroup(objectImage: ImageComponent) {
-        // The coordinates of the center of the object
-        val coords = worldToOverlayCameraCoordinates(objectImage.x, objectImage.y)
+    private fun repositionOverlay(objectImage: ImageComponent) {
+        val objectCoords = worldToOverlayCameraCoordinates(objectImage.x, objectImage.y)
         overlayGroup.run {
-            x = coords.x - overlayGroup.width / 2f
-            y = coords.y - leftArrowButton.height / 2f
+            x = objectCoords.x - overlayGroup.width / 2f
+            y = objectCoords.y - leftArrowButton.height / 2f
         }
     }
 
@@ -167,14 +170,6 @@ class OverlayPositioningSystem(
         overlayCamera.unproject(coords)
 
         return coords
-    }
-
-    private fun getSelectedObject(): Entity? {
-        val entities = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())
-        return when {
-            entities.size() == 0 -> null
-            else -> entities.first()
-        }
     }
 
     override fun removedFromEngine(engine: Engine?) {

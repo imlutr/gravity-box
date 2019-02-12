@@ -34,46 +34,36 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 
-/**
- * Handles what happens when a bullet collides with a platform.
- */
-class BulletCollisionSystem(
-    private val playerEntity: Entity,
-    private val world: World = Injekt.get()
-) :
-    IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
+/** Handles what happens when a bullet collides with a map object. */
+class BulletCollisionSystem(private val playerEntity: Entity,
+                            private val world: World = Injekt.get()) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
     override fun processEntity(bullet: Entity, deltaTime: Float) {
         if (bullet.bullet.collidedWithPlatform) {
-            val playerBody = playerEntity.physics.body
-
-            // Find the first body between the explosion and the player
-            var closestBody: Body? = null
-            world.rayCast({ fixture, _, _, fraction ->
-                closestBody = fixture.body
-                fraction
-            }, bullet.physics.body.worldCenter, playerBody.worldCenter)
-
-            // If there is no obstacle between the explosion and the player, apply the blast
-            if (closestBody == playerBody || closestBody == null)
-                playerBody.applyBlastImpulse(
-                    bullet.physics.body.worldCenter,
-                    playerBody.worldCenter,
-                    150f
-                )
-
-            // Create the explosion image
-            EntityFactory.createExplosion(bullet.physics.body.worldCenter)
-
-            // Remove the bullet
+            EntityFactory.createExplosionImage(bullet.physics.body.worldCenter)
+            applyBlastImpulse(bullet.physics.body)
             engine.removeAndResetEntity(bullet)
         }
     }
 
-    private fun Body.applyBlastImpulse(
-        blastCenter: Vector2,
-        applyPoint: Vector2,
-        blastPower: Float
-    ) {
+    private fun applyBlastImpulse(bullet: Body) {
+        val playerBody = playerEntity.physics.body
+        val closestBody = getClosestBodyToExplosion(bullet.worldCenter, playerBody.worldCenter)
+        if (noObstacleFoundBetween(closestBody, playerBody))
+            playerBody.applyBlastImpulse(bullet.worldCenter, playerBody.worldCenter, 150f)
+    }
+
+    private fun getClosestBodyToExplosion(explosionCenter: Vector2, playerCenter: Vector2): Body? {
+        var closestBody: Body? = null
+        world.rayCast({ fixture, _, _, fraction ->
+            closestBody = fixture.body
+            fraction
+        }, explosionCenter, playerCenter)
+        return closestBody
+    }
+
+    private fun noObstacleFoundBetween(closestBody: Body?, playerBody: Body) = closestBody == playerBody || closestBody == null
+
+    private fun Body.applyBlastImpulse(blastCenter: Vector2, applyPoint: Vector2, blastPower: Float) {
         // Apply only on dynamic bodies so the impulse has an effect
         if (this.type != BodyDef.BodyType.DynamicBody)
             return
@@ -91,9 +81,9 @@ class BulletCollisionSystem(
 
         // Apply the force
         this.applyLinearImpulse(
-            blastDir.nor().scl(impulseMag),
-            playerEntity.physics.body.worldCenter,
-            true
+                blastDir.nor().scl(impulseMag),
+                playerEntity.physics.body.worldCenter,
+                true
         )
     }
 }

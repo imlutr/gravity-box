@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.math.Vector2
 import ro.luca1152.gravitybox.components.PhysicsComponent
 import ro.luca1152.gravitybox.components.PlayerComponent
 import ro.luca1152.gravitybox.components.physics
@@ -28,13 +29,12 @@ import ro.luca1152.gravitybox.events.GameEvent
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/**
- * Restarts the level when the player is off-screen.
- */
-class AutoRestartSystem(private val gameEventSignal: Signal<GameEvent> = Injekt.get()) :
-    IteratingSystem(Family.all(PlayerComponent::class.java, PhysicsComponent::class.java).get()) {
+/** Restarts the level when the player is off-screen. */
+class AutoRestartSystem(private val gameEventSignal: Signal<GameEvent> = Injekt.get()) : IteratingSystem(Family.all(PlayerComponent::class.java, PhysicsComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (entity.physics.body.worldCenter.y < -10f)
+        if (playerIsUnderMap(entity.physics.body.worldCenter))
             gameEventSignal.dispatch(GameEvent.LEVEL_RESTART)
     }
+
+    private fun playerIsUnderMap(playerPosition: Vector2) = playerPosition.y < -10f
 }

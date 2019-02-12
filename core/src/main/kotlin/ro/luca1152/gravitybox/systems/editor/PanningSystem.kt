@@ -30,30 +30,28 @@ import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PanningSystem(
-    private val buttonListenerEntity: Entity,
-    private val gameCamera: GameCamera = Injekt.get(),
-    private val inputMultiplexer: InputMultiplexer = Injekt.get()
-) : EntitySystem() {
-    private lateinit var gestureDetector: GestureDetector
+/** Adds a detector which handles pan gestures. */
+class PanningSystem(private val buttonListenerEntity: Entity,
+                    private val gameCamera: GameCamera = Injekt.get(),
+                    private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+    private val gestureDetector = GestureDetector(object : GestureAdapter() {
+        override fun pan(x: Float, y: Float, deltaX: Float, deltaY: Float): Boolean {
+            if (!moveToolIsUsed())
+                return false
+
+            panCamera(deltaX, deltaY)
+
+            return true
+        }
+
+        private fun moveToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type != ButtonType.MOVE_TOOL_BUTTON
+
+        private fun panCamera(deltaX: Float, deltaY: Float) {
+            gameCamera.position.add(-deltaX.pixelsToMeters * gameCamera.zoom, deltaY.pixelsToMeters * gameCamera.zoom, 0f)
+        }
+    })
 
     override fun addedToEngine(engine: Engine?) {
-        gestureDetector = GestureDetector(object : GestureAdapter() {
-            override fun pan(x: Float, y: Float, deltaX: Float, deltaY: Float): Boolean {
-                // If the move tool isn't in use, then you can't zoom
-                if (buttonListenerEntity.buttonListener.toggledButton.get()?.type != ButtonType.MOVE_TOOL_BUTTON)
-                    return false
-
-                // Pan the camera taking account of zoom
-                gameCamera.position.add(
-                    -deltaX.pixelsToMeters * gameCamera.zoom,
-                    deltaY.pixelsToMeters * gameCamera.zoom,
-                    0f
-                )
-
-                return true
-            }
-        })
         inputMultiplexer.addProcessor(gestureDetector)
     }
 

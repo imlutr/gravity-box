@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.utils.kotlin
 
+/** Allows you to pass by reference. */
 class Reference<T> {
     private var reference: T? = null
 

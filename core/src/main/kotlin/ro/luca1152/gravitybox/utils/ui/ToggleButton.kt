@@ -22,14 +22,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 
-/**
- * A button which instead of automatically toggling of after you click on it,
- * it toggles off only after you click on it again or select another button.
- */
+/** A [Button] which toggles when clicked on. */
 class ToggleButton(skin: Skin, styleName: String) : Button(skin, styleName) {
     private var toggleRunnable: Runnable? = null
 
-    /** If true, then the button's colors becomes [downColor]. */
     var isToggled = false
         set(value) {
             field = value
@@ -52,60 +48,34 @@ class ToggleButton(skin: Skin, styleName: String) : Button(skin, styleName) {
     }
 
     override fun setColors(upColor: Color, downColor: Color) {
-        // Update the variables
         this.upColor = upColor
         this.downColor = downColor
-
-        // Update the colors of the button and icon
         color = upColor
         icon?.color = upColor
-
-        // Add listener so when the button is clicked, the colors change.
         addListener(object : ClickListener() {
-            override fun touchDown(
-                event: InputEvent?,
-                x: Float,
-                y: Float,
-                pointer: Int,
-                button: Int
-            ): Boolean {
-                // Do nothing, because colors change only at touchUp
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                // Return true so touchUp can be called
                 return true
             }
 
-            override fun touchUp(
-                event: InputEvent?,
-                x: Float,
-                y: Float,
-                pointer: Int,
-                button: Int
-            ) {
-                when (isToggled) {
-                    // If the button is toggled on, then do nothing
-                    true -> {
-                    }
-
-                    // The button wasn't toggled off, so it should now be toggled on
-                    false -> {
-                        toggledButton.get()?.isToggled = false
-
-                        isToggled = true
-                        color = downColor
-                        icon?.color = downColor
-                    }
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                if (!isToggled) {
+                    toggleButtonOn()
+                    if (isOver(this@ToggleButton, x, y))
+                        toggleRunnable?.run()
                 }
+            }
 
-                // If the button was toggled ON, then the toggleRunnable should be ran
-                if (isToggled && isOver(this@ToggleButton, x, y))
-                    toggleRunnable?.run()
+            private fun toggleButtonOn() {
+                toggledButton.get()?.isToggled = false
+                isToggled = true
+                color = downColor
+                icon?.color = downColor
             }
         })
     }
 
-    /**
-     * Set what happens after the button is toggled ON.
-     * @param [toggleRunnable] Is ran after toggling on the button, at touchUp().
-     */
+    /** Sets what happens after the button is toggled ON. */
     fun addToggleRunnable(toggleRunnable: Runnable) {
         this.toggleRunnable = toggleRunnable
     }

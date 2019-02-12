@@ -25,9 +25,7 @@ import com.badlogic.gdx.utils.Array
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/**
- * Linearly interpolates to the target values.
- */
+/** Linearly interpolates to the target values. */
 fun Vector3.lerp(targetX: Float, targetY: Float, targetZ: Float = 0f, progress: Float): Vector3 {
     x += progress * (targetX - x)
     y += progress * (targetY - y)
@@ -40,7 +38,7 @@ fun Vector3.lerp(targetX: Float, targetY: Float, targetZ: Float = 0f, progress: 
  */
 fun Color.approxEqualTo(color: Color): Boolean {
     return (Math.abs(this.r - color.r) <= 1 / 255f) && (Math.abs(this.g - color.g) <= 1 / 255f) && (Math.abs(
-        this.b - color.b
+            this.b - color.b
     ) <= 1 / 255f)
 }
 
@@ -62,8 +60,8 @@ val World.bodies: Array<Body>
 
 private var coords = Vector3()
 fun screenToWorldCoordinates(
-    screenX: Int, screenY: Int,
-    gameCamera: GameCamera = Injekt.get()
+        screenX: Int, screenY: Int,
+        gameCamera: GameCamera = Injekt.get()
 ): Vector3 {
     coords.run {
         x = screenX.toFloat()

@@ -23,18 +23,17 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
-/**
- * Indicates that the entity is a player.
- */
+/** Indicates that the entity is a player. */
 class PlayerComponent : Component, Poolable {
     fun reset(body: Body) {
-        body.setTransform(0f, 0f, 0f) // Reset the position
-        body.applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
-        body.setLinearVelocity(0f, 0f)
-        body.angularVelocity = 0f
+        body.run {
+            setTransform(0f, 0f, 0f) // Reset the position
+            applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
+            setLinearVelocity(0f, 0f)
+            angularVelocity = 0f
+        }
     }
 
-    /** Resets the component for reuse. */
     override fun reset() {}
 
     companion object : ComponentResolver<PlayerComponent>(PlayerComponent::class.java)

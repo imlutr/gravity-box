@@ -32,89 +32,70 @@ import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class ZoomingSystem(
-    private val buttonListenerEntity: Entity,
-    private val gameCamera: GameCamera = Injekt.get(),
-    private val inputMultiplexer: InputMultiplexer = Injekt.get()
-) : EntitySystem() {
+/** Adds a detector which handles zoom gestures. */
+class ZoomingSystem(private val buttonListenerEntity: Entity,
+                    private val gameCamera: GameCamera = Injekt.get(),
+                    private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
     companion object {
         private const val DEFAULT_ZOOM = .75f
-        private const val MIN_ZOOM = .3f // The maximum you can zoom in
-        private const val MAX_ZOOM = 1.5f // The maximum you can zoom out
+        private const val MIN_ZOOM = .3f // The maximum you can zoom IN
+        private const val MAX_ZOOM = 1.5f // The maximum you can zoom OUT
     }
 
-    private lateinit var gestureDetector: GestureDetector
-    private lateinit var keyListener: InputAdapter
     private var currentZoom = DEFAULT_ZOOM
     private var isRightBracketPressed = false
     private var isLeftBracketPressed = false
 
-    override fun addedToEngine(engine: Engine?) {
-        gameCamera.zoom = DEFAULT_ZOOM
-
-        // Add gesture listener for zooming
-        gestureDetector = GestureDetector(object : GestureDetector.GestureAdapter() {
-            override fun zoom(initialDistance: Float, distance: Float): Boolean {
-                // If the move tool isn't in use, then you can't zoom
-                if (buttonListenerEntity.buttonListener.toggledButton.get()?.type != ButtonType.MOVE_TOOL_BUTTON)
-                    return false
-
-                // If a finger was lifted then zooming should stop and the currentZoom should be updated, since it is
-                // updated only when zooming stops, and you can't zoom with only one finger.
-                if (!Gdx.input.isTouched(1) || (!Gdx.input.isTouched(0) && Gdx.input.isTouched(1))) {
-                    currentZoom = gameCamera.zoom
-                    return true
-                }
-
-                // Apply the actual zoom
-                gameCamera.zoom = currentZoom * (initialDistance / distance)
-
-                // If true, the zooming gesture gets worse, meaning that there would occasionally be
-                // a sudden pan after you stop zooming, so I just return false.
+    private val gestureDetector = GestureDetector(object : GestureDetector.GestureAdapter() {
+        override fun zoom(initialDistance: Float, distance: Float): Boolean {
+            if (!moveToolIsUsed())
                 return false
-            }
 
-            override fun panStop(x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                // Update the currentZoom here because if it was updated in zoom() you would zoom exponentially.
+            if (liftedOneFinger()) {
                 currentZoom = gameCamera.zoom
-
                 return true
             }
-        })
-        inputMultiplexer.addProcessor(gestureDetector)
 
-        keyListener = object : InputAdapter() {
-            override fun keyDown(keycode: Int): Boolean {
-                when (keycode) {
-                    Input.Keys.RIGHT_BRACKET -> {
-                        isRightBracketPressed = true
-                        return true
-                    }
-                    Input.Keys.LEFT_BRACKET -> {
-                        isLeftBracketPressed = true
-                        return true
-                    }
-                }
-                return false
-            }
+            gameCamera.zoom = currentZoom * (initialDistance / distance)
 
-            override fun keyUp(keycode: Int): Boolean {
-                when (keycode) {
-                    Input.Keys.RIGHT_BRACKET -> {
-                        isRightBracketPressed = false
-                        return true
-                    }
-                    Input.Keys.LEFT_BRACKET -> {
-                        isLeftBracketPressed = false
-                        return true
-                    }
-                    Input.Keys.SPACE -> {
-                        gameCamera.zoom = 1f
-                    }
-                }
-                return false
-            }
+            // If it return true, there would occasionally be a sudden pan after lifting both fingers
+            return false
         }
+
+        override fun panStop(x: Float, y: Float, pointer: Int, button: Int): Boolean {
+            currentZoom = gameCamera.zoom
+            return true
+        }
+
+        private fun moveToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type != ButtonType.MOVE_TOOL_BUTTON
+
+        private fun liftedOneFinger() = !Gdx.input.isTouched(1) || (!Gdx.input.isTouched(0) && Gdx.input.isTouched(1))
+    })
+
+    private val keyListener = object : InputAdapter() {
+        override fun keyDown(keycode: Int): Boolean {
+            when (keycode) {
+                Input.Keys.RIGHT_BRACKET -> isRightBracketPressed = true
+                Input.Keys.LEFT_BRACKET -> isLeftBracketPressed = true
+                else -> return false
+            }
+            return true
+        }
+
+        override fun keyUp(keycode: Int): Boolean {
+            when (keycode) {
+                Input.Keys.RIGHT_BRACKET -> isRightBracketPressed = false
+                Input.Keys.LEFT_BRACKET -> isLeftBracketPressed = false
+                Input.Keys.SPACE -> gameCamera.zoom = 1f
+                else -> return false
+            }
+            return true
+        }
+    }
+
+    override fun addedToEngine(engine: Engine?) {
+        gameCamera.zoom = DEFAULT_ZOOM
+        inputMultiplexer.addProcessor(gestureDetector)
         inputMultiplexer.addProcessor(keyListener)
     }
 

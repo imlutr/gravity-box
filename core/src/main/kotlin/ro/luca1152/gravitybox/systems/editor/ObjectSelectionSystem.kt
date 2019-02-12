@@ -26,34 +26,22 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import ro.luca1152.gravitybox.components.ColorType
 import ro.luca1152.gravitybox.components.SelectedObjectComponent
-import ro.luca1152.gravitybox.components.buttonListener
 import ro.luca1152.gravitybox.components.color
 import ro.luca1152.gravitybox.components.utils.tryGet
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
-import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class ObjectSelectionSystem(
-    private val buttonListenerEntity: Entity,
-    private val gameStage: GameStage = Injekt.get()
-) : EntitySystem() {
+/** Updates the selected object (the entity that has a [SelectedObjectComponent]) when a platform is touched. */
+class ObjectSelectionSystem(private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
     var selectedObject: Entity? = null
 
     private val inputListener = object : InputListener() {
         var touchedActor: Actor? = null
 
-        override fun touchDown(
-            event: InputEvent?,
-            x: Float,
-            y: Float,
-            pointer: Int,
-            button: Int
-        ): Boolean {
+        override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
             touchedActor = gameStage.hit(x, y, true)
-
-            // If the touched actor is not a map object, return
-            if (touchedActor == null || touchedActor?.userObject == null || touchedActor?.userObject !is Entity)
+            if (!isMapObject(touchedActor))
                 return false
 
             // Return true so touchUp() will be called
@@ -71,16 +59,13 @@ class ObjectSelectionSystem(
                     color.colorType = ColorType.DARKER_DARK
                 }
             }
-
         }
+
+        private fun isMapObject(actor: Actor?) = actor == null || actor.userObject == null || actor.userObject !is Entity
     }
 
     override fun addedToEngine(engine: Engine?) {
         gameStage.addListener(inputListener)
-    }
-
-    override fun removedFromEngine(engine: Engine?) {
-        gameStage.removeListener(inputListener)
     }
 
     override fun update(deltaTime: Float) {
@@ -89,12 +74,14 @@ class ObjectSelectionSystem(
 
     private fun findSelectedObject(): Entity? {
         val entities = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())
-        return when {
-            entities.size() == 0 -> null
-            else -> entities.first()
+        return when (entities.size()) {
+            0 -> null
+            1 -> entities.first()
+            else -> error { "More than one selected platform." }
         }
     }
 
-    fun placeToolIsUsed() =
-        buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.PLACE_TOOL_BUTTON
+    override fun removedFromEngine(engine: Engine?) {
+        gameStage.removeListener(inputListener)
+    }
 }

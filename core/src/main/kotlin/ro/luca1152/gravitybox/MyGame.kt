@@ -43,10 +43,13 @@ class MyGame : KtxGame<Screen>() {
     }
 
     override fun create() {
-        // Load the Box2D native library
         Box2D.init()
+        initializeDependencyInjection()
+        addScreens()
+        setScreen<LoadingScreen>()
+    }
 
-        // Initialize Injekt, the dependency injection library
+    private fun initializeDependencyInjection() {
         Injekt.run {
             addSingleton(this@MyGame)
             addSingleton(SpriteBatch() as Batch)
@@ -57,23 +60,22 @@ class MyGame : KtxGame<Screen>() {
             addSingleton(GameStage)
             addSingleton(PooledEngine())
         }
+    }
 
-        // Add screens so setScreen<[Screen]>() can be used
+    /** Adds screens to the [KtxGame] so [setScreen] works.*/
+    private fun addScreens() {
         addScreen(LoadingScreen())
         addScreen(MainMenuScreen())
         addScreen(LevelEditorScreen())
         addScreen(LevelSelectorScreen())
         addScreen(PlayScreen())
-
-        // Randomize the color scheme every time the game starts
-        ColorScheme.hue = MathUtils.random(0, 360).toFloat()
-
-        // Generate the actual colors based on the hue
-        ColorScheme.updateColors()
-
-        // Go to the loading screen
-        setScreen<LoadingScreen>()
     }
+
+    private fun initializeColorScheme() {
+        ColorScheme.hue = MathUtils.random(0, 360).toFloat()
+        ColorScheme.updateColors()
+    }
+
 
     override fun dispose() {
         // Dispose EVERY screen

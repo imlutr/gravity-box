@@ -21,10 +21,9 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
-/** Indicates that the object was selected (mainly in the level editor, when you tap on an object).  */
+/** Indicates that the (map) object was selected.  */
 class SelectedObjectComponent : Component, Poolable {
     override fun reset() {}
 
-    companion object :
-        ComponentResolver<SelectedObjectComponent>(SelectedObjectComponent::class.java)
+    companion object : ComponentResolver<SelectedObjectComponent>(SelectedObjectComponent::class.java)
 }

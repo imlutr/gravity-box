@@ -20,25 +20,20 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.graphics.Color
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 
-/**
- * Sync the [ImageComponent]'s color with the [ColorComponent]'s color.
- * Used mostly to set the color of every object to the respective color from ColorScheme.
- */
-class ColorSyncSystem :
-    IteratingSystem(Family.all(ImageComponent::class.java, ColorComponent::class.java).get()) {
+/** Syncs the [ImageComponent]'s color with the [ColorScheme]. */
+class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, ColorComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         entity.image.color.setWithoutAlpha(
-            when (entity.color.colorType) {
-                ColorType.LIGHT -> ColorScheme.currentLightColor
-                ColorType.DARK -> ColorScheme.currentDarkColor
-                ColorType.DARKER_DARK -> ColorScheme.darkerDarkColor
-                else -> Color.RED
-            }
+                when (entity.color.colorType) {
+                    ColorType.LIGHT -> ColorScheme.currentLightColor
+                    ColorType.DARK -> ColorScheme.currentDarkColor
+                    ColorType.DARKER_DARK -> ColorScheme.darkerDarkColor
+                    else -> throw RuntimeException("${entity.color.colorType} was not initialized.")
+                }
         )
     }
 }
