@@ -221,4 +221,10 @@ object EntityFactory {
 
         engine.addEntity(this)
     }!!
+
+    fun createDebugEntity(engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+        add(DebugComponent())
+
+        engine.addEntity(this)
+    }
 }
