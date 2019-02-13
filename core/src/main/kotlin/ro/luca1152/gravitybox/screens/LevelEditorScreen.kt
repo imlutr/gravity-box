@@ -39,6 +39,7 @@ import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.editor.*
 import ro.luca1152.gravitybox.systems.game.ColorSyncSystem
+import ro.luca1152.gravitybox.systems.game.DebugRenderingSystem
 import ro.luca1152.gravitybox.systems.game.ImageRenderingSystem
 import ro.luca1152.gravitybox.systems.game.UpdateGameCameraSystem
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -205,6 +206,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             addSystem(GridRenderingSystem())
             addSystem(ImageRenderingSystem())
             addSystem(OverlayRenderingSystem())
+            addSystem(DebugRenderingSystem())
         }
     }
 

@@ -22,6 +22,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.math.Polygon
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -42,10 +44,6 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                                private val gameCamera: GameCamera = Injekt.get(),
                                private val overlayCamera: OverlayCamera = Injekt.get(),
                                private val overlayStage: OverlayStage = Injekt.get()) : EntitySystem() {
-    private val overlayGroup = Group()
-    private var selectedObject: Entity? = null
-    private val paddingX = 20f
-    private val paddingY = 50f
     private val leftArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-left-arrow-icon")
         iconCell!!.padLeft(-4f) // The icon doesn't LOOK centered
@@ -53,8 +51,12 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         addClickRunnable(Runnable {
             if (userObject != null) {
                 (userObject as Entity).run {
-                    image.width += .5f
-                    image.x -= .5f
+                    updateObjectPolygon(image.img.x, image.img.y, image.width, image.height, image.img.rotation, -.5f, 0f)
+                    val position = getRectangleCenter(selectedObjectPolygon)
+                    image.run {
+                        width += .5f
+                        setPosition(position.x, position.y)
+                    }
                 }
             }
         })
@@ -64,9 +66,15 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         iconCell!!.padRight(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addClickRunnable(Runnable {
-            if (userObject != null) {
-                (userObject as Entity).image.width += .5f
-            }
+            if (userObject != null)
+                (userObject as Entity).run {
+                    updateObjectPolygon(image.img.x, image.img.y, image.width, image.height, image.img.rotation, 0f, .5f)
+                    val position = getRectangleCenter(selectedObjectPolygon)
+                    image.run {
+                        width += .5f
+                        setPosition(position.x, position.y)
+                    }
+                }
         })
     }
     private val rotateButton: ClickButton = ClickButton(skin, "small-round-button").apply {
@@ -74,11 +82,18 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addClickRunnable(Runnable {
             if (userObject != null) {
-                (userObject as Entity).image.img.rotateBy(5f)
-                overlayGroup.rotateBy(5f)
+                (userObject as Entity).run {
+                    image.img.rotateBy(10f)
+                }
+                overlayGroup.rotateBy(10f)
             }
         })
     }
+    private val overlayGroup = Group()
+    private var selectedObject: Entity? = null
+    private val paddingX = 20f // The padding of the overlay buttons on the X axis
+    private val paddingY = 50f // The padding of the overlay buttons on the Y axis
+    private val selectedObjectPolygon = Polygon().apply { vertices = FloatArray(8) } // A polygon which uses the size and position of the selected object
 
     init {
         overlayGroup.run {
@@ -104,6 +119,36 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             updateOverlaySize(selectedObject!!.image)
             repositionOverlay(selectedObject!!.image)
         }
+    }
+
+    /**
+     * ([x],[y]) the bottom left corner coordinates;
+     * [rotation] in degrees;
+     * [width], [height] the dimensions of the object before any transformations were made to it;
+     * [localLeft], [localRight] the local x of the left and right side of the transformed (e.g. resized) object
+     */
+    private fun updateObjectPolygon(x: Float, y: Float, width: Float, height: Float, rotation: Float = 0f, localLeft: Float = 0f, localRight: Float = 0f) {
+        selectedObjectPolygon.run {
+            setRotation(0f)
+            vertices.run {
+                set(0, localLeft); set(1, 0f) // bottom left corner
+                set(2, width + localRight); set(3, 0f) // bottom right corner
+                set(4, width + localRight); set(5, height) // top right corner
+                set(6, localLeft); set(7, height) // top left corner
+            }
+            setPosition(x, y)
+            setOrigin(width / 2f, height / 2f)
+            setRotation(rotation)
+        }
+    }
+
+    private val tmpVec2 = Vector2()
+    /** Only works for a [Polygon] with 4 vertices. */
+    private fun getRectangleCenter(rectangle: Polygon): Vector2 {
+        rectangle.transformedVertices.run {
+            tmpVec2.set((get(0) + get(4)) / 2f, (get(1) + get(5)) / 2f)
+        }
+        return tmpVec2
     }
 
     private fun getSelectedObject(): Entity? {

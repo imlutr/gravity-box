@@ -38,14 +38,13 @@ class DebugRenderingSystem(private val shapeRenderer: ShapeRenderer = Injekt.get
                            private val gameCamera: GameCamera = Injekt.get()) : IteratingSystem(Family.all(DebugComponent::class.java).get()) {
     init {
         shapeRenderer.setAutoShapeType(true)
-        Gdx.gl20.glLineWidth(10f)
+        Gdx.gl20.glLineWidth(3f)
     }
 
     override fun update(deltaTime: Float) {
         gameViewport.apply()
         shapeRenderer.run {
             projectionMatrix = gameCamera.combined
-            color = Color.RED
             begin()
         }
         super.update(deltaTime)
@@ -64,17 +63,20 @@ class DebugRenderingSystem(private val shapeRenderer: ShapeRenderer = Injekt.get
     }
 
     private fun drawPolygon(polygon: Polygon) {
+        shapeRenderer.color = Color.RED
         shapeRenderer.set(ShapeRenderer.ShapeType.Line)
         shapeRenderer.polygon(polygon.transformedVertices)
     }
 
     private fun drawRectangle(rectangle: Rectangle) {
+        shapeRenderer.color = Color.RED
         shapeRenderer.set(ShapeRenderer.ShapeType.Line)
         shapeRenderer.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height)
     }
 
     private fun drawPoint(point: Vector2) {
-        shapeRenderer.set(ShapeRenderer.ShapeType.Point)
-        shapeRenderer.point(point.x, point.y, 0f)
+        shapeRenderer.color = Color.GREEN
+        shapeRenderer.set(ShapeRenderer.ShapeType.Filled)
+        shapeRenderer.circle(point.x, point.y, .035f, 16)
     }
 }
