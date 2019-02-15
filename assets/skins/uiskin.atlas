@@ -1,19 +1,19 @@
 
 uiskin.png
-size: 1874,527
+size: 2167,529
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 back-icon
   rotate: false
-  xy: 1067, 126
+  xy: 2109, 184
   size: 56, 85
   orig: 56, 85
   offset: 0, 0
   index: -1
 big-button
   rotate: false
-  xy: 1646, 313
+  xy: 1646, 57
   size: 212, 212
   split: 45, 44, 45, 45
   pad: 0, 0, 0, 0
@@ -22,147 +22,154 @@ big-button
   index: -1
 button
   rotate: false
-  xy: 1646, 313
+  xy: 1646, 57
   size: 212, 212
   orig: 212, 212
   offset: 0, 0
   index: -1
 big-empty-star
   rotate: false
-  xy: 1646, 54
+  xy: 1993, 160
   size: 114, 109
   orig: 114, 109
   offset: 0, 0
   index: -1
 empty-star
   rotate: false
-  xy: 1841, 114
+  xy: 1993, 128
   size: 31, 30
   orig: 31, 30
   offset: 0, 0
   index: -1
 erase-icon
   rotate: false
-  xy: 1779, 227
+  xy: 897, 129
   size: 76, 84
   orig: 76, 84
   offset: 0, 0
   index: -1
 full-star
   rotate: false
-  xy: 897, 104
+  xy: 1097, 185
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
   index: -1
 gravity-box
   rotate: false
-  xy: 516, 213
+  xy: 516, 215
   size: 614, 312
   orig: 614, 312
   offset: 0, 0
   index: -1
 heart-icon
   rotate: false
-  xy: 722, 10
+  xy: 516, 2
   size: 71, 63
   orig: 71, 63
   offset: 0, 0
   index: -1
 heart-icon-empty
   rotate: false
-  xy: 982, 136
+  xy: 1860, 46
   size: 83, 75
   orig: 83, 75
   offset: 0, 0
   index: -1
 left-arrow-icon
   rotate: false
-  xy: 1841, 70
+  xy: 1646, 13
   size: 27, 42
   orig: 27, 42
   offset: 0, 0
   index: -1
 move-icon
   rotate: false
-  xy: 1779, 146
+  xy: 1945, 42
   size: 79, 79
   orig: 79, 79
   offset: 0, 0
   index: -1
 nunito-bold-50
   rotate: false
-  xy: 1132, 269
+  xy: 1132, 271
   size: 512, 256
   orig: 512, 256
   offset: 0, 0
   index: -1
 nunito-bold-57
   rotate: false
-  xy: 1132, 11
+  xy: 1646, 271
   size: 512, 256
   orig: 512, 256
   offset: 0, 0
   index: -1
 nunito-bold-65
   rotate: false
-  xy: 2, 13
+  xy: 2, 15
   size: 512, 512
   orig: 512, 512
   offset: 0, 0
   index: -1
+nunito-extra-bold-40
+  rotate: false
+  xy: 1132, 13
+  size: 512, 256
+  orig: 512, 256
+  offset: 0, 0
+  index: -1
 pencil-icon
   rotate: false
-  xy: 1762, 66
+  xy: 2026, 80
   size: 77, 78
   orig: 77, 78
   offset: 0, 0
   index: -1
 platform-icon
   rotate: false
-  xy: 1646, 31
+  xy: 787, 82
   size: 85, 21
   orig: 85, 21
   offset: 0, 0
   index: -1
 play-button-empty
   rotate: false
-  xy: 516, 65
+  xy: 516, 67
   size: 131, 146
   orig: 131, 146
   offset: 0, 0
   index: -1
 play-button-full
   rotate: false
-  xy: 1646, 165
+  xy: 1860, 123
   size: 131, 146
   orig: 131, 146
   offset: 0, 0
   index: -1
 redo-icon
   rotate: false
-  xy: 795, 20
+  xy: 897, 46
   size: 72, 81
   orig: 72, 81
   offset: 0, 0
   index: -1
 right-arrow-icon
   rotate: false
-  xy: 553, 21
+  xy: 589, 2
   size: 27, 42
   orig: 27, 42
   offset: 0, 0
   index: -1
 settings-icon
   rotate: false
-  xy: 897, 134
+  xy: 975, 136
   size: 83, 77
   orig: 83, 77
   offset: 0, 0
   index: -1
 small-button
   rotate: false
-  xy: 649, 75
+  xy: 649, 77
   size: 136, 136
   split: 31, 31, 30, 30
   pad: 0, 0, 0, 0
@@ -171,42 +178,42 @@ small-button
   index: -1
 small-button-inside
   rotate: false
-  xy: 787, 103
+  xy: 787, 105
   size: 108, 108
   orig: 108, 108
   offset: 0, 0
   index: -1
 small-left-arrow-icon
   rotate: false
-  xy: 582, 25
+  xy: 1060, 138
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
   index: -1
 small-right-arrow-icon
   rotate: false
-  xy: 610, 25
+  xy: 1675, 17
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
   index: -1
 small-rotate-icon
   rotate: false
-  xy: 516, 28
+  xy: 1060, 178
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
   index: -1
 small-round-button
   rotate: false
-  xy: 649, 2
+  xy: 2026, 7
   size: 71, 71
   orig: 71, 71
   offset: 0, 0
   index: -1
 undo-icon
   rotate: false
-  xy: 869, 20
+  xy: 971, 46
   size: 72, 81
   orig: 72, 81
   offset: 0, 0

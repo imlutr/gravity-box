@@ -28,6 +28,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
@@ -79,7 +80,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                 val image = (userObject as Entity).image
 
                 val mouseCoords = screenToWorldCoordinates(Gdx.input.x, Gdx.input.y)
-                var newRotation = angle0To360(MathUtils.atan2(mouseCoords.y - image.y, mouseCoords.x - image.x) * MathUtils.radiansToDegrees)
+                var newRotation = toPositiveAngle(MathUtils.atan2(mouseCoords.y - image.y, mouseCoords.x - image.x) * MathUtils.radiansToDegrees)
 
                 // The rotate button is not on the same Ox axis as the map object, which in turn affects the rotation
                 val deltaAngle = getAngleBetween(this@apply, image)
@@ -87,13 +88,26 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                 newRotation -= deltaAngle
                 newRotation = MathUtils.round(newRotation).toFloat()
                 newRotation = newRotation.roundToNearest(45f, 5f)
+                newRotation = toPositiveAngle(newRotation)
 
                 image.img.rotation = newRotation
                 overlayGroup.rotation = newRotation
+
+                updateLabels()
+                rotationLabel.isVisible = true
+            }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                rotationLabel.isVisible = false
             }
         })
     }
+    private val rotationLabel = Label("0", skin, "bold-37", ColorScheme.darkerDarkColor).apply {
+        isVisible = false
+    }
     private val overlayGroup = Group()
+    private val labelsGroup = Group()
     private var selectedObject: Entity? = null
     private val paddingX = 20f // The padding of the overlay buttons on the X axis
     private val paddingY = 50f // The padding of the overlay buttons on the Y axis
@@ -105,10 +119,16 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             addActor(rightArrowButton)
             addActor(rotateButton)
         }
+        labelsGroup.run {
+            addActor(rotationLabel)
+        }
     }
 
     override fun addedToEngine(engine: Engine?) {
-        overlayStage.addActor(overlayGroup)
+        overlayStage.run {
+            addActor(overlayGroup)
+            addActor(labelsGroup)
+        }
     }
 
     override fun update(deltaTime: Float) {
@@ -122,6 +142,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             updateOverlaySize(selectedObject!!.image)
             updateButtonsPositionInGroup(selectedObject!!.image)
             repositionOverlay(selectedObject!!.image)
+            updateLabels()
         }
     }
 
@@ -138,11 +159,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
         val image = linkedMapObject.image
         var newWidth = Math.max(.5f, image.width - deltaX)
-
-        // Round the new width to the closest half if it's the case
-        val fraction = Math.abs(newWidth - closestHalf(newWidth))
-        if (fraction < .1f || fraction > .4f)
-            newWidth = closestHalf(newWidth)
+        newWidth = newWidth.roundToNearest(.5f, .15f)
 
         // Scale the platform correctly, taking in consideration its rotation and the scaling direction
         val localLeft = if (toLeft) -(newWidth - image.width) else 0f
@@ -239,6 +256,15 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         }
     }
 
+    private fun updateLabels() {
+        rotationLabel.run {
+            setText("${overlayGroup.rotation.toInt()}°")
+            val pos = rotateButton.localToStageCoordinates(Vector2(rotateButton.width / 2f, rotateButton.height / 2f))
+            x = pos.x - prefWidth / 2f
+            y = pos.y + rotateButton.height / 2f + paddingY / 2f - height / 2f
+        }
+    }
+
     private fun worldToOverlayCameraCoordinates(x: Float, y: Float): Vector3 {
         coords.run {
             this.x = x
@@ -267,7 +293,11 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         return Math.abs(MathUtils.atan2(buttonCoords.y - objectCenterCoords.y, buttonCoords.x - objectCenterCoords.x) * MathUtils.radiansToDegrees)
     }
 
-    private fun angle0To360(angle: Float) = if (angle < 0) angle + 360f else angle
+    private fun toPositiveAngle(angle: Float): Float {
+        var newAngle = angle % 360f
+        if (newAngle < 0f) newAngle += 360f
+        return newAngle
+    }
 
     override fun removedFromEngine(engine: Engine?) {
         overlayGroup.remove()

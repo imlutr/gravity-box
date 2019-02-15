@@ -2,6 +2,8 @@
   pot: false,
   paddingX: 2,
   paddingY: 2,
+  maxWidth: 4096,
+  maxHeight: 4096,
   filterMin: Linear,
   filterMag: Linear,
 }
