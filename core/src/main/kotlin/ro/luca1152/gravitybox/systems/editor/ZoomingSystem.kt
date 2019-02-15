@@ -67,7 +67,7 @@ class ZoomingSystem(private val buttonListenerEntity: Entity,
             return true
         }
 
-        private fun moveToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type != ButtonType.MOVE_TOOL_BUTTON
+        private fun moveToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
 
         private fun liftedOneFinger() = !Gdx.input.isTouched(1) || (!Gdx.input.isTouched(0) && Gdx.input.isTouched(1))
     })
