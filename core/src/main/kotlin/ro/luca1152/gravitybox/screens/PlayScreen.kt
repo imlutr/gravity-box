@@ -41,9 +41,9 @@ import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(
-    private val engine: PooledEngine = Injekt.get(),
-    private val gameViewport: GameViewport = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get()
+        private val engine: PooledEngine = Injekt.get(),
+        private val gameViewport: GameViewport = Injekt.get(),
+        private val gameStage: GameStage = Injekt.get()
 ) : KtxScreen {
     private val world = World(Vector2(0f, GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
@@ -62,10 +62,8 @@ class PlayScreen(
     override fun show() {
         // Create entities
         val mapEntity = EntityFactory.createMap(LevelSelectorScreen.chosenLevel)
-        val finishEntity =
-            EntityFactory.createFinish(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap))
-        val playerEntity =
-            EntityFactory.createPlayer(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap))
+        val finishEntity = EntityFactory.createFinish(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap))
+        val playerEntity = EntityFactory.createPlayer(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap))
 
         // Add systems
         engine.run {

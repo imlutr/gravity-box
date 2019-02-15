@@ -53,8 +53,8 @@ class MapComponent(private val manager: AssetManager = Injekt.get()) : Component
         EntityFactory.createPoints(MapBodyBuilder.buildPoints(this))
 
         // Update the map properties
-        widthInTiles = tiledMap.properties.get("widthInTiles") as Int
-        heightInTiles = tiledMap.properties.get("heightInTiles") as Int
+        widthInTiles = tiledMap.properties.get("width") as Int
+        heightInTiles = tiledMap.properties.get("height") as Int
         hue = tiledMap.properties.get("hue") as Int
 
         // The new map may have a different hue so the color scheme must be updated

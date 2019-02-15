@@ -35,8 +35,8 @@ class MapObjectComponent : Component, Pool.Poolable {
 
     fun set(mapObject: MapObject) {
         this.obj = mapObject
-        width = (obj.properties["widthInTiles"] as Float).pixelsToMeters
-        height = (obj.properties["heightInTiles"] as Float).pixelsToMeters
+        width = (obj.properties["width"] as Float).pixelsToMeters
+        height = (obj.properties["height"] as Float).pixelsToMeters
         position.set((obj.properties["x"] as Float).pixelsToMeters, (obj.properties["y"] as Float).pixelsToMeters)
         worldCenter.set(position.x + width / 2f, position.y + height / 2f)
     }
