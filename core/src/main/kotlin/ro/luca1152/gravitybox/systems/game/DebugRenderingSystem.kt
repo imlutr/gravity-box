@@ -77,6 +77,6 @@ class DebugRenderingSystem(private val shapeRenderer: ShapeRenderer = Injekt.get
     private fun drawPoint(point: Vector2) {
         shapeRenderer.color = Color.GREEN
         shapeRenderer.set(ShapeRenderer.ShapeType.Filled)
-        shapeRenderer.circle(point.x, point.y, .035f, 16)
+        shapeRenderer.circle(point.x, point.y, .07f, 16)
     }
 }

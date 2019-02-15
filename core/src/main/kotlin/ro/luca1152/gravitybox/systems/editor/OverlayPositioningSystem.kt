@@ -22,18 +22,22 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ro.luca1152.gravitybox.components.ImageComponent
 import ro.luca1152.gravitybox.components.SelectedObjectComponent
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.metersToPixels
-import ro.luca1152.gravitybox.utils.kotlin.GameCamera
-import ro.luca1152.gravitybox.utils.kotlin.OverlayCamera
-import ro.luca1152.gravitybox.utils.kotlin.OverlayStage
+import ro.luca1152.gravitybox.pixelsToMeters
+import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.ui.Button
 import ro.luca1152.gravitybox.utils.ui.ClickButton
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
@@ -48,16 +52,10 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         addIcon("small-left-arrow-icon")
         iconCell!!.padLeft(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        addClickRunnable(Runnable {
-            if (userObject != null) {
-                (userObject as Entity).run {
-                    updateObjectPolygon(image.img.x, image.img.y, image.width, image.height, image.img.rotation, -.5f, 0f)
-                    val position = getRectangleCenter(selectedObjectPolygon)
-                    image.run {
-                        width += .5f
-                        setPosition(position.x, position.y)
-                    }
-                }
+        addListener(object : ClickListener() {
+            override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
+                super.touchDragged(event, x, y, pointer)
+                scaleMapObject(x, y, this@apply, userObject as Entity, toLeft = true)
             }
         })
     }
@@ -65,27 +63,33 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         addIcon("small-right-arrow-icon")
         iconCell!!.padRight(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        addClickRunnable(Runnable {
-            if (userObject != null)
-                (userObject as Entity).run {
-                    updateObjectPolygon(image.img.x, image.img.y, image.width, image.height, image.img.rotation, 0f, .5f)
-                    val position = getRectangleCenter(selectedObjectPolygon)
-                    image.run {
-                        width += .5f
-                        setPosition(position.x, position.y)
-                    }
-                }
+        addListener(object : ClickListener() {
+            override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
+                super.touchDragged(event, x, y, pointer)
+                scaleMapObject(x, y, this@apply, userObject as Entity, toRight = true)
+            }
         })
     }
     private val rotateButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-rotate-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        addClickRunnable(Runnable {
-            if (userObject != null) {
-                (userObject as Entity).run {
-                    image.img.rotateBy(10f)
-                }
-                overlayGroup.rotateBy(10f)
+        addListener(object : DragListener() {
+            override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
+                super.touchDragged(event, x, y, pointer)
+                val image = (userObject as Entity).image
+
+                val mouseCoords = screenToWorldCoordinates(Gdx.input.x, Gdx.input.y)
+                var newRotation = angle0To360(MathUtils.atan2(mouseCoords.y - image.y, mouseCoords.x - image.x) * MathUtils.radiansToDegrees)
+
+                // The rotate button is not on the same Ox axis as the map object, which in turn affects the rotation
+                val deltaAngle = getAngleBetween(this@apply, image)
+
+                newRotation -= deltaAngle
+                newRotation = MathUtils.round(newRotation).toFloat()
+                newRotation = newRotation.roundToNearest(45f, 5f)
+
+                image.img.rotation = newRotation
+                overlayGroup.rotation = newRotation
             }
         })
     }
@@ -115,11 +119,47 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         } else {
             overlayGroup.isVisible = true
             setUserObjectForButtons(selectedObject)
-            updateButtonsPositionInGroup(selectedObject!!.image)
             updateOverlaySize(selectedObject!!.image)
+            updateButtonsPositionInGroup(selectedObject!!.image)
             repositionOverlay(selectedObject!!.image)
         }
     }
+
+    private fun scaleMapObject(xDragged: Float, yDragged: Float, buttonDragged: Button, linkedMapObject: Entity,
+                               toLeft: Boolean = false, toRight: Boolean = false) {
+        if (!toLeft && !toRight)
+            error { "No scale direction given." }
+        if (toLeft && toRight)
+            error { "Can't scale in two directions." }
+
+        // Translate [xDragged] to game coords system and subtract half of the button's width so deltaX is 0 in the button's center
+        var deltaX = (xDragged.pixelsToMeters - (buttonDragged.width / 2f).pixelsToMeters) * gameCamera.zoom
+        if (toRight) deltaX = -deltaX
+
+        val image = linkedMapObject.image
+        var newWidth = Math.max(.5f, image.width - deltaX)
+
+        // Round the new width to the closest half if it's the case
+        val fraction = Math.abs(newWidth - closestHalf(newWidth))
+        if (fraction < .1f || fraction > .4f)
+            newWidth = closestHalf(newWidth)
+
+        // Scale the platform correctly, taking in consideration its rotation and the scaling direction
+        val localLeft = if (toLeft) -(newWidth - image.width) else 0f
+        val localRight = if (toRight) (newWidth - image.width) else 0f
+        updateObjectPolygon(image.img.x, image.img.y, image.width, image.height, image.img.rotation, localLeft, localRight)
+        val position = getRectangleCenter(selectedObjectPolygon)
+        image.width = newWidth
+        image.setPosition(position.x, position.y)
+
+        // In case a listener's touchDragged calls this function after this system is done updating, then these functions
+        // wouldn't get called, which would result in a slight jitter movement
+        updateButtonsPositionInGroup(image)
+        updateOverlaySize(image)
+        repositionOverlay(image)
+    }
+
+    private fun closestHalf(x: Float) = MathUtils.round(2 * x) / 2f
 
     /**
      * ([x],[y]) the bottom left corner coordinates;
@@ -186,6 +226,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             height = rightArrowButton.height + paddingY + rotateButton.height
             originX = overlayGroup.width / 2f
             originY = leftArrowButton.height / 2f
+            rotation = image.img.rotation
         }
     }
 
@@ -216,6 +257,17 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
         return coords
     }
+
+    private fun getAngleBetween(rotateButton: Button, objectImage: ImageComponent): Float {
+        val oldRotation = overlayGroup.rotation
+        overlayGroup.rotation = 0f // Makes calculating the angle easier
+        val buttonCoords = rotateButton.localToScreenCoordinates(Vector2(0f, 0f))
+        val objectCenterCoords = objectImage.img.localToScreenCoordinates(Vector2(objectImage.width / 2f, objectImage.height / 2f))
+        overlayGroup.rotation = oldRotation
+        return Math.abs(MathUtils.atan2(buttonCoords.y - objectCenterCoords.y, buttonCoords.x - objectCenterCoords.x) * MathUtils.radiansToDegrees)
+    }
+
+    private fun angle0To360(angle: Float) = if (angle < 0) angle + 360f else angle
 
     override fun removedFromEngine(engine: Engine?) {
         overlayGroup.remove()

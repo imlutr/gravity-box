@@ -18,6 +18,7 @@
 package ro.luca1152.gravitybox.utils.kotlin
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
@@ -59,14 +60,16 @@ val World.bodies: Array<Body>
     }
 
 private var coords = Vector3()
-fun screenToWorldCoordinates(
-        screenX: Int, screenY: Int,
-        gameCamera: GameCamera = Injekt.get()
-): Vector3 {
+fun screenToWorldCoordinates(screenX: Int, screenY: Int, gameCamera: GameCamera = Injekt.get()): Vector3 {
     coords.run {
         x = screenX.toFloat()
         y = screenY.toFloat()
     }
     gameCamera.unproject(coords)
     return coords
+}
+
+fun Float.roundToNearest(x: Float, threshold: Float): Float {
+    val roundedValue = MathUtils.ceil(this / x) * x
+    return if (Math.abs(this - roundedValue) < threshold) roundedValue else this
 }
