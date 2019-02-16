@@ -203,6 +203,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             addSystem(UpdateGameCameraSystem())
             addSystem(OverlayCameraSyncSystem())
             addSystem(OverlayPositioningSystem())
+            addSystem(TouchableBoundsSyncSystem())
             addSystem(GridRenderingSystem())
             addSystem(ImageRenderingSystem())
             addSystem(OverlayRenderingSystem())

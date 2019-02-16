@@ -37,6 +37,9 @@ object MapObjectFactory {
             image.set(manager.get<Texture>("graphics/pixel.png"), x, y, 1f, .25f)
             image.img.userObject = this
         }
+        add(engine.createComponent(TouchableBoundsComponent::class.java)).run {
+            touchableBounds.set(this, 0f, 1f - .25f)
+        }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)
         }
