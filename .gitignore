@@ -30,7 +30,9 @@ www-test/
 .gwt-tmp/
 
 ## IntelliJ, Android Studio:
-.idea/
+.idea/*
+!.idea/runConfigurations
+!.idea/copyright
 *.ipr
 *.iws
 *.iml
