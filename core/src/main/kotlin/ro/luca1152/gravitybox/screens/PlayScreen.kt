@@ -43,8 +43,7 @@ import uy.kohesive.injekt.api.get
 class PlayScreen(
         private val engine: PooledEngine = Injekt.get(),
         private val gameViewport: GameViewport = Injekt.get(),
-        private val gameStage: GameStage = Injekt.get()
-) : KtxScreen {
+        private val gameStage: GameStage = Injekt.get()) : KtxScreen {
     private val world = World(Vector2(0f, GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
 

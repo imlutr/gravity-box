@@ -23,7 +23,7 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
-import ro.luca1152.gravitybox.components.buttonListener
+import ro.luca1152.gravitybox.components.input
 import ro.luca1152.gravitybox.entities.MapObjectFactory
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.ButtonType
@@ -43,7 +43,7 @@ class ObjectPlacementSystem(private val buttonListenerEntity: Entity,
             return true
         }
 
-        private fun placeToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.PLACE_TOOL_BUTTON
+        private fun placeToolIsUsed() = buttonListenerEntity.input.toggledButton.get()?.type == ButtonType.PLACE_TOOL_BUTTON
 
         private fun createPlatformAt(screenX: Int, screenY: Int) {
             val coords = screenToWorldCoordinates(screenX, screenY)

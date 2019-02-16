@@ -25,13 +25,23 @@ import ro.luca1152.gravitybox.utils.kotlin.Reference
 import ro.luca1152.gravitybox.utils.ui.ToggleButton
 
 /** Keeps track of which UI button is currently toggled. */
-class ButtonListenerComponent(var toggledButton: Reference<ToggleButton>) : Component, Poolable {
-    override fun reset() {
-        toggledButton = Reference()
+class InputComponent : Component, Poolable {
+    var toggledButton = Reference<ToggleButton>()
+    var isPanning = false
+    var isZooming = false
+
+    fun set(toggledButton: Reference<ToggleButton>) {
+        this.toggledButton = toggledButton
     }
 
-    companion object : ComponentResolver<ButtonListenerComponent>(ButtonListenerComponent::class.java)
+    override fun reset() {
+        toggledButton = Reference()
+        isPanning = false
+        isZooming = false
+    }
+
+    companion object : ComponentResolver<InputComponent>(InputComponent::class.java)
 }
 
-val Entity.buttonListener: ButtonListenerComponent
-    get() = ButtonListenerComponent[this]
+val Entity.input: InputComponent
+    get() = InputComponent[this]

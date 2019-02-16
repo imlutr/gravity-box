@@ -35,3 +35,7 @@ object GameStage : Stage(GameViewport, Injekt.get())
 object OverlayCamera : OrthographicCamera()
 object OverlayViewport : ExtendViewport(720f, 1280f, OverlayCamera)
 object OverlayStage : Stage(OverlayViewport, Injekt.get())
+
+object UICamera : OrthographicCamera()
+object UIViewport : ExtendViewport(720f, 1280f, UICamera)
+object UIStage : Stage(UIViewport, Injekt.get())

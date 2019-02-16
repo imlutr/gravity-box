@@ -26,14 +26,14 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
-import ro.luca1152.gravitybox.components.buttonListener
+import ro.luca1152.gravitybox.components.input
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Adds a detector which handles zoom gestures. */
-class ZoomingSystem(private val buttonListenerEntity: Entity,
+class ZoomingSystem(private val inputEntity: Entity,
                     private val gameCamera: GameCamera = Injekt.get(),
                     private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
     companion object {
@@ -56,6 +56,7 @@ class ZoomingSystem(private val buttonListenerEntity: Entity,
                 return true
             }
 
+            inputEntity.input.isZooming = true
             gameCamera.zoom = currentZoom * (initialDistance / distance)
 
             // If it return true, there would occasionally be a sudden pan after lifting both fingers
@@ -63,11 +64,13 @@ class ZoomingSystem(private val buttonListenerEntity: Entity,
         }
 
         override fun panStop(x: Float, y: Float, pointer: Int, button: Int): Boolean {
+            inputEntity.input.isPanning = false
+            inputEntity.input.isZooming = false
             currentZoom = gameCamera.zoom
             return true
         }
 
-        private fun moveToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
+        private fun moveToolIsUsed() = inputEntity.input.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
 
         private fun liftedOneFinger() = !Gdx.input.isTouched(1) || (!Gdx.input.isTouched(0) && Gdx.input.isTouched(1))
     })

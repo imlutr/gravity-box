@@ -21,13 +21,14 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
+import com.badlogic.gdx.InputAdapter
+import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import ro.luca1152.gravitybox.components.ColorType
 import ro.luca1152.gravitybox.components.SelectedObjectComponent
-import ro.luca1152.gravitybox.components.buttonListener
 import ro.luca1152.gravitybox.components.color
+import ro.luca1152.gravitybox.components.input
 import ro.luca1152.gravitybox.components.utils.tryGet
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.ui.ButtonType
@@ -35,45 +36,78 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Updates the selected object (the entity that has a [SelectedObjectComponent]) when a platform is touched. */
-class ObjectSelectionSystem(private val buttonListenerEntity: Entity,
+class ObjectSelectionSystem(private val inputEntity: Entity,
+                            private val inputMultiplexer: InputMultiplexer = Injekt.get(),
                             private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
     var selectedObject: Entity? = null
 
-    private val inputListener = object : InputListener() {
+    private val inputAdapter = object : InputAdapter() {
         var touchedActor: Actor? = null
 
-        override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+        override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+            if (inputEntity.input.isPanning || inputEntity.input.isZooming) {
+                return false
+            }
+
             if (!moveToolIsSelected())
                 return false
 
-            touchedActor = gameStage.hit(x, y, true)
-            if (!isMapObject(touchedActor))
+            val stageCoords = gameStage.screenToStageCoordinates(Vector2(screenX.toFloat(), screenY.toFloat()))
+            touchedActor = gameStage.hit(stageCoords.x, stageCoords.y, true)
+
+            if (touchedActor == null)
                 return false
 
             // Return true so touchUp() will be called
             return true
         }
 
-        private fun moveToolIsSelected() = buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
+        private fun moveToolIsSelected() = inputEntity.input.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
 
-        override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+        override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+            if (inputEntity.input.isPanning || inputEntity.input.isZooming) {
+                return false
+            }
+
+            if (!isMapObject(touchedActor)) {
+                if (selectedObject != null)
+                    unselectObject(selectedObject!!)
+                return true
+            }
             val entity = (touchedActor!!.userObject) as Entity
+
+            if (selectedObject != null && entity != selectedObject)
+                unselectObject(selectedObject!!)
+
             entity.run {
-                if (tryGet(SelectedObjectComponent) != null) {
-                    remove(SelectedObjectComponent::class.java)
-                    color.colorType = ColorType.DARK
-                } else {
-                    add(engine.createComponent(SelectedObjectComponent::class.java))
-                    color.colorType = ColorType.DARKER_DARK
+                when (tryGet(SelectedObjectComponent) != null) {
+                    true -> unselectObject(entity)
+                    false -> selectObject(entity)
                 }
             }
+
+            return true
         }
 
         private fun isMapObject(actor: Actor?) = (actor != null && actor.userObject != null && actor.userObject is Entity)
     }
 
     override fun addedToEngine(engine: Engine?) {
-        gameStage.addListener(inputListener)
+        inputMultiplexer.addProcessor(inputAdapter)
+    }
+
+    private fun selectObject(selectedObject: Entity) {
+        selectedObject.run {
+            add(engine.createComponent(SelectedObjectComponent::class.java))
+            color.colorType = ColorType.DARKER_DARK
+        }
+    }
+
+    private fun unselectObject(selectedObject: Entity) {
+        selectedObject.run {
+            remove(SelectedObjectComponent::class.java)
+            color.colorType = ColorType.DARK
+        }
     }
 
     override fun update(deltaTime: Float) {
@@ -90,6 +124,6 @@ class ObjectSelectionSystem(private val buttonListenerEntity: Entity,
     }
 
     override fun removedFromEngine(engine: Engine?) {
-        gameStage.removeListener(inputListener)
+        inputMultiplexer.removeProcessor(inputAdapter)
     }
 }

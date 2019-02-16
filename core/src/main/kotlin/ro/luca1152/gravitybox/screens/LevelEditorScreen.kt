@@ -22,14 +22,11 @@ import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
@@ -52,13 +49,12 @@ import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
 class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
-                        private val batch: Batch = Injekt.get(),
                         private val manager: AssetManager = Injekt.get(),
                         private val gameStage: GameStage = Injekt.get(),
-                        private val gameViewport: GameViewport = Injekt.get()) : KtxScreen {
+                        private val gameViewport: GameViewport = Injekt.get(),
+                        private val uiStage: UIStage = Injekt.get()) : KtxScreen {
     // UI
     private lateinit var skin: Skin
-    private lateinit var uiStage: Stage
     private lateinit var root: Table
     private lateinit var toggledButton: Reference<ToggleButton>
 
@@ -80,11 +76,13 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private fun createUI() {
         // Initialize lateinit vars
         skin = manager.get<Skin>("skins/uiskin.json")
-        uiStage = Stage(ExtendViewport(720f, 1280f), batch)
         toggledButton = Reference()
         inputMultiplexer = InputMultiplexer()
 
         // Add UI widgets
+        uiStage.actors.forEach {
+            it.remove()
+        }
         root = createRootTable().apply {
             uiStage.addActor(this)
             add(createLeftColumn()).growY().expandX().left()
@@ -187,19 +185,19 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         world.setContactListener(WorldContactListener())
 
         // Create entities
-        val buttonListener = EntityFactory.createButtonListenerEntity(toggledButton)
+        val buttonListener = EntityFactory.createInputEntity(toggledButton)
 
         // Handle Input
-        inputMultiplexer.addProcessor(gameStage)
         inputMultiplexer.addProcessor(Injekt.get<OverlayStage>())
+        inputMultiplexer.addProcessor(gameStage)
 
         // Add systems
         engine.run {
             addSystem(ColorSyncSystem())
-            addSystem(ObjectSelectionSystem(buttonListener))
             addSystem(ObjectPlacementSystem(buttonListener))
             addSystem(ZoomingSystem(buttonListener))
             addSystem(PanningSystem(buttonListener))
+            addSystem(ObjectSelectionSystem(buttonListener))
             addSystem(UpdateGameCameraSystem())
             addSystem(OverlayCameraSyncSystem())
             addSystem(OverlayPositioningSystem())
@@ -228,8 +226,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     }
 
     override fun dispose() {
-        if (::uiStage.isInitialized)
-            uiStage.dispose()
+        uiStage.dispose()
         gameStage.dispose()
     }
 }

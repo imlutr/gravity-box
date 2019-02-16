@@ -23,7 +23,7 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter
-import ro.luca1152.gravitybox.components.buttonListener
+import ro.luca1152.gravitybox.components.input
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.ui.ButtonType
@@ -31,7 +31,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Adds a detector which handles pan gestures. */
-class PanningSystem(private val buttonListenerEntity: Entity,
+class PanningSystem(private val inputEntity: Entity,
                     private val gameCamera: GameCamera = Injekt.get(),
                     private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
     private val gestureDetector = GestureDetector(object : GestureAdapter() {
@@ -39,12 +39,13 @@ class PanningSystem(private val buttonListenerEntity: Entity,
             if (!moveToolIsUsed())
                 return false
 
+            inputEntity.input.isPanning = true
             panCamera(deltaX, deltaY)
 
             return true
         }
 
-        private fun moveToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
+        private fun moveToolIsUsed() = inputEntity.input.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
 
         private fun panCamera(deltaX: Float, deltaY: Float) {
             gameCamera.position.add(-deltaX.pixelsToMeters * gameCamera.zoom, deltaY.pixelsToMeters * gameCamera.zoom, 0f)
@@ -53,6 +54,10 @@ class PanningSystem(private val buttonListenerEntity: Entity,
 
     override fun addedToEngine(engine: Engine?) {
         inputMultiplexer.addProcessor(gestureDetector)
+    }
+
+    override fun update(deltaTime: Float) {
+//        println(inputEntity.input.isPanning)
     }
 
     override fun removedFromEngine(engine: Engine?) {

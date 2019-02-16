@@ -214,10 +214,12 @@ object EntityFactory {
         }
     }
 
-    fun createButtonListenerEntity(toggledButton: Reference<ToggleButton>,
-                                   engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
-        // ButtonListenerComponent
-        add(ButtonListenerComponent(toggledButton))
+    fun createInputEntity(toggledButton: Reference<ToggleButton>,
+                          engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+        // InputComponent
+        add(engine.createComponent(InputComponent::class.java)).run {
+            input.set(toggledButton)
+        }
 
         engine.addEntity(this)
     }!!
