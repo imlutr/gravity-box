@@ -37,18 +37,11 @@ fun Vector3.lerp(targetX: Float, targetY: Float, targetZ: Float = 0f, progress: 
     return this
 }
 
-/**
- * Used to compare a color that was linearly interpolated using lerp, resulting in imprecision.
- */
+/** Used to compare a color that was linearly interpolated using lerp, resulting in imprecision. */
 fun Color.approxEqualTo(color: Color): Boolean {
-    return (Math.abs(this.r - color.r) <= 1 / 255f) && (Math.abs(this.g - color.g) <= 1 / 255f) && (Math.abs(
-            this.b - color.b
-    ) <= 1 / 255f)
+    return (Math.abs(this.r - color.r) <= 1 / 255f) && (Math.abs(this.g - color.g) <= 1 / 255f) && (Math.abs(this.b - color.b) <= 1 / 255f)
 }
 
-/**
- * Sets [this] color to [color] without copying the alpha value to keep its transparency.
- */
 fun Color.setWithoutAlpha(color: Color) {
     this.r = color.r
     this.g = color.g
@@ -62,12 +55,8 @@ val World.bodies: Array<Body>
         return bodyArray
     }
 
-private var coords = Vector3()
 fun screenToWorldCoordinates(screenX: Int, screenY: Int, gameCamera: GameCamera = Injekt.get()): Vector3 {
-    coords.run {
-        x = screenX.toFloat()
-        y = screenY.toFloat()
-    }
+    val coords = Vector3(screenX.toFloat(), screenY.toFloat(), 0f)
     gameCamera.unproject(coords)
     return coords
 }
@@ -77,12 +66,9 @@ fun Stage.hitScreen(screenX: Int, screenY: Int, touchable: Boolean = true): Acto
     return hit(stageCoords.x, stageCoords.y, touchable)
 }
 
-/**
- * Rounding to the nearest 10 starting from 0:
- */
-fun Float.roundToNearest(x: Float, threshold: Float, startingValue: Float = 0f): Float {
-    val valueRoundedDown = MathUtils.floor(this / x) * x
-    val valueRoundedUp = MathUtils.ceil(this / x) * x
+fun Float.roundToNearest(nearest: Float, threshold: Float, startingValue: Float = 0f): Float {
+    val valueRoundedDown = MathUtils.floor(this / nearest) * nearest
+    val valueRoundedUp = MathUtils.ceil(this / nearest) * nearest
     return when {
         Math.abs((this + startingValue) - valueRoundedDown) < threshold -> valueRoundedDown - startingValue
         Math.abs((this + startingValue) - valueRoundedUp) < threshold -> valueRoundedUp - startingValue

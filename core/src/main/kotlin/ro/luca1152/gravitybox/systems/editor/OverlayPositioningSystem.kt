@@ -22,23 +22,21 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ktx.actors.plus
-import ktx.math.minus
-import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.entities.EntityFactory
+import ro.luca1152.gravitybox.components.ImageComponent
+import ro.luca1152.gravitybox.components.SelectedObjectComponent
+import ro.luca1152.gravitybox.components.image
+import ro.luca1152.gravitybox.components.selectedObject
 import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -61,7 +59,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         addListener(object : ClickListener() {
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
-                scaleMapObject(x, y, this@apply, userObject as Entity, toLeft = true)
+                scaleMapObject(x, y, this@apply, selectedMapObject!!, toLeft = true)
             }
         })
     }
@@ -72,7 +70,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         addListener(object : ClickListener() {
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
-                scaleMapObject(x, y, this@apply, userObject as Entity, toRight = true)
+                scaleMapObject(x, y, this@apply, selectedMapObject!!, toRight = true)
             }
         })
     }
@@ -80,9 +78,14 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         addIcon("small-rotate-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addListener(object : DragListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                rotationLabel.isVisible = true
+                return true
+            }
+
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
-                val image = (userObject as Entity).image
+                val image = selectedMapObject!!.image
 
                 val mouseCoords = screenToWorldCoordinates(Gdx.input.x, Gdx.input.y)
                 var newRotation = toPositiveAngle(MathUtils.atan2(mouseCoords.y - image.y, mouseCoords.x - image.x) * MathUtils.radiansToDegrees)
@@ -96,11 +99,10 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                 newRotation = toPositiveAngle(newRotation)
 
                 image.img.rotation = newRotation
-                overlayGroupLv2.rotation = newRotation
+                overlayLevel1.rotation = newRotation
                 this@apply.icon!!.rotation = 360f - newRotation
 
-                updateLabels()
-                rotationLabel.isVisible = true
+                updateRotationLabel()
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -109,12 +111,21 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             }
 
             private fun getAngleBetween(rotateButton: Button, objectImage: ImageComponent): Float {
-                val oldRotation = overlayGroupLv2.rotation
-                overlayGroupLv2.rotation = 0f // Makes calculating the angle easier
+                val oldRotation = overlayLevel1.rotation
+                overlayLevel1.rotation = 0f // Makes calculating the angle easier
                 val buttonCoords = rotateButton.localToScreenCoordinates(Vector2(0f, 0f))
                 val objectCenterCoords = objectImage.img.localToScreenCoordinates(Vector2(objectImage.width / 2f, objectImage.height / 2f))
-                overlayGroupLv2.rotation = oldRotation
+                overlayLevel1.rotation = oldRotation
                 return Math.abs(MathUtils.atan2(buttonCoords.y - objectCenterCoords.y, buttonCoords.x - objectCenterCoords.x) * MathUtils.radiansToDegrees)
+            }
+
+            private fun updateRotationLabel() {
+                rotationLabel.run {
+                    setText("${overlayLevel1.rotation.toInt()}°")
+                    val pos = this@apply.localToStageCoordinates(Vector2(this@apply.width / 2f, this@apply.height / 2f))
+                    x = pos.x - prefWidth / 2f
+                    y = pos.y + this@apply.height / 2f + buttonsPaddingY / 2f - height / 2f
+                }
             }
         })
     }
@@ -126,7 +137,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addListener(object : DragListener() {
             private val image
-                get() = (selectedObject as Entity).image
+                get() = (selectedMapObject as Entity).image
             private var initialImageX = 0f
             private var initialMouseXInWorldCoords = 0f
 
@@ -142,10 +153,9 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
                 val mouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
                 image.x = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
-                image.x = image.x.roundToNearest(.5f, .1f)
+                image.x = image.x.roundToNearest(.5f, .15f)
 
                 repositionOverlay()
-                updateLabels()
             }
         })
     }
@@ -154,7 +164,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addListener(object : DragListener() {
             private val image
-                get() = (selectedObject as Entity).image
+                get() = (selectedMapObject as Entity).image
             private var initialImageY = 0f
             private var initialMouseYInWorldCoords = 0f
 
@@ -170,90 +180,58 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
                 image.y = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
-                image.y = image.y.roundToNearest(1f, .2f, .5f)
+                image.y = image.y.roundToNearest(.5f, .15f, 0f)
 
                 repositionOverlay()
-                updateLabels()
             }
         })
     }
 
-    /** The [Entity] that contains the selected map object. */
-    private var selectedObject: Entity? = null
-    /** A polygon that has the same size and position as the [selectedObject]. */
-    private val selectedObjectPolygon = Polygon().apply { vertices = FloatArray(8) }
-
-    private val labelsGroup = Group().apply { this + rotationLabel }
-
-    /** The first level of the overlay (shown when a map object is touched once). */
-    private val overlayGroupLv1 = Group().apply { this + horizontalPositionButton + verticalPositionButton }
-
-    /** The second level of the overlay (shown when a map object is touched twice). */
-    private val overlayGroupLv2 = Group().apply { this + leftArrowButton + rightArrowButton + rotateButton }
-    /** The padding of the overlay buttons on the X axis. */
-    private val paddingX = 20f
-    /** The padding of the overlay buttons on the Y axis. */
-    private val paddingY = 50f
+    private val selectedMapObject: Entity?
+        get() = getSelectedObject()
+    private val selectedMapObjectPolygon = Polygon().apply { vertices = FloatArray(8) }
+    private val labels = Group().apply { this + rotationLabel }
+    private val overlayLevel1 = Group().apply { this + horizontalPositionButton + verticalPositionButton + rotateButton }
+    private val overlayLevel2 = Group().apply { this + leftArrowButton + rightArrowButton }
+    private val buttonsPaddingX = 20f
+    private val buttonsPaddingY = 50f
 
     override fun addedToEngine(engine: Engine?) {
         overlayStage.run {
-            addActor(labelsGroup)
-            addActor(overlayGroupLv1)
-            addActor(overlayGroupLv2)
+            addActor(labels)
+            addActor(overlayLevel1)
+            addActor(overlayLevel2)
         }
     }
 
     override fun update(deltaTime: Float) {
-        selectedObject = getSelectedObject()
-        if (selectedObject == null) {
-            setButtonsUserObject(null)
-            overlayGroupLv1.isVisible = false
-            overlayGroupLv2.isVisible = false
-            labelsGroup.isVisible = false
+        if (selectedMapObject == null) {
+            hideOverlay()
         } else {
-            setButtonsUserObject(selectedObject)
+            showOverlay()
+            updateOverlayShown()
             updateOverlaySize()
-            updateButtonsPosition()
+            repositionButtons()
             repositionOverlay()
-            updateLabels()
-            updateOverlayBasedOnLevel()
-            labelsGroup.isVisible = true
         }
     }
 
     override fun removedFromEngine(engine: Engine?) {
-        labelsGroup.remove()
-        overlayGroupLv1.remove()
-        overlayGroupLv2.remove()
+        labels.remove()
+        overlayLevel1.remove()
+        overlayLevel2.remove()
     }
 
-    val debugEntity = EntityFactory.createDebugEntity()
-    val debugEntity1 = EntityFactory.createDebugEntity()
+    private fun hideOverlay() {
+        overlayLevel1.isVisible = false
+        overlayLevel2.isVisible = false
+        labels.isVisible = false
+    }
 
-    private fun getDistanceBetween(actorA: Actor, actorB: Actor, targetStage: Stage,
-                                   localCoordsA: Vector2 = Vector2(0f, 0f), localCoordsB: Vector2 = Vector2(0f, 0f),
-                                   uiStage: UIStage = Injekt.get()): Vector2 {
-        val actorAStageCoords = actorA.localToStageCoordinates(Vector2(localCoordsA))
-        actorAStageCoords.scl(1 / 64f)
-        debugEntity.debug.set(actorAStageCoords)
-
-        val actorBStageCoords = actorB.localToStageCoordinates(Vector2(localCoordsB))
-        debugEntity1.debug.set(actorBStageCoords)
-
-        var actorAScreenCoords = localCoordsA
-        actorAScreenCoords = actorA.localToScreenCoordinates(actorAScreenCoords)
-
-        var actorBScreenCoords = localCoordsB
-        actorBScreenCoords = actorB.localToScreenCoordinates(actorBScreenCoords)
-
-        // The coordinates are now relative
-        actorAScreenCoords -= actorBScreenCoords
-
-        // The coordinates are now in targetStage coordinates
-        val ppm = uiStage.viewport.worldWidth / targetStage.viewport.worldWidth
-        actorAScreenCoords.scl(1f / ppm * (targetStage.camera as OrthographicCamera).zoom)
-
-        return actorAScreenCoords
+    private fun showOverlay() {
+        overlayLevel1.isVisible = true
+        overlayLevel2.isVisible = true
+        labels.isVisible = true
     }
 
     private fun scaleMapObject(xDragged: Float, yDragged: Float, buttonDragged: Button, linkedMapObject: Entity,
@@ -275,26 +253,20 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         val localLeft = if (toLeft) -(newWidth - image.width) else 0f
         val localRight = if (toRight) (newWidth - image.width) else 0f
         updateObjectPolygon(image.img.x, image.img.y, image.width, image.height, image.img.rotation, localLeft, localRight)
-        val position = getRectangleCenter(selectedObjectPolygon)
+        val position = getRectangleCenter(selectedMapObjectPolygon)
         image.width = newWidth
         image.setPosition(position.x, position.y)
 
         // In case a listener's touchDragged calls this function after this system is done updating, then these functions
         // wouldn't get called, which would result in a slight jitter movement
-        updateButtonsPosition()
+        repositionButtons()
         updateOverlaySize()
         repositionOverlay()
     }
 
-    /**
-     * ([x],[y]) the bottom left corner coordinates;
-     * [rotation] in degrees;
-     * [width], [height] the dimensions of the object before any transformations were made to it;
-     * [localLeft], [localRight] the local x of the left and right side of the transformed (e.g. resized) object
-     */
-    private fun updateObjectPolygon(x: Float, y: Float, width: Float, height: Float, rotation: Float = 0f, localLeft: Float = 0f, localRight: Float = 0f) {
-        selectedObjectPolygon.run {
-            setRotation(0f)
+    private fun updateObjectPolygon(x: Float, y: Float, width: Float, height: Float, rotationInDegrees: Float = 0f, localLeft: Float = 0f, localRight: Float = 0f) {
+        selectedMapObjectPolygon.run {
+            rotation = 0f
             vertices.run {
                 set(0, localLeft); set(1, 0f) // bottom left corner
                 set(2, width + localRight); set(3, 0f) // bottom right corner
@@ -303,111 +275,80 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             }
             setPosition(x, y)
             setOrigin(width / 2f, height / 2f)
-            setRotation(rotation)
+            rotation = rotationInDegrees
         }
     }
 
-    private val tmpVec2 = Vector2()
-    /** Only works for a [Polygon] with 4 vertices. */
     private fun getRectangleCenter(rectangle: Polygon): Vector2 {
-        rectangle.transformedVertices.run {
-            tmpVec2.set((get(0) + get(4)) / 2f, (get(1) + get(5)) / 2f)
-        }
-        return tmpVec2
+        require(rectangle.vertices.size == 4 * 2) { "The Polygon given is not a rectangle." }
+
+        val vertices = rectangle.transformedVertices
+        return Vector2((vertices[0] + vertices[4]) / 2f, (vertices[1] + vertices[5]) / 2f)
     }
 
     private fun getSelectedObject(): Entity? {
-        val entities = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())
+        val selectedObjects = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())
+        check(selectedObjects.size() <= 1) { "There can't be more than one selected object." }
+
         return when {
-            entities.size() == 0 -> null
-            else -> entities.first()
+            selectedObjects.size() == 0 -> null
+            else -> selectedObjects.first()
         }
     }
 
-    private fun setButtonsUserObject(obj: Any?) {
-        leftArrowButton.userObject = obj
-        rightArrowButton.userObject = obj
-        rotateButton.userObject = obj
-    }
-
-    private fun updateButtonsPosition() {
-        val image = selectedObject!!.image
-        leftArrowButton.run {
-            x = 0f
-            y = 0f
-        }
-        rightArrowButton.run {
-            x = leftArrowButton.width + paddingX + image.width.metersToPixels / gameCamera.zoom + paddingX
-            y = 0f
-        }
-        rotateButton.run {
-            x = rightArrowButton.x
-            y = rightArrowButton.y + rightArrowButton.height + paddingY
-        }
+    private fun repositionButtons() {
+        val image = selectedMapObject!!.image
+        leftArrowButton.setPosition(0f, 0f)
+        rightArrowButton.setPosition(leftArrowButton.width + buttonsPaddingX + image.width.metersToPixels / gameCamera.zoom + buttonsPaddingX, 0f)
+        rotateButton.setPosition(rightArrowButton.x, rightArrowButton.y + rightArrowButton.height + buttonsPaddingY)
         horizontalPositionButton.run {
-            x = overlayGroupLv1.width / 2f - horizontalPositionButton.width / 2f
-            y = -height
+            setPosition(overlayLevel1.width / 2f - horizontalPositionButton.width / 2f, -height)
             icon!!.rotation = 360f - image.img.rotation
         }
         verticalPositionButton.run {
-            x = rightArrowButton.x
-            y = rightArrowButton.y
+            setPosition(rightArrowButton.x, rightArrowButton.y)
             icon!!.rotation = 360f - image.img.rotation
         }
     }
 
     private fun updateOverlaySize() {
-        val image = selectedObject!!.image
-        overlayGroupLv2.run {
-            width = leftArrowButton.width + paddingX + (image.width.metersToPixels / gameCamera.zoom) + paddingX + rightArrowButton.width
-            height = rightArrowButton.height + paddingY + rotateButton.height
+        val image = selectedMapObject!!.image
+        overlayLevel2.run {
+            width = leftArrowButton.width + buttonsPaddingX + (image.width.metersToPixels / gameCamera.zoom) + buttonsPaddingX + rightArrowButton.width
+            height = rightArrowButton.height + buttonsPaddingY + rotateButton.height
             setOrigin(width / 2f, leftArrowButton.height / 2f)
             rotation = image.img.rotation
         }
-        overlayGroupLv1.run {
-            setSize(overlayGroupLv2.width, overlayGroupLv2.height)
-            setOrigin(overlayGroupLv2.originX, overlayGroupLv2.originY)
-            rotation = overlayGroupLv2.rotation
+        overlayLevel1.run {
+            setSize(overlayLevel2.width, overlayLevel2.height)
+            setOrigin(overlayLevel2.originX, overlayLevel2.originY)
+            rotation = overlayLevel2.rotation
         }
     }
 
-    private val coords = Vector3()
     private fun repositionOverlay() {
-        val image = selectedObject!!.image
+        val image = selectedMapObject!!.image
         val objectCoords = worldToOverlayCameraCoordinates(image.x, image.y)
-        overlayGroupLv2.run {
-            x = objectCoords.x - overlayGroupLv2.width / 2f
+        overlayLevel2.run {
+            x = objectCoords.x - overlayLevel2.width / 2f
             y = objectCoords.y - leftArrowButton.height / 2f
         }
-        overlayGroupLv1.setPosition(overlayGroupLv2.x, overlayGroupLv2.y)
+        overlayLevel1.setPosition(overlayLevel2.x, overlayLevel2.y)
     }
 
-    private fun updateLabels() {
-        rotationLabel.run {
-            setText("${overlayGroupLv2.rotation.toInt()}°")
-            val pos = rotateButton.localToStageCoordinates(Vector2(rotateButton.width / 2f, rotateButton.height / 2f))
-            x = pos.x - prefWidth / 2f
-            y = pos.y + rotateButton.height / 2f + paddingY / 2f - height / 2f
-        }
-    }
-
-    private fun updateOverlayBasedOnLevel() {
-        val level = (selectedObject as Entity).selectedObject.level
-        overlayGroupLv1.isVisible = (level == 1)
-        overlayGroupLv2.isVisible = (level == 2)
+    private fun updateOverlayShown() {
+        val level = (selectedMapObject as Entity).selectedObject.level
+        overlayLevel1.isVisible = (level == 1)
+        overlayLevel2.isVisible = (level == 2)
     }
 
     private fun worldToOverlayCameraCoordinates(x: Float, y: Float): Vector3 {
-        coords.run {
-            this.x = x
-            this.y = y
-        }
+        val coords = Vector3(x, y, 0f)
 
         // [coords] are now in screen coordinates
         gameCamera.project(coords)
 
-        // When you unproject coordinates, the (0;0) is in the top left corner, when usually
-        // it is in the bottom left corner, so this must be corrected for the function to work
+        // When you unproject coordinates, the (0;0) is in the top left corner
         coords.y = Gdx.graphics.height - coords.y
 
         // [coords] are now in overlayCamera coordinates
