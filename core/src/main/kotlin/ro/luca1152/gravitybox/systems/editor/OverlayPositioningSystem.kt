@@ -17,10 +17,7 @@
 
 package ro.luca1152.gravitybox.systems.editor
 
-import com.badlogic.ashley.core.Engine
-import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.ashley.core.Family
+import com.badlogic.ashley.core.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
@@ -37,6 +34,7 @@ import ro.luca1152.gravitybox.components.ImageComponent
 import ro.luca1152.gravitybox.components.SelectedObjectComponent
 import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.components.selectedObject
+import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -51,7 +49,8 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                                private val gameStage: GameStage = Injekt.get(),
                                private val gameCamera: GameCamera = Injekt.get(),
                                private val overlayCamera: OverlayCamera = Injekt.get(),
-                               private val overlayStage: OverlayStage = Injekt.get()) : EntitySystem() {
+                               private val overlayStage: OverlayStage = Injekt.get(),
+                               private val engine: PooledEngine = Injekt.get()) : EntitySystem() {
     private val leftArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-left-arrow-icon")
         iconCell!!.padLeft(-4f) // The icon doesn't LOOK centered
@@ -72,6 +71,13 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                 super.touchDragged(event, x, y, pointer)
                 scaleMapObject(x, y, this@apply, selectedMapObject!!, toRight = true)
             }
+        })
+    }
+    private val deleteButton: ClickButton = ClickButton(skin, "small-round-button").apply {
+        addIcon("small-x-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            engine.removeAndResetEntity(selectedMapObject!!)
         })
     }
     private val rotateButton: ClickButton = ClickButton(skin, "small-round-button").apply {
@@ -192,7 +198,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
     private val selectedMapObjectPolygon = Polygon().apply { vertices = FloatArray(8) }
     private val labels = Group().apply { this + rotationLabel }
     private val overlayLevel1 = Group().apply { this + horizontalPositionButton + verticalPositionButton + rotateButton }
-    private val overlayLevel2 = Group().apply { this + leftArrowButton + rightArrowButton }
+    private val overlayLevel2 = Group().apply { this + leftArrowButton + rightArrowButton + deleteButton }
     private val buttonsPaddingX = 20f
     private val buttonsPaddingY = 50f
 
@@ -300,6 +306,10 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         val image = selectedMapObject!!.image
         leftArrowButton.setPosition(0f, 0f)
         rightArrowButton.setPosition(leftArrowButton.width + buttonsPaddingX + image.width.metersToPixels / gameCamera.zoom + buttonsPaddingX, 0f)
+        deleteButton.run {
+            setPosition(rightArrowButton.x, deleteButton.height + buttonsPaddingY)
+            icon!!.rotation = 360f - image.img.rotation
+        }
         rotateButton.setPosition(rightArrowButton.x, rightArrowButton.y + rightArrowButton.height + buttonsPaddingY)
         horizontalPositionButton.run {
             setPosition(overlayLevel1.width / 2f - horizontalPositionButton.width / 2f, -height)

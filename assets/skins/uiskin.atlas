@@ -220,9 +220,16 @@ small-round-button
   index: -1
 small-vertical-arrow
   rotate: false
-  xy: 1097, 175
+  xy: 1775, 17
   size: 24, 38
   orig: 24, 38
+  offset: 0, 0
+  index: -1
+small-x-icon
+  rotate: false
+  xy: 1097, 181
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 undo-icon

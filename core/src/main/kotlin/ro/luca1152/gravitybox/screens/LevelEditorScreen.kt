@@ -111,12 +111,6 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             setToggledButtonReference(toggledButton)
         }
 
-        fun createEraseButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
-            addIcon("erase-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setToggledButtonReference(toggledButton)
-        }
-
         fun createMoveToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
             addIcon("move-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
@@ -151,7 +145,6 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         return Table().apply {
             // If I don't pass [toggledButton] as an argument it doesn't work
             add(createUndoButton(toggledButton)).top().space(50f).row()
-            add(createEraseButton(toggledButton)).top().space(50f).row()
             add(createMoveToolButton(toggledButton)).top().space(50f).row()
             add(createPlaceToolButton(toggledButton)).top().row()
             add(createBackButton(toggledButton)).expand().bottom()
