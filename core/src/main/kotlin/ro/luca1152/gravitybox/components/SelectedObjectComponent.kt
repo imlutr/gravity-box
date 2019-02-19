@@ -18,12 +18,25 @@
 package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
 /** Indicates that the (map) object was selected.  */
 class SelectedObjectComponent : Component, Poolable {
-    override fun reset() {}
+    /** The overlay level that will be shown (1 or 2). */
+    var level = 1
+        set(value) {
+            require(value == 1 || value == 2)
+            field = value
+        }
+
+    override fun reset() {
+        level = 1
+    }
 
     companion object : ComponentResolver<SelectedObjectComponent>(SelectedObjectComponent::class.java)
 }
+
+val Entity.selectedObject: SelectedObjectComponent
+    get() = SelectedObjectComponent[this]

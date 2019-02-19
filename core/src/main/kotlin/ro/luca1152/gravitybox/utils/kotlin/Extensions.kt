@@ -19,9 +19,12 @@ package ro.luca1152.gravitybox.utils.kotlin
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Array
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -69,7 +72,20 @@ fun screenToWorldCoordinates(screenX: Int, screenY: Int, gameCamera: GameCamera 
     return coords
 }
 
-fun Float.roundToNearest(x: Float, threshold: Float): Float {
-    val roundedValue = MathUtils.ceil(this / x) * x
-    return if (Math.abs(this - roundedValue) < threshold) roundedValue else this
+fun Stage.hitScreen(screenX: Int, screenY: Int, touchable: Boolean = true): Actor? {
+    val stageCoords = screenToStageCoordinates(Vector2(screenX.toFloat(), screenY.toFloat()))
+    return hit(stageCoords.x, stageCoords.y, touchable)
+}
+
+/**
+ * Rounding to the nearest 10 starting from 0:
+ */
+fun Float.roundToNearest(x: Float, threshold: Float, startingValue: Float = 0f): Float {
+    val valueRoundedDown = MathUtils.floor(this / x) * x
+    val valueRoundedUp = MathUtils.ceil(this / x) * x
+    return when {
+        Math.abs((this + startingValue) - valueRoundedDown) < threshold -> valueRoundedDown - startingValue
+        Math.abs((this + startingValue) - valueRoundedUp) < threshold -> valueRoundedUp - startingValue
+        else -> this
+    }
 }

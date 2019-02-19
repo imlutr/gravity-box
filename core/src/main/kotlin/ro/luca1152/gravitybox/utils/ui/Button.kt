@@ -34,6 +34,10 @@ abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
     var upColor: Color = Color.WHITE
     var downColor: Color = Color.WHITE
 
+    init {
+        setOrigin(width / 2f, height / 2f)
+    }
+
     /** Set the colors for when the button is down (clicked) and up.     */
     abstract fun setColors(upColor: Color, downColor: Color)
 
@@ -43,6 +47,7 @@ abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
      */
     fun addIcon(drawableName: String) {
         icon = Image(skin, drawableName)
+        icon!!.setOrigin(icon!!.width / 2f, icon!!.height / 2f)
         iconCell = add(icon)
     }
 

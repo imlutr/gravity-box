@@ -50,7 +50,7 @@ erase-icon
   index: -1
 full-star
   rotate: false
-  xy: 1097, 185
+  xy: 1743, 27
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -183,6 +183,13 @@ small-button-inside
   orig: 108, 108
   offset: 0, 0
   index: -1
+small-horizontal-arrow
+  rotate: false
+  xy: 1703, 31
+  size: 38, 24
+  orig: 38, 24
+  offset: 0, 0
+  index: -1
 small-left-arrow-icon
   rotate: false
   xy: 1060, 138
@@ -209,6 +216,13 @@ small-round-button
   xy: 2026, 7
   size: 71, 71
   orig: 71, 71
+  offset: 0, 0
+  index: -1
+small-vertical-arrow
+  rotate: false
+  xy: 1097, 175
+  size: 24, 38
+  orig: 24, 38
   offset: 0, 0
   index: -1
 undo-icon

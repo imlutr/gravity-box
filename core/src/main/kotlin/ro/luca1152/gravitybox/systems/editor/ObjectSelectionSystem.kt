@@ -23,14 +23,11 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
-import ro.luca1152.gravitybox.components.ColorType
-import ro.luca1152.gravitybox.components.SelectedObjectComponent
-import ro.luca1152.gravitybox.components.color
-import ro.luca1152.gravitybox.components.input
+import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.tryGet
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.hitScreen
 import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -45,16 +42,10 @@ class ObjectSelectionSystem(private val inputEntity: Entity,
         var touchedActor: Actor? = null
 
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            if (inputEntity.input.isPanning || inputEntity.input.isZooming) {
-                return false
-            }
-
             if (!moveToolIsSelected())
                 return false
 
-            val stageCoords = gameStage.screenToStageCoordinates(Vector2(screenX.toFloat(), screenY.toFloat()))
-            touchedActor = gameStage.hit(stageCoords.x, stageCoords.y, true)
-
+            touchedActor = gameStage.hitScreen(screenX, screenY)
             if (touchedActor == null)
                 return false
 
@@ -62,32 +53,31 @@ class ObjectSelectionSystem(private val inputEntity: Entity,
             return true
         }
 
-        private fun moveToolIsSelected() = inputEntity.input.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
-
         override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            if (inputEntity.input.isPanning || inputEntity.input.isZooming) {
-                return false
-            }
+            if (inputEntity.input.isPanning || inputEntity.input.isZooming)
+                return true
 
             if (!isMapObject(touchedActor)) {
-                if (selectedObject != null)
-                    unselectObject(selectedObject!!)
+                if (selectedObject != null) deselectObject(selectedObject!!)
                 return true
             }
-            val entity = (touchedActor!!.userObject) as Entity
 
-            if (selectedObject != null && entity != selectedObject)
-                unselectObject(selectedObject!!)
+            val touchedObject = (touchedActor!!.userObject) as Entity
+            if (selectedObject != null && touchedObject != selectedObject)
+                deselectObject(selectedObject!!)
 
-            entity.run {
-                when (tryGet(SelectedObjectComponent) != null) {
-                    true -> unselectObject(entity)
-                    false -> selectObject(entity)
+            when (touchedObject.tryGet(SelectedObjectComponent)) {
+                null -> selectObject(touchedObject)
+                else -> {
+                    if (selectedObject!!.selectedObject.level == 1) selectedObject!!.selectedObject.level = 2
+                    else selectedObject!!.selectedObject.level = 1
                 }
             }
 
             return true
         }
+
+        private fun moveToolIsSelected() = inputEntity.input.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
 
         private fun isMapObject(actor: Actor?) = (actor != null && actor.userObject != null && actor.userObject is Entity)
     }
@@ -103,7 +93,7 @@ class ObjectSelectionSystem(private val inputEntity: Entity,
         }
     }
 
-    private fun unselectObject(selectedObject: Entity) {
+    private fun deselectObject(selectedObject: Entity) {
         selectedObject.run {
             remove(SelectedObjectComponent::class.java)
             color.colorType = ColorType.DARK
@@ -116,11 +106,9 @@ class ObjectSelectionSystem(private val inputEntity: Entity,
 
     private fun findSelectedObject(): Entity? {
         val entities = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())
-        return when (entities.size()) {
-            0 -> null
-            1 -> entities.first()
-            else -> error { "More than one selected platform." }
-        }
+        check(entities.size() <= 1) { "There can't be more than one selected object." }
+
+        return if (entities.size() == 1) entities.first() else null
     }
 
     override fun removedFromEngine(engine: Engine?) {
