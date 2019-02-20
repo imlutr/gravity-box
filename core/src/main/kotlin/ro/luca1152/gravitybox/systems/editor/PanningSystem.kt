@@ -56,10 +56,6 @@ class PanningSystem(private val inputEntity: Entity,
         inputMultiplexer.addProcessor(gestureDetector)
     }
 
-    override fun update(deltaTime: Float) {
-//        println(inputEntity.input.isPanning)
-    }
-
     override fun removedFromEngine(engine: Engine?) {
         inputMultiplexer.removeProcessor(gestureDetector)
     }

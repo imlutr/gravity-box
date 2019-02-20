@@ -30,11 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ktx.actors.plus
-import ro.luca1152.gravitybox.components.ImageComponent
-import ro.luca1152.gravitybox.components.SelectedObjectComponent
-import ro.luca1152.gravitybox.components.image
-import ro.luca1152.gravitybox.components.selectedObject
-import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
+import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -77,21 +73,27 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         addIcon("small-x-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addClickRunnable(Runnable {
-            engine.removeAndResetEntity(selectedMapObject!!)
+            val deleteCommand = DeleteCommand(selectedMapObject!!)
+            deleteCommand.execute()
+            undoRedoEntity.undoRedo.addExecutedCommand(deleteCommand)
         })
     }
     private val rotateButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-rotate-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addListener(object : DragListener() {
+            private val image
+                get() = (selectedMapObject as Entity).image
+            var initialImageRotation = 0f
+
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 rotationLabel.isVisible = true
+                initialImageRotation = image.img.rotation
                 return true
             }
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
-                val image = selectedMapObject!!.image
 
                 val mouseCoords = screenToWorldCoordinates(Gdx.input.x, Gdx.input.y)
                 var newRotation = toPositiveAngle(MathUtils.atan2(mouseCoords.y - image.y, mouseCoords.x - image.x) * MathUtils.radiansToDegrees)
@@ -114,6 +116,8 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 rotationLabel.isVisible = false
+                if (image.img.rotation != initialImageRotation)
+                    undoRedoEntity.undoRedo.addExecutedCommand(RotateCommand(selectedMapObject!!, image.img.rotation - initialImageRotation))
             }
 
             private fun getAngleBetween(rotateButton: Button, objectImage: ImageComponent): Float {
@@ -163,6 +167,12 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
                 repositionOverlay()
             }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                if (image.x != initialImageX)
+                    undoRedoEntity.undoRedo.addExecutedCommand(MoveCommand(selectedMapObject!!, image.x - initialImageX, 0f))
+            }
         })
     }
     private val verticalPositionButton = ClickButton(skin, "small-round-button").apply {
@@ -190,11 +200,18 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
                 repositionOverlay()
             }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                if (image.y != initialImageY)
+                    undoRedoEntity.undoRedo.addExecutedCommand(MoveCommand(selectedMapObject!!, 0f, image.y - initialImageY))
+            }
         })
     }
 
     private val selectedMapObject: Entity?
         get() = getSelectedObject()
+    private val undoRedoEntity: Entity = engine.getEntitiesFor(Family.all(UndoRedoComponent::class.java).get()).first()
     private val selectedMapObjectPolygon = Polygon().apply { vertices = FloatArray(8) }
     private val labels = Group().apply { this + rotationLabel }
     private val overlayLevel1 = Group().apply { this + horizontalPositionButton + verticalPositionButton + rotateButton }

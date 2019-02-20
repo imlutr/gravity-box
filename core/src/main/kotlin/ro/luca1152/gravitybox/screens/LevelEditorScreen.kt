@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.screens
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
@@ -31,6 +32,7 @@ import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.MapComponent
+import ro.luca1152.gravitybox.components.undoRedo
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
@@ -55,35 +57,88 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
                         private val uiStage: UIStage = Injekt.get()) : KtxScreen {
     // UI
     private lateinit var skin: Skin
-    private lateinit var root: Table
-    private lateinit var toggledButton: Reference<ToggleButton>
+    private val root: Table = createRootTable()
+    private val toggledButton = Reference<ToggleButton>()
 
     // Game
     private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
+    private lateinit var inputEntity: Entity
+    private lateinit var undoRedoEntity: Entity
 
     // Input
-    private lateinit var inputMultiplexer: InputMultiplexer
+    private val inputMultiplexer = InputMultiplexer()
 
     override fun show() {
-        createUI()
+        resetObjects()
         createGame()
+        createUI()
+        handleAllInput()
+    }
 
-        // Handle input
-        Gdx.input.inputProcessor = inputMultiplexer
+    private fun resetObjects() {
+        uiStage.clear()
+        skin = manager.get<Skin>("skins/uiskin.json")
+        root.clear()
+        toggledButton.set(null)
+        inputMultiplexer.clear()
+    }
+
+    private fun createGame() {
+        addSingletonsToDependencyInjection()
+        setOwnBox2DContactListener()
+        createGameEntities()
+        handleGameInput()
+        addGameSystems()
+    }
+
+    private fun addSingletonsToDependencyInjection() {
+        Injekt.run {
+            addSingleton(world)
+            addSingleton(gameEventSignal)
+            addSingleton(inputMultiplexer)
+            addSingleton(skin)
+            addSingleton(OverlayCamera)
+            addSingleton(OverlayViewport)
+            addSingleton(OverlayStage)
+        }
+    }
+
+    private fun setOwnBox2DContactListener() {
+        world.setContactListener(WorldContactListener())
+    }
+
+    private fun createGameEntities() {
+        inputEntity = EntityFactory.createInputEntity(toggledButton)
+        undoRedoEntity = EntityFactory.createUndoRedoEntity()
+    }
+
+    private fun handleGameInput() {
+        inputMultiplexer.addProcessor(Injekt.get<OverlayStage>())
+        inputMultiplexer.addProcessor(gameStage)
+    }
+
+    private fun addGameSystems() {
+        engine.run {
+            addSystem(UndoRedoSystem())
+            addSystem(ColorSyncSystem())
+            addSystem(ObjectPlacementSystem(inputEntity))
+            addSystem(ZoomingSystem(inputEntity))
+            addSystem(PanningSystem(inputEntity))
+            addSystem(ObjectSelectionSystem(inputEntity))
+            addSystem(UpdateGameCameraSystem())
+            addSystem(OverlayCameraSyncSystem())
+            addSystem(OverlayPositioningSystem())
+            addSystem(TouchableBoundsSyncSystem())
+            addSystem(GridRenderingSystem())
+            addSystem(ImageRenderingSystem())
+            addSystem(OverlayRenderingSystem())
+            addSystem(DebugRenderingSystem())
+        }
     }
 
     private fun createUI() {
-        // Initialize lateinit vars
-        skin = manager.get<Skin>("skins/uiskin.json")
-        toggledButton = Reference()
-        inputMultiplexer = InputMultiplexer()
-
-        // Add UI widgets
-        uiStage.actors.forEach {
-            it.remove()
-        }
-        root = createRootTable().apply {
+        root.run {
             uiStage.addActor(this)
             add(createLeftColumn()).growY().expandX().left()
             add(createRightColumn()).growY().expandX().right()
@@ -93,8 +148,12 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
         gameStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
 
-        // Handle input
-        inputMultiplexer.addProcessor(uiStage)
+        handleUIInput()
+    }
+
+    private fun handleUIInput() {
+        // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
+        inputMultiplexer.addProcessor(0, uiStage)
     }
 
     private fun createRootTable() = Table().apply {
@@ -103,12 +162,14 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         padBottom(110f).padTop(110f)
     }
 
-
     private fun createLeftColumn(): Table {
         fun createUndoButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
             addIcon("undo-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             setToggledButtonReference(toggledButton)
+            addClickRunnable(Runnable {
+                undoRedoEntity.undoRedo.undo()
+            })
         }
 
         fun createMoveToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
@@ -155,6 +216,9 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         fun createRedoButton() = ClickButton(skin, "small-button").apply {
             addIcon("redo-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            addClickRunnable(Runnable {
+                undoRedoEntity.undoRedo.redo()
+            })
         }
 
         return Table().apply {
@@ -162,44 +226,8 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         }
     }
 
-    private fun createGame() {
-        // Dependency injection
-        Injekt.run {
-            addSingleton(world)
-            addSingleton(gameEventSignal)
-            addSingleton(inputMultiplexer)
-            addSingleton(skin)
-            addSingleton(OverlayCamera)
-            addSingleton(OverlayViewport)
-            addSingleton(OverlayStage)
-        }
-
-        // Provide own implementation for what happens after Box2D collisions
-        world.setContactListener(WorldContactListener())
-
-        // Create entities
-        val buttonListener = EntityFactory.createInputEntity(toggledButton)
-
-        // Handle Input
-        inputMultiplexer.addProcessor(Injekt.get<OverlayStage>())
-        inputMultiplexer.addProcessor(gameStage)
-
-        // Add systems
-        engine.run {
-            addSystem(ColorSyncSystem())
-            addSystem(ObjectPlacementSystem(buttonListener))
-            addSystem(ZoomingSystem(buttonListener))
-            addSystem(PanningSystem(buttonListener))
-            addSystem(ObjectSelectionSystem(buttonListener))
-            addSystem(UpdateGameCameraSystem())
-            addSystem(OverlayCameraSyncSystem())
-            addSystem(OverlayPositioningSystem())
-            addSystem(TouchableBoundsSyncSystem())
-            addSystem(GridRenderingSystem())
-            addSystem(ImageRenderingSystem())
-            addSystem(OverlayRenderingSystem())
-            addSystem(DebugRenderingSystem())
-        }
+    private fun handleAllInput() {
+        Gdx.input.inputProcessor = inputMultiplexer
     }
 
     private fun update(delta: Float) {

@@ -225,8 +225,12 @@ object EntityFactory {
     }!!
 
     fun createDebugEntity(engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
-        add(DebugComponent())
-
+        add(engine.createComponent(DebugComponent::class.java))
         engine.addEntity(this)
-    }
+    }!!
+
+    fun createUndoRedoEntity(engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+        add(engine.createComponent(UndoRedoComponent::class.java))
+        engine.addEntity(this)
+    }!!
 }
