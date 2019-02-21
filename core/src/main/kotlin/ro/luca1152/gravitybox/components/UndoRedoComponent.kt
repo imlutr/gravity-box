@@ -129,3 +129,34 @@ class DeleteCommand(override val affectedEntity: Entity) : Command() {
     }
 }
 
+/**
+ * Resizes the [affectedEntity]. If the entity was also moved after it was resized, values should be
+ * given to [deltaX] and [deltaY]. This is not done in an additional [MoveCommand] because undo() would
+ * then have to be called two times (or the undo button pressed two times), instead of once.
+ */
+class ResizeCommand(override val affectedEntity: Entity,
+                    private val deltaWidth: Float, private val deltaHeight: Float,
+                    private val deltaX: Float = 0f, private val deltaY: Float = 0f) : Command() {
+    init {
+        check(affectedEntity.tryGet(ImageComponent) != null)
+        { "The [affectedEntity] must have an [ImageComponent]." }
+    }
+
+    override fun execute() {
+        affectedEntity.image.run {
+            width += deltaWidth
+            height += deltaHeight
+            x += deltaX
+            y += deltaY
+        }
+    }
+
+    override fun unexecute() {
+        affectedEntity.image.run {
+            width -= deltaWidth
+            height -= deltaHeight
+            x -= deltaX
+            y -= deltaY
+        }
+    }
+}

@@ -52,9 +52,33 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         iconCell!!.padLeft(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addListener(object : ClickListener() {
+            private val image
+                get() = (selectedMapObject as Entity).image
+            var initialImageWidth = 0f
+            var initialImageHeight = 0f
+            var initialImageX = 0f
+            var initialImageY = 0f
+
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                image.img.run {
+                    initialImageWidth = width
+                    initialImageHeight = height
+                    initialImageX = this.x
+                    initialImageY = this.y
+                }
+                return true
+            }
+
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 scaleMapObject(x, y, this@apply, selectedMapObject!!, toLeft = true)
+            }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                undoRedoEntity.undoRedo.addExecutedCommand(ResizeCommand(selectedMapObject!!,
+                        image.width - initialImageWidth, image.height - initialImageHeight,
+                        image.img.x - initialImageX, image.img.y - initialImageY))
             }
         })
     }
@@ -63,9 +87,33 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         iconCell!!.padRight(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addListener(object : ClickListener() {
+            private val image
+                get() = (selectedMapObject as Entity).image
+            var initialImageWidth = 0f
+            var initialImageHeight = 0f
+            var initialImageX = 0f
+            var initialImageY = 0f
+
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                image.img.run {
+                    initialImageWidth = width
+                    initialImageHeight = height
+                    initialImageX = this.x
+                    initialImageY = this.y
+                }
+                return true
+            }
+
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 scaleMapObject(x, y, this@apply, selectedMapObject!!, toRight = true)
+            }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                undoRedoEntity.undoRedo.addExecutedCommand(ResizeCommand(selectedMapObject!!,
+                        image.width - initialImageWidth, image.height - initialImageHeight,
+                        image.img.x - initialImageX, image.img.y - initialImageY))
             }
         })
     }
