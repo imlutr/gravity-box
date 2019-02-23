@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.entities
+package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
@@ -24,21 +24,26 @@ import ro.luca1152.gravitybox.components.*
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/** Create map objects using the Entity Component System pattern. */
-object MapObjectFactory {
-    fun createPlatform(id: Int, x: Float, y: Float,
-                       engine: PooledEngine = Injekt.get(),
-                       manager: AssetManager = Injekt.get()) = engine.createEntity().apply {
-        add(engine.createComponent(IdComponent::class.java)).run {
-            this.id.set(id)
+object PlatformEntity {
+    private const val DEFAULT_WIDTH = 1f
+    private const val DEFAULT_HEIGHT = .25f
+
+    fun createEntity(id: Int, x: Float, y: Float,
+                     engine: PooledEngine = Injekt.get(),
+                     manager: AssetManager = Injekt.get()) = engine.createEntity().apply {
+        add(engine.createComponent(NewMapObjectComponent::class.java)).run {
+            newMapObject.set(id)
+        }
+        add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
+            mapObjectOverlay.set(showMovementButtons = true, showRotationButton = true, showResizingButtons = true, showDeletionButton = true)
         }
         add(engine.createComponent(PlatformComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(manager.get<Texture>("graphics/pixel.png"), x, y, 1f, .25f)
+            image.set(manager.get<Texture>("graphics/pixel.png"), x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT)
             image.img.userObject = this
         }
         add(engine.createComponent(TouchableBoundsComponent::class.java)).run {
-            touchableBounds.set(this, 0f, 1f - .25f)
+            touchableBounds.set(this, 0f, 1f - DEFAULT_HEIGHT)
         }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)

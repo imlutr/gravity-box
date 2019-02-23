@@ -31,8 +31,11 @@ object PlayerEntity {
     fun createEntity(id: Int, x: Float, y: Float,
                      manager: AssetManager = Injekt.get(),
                      engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
-        add(engine.createComponent(IdComponent::class.java)).run {
-            this.id.set(id)
+        add(engine.createComponent(NewMapObjectComponent::class.java)).run {
+            this.newMapObject.set(id)
+        }
+        add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
+            mapObjectOverlay.set(showMovementButtons = true, showRotationButton = true, showResizingButtons = false, showDeletionButton = false)
         }
         add(engine.createComponent(PlayerComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
@@ -43,5 +46,5 @@ object PlayerEntity {
             color.set(ColorType.DARK)
         }
         engine.addEntity(this)
-    }
+    }!!
 }

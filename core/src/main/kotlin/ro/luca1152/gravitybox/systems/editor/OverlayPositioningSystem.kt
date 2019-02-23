@@ -285,6 +285,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             updateOverlaySize()
             repositionButtons()
             repositionOverlay()
+            updateButtonsVisibility()
         }
     }
 
@@ -412,10 +413,22 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         overlayLevel1.setPosition(overlayLevel2.x, overlayLevel2.y)
     }
 
+    private fun updateButtonsVisibility() {
+        selectedMapObject!!.mapObjectOverlay.run {
+            verticalPositionButton.isVisible = showMovementButtons
+            horizontalPositionButton.isVisible = showMovementButtons
+            rotateButton.isVisible = showRotationButton
+            rightArrowButton.isVisible = showResizingButtons
+            leftArrowButton.isVisible = showResizingButtons
+            deleteButton.isVisible = showDeletionButton
+        }
+    }
+
     private fun updateOverlayShown() {
         val level = (selectedMapObject as Entity).selectedObject.level
-        overlayLevel1.isVisible = (level == 1)
-        overlayLevel2.isVisible = (level == 2)
+        val showLevel2Overlay = selectedMapObject!!.mapObjectOverlay.showResizingButtons || selectedMapObject!!.mapObjectOverlay.showDeletionButton
+        overlayLevel1.isVisible = if (showLevel2Overlay) (level == 1) else true
+        overlayLevel2.isVisible = if (showLevel2Overlay) (level == 2) else false
     }
 
     private fun worldToOverlayCameraCoordinates(x: Float, y: Float): Vector3 {

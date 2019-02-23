@@ -25,7 +25,7 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.entities.MapObjectFactory
+import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt
@@ -50,7 +50,7 @@ class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Inj
 
         private fun createPlatformAt(screenX: Int, screenY: Int) {
             val coords = screenToWorldCoordinates(screenX, screenY)
-            val platform = MapObjectFactory.createPlatform(0, MathUtils.floor(coords.x).toFloat() + .5f, MathUtils.floor(coords.y).toFloat() + .5f)
+            val platform = PlatformEntity.createEntity(0, MathUtils.floor(coords.x).toFloat() + .5f, MathUtils.floor(coords.y).toFloat() + .5f)
             undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(platform))
         }
     }

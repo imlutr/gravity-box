@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
 /** Contains an [id] variable. */
-class IdComponent : Component, Poolable {
+class NewMapObjectComponent : Component, Poolable {
     var id = -1
 
     fun set(id: Int) {
@@ -34,8 +34,8 @@ class IdComponent : Component, Poolable {
         id = -1
     }
 
-    companion object : ComponentResolver<IdComponent>(IdComponent::class.java)
+    companion object : ComponentResolver<NewMapObjectComponent>(NewMapObjectComponent::class.java)
 }
 
-val Entity.id: IdComponent
-    get() = IdComponent[this]
+val Entity.newMapObject: NewMapObjectComponent
+    get() = NewMapObjectComponent[this]
