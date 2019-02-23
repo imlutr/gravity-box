@@ -1,12 +1,4 @@
 android {
-    signingConfigs {
-        debug {
-            keyAlias 'androiddebugkey'
-            keyPassword '***REMOVED***'
-            storeFile file('/home/luca1152/.android/debug.keystore')
-            storePassword '***REMOVED***'
-        }
-    }
     buildToolsVersion "28.0.3"
     compileSdkVersion 28
     sourceSets {
