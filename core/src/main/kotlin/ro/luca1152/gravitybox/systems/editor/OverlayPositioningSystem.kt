@@ -379,7 +379,8 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         }
         rotateButton.setPosition(rightArrowButton.x, rightArrowButton.y + rightArrowButton.height + buttonsPaddingY)
         horizontalPositionButton.run {
-            setPosition(overlayLevel1.width / 2f - horizontalPositionButton.width / 2f, -height)
+            setPosition(overlayLevel1.width / 2f - horizontalPositionButton.width / 2f,
+                    -height / 2f - image.height.metersToPixels / 2f / gameCamera.zoom - buttonsPaddingX)
             icon!!.rotation = 360f - image.img.rotation
         }
         verticalPositionButton.run {
