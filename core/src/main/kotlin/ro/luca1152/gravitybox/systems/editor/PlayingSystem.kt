@@ -18,10 +18,14 @@
 package ro.luca1152.gravitybox.systems.editor
 
 import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Array
+import ro.luca1152.gravitybox.components.level
+import ro.luca1152.gravitybox.components.newMap
+import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
@@ -36,13 +40,15 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
                     private val manager: AssetManager = Injekt.get()) : EntitySystem() {
     private lateinit var skin: Skin
     private val rootTable = levelEditorScreen.createRootTable()
+    private lateinit var levelEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         skin = manager.get<Skin>("skins/uiskin.json")
         hideLevelEditorUI()
         removeAllSystems(false)
-        addOwnSystems()
-        showOwnUI()
+        createPlayEntities()
+        addPlaySystems()
+        showPlayUI()
     }
 
     private fun hideLevelEditorUI() {
@@ -52,17 +58,26 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
     private fun removeAllSystems(removePlayingSystem: Boolean) {
         val systemsToRemove = Array<EntitySystem>()
         engine.systems.forEach {
-            if (it != this && !removePlayingSystem)
+            if (it != this)
                 systemsToRemove.add(it)
         }
         systemsToRemove.forEach {
             engine.removeSystem(it)
         }
+        if (removePlayingSystem)
+            engine.removeSystem(this)
     }
 
-    private fun addOwnSystems() {
+    private fun createPlayEntities() {
+        levelEntity = LevelEntity.createEntity().apply {
+            level.forceUpdateMap = true
+        }
+    }
+
+    private fun addPlaySystems() {
         engine.run {
             //addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
+            addSystem(MapCreationSystem(levelEntity))
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
 //            addSystem(BulletCollisionSystem(playerEntity))
@@ -75,12 +90,12 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
 //            addSystem(PlayerCameraSystem(mapEntity, playerEntity))
             addSystem(UpdateGameCameraSystem())
 //            addSystem(MapRenderingSystem(mapEntity))
-//            addSystem(PhysicsDebugRenderingSystem())
+            addSystem(PhysicsDebugRenderingSystem(levelEntity.newMap.world))
             addSystem(ImageRenderingSystem())
         }
     }
 
-    private fun showOwnUI() {
+    private fun showPlayUI() {
         rootTable.add(createBackButton()).expand().bottom().left()
         uiStage.addActor(rootTable)
     }
@@ -96,12 +111,12 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
 
     override fun removedFromEngine(engine: Engine) {
         levelEditorScreen.addGameSystems()
-        hideOwnUI()
+        hidePlayUI()
         showLevelEditorUI()
         levelEditorScreen.moveToolButton.isToggled = true
     }
 
-    private fun hideOwnUI() {
+    private fun hidePlayUI() {
         rootTable.remove()
     }
 
