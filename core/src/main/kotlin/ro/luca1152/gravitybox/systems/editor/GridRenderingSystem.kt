@@ -65,6 +65,11 @@ class GridRenderingSystem(private val gameStage: GameStage = Injekt.get(),
         }
     }
 
+    override fun update(deltaTime: Float) {
+        super.update(deltaTime)
+        grid.toBack()
+    }
+
     override fun removedFromEngine(engine: Engine?) {
         grid.remove()
     }
