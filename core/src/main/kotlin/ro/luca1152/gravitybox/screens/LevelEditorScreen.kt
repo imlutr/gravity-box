@@ -57,10 +57,11 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
                         private val uiStage: UIStage = Injekt.get()) : KtxScreen {
     // UI
     private lateinit var skin: Skin
-    private val root: Table = createRootTable()
+    val root: Table = createRootTable()
     private val toggledButton = Reference<ToggleButton>()
     private lateinit var undoButton: ClickButton
     private lateinit var redoButton: ClickButton
+    lateinit var moveToolButton: ToggleButton
 
     // Game
     private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
@@ -120,14 +121,14 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         inputMultiplexer.addProcessor(gameStage)
     }
 
-    private fun addGameSystems() {
+    fun addGameSystems() {
         engine.run {
             addSystem(UndoRedoSystem())
             addSystem(ColorSyncSystem())
-            addSystem(ObjectPlacementSystem(inputEntity))
-            addSystem(ZoomingSystem(inputEntity))
-            addSystem(PanningSystem(inputEntity))
-            addSystem(ObjectSelectionSystem(inputEntity))
+            addSystem(ObjectPlacementSystem())
+            addSystem(ZoomingSystem())
+            addSystem(PanningSystem())
+            addSystem(ObjectSelectionSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(OverlayCameraSyncSystem())
             addSystem(OverlayPositioningSystem())
@@ -159,7 +160,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         inputMultiplexer.addProcessor(0, uiStage)
     }
 
-    private fun createRootTable() = Table().apply {
+    fun createRootTable() = Table().apply {
         setFillParent(true)
         padLeft(62f).padRight(62f)
         padBottom(110f).padTop(110f)
@@ -181,16 +182,17 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         })
     }
 
+    private fun createMoveToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
+        addIcon("move-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setToggledButtonReference(toggledButton)
+        type = ButtonType.MOVE_TOOL_BUTTON
+        isToggled = true
+    }
+
     private fun createLeftColumn(): Table {
         undoButton = createUndoButton()
-
-        fun createMoveToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
-            addIcon("move-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setToggledButtonReference(toggledButton)
-            type = ButtonType.MOVE_TOOL_BUTTON
-            isToggled = true
-        }
+        moveToolButton = createMoveToolButton(toggledButton)
 
         fun createPlaceToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
             addIcon("platform-icon")
@@ -218,7 +220,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         return Table().apply {
             // If I don't pass [toggledButton] as an argument it doesn't work
             add(undoButton).top().space(50f).row()
-            add(createMoveToolButton(toggledButton)).top().space(50f).row()
+            add(moveToolButton).top().space(50f).row()
             add(createPlaceToolButton(toggledButton)).top().row()
             add(createBackButton(toggledButton)).expand().bottom()
         }
@@ -230,6 +232,9 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             setToggledButtonReference(toggledButton)
             setToggleOffEveryOtherButton(true)
+            addClickRunnable(Runnable {
+                engine.addSystem(PlayingSystem(this@LevelEditorScreen))
+            })
         }
 
         return Table().apply {

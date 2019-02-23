@@ -20,9 +20,11 @@ package ro.luca1152.gravitybox.systems.editor
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter
+import ro.luca1152.gravitybox.components.InputComponent
 import ro.luca1152.gravitybox.components.input
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
@@ -31,9 +33,9 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Adds a detector which handles pan gestures. */
-class PanningSystem(private val inputEntity: Entity,
-                    private val gameCamera: GameCamera = Injekt.get(),
+class PanningSystem(private val gameCamera: GameCamera = Injekt.get(),
                     private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+    private lateinit var inputEntity: Entity
     private val gestureDetector = GestureDetector(object : GestureAdapter() {
         override fun pan(x: Float, y: Float, deltaX: Float, deltaY: Float): Boolean {
             if (!moveToolIsUsed())
@@ -52,7 +54,8 @@ class PanningSystem(private val inputEntity: Entity,
         }
     })
 
-    override fun addedToEngine(engine: Engine?) {
+    override fun addedToEngine(engine: Engine) {
+        inputEntity = engine.getEntitiesFor(Family.all(InputComponent::class.java).get()).first()
         inputMultiplexer.addProcessor(gestureDetector)
     }
 

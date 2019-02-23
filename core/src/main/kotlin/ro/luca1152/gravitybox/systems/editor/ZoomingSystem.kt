@@ -20,12 +20,14 @@ package ro.luca1152.gravitybox.systems.editor
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
+import ro.luca1152.gravitybox.components.InputComponent
 import ro.luca1152.gravitybox.components.input
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.ui.ButtonType
@@ -33,9 +35,10 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Adds a detector which handles zoom gestures. */
-class ZoomingSystem(private val inputEntity: Entity,
-                    private val gameCamera: GameCamera = Injekt.get(),
+class ZoomingSystem(private val gameCamera: GameCamera = Injekt.get(),
                     private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+    private lateinit var inputEntity: Entity
+
     companion object {
         private const val DEFAULT_ZOOM = .75f
         private const val MIN_ZOOM = .3f // The maximum you can zoom IN
@@ -96,7 +99,8 @@ class ZoomingSystem(private val inputEntity: Entity,
         }
     }
 
-    override fun addedToEngine(engine: Engine?) {
+    override fun addedToEngine(engine: Engine) {
+        inputEntity = engine.getEntitiesFor(Family.all(InputComponent::class.java).get()).first()
         gameCamera.zoom = DEFAULT_ZOOM
         inputMultiplexer.addProcessor(gestureDetector)
         inputMultiplexer.addProcessor(keyListener)

@@ -33,9 +33,9 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Updates the selected object (the entity that has a [SelectedObjectComponent]) when a platform is touched. */
-class ObjectSelectionSystem(private val inputEntity: Entity,
-                            private val inputMultiplexer: InputMultiplexer = Injekt.get(),
+class ObjectSelectionSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get(),
                             private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
+    private lateinit var inputEntity: Entity
     var selectedObject: Entity? = null
 
     private val inputAdapter = object : InputAdapter() {
@@ -82,7 +82,8 @@ class ObjectSelectionSystem(private val inputEntity: Entity,
         private fun isMapObject(actor: Actor?) = (actor != null && actor.userObject != null && actor.userObject is Entity)
     }
 
-    override fun addedToEngine(engine: Engine?) {
+    override fun addedToEngine(engine: Engine) {
+        inputEntity = engine.getEntitiesFor(Family.all(InputComponent::class.java).get()).first()
         inputMultiplexer.addProcessor(inputAdapter)
     }
 
