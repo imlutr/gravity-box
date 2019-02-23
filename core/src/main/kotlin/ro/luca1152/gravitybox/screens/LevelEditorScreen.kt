@@ -25,6 +25,7 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -59,6 +60,8 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private lateinit var skin: Skin
     private val root: Table = createRootTable()
     private val toggledButton = Reference<ToggleButton>()
+    private lateinit var undoButton: ClickButton
+    private lateinit var redoButton: ClickButton
 
     // Game
     private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
@@ -162,15 +165,24 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         padBottom(110f).padTop(110f)
     }
 
+    private fun createUndoButton() = ClickButton(skin, "small-button").apply {
+        addIcon("undo-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            undoRedoEntity.undoRedo.undo()
+        })
+    }
+
+    private fun createRedoButton() = ClickButton(skin, "small-button").apply {
+        addIcon("redo-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            undoRedoEntity.undoRedo.redo()
+        })
+    }
+
     private fun createLeftColumn(): Table {
-        fun createUndoButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
-            addIcon("undo-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setToggledButtonReference(toggledButton)
-            addClickRunnable(Runnable {
-                undoRedoEntity.undoRedo.undo()
-            })
-        }
+        undoButton = createUndoButton()
 
         fun createMoveToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
             addIcon("move-icon")
@@ -205,7 +217,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
 
         return Table().apply {
             // If I don't pass [toggledButton] as an argument it doesn't work
-            add(createUndoButton(toggledButton)).top().space(50f).row()
+            add(undoButton).top().space(50f).row()
             add(createMoveToolButton(toggledButton)).top().space(50f).row()
             add(createPlaceToolButton(toggledButton)).top().row()
             add(createBackButton(toggledButton)).expand().bottom()
@@ -213,16 +225,9 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     }
 
     private fun createRightColumn(): Table {
-        fun createRedoButton() = ClickButton(skin, "small-button").apply {
-            addIcon("redo-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            addClickRunnable(Runnable {
-                undoRedoEntity.undoRedo.redo()
-            })
-        }
-
+        redoButton = createRedoButton()
         return Table().apply {
-            add(createRedoButton()).expand().top()
+            add(redoButton).expand().top()
         }
     }
 
@@ -234,6 +239,32 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         engine.update(delta)
         uiStage.act(delta)
         gameStage.camera.update()
+        updateUndoRedoButtonsColor()
+    }
+
+    private fun updateUndoRedoButtonsColor() {
+        when (undoRedoEntity.undoRedo.canUndo()) {
+            false -> grayOutButton(undoButton)
+            true -> resetButtonColor(undoButton)
+        }
+        when (undoRedoEntity.undoRedo.canRedo()) {
+            false -> grayOutButton(redoButton)
+            true -> resetButtonColor(redoButton)
+        }
+    }
+
+    private fun grayOutButton(button: ClickButton) {
+        button.run {
+            color.a = .3f
+            touchable = Touchable.disabled
+        }
+    }
+
+    private fun resetButtonColor(button: ClickButton) {
+        button.run {
+            color.a = 1f
+            touchable = Touchable.enabled
+        }
     }
 
     override fun render(delta: Float) {

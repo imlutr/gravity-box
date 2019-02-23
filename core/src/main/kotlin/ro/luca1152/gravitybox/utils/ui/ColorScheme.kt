@@ -69,7 +69,7 @@ object ColorScheme {
                 Color().fromHsv(hue.toFloat(), 55f / 100f, 29f / 100f).apply { a = 1f }!!
 
         fun getLighterLightColor(hue: Int) =
-                Color().fromHsv(hue.toFloat(), 28 / 100f, 77 / 100f).apply { a = 1f }!!
+                Color().fromHsv(hue.toFloat(), 33 / 100f, 80 / 100f).apply { a = 1f }!!
 
         // Store the new colors
         lightColor = getLightColor(hue)
