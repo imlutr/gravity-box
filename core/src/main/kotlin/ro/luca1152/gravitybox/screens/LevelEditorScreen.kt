@@ -143,6 +143,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         root.run {
             uiStage.addActor(this)
             add(createLeftColumn()).growY().expandX().left()
+            add(createMiddleColumn()).growY().expandX().center()
             add(createRightColumn()).growY().expandX().right()
         }
 
@@ -220,6 +221,19 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             add(createMoveToolButton(toggledButton)).top().space(50f).row()
             add(createPlaceToolButton(toggledButton)).top().row()
             add(createBackButton(toggledButton)).expand().bottom()
+        }
+    }
+
+    private fun createMiddleColumn(): Table {
+        fun createPlayButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
+            addIcon("play-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setToggledButtonReference(toggledButton)
+            setToggleOffEveryOtherButton(true)
+        }
+
+        return Table().apply {
+            add(createPlayButton(toggledButton)).expand().bottom()
         }
     }
 
