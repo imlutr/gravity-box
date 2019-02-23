@@ -103,6 +103,32 @@ class RotateCommand(override val affectedEntity: Entity,
     }
 }
 
+class AddCommand(override val affectedEntity: Entity) : Command() {
+    override fun execute() {
+        affectedEntity.tryGet(ImageComponent)?.run {
+            img.isVisible = true
+            img.touchable = Touchable.enabled
+        }
+        affectedEntity.tryGet(TouchableBoundsComponent)?.run {
+            boundsImage.touchable = Touchable.enabled
+        }
+        affectedEntity.tryGet(ColorComponent)?.run {
+            colorType = ColorType.DARK
+        }
+    }
+
+    override fun unexecute() {
+        affectedEntity.tryGet(ImageComponent)?.run {
+            img.isVisible = false
+            img.touchable = Touchable.disabled
+        }
+        affectedEntity.tryGet(TouchableBoundsComponent)?.run {
+            boundsImage.touchable = Touchable.disabled
+        }
+        affectedEntity.remove(SelectedObjectComponent::class.java)
+    }
+}
+
 class DeleteCommand(override val affectedEntity: Entity) : Command() {
     override fun execute() {
         affectedEntity.tryGet(ImageComponent)?.run {
