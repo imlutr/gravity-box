@@ -26,7 +26,6 @@ class ClickButton(skin: Skin, styleName: String) : Button(skin, styleName) {
     private var clickRunnable: Runnable? = null
     private var clickListener = object : ClickListener() {
         override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-            println("$downColor vs $upColor")
             color = downColor
             icon?.color = downColor
             return true
