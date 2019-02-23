@@ -23,6 +23,7 @@ import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
@@ -34,6 +35,7 @@ import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.MapComponent
 import ro.luca1152.gravitybox.components.undoRedo
 import ro.luca1152.gravitybox.entities.EntityFactory
+import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.editor.*
@@ -73,13 +75,13 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private val inputMultiplexer = InputMultiplexer()
 
     override fun show() {
-        resetObjects()
+        resetVariables()
         createGame()
         createUI()
         handleAllInput()
     }
 
-    private fun resetObjects() {
+    private fun resetVariables() {
         uiStage.clear()
         skin = manager.get<Skin>("skins/uiskin.json")
         root.clear()
@@ -114,6 +116,14 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private fun createGameEntities() {
         inputEntity = EntityFactory.createInputEntity(toggledButton)
         undoRedoEntity = EntityFactory.createUndoRedoEntity()
+        createPlayer()
+    }
+
+    private fun createPlayer() {
+        PlayerEntity.createEntity(0,
+                MathUtils.floor(gameViewport.worldWidth / 2f) + .5f,
+                MathUtils.floor(gameViewport.worldHeight / 2f) + .5f
+        )
     }
 
     private fun handleGameInput() {
