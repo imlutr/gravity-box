@@ -49,11 +49,13 @@ class MapCreationSystem(private val levelEntity: Entity) : EntitySystem() {
     }
 
     private fun createBox2DBodies() {
-        val mapObjects = engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).get())
+        val mapObjects = engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
         mapObjects.forEach {
             when {
-                it.tryGet(PlatformComponent) != null -> it.body.set(it.image.toBox2DBody(BodyDef.BodyType.StaticBody), it)
-                it.tryGet(PlayerComponent) != null -> it.body.set(it.image.toBox2DBody(BodyDef.BodyType.DynamicBody, PlayerEntity.FRICTION, PlayerEntity.DENSITY), it)
+                it.tryGet(PlatformComponent) != null -> it.body.set(it.image.imageToBox2DBody(BodyDef.BodyType.StaticBody), it)
+                it.tryGet(PlayerComponent) != null -> it.body.set(
+                        it.image.imageToBox2DBody(BodyDef.BodyType.DynamicBody, PlayerEntity.FRICTION, PlayerEntity.DENSITY),
+                        it, PlayerEntity.FRICTION, PlayerEntity.DENSITY)
             }
         }
     }

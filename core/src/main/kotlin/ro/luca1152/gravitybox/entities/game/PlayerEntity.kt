@@ -46,7 +46,7 @@ object PlayerEntity {
             image.img.userObject = this
         }
         add(engine.createComponent(BodyComponent::class.java)).run {
-            body.set(image.toBox2DBody(BodyDef.BodyType.DynamicBody, DENSITY, FRICTION), this)
+            body.set(image.imageToBox2DBody(BodyDef.BodyType.DynamicBody, DENSITY, FRICTION), this, DENSITY, FRICTION)
         }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)

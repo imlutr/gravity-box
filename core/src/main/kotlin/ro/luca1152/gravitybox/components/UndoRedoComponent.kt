@@ -19,10 +19,13 @@ package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 import ro.luca1152.gravitybox.components.utils.tryGet
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 import java.util.*
 
 class UndoRedoComponent : Component, Poolable {
@@ -103,11 +106,16 @@ class RotateCommand(override val affectedEntity: Entity,
     }
 }
 
-class AddCommand(override val affectedEntity: Entity) : Command() {
+class AddCommand(override val affectedEntity: Entity,
+                 private val engine: PooledEngine = Injekt.get()) : Command() {
     override fun execute() {
         affectedEntity.tryGet(ImageComponent)?.run {
             img.isVisible = true
             img.touchable = Touchable.enabled
+
+            affectedEntity.tryGet(BodyComponent)?.run {
+                body = imageToBox2DBody(bodyType, density, friction)
+            }
         }
         affectedEntity.tryGet(TouchableBoundsComponent)?.run {
             boundsImage.touchable = Touchable.enabled
@@ -115,6 +123,7 @@ class AddCommand(override val affectedEntity: Entity) : Command() {
         affectedEntity.tryGet(ColorComponent)?.run {
             colorType = ColorType.DARK
         }
+        affectedEntity.remove(DeletedMapObjectComponent::class.java)
     }
 
     override fun unexecute() {
@@ -125,33 +134,23 @@ class AddCommand(override val affectedEntity: Entity) : Command() {
         affectedEntity.tryGet(TouchableBoundsComponent)?.run {
             boundsImage.touchable = Touchable.disabled
         }
+        affectedEntity.tryGet(BodyComponent)?.run {
+            destroyBody()
+        }
+        affectedEntity.add(engine.createComponent(DeletedMapObjectComponent::class.java))
         affectedEntity.remove(SelectedObjectComponent::class.java)
     }
 }
 
 class DeleteCommand(override val affectedEntity: Entity) : Command() {
+    private val addCommand = AddCommand(affectedEntity)
+
     override fun execute() {
-        affectedEntity.tryGet(ImageComponent)?.run {
-            img.isVisible = false
-            img.touchable = Touchable.disabled
-        }
-        affectedEntity.tryGet(TouchableBoundsComponent)?.run {
-            boundsImage.touchable = Touchable.disabled
-        }
-        affectedEntity.remove(SelectedObjectComponent::class.java)
+        addCommand.unexecute()
     }
 
     override fun unexecute() {
-        affectedEntity.tryGet(ImageComponent)?.run {
-            img.isVisible = true
-            img.touchable = Touchable.enabled
-        }
-        affectedEntity.tryGet(TouchableBoundsComponent)?.run {
-            boundsImage.touchable = Touchable.enabled
-        }
-        affectedEntity.tryGet(ColorComponent)?.run {
-            colorType = ColorType.DARK
-        }
+        addCommand.execute()
     }
 }
 

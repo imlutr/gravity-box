@@ -47,7 +47,7 @@ object PlatformEntity {
             image.img.userObject = this
         }
         add(engine.createComponent(BodyComponent::class.java)).run {
-            body.set(image.toBox2DBody(BodyDef.BodyType.StaticBody), this)
+            body.set(image.imageToBox2DBody(BodyDef.BodyType.StaticBody), this)
         }
         add(engine.createComponent(TouchableBoundsComponent::class.java)).run {
             touchableBounds.set(this, 0f, 1f - height)

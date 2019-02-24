@@ -20,10 +20,12 @@ package ro.luca1152.gravitybox.systems.editor
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Array
-import ro.luca1152.gravitybox.components.level
+import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
@@ -112,11 +114,26 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         levelEditorScreen.addGameSystems()
         hidePlayUI()
         showLevelEditorUI()
-        levelEditorScreen.moveToolButton.isToggled = true
+        enableMoveTool()
+        resetImagesOfBox2DBodies(engine)
     }
 
     private fun hidePlayUI() {
         rootTable.remove()
+    }
+
+    private fun enableMoveTool() {
+        levelEditorScreen.moveToolButton.isToggled = true
+    }
+
+    private fun resetImagesOfBox2DBodies(engine: Engine) {
+        engine.getEntitiesFor(Family.all(ImageComponent::class.java, BodyComponent::class.java).get()).forEach {
+            it.image.run {
+                this.x = it.body.initialX
+                this.y = it.body.initialY
+                this.img.rotation = it.body.initialRotationRad * MathUtils.radiansToDegrees
+            }
+        }
     }
 
     private fun showLevelEditorUI() {

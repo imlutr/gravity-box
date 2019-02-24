@@ -39,7 +39,6 @@ class PhysicsSyncSystem : IteratingSystem(Family.all(BodyComponent::class.java).
     private fun syncBodyPropertiesWithImage(physicsEntity: Entity, image: ImageComponent) {
         image.setPosition(physicsEntity.body.body.worldCenter.x, physicsEntity.body.body.worldCenter.y)
         image.img.rotation = physicsEntity.body.body.angle * MathUtils.radDeg
-        println(physicsEntity.body.body.angle)
     }
 
     private fun syncBodyPositionWithCollisionBox(physicsEntity: Entity, collisionBox: CollisionBoxComponent) {

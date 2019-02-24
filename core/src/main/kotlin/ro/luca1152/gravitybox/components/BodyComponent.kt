@@ -30,14 +30,33 @@ import uy.kohesive.injekt.api.get
 
 /** Contains a Box2D body. */
 class BodyComponent(private val world: World = Injekt.get()) : Component, Poolable {
+    var bodyType = BodyDef.BodyType.StaticBody
+    var density = 1f
+    var friction = .2f
+
+    var initialX = 0f
+    var initialY = 0f
+    var initialRotationRad = 0f
+
     var body: Body = world.createBody(BodyDef())
 
-    fun set(body: Body, userData: Entity) {
+    fun set(body: Body, userData: Entity, density: Float = 1f, friction: Float = .2f) {
         this.body = body
         body.userData = userData
+
+        bodyType = body.type
+        this.density = density
+        this.friction = friction
+        initialX = body.position.x
+        initialY = body.position.y
+        initialRotationRad = body.angle
     }
 
     override fun reset() {
+        destroyBody()
+    }
+
+    fun destroyBody() {
         if (world.bodies.contains(body, false))
             world.destroyBody(body)
     }
