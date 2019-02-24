@@ -304,6 +304,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
         update(delta) // This MUST be after clearScreen() because draw functions may be called in engine.update()
         uiStage.draw()
+//        println(engine.getEntitiesFor(Family.all(BulletComponent::class.java).get()).size())
     }
 
     override fun resize(width: Int, height: Int) {

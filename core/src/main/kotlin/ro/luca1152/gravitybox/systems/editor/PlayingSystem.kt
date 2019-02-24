@@ -26,6 +26,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
@@ -116,7 +117,8 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         hidePlayUI()
         showLevelEditorUI()
         enableMoveTool()
-        resetImagesOfBox2DBodies(engine)
+        removeEveryBullet(engine)
+        resetEntitiesPosition(engine)
     }
 
     private fun hidePlayUI() {
@@ -127,7 +129,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         levelEditorScreen.moveToolButton.isToggled = true
     }
 
-    private fun resetImagesOfBox2DBodies(engine: Engine) {
+    private fun resetEntitiesPosition(engine: Engine) {
         engine.getEntitiesFor(Family.all(ImageComponent::class.java, BodyComponent::class.java).get()).forEach {
             it.image.run {
                 this.x = it.body.initialX
@@ -135,6 +137,17 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
                 this.img.rotation = it.body.initialRotationRad * MathUtils.radiansToDegrees
             }
         }
+    }
+
+    private fun removeEveryBullet(engine: Engine) {
+        val entitiesToRemove = Array<Entity>()
+        engine.getEntitiesFor(Family.all(BulletComponent::class.java).get()).forEach {
+            entitiesToRemove.add(it)
+        }
+        entitiesToRemove.forEach {
+            engine.removeAndResetEntity(it)
+        }
+
     }
 
     private fun showLevelEditorUI() {
