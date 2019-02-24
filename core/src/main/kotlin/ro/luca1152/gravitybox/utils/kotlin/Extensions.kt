@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.utils.kotlin
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Body
@@ -74,4 +75,11 @@ fun Float.roundToNearest(nearest: Float, threshold: Float, startingValue: Float 
         Math.abs((this + startingValue) - valueRoundedUp) < threshold -> valueRoundedUp - startingValue
         else -> this
     }
+}
+
+fun Polygon.getRectangleCenter(): Vector2 {
+    require(vertices.size == 4 * 2) { "The Polygon given is not a rectangle." }
+
+    val vertices = transformedVertices
+    return Vector2((vertices[0] + vertices[4]) / 2f, (vertices[1] + vertices[5]) / 2f)
 }

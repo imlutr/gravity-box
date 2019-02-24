@@ -56,8 +56,8 @@ class LevelSystem(private var mapEntity: Entity,
     }
 
     private fun restartLevel() {
-        playerEntity.player.reset(playerEntity.physics.body)
-        for (entity in engine.getEntitiesFor(Family.one(PhysicsComponent::class.java, PlatformComponent::class.java)
+        playerEntity.player.reset(playerEntity.body.body)
+        for (entity in engine.getEntitiesFor(Family.one(BodyComponent::class.java, PlatformComponent::class.java)
                 .exclude(PlayerComponent::class.java, FinishComponent::class.java).get()))
             engine.removeAndResetEntity(entity)
         mapEntity.map.set(mapEntity.map.levelNumber)
@@ -70,11 +70,11 @@ class LevelSystem(private var mapEntity: Entity,
     }
 
     private fun resetEntities() {
-        playerEntity.physics.run {
+        playerEntity.body.run {
             reset()
             set(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap), playerEntity)
         }
-        finishEntity.physics.run {
+        finishEntity.body.run {
             reset()
             set(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap), finishEntity)
         }

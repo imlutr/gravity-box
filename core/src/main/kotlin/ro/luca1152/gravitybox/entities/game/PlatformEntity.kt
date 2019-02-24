@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.entities.game
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.*
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -27,8 +28,11 @@ import uy.kohesive.injekt.api.get
 object PlatformEntity {
     private const val DEFAULT_WIDTH = 1f
     private const val DEFAULT_HEIGHT = .25f
+    private const val DEFAULT_ROTATION = 0f
 
     fun createEntity(id: Int, x: Float, y: Float,
+                     width: Float = DEFAULT_WIDTH, height: Float = DEFAULT_HEIGHT,
+                     rotationInDeg: Float = DEFAULT_ROTATION,
                      engine: PooledEngine = Injekt.get(),
                      manager: AssetManager = Injekt.get()) = engine.createEntity().apply {
         add(engine.createComponent(NewMapObjectComponent::class.java)).run {
@@ -39,11 +43,14 @@ object PlatformEntity {
         }
         add(engine.createComponent(PlatformComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(manager.get<Texture>("graphics/pixel.png"), x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT)
+            image.set(manager.get<Texture>("graphics/pixel.png"), x, y, width, height, rotationInDeg)
             image.img.userObject = this
         }
+        add(engine.createComponent(BodyComponent::class.java)).run {
+            body.set(image.toBox2DBody(BodyDef.BodyType.StaticBody), this)
+        }
         add(engine.createComponent(TouchableBoundsComponent::class.java)).run {
-            touchableBounds.set(this, 0f, 1f - DEFAULT_HEIGHT)
+            touchableBounds.set(this, 0f, 1f - height)
         }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)

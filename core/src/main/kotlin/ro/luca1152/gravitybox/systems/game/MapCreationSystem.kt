@@ -20,13 +20,10 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
-import com.badlogic.gdx.math.Polygon
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
-import com.badlogic.gdx.physics.box2d.FixtureDef
-import com.badlogic.gdx.physics.box2d.PolygonShape
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.tryGet
+import ro.luca1152.gravitybox.entities.game.PlayerEntity
 
 /** Adds Box2D bodies to every map. It is called every time the level changes. */
 class MapCreationSystem(private val levelEntity: Entity) : EntitySystem() {
@@ -52,34 +49,12 @@ class MapCreationSystem(private val levelEntity: Entity) : EntitySystem() {
     }
 
     private fun createBox2DBodies() {
-        val mapObjects = engine.getEntitiesFor(Family.all(TouchableBoundsComponent::class.java).get())
+        val mapObjects = engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).get())
         mapObjects.forEach {
             when {
-                it.tryGet(PlatformComponent) != null -> createBox2DBodyFromImage(it.image)
+                it.tryGet(PlatformComponent) != null -> it.body.set(it.image.toBox2DBody(BodyDef.BodyType.StaticBody), it)
+                it.tryGet(PlayerComponent) != null -> it.body.set(it.image.toBox2DBody(BodyDef.BodyType.DynamicBody, PlayerEntity.FRICTION, PlayerEntity.DENSITY), it)
             }
-        }
-    }
-
-    private fun createBox2DBodyFromImage(image: ImageComponent) {
-        val bodyDef = BodyDef().apply {
-            type = BodyDef.BodyType.StaticBody
-        }
-        val polygonShape = PolygonShape().apply {
-            setAsBox(image.width / 2f, image.height / 2f, Vector2(image.width / 2f, image.height / 2f), 0f)
-            val polygon = Polygon().apply {
-                vertices = floatArrayOf(0f, 0f, image.width, 0f, image.width, image.height, 0f, image.height)
-                setPosition(image.img.x, image.img.y)
-                setOrigin(image.width / 2f, image.height / 2f)
-                rotate(image.img.rotation)
-            }
-            set(polygon.transformedVertices)
-        }
-        val fixtureDef = FixtureDef().apply {
-            shape = polygonShape
-        }
-        levelEntity.newMap.world.createBody(bodyDef).apply {
-            createFixture(fixtureDef)
-            polygonShape.dispose()
         }
     }
 }

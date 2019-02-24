@@ -29,7 +29,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Contains a Box2D body. */
-class PhysicsComponent(private val world: World = Injekt.get()) : Component, Poolable {
+class BodyComponent(private val world: World = Injekt.get()) : Component, Poolable {
     var body: Body = world.createBody(BodyDef())
 
     fun set(body: Body, userData: Entity) {
@@ -42,8 +42,8 @@ class PhysicsComponent(private val world: World = Injekt.get()) : Component, Poo
             world.destroyBody(body)
     }
 
-    companion object : ComponentResolver<PhysicsComponent>(PhysicsComponent::class.java)
+    companion object : ComponentResolver<BodyComponent>(BodyComponent::class.java)
 }
 
-val Entity.physics: PhysicsComponent
-    get() = PhysicsComponent[this]
+val Entity.body: BodyComponent
+    get() = BodyComponent[this]

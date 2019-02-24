@@ -326,7 +326,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         val localLeft = if (toLeft) -(newWidth - image.width) else 0f
         val localRight = if (toRight) (newWidth - image.width) else 0f
         updateObjectPolygon(image.img.x, image.img.y, image.width, image.height, image.img.rotation, localLeft, localRight)
-        val position = getRectangleCenter(selectedMapObjectPolygon)
+        val position = selectedMapObjectPolygon.getRectangleCenter()
         image.width = newWidth
         image.setPosition(position.x, position.y)
 
@@ -352,12 +352,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         }
     }
 
-    private fun getRectangleCenter(rectangle: Polygon): Vector2 {
-        require(rectangle.vertices.size == 4 * 2) { "The Polygon given is not a rectangle." }
 
-        val vertices = rectangle.transformedVertices
-        return Vector2((vertices[0] + vertices[4]) / 2f, (vertices[1] + vertices[5]) / 2f)
-    }
 
     private fun getSelectedObject(): Entity? {
         val selectedObjects = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())

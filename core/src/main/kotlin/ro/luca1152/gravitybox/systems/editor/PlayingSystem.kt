@@ -24,7 +24,6 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.level
-import ro.luca1152.gravitybox.components.newMap
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
@@ -90,8 +89,8 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
 //            addSystem(PlayerCameraSystem(mapEntity, playerEntity))
             addSystem(UpdateGameCameraSystem())
 //            addSystem(MapRenderingSystem(mapEntity))
-            addSystem(PhysicsDebugRenderingSystem(levelEntity.newMap.world))
             addSystem(ImageRenderingSystem())
+            addSystem(PhysicsDebugRenderingSystem())
         }
     }
 

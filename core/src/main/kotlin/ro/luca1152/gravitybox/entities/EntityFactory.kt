@@ -43,12 +43,12 @@ object EntityFactory {
         // BulletComponent
         add(engine.createComponent(BulletComponent::class.java))
 
-        // PhysicsComponent
-        add(engine.createComponent(PhysicsComponent::class.java))
+        // BodyComponent
+        add(engine.createComponent(BodyComponent::class.java))
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
             bullet = true
-            position.set(playerEntity.physics.body.worldCenter)
+            position.set(playerEntity.body.body.worldCenter)
         }
         val fixtureDef = FixtureDef().apply {
             shape = PolygonShape().apply { setAsBox(.15f, .15f) }
@@ -62,7 +62,7 @@ object EntityFactory {
             userData = this@label
         }
         fixtureDef.shape.dispose()
-        this.physics.set(body, this)
+        this.body.set(body, this)
 
         // ImageComponent
         add(engine.createComponent(ImageComponent::class.java))
@@ -113,9 +113,9 @@ object EntityFactory {
         // FinishComponent
         add(engine.createComponent(FinishComponent::class.java))
 
-        // PhysicsComponent
-        add(engine.createComponent(PhysicsComponent::class.java))
-        this.physics.set(body, this)
+        // BodyComponent
+        add(engine.createComponent(BodyComponent::class.java))
+        this.body.set(body, this)
 
         // CollisionBoxComponent
         add(engine.createComponent(CollisionBoxComponent::class.java))
@@ -123,7 +123,7 @@ object EntityFactory {
 
         // ImageComponent
         add(engine.createComponent(ImageComponent::class.java))
-        this.image.set(manager.getAsset("graphics/finish.png"), physics.body.worldCenter)
+        this.image.set(manager.getAsset("graphics/finish.png"), this.body.body.worldCenter)
         this.image.img.run {
             addAction(RepeatAction().apply {
                 action = Actions.sequence(
@@ -161,9 +161,9 @@ object EntityFactory {
                 add(engine.createComponent(PlatformComponent::class.java))
                 this.platform.isDynamic = platform.first.userData as Boolean
 
-                // PhysicsComponent
-                add(engine.createComponent(PhysicsComponent::class.java))
-                this.physics.set(platform.first, this)
+                // BodyComponent
+                add(engine.createComponent(BodyComponent::class.java))
+                this.body.set(platform.first, this)
                 engine.addEntity(this)
             }
         }
@@ -175,9 +175,9 @@ object EntityFactory {
         // PlayerComponent
         add(engine.createComponent(PlayerComponent::class.java))
 
-        // PhysicsComponent
-        add(engine.createComponent(PhysicsComponent::class.java))
-        this.physics.set(body, this)
+        // BodyComponent
+        add(engine.createComponent(BodyComponent::class.java))
+        this.body.set(body, this)
 
         // CollisionBoxComponent
         add(engine.createComponent(CollisionBoxComponent::class.java))
@@ -185,7 +185,7 @@ object EntityFactory {
 
         // ImageComponent
         add(engine.createComponent(ImageComponent::class.java))
-        this.image.set(manager.getAsset("graphics/player.png"), physics.body.worldCenter)
+        this.image.set(manager.getAsset("graphics/player.png"), this.body.body.worldCenter)
 
         // ColorComponent
         add(engine.createComponent(ColorComponent::class.java))
@@ -201,9 +201,9 @@ object EntityFactory {
                 // PointComponent
                 add(engine.createComponent(PointComponent::class.java))
 
-                // PhysicsComponent
-                add(engine.createComponent(PhysicsComponent::class.java))
-                this.physics.set(body, this)
+                // BodyComponent
+                add(engine.createComponent(BodyComponent::class.java))
+                this.body.set(body, this)
 
                 // CollisionBoxComponent
                 add(engine.createComponent(CollisionBoxComponent::class.java))

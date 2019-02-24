@@ -31,7 +31,7 @@ fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? =
 /** Removes the [entity] from the engine and resets each of its components. */
 fun Engine.removeAndResetEntity(entity: Entity) {
     // Reset every component so you don't have to manually reset them for
-    // each entity, such as calling world.destroyBody(entity.physics.body).
+    // each entity, such as calling world.destroyBody(entity.body.body).
     for (component in entity.components) {
         if (component is Poolable)
             component.reset()

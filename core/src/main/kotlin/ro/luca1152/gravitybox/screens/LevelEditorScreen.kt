@@ -32,7 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.MapComponent
+import ro.luca1152.gravitybox.components.NewMapComponent
 import ro.luca1152.gravitybox.components.undoRedo
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
@@ -66,7 +66,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     lateinit var moveToolButton: ToggleButton
 
     // Game
-    private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
+    private val world = World(Vector2(0f, NewMapComponent.GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity

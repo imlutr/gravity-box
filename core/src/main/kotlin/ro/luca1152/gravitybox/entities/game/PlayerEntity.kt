@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.entities.game
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.*
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -27,6 +28,8 @@ import uy.kohesive.injekt.api.get
 object PlayerEntity {
     private const val WIDTH = 1f
     private const val HEIGHT = 1f
+    const val FRICTION = 2f
+    const val DENSITY = 1.15f
 
     fun createEntity(id: Int, x: Float, y: Float,
                      manager: AssetManager = Injekt.get(),
@@ -41,6 +44,9 @@ object PlayerEntity {
         add(engine.createComponent(ImageComponent::class.java)).run {
             image.set(manager.get<Texture>("graphics/player.png"), x, y, WIDTH, HEIGHT)
             image.img.userObject = this
+        }
+        add(engine.createComponent(BodyComponent::class.java)).run {
+            body.set(image.toBox2DBody(BodyDef.BodyType.DynamicBody, DENSITY, FRICTION), this)
         }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)

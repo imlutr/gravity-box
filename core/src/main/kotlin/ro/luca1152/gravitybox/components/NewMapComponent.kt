@@ -19,20 +19,21 @@ package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 @Suppress("PrivatePropertyName")
 class NewMapComponent : Component, Poolable {
     companion object : ComponentResolver<NewMapComponent>(NewMapComponent::class.java) {
-        private const val GRAVITY = -25f
+        const val GRAVITY = -25f
     }
 
-    val world = World(Vector2(0f, GRAVITY), true)
+    val world: World = Injekt.get()
 
     /**
      * The level number of the currently stored map. It may differ from the level intended
