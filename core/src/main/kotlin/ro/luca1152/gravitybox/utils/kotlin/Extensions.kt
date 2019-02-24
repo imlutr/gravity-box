@@ -17,6 +17,9 @@
 
 package ro.luca1152.gravitybox.utils.kotlin
 
+import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
@@ -82,4 +85,21 @@ fun Polygon.getRectangleCenter(): Vector2 {
 
     val vertices = transformedVertices
     return Vector2((vertices[0] + vertices[4]) / 2f, (vertices[1] + vertices[5]) / 2f)
+}
+
+/**
+ * Returns the first entity of [Engine.getEntitiesFor].
+ * If there is more than one or no Entity found, [IllegalStateException] is thrown.
+ */
+fun Engine.getSingletonFor(family: Family): Entity {
+    val entitiesFound = getEntitiesFor(family)
+    check(entitiesFound.size() <= 1) { "A singleton can't be instantiated more than once." }
+    check(entitiesFound.size() != 0) { "No singleton found for the given Family. " }
+    return entitiesFound.first()
+}
+
+fun Engine.removeAllSystems() {
+    systems.forEach {
+        removeSystem(it)
+    }
 }

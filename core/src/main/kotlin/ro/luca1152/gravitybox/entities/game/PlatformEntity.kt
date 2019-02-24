@@ -22,6 +22,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -29,6 +30,8 @@ object PlatformEntity {
     private const val DEFAULT_WIDTH = 1f
     private const val DEFAULT_HEIGHT = .25f
     private const val DEFAULT_ROTATION = 0f
+    val CATEGORY_BITS = EntityCategory.OBSTACLE.bits
+    val MASK_BITS = EntityCategory.OBSTACLE.bits
 
     fun createEntity(id: Int, x: Float, y: Float,
                      width: Float = DEFAULT_WIDTH, height: Float = DEFAULT_HEIGHT,
@@ -47,7 +50,7 @@ object PlatformEntity {
             image.img.userObject = this
         }
         add(engine.createComponent(BodyComponent::class.java)).run {
-            body.set(image.imageToBox2DBody(BodyDef.BodyType.StaticBody), this)
+            body.set(image.imageToBox2DBody(BodyDef.BodyType.StaticBody), this, CATEGORY_BITS, MASK_BITS)
         }
         add(engine.createComponent(TouchableBoundsComponent::class.java)).run {
             touchableBounds.set(this, 0f, 1f - height)

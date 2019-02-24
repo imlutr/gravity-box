@@ -22,12 +22,15 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object PlayerEntity {
     private const val WIDTH = 1f
     private const val HEIGHT = 1f
+    val CATEGORY_BITS = EntityCategory.PLAYER.bits
+    val MASK_BITS = EntityCategory.OBSTACLE.bits
     const val FRICTION = 2f
     const val DENSITY = 1.15f
 
@@ -46,7 +49,8 @@ object PlayerEntity {
             image.img.userObject = this
         }
         add(engine.createComponent(BodyComponent::class.java)).run {
-            body.set(image.imageToBox2DBody(BodyDef.BodyType.DynamicBody, DENSITY, FRICTION), this, DENSITY, FRICTION)
+            body.set(image.imageToBox2DBody(BodyDef.BodyType.DynamicBody, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION),
+                    this, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION)
         }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)

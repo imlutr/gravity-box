@@ -69,7 +69,7 @@ class PlayScreen(
             addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
-            addSystem(BulletCollisionSystem(playerEntity))
+            addSystem(BulletCollisionSystem())
             addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
             addSystem(PointSystem(mapEntity.map))

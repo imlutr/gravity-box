@@ -24,15 +24,19 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.bodies
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Contains a Box2D body. */
 class BodyComponent(private val world: World = Injekt.get()) : Component, Poolable {
+    // The properties of the body at the moment of its creation. Changing these values does NOT affect the body.
     var bodyType = BodyDef.BodyType.StaticBody
     var density = 1f
     var friction = .2f
+    var categoryBits: Short = 0
+    var maskBits: Short = 0
 
     var initialX = 0f
     var initialY = 0f
@@ -40,13 +44,20 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
 
     var body: Body = world.createBody(BodyDef())
 
-    fun set(body: Body, userData: Entity, density: Float = 1f, friction: Float = .2f) {
+    fun set(body: Body, userData: Entity,
+            categoryBits: Short = EntityCategory.NONE.bits, maskBits: Short = EntityCategory.NONE.bits,
+            density: Float = 1f, friction: Float = .2f) {
         this.body = body
         body.userData = userData
 
+        // Update properties
         bodyType = body.type
         this.density = density
         this.friction = friction
+        this.categoryBits = categoryBits
+        this.maskBits = maskBits
+
+        // Update initial values
         initialX = body.position.x
         initialY = body.position.y
         initialRotationRad = body.angle

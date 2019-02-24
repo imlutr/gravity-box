@@ -114,7 +114,7 @@ class AddCommand(override val affectedEntity: Entity,
             img.touchable = Touchable.enabled
 
             affectedEntity.tryGet(BodyComponent)?.run {
-                body = imageToBox2DBody(bodyType, density, friction)
+                body = imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction)
             }
         }
         affectedEntity.tryGet(TouchableBoundsComponent)?.run {
