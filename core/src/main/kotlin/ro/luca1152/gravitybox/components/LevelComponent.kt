@@ -28,11 +28,13 @@ class LevelComponent : Component, Poolable {
     /** If true, the [MapCreationSystem] will run and update the [NewMapComponent]. */
     var forceUpdateMap = false
 
+    var restartLevel = false
     var levelNumber = 0
 
     override fun reset() {
         levelNumber = 0
         forceUpdateMap = false
+        restartLevel = false
     }
 
     companion object : ComponentResolver<LevelComponent>(LevelComponent::class.java)

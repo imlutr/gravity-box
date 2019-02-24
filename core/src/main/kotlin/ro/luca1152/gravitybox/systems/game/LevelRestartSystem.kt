@@ -17,24 +17,34 @@
 
 package ro.luca1152.gravitybox.systems.game
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
-import com.badlogic.ashley.signals.Signal
-import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.math.Vector2
 import ro.luca1152.gravitybox.components.BodyComponent
-import ro.luca1152.gravitybox.components.PlayerComponent
+import ro.luca1152.gravitybox.components.LevelComponent
 import ro.luca1152.gravitybox.components.body
-import ro.luca1152.gravitybox.events.GameEvent
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import ro.luca1152.gravitybox.components.level
+import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 
-/** Restarts the level when the player is off-screen. */
-class AutoRestartSystem(private val gameEventSignal: Signal<GameEvent> = Injekt.get()) : IteratingSystem(Family.all(PlayerComponent::class.java, BodyComponent::class.java).get()) {
-    override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (playerIsUnderMap(entity.body.body.worldCenter))
-            gameEventSignal.dispatch(GameEvent.LEVEL_RESTART)
+/** Handles what happens when a level is marked as to be restarted. */
+class LevelRestartSystem : EntitySystem() {
+    private lateinit var levelEntity: Entity
+
+    override fun addedToEngine(engine: Engine) {
+        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
     }
 
-    private fun playerIsUnderMap(playerPosition: Vector2) = playerPosition.y < -10f
+    override fun update(deltaTime: Float) {
+        if (!levelEntity.level.restartLevel)
+            return
+        restartTheLevel()
+    }
+
+    private fun restartTheLevel() {
+        engine.getEntitiesFor(Family.all(BodyComponent::class.java).get()).forEach {
+            it.body.resetToInitialState()
+        }
+        levelEntity.level.restartLevel = false
+    }
 }

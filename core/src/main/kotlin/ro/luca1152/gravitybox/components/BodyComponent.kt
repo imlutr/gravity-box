@@ -63,6 +63,15 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
         initialRotationRad = body.angle
     }
 
+    fun resetToInitialState() {
+        body.run {
+            setTransform(initialX, initialY, initialRotationRad)
+            applyForceToCenter(0f, 0f, true) // Wake up the body so it doesn't float
+            setLinearVelocity(0f, 0f)
+            angularVelocity = 0f
+        }
+    }
+
     override fun reset() {
         destroyBody()
     }

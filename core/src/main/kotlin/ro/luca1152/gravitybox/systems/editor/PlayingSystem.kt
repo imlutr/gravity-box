@@ -87,7 +87,8 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
             addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
 //            addSystem(PointSystem(mapEntity.map))
-            addSystem(AutoRestartSystem())
+            addSystem(LevelAutoRestartSystem())
+            addSystem(LevelRestartSystem())
 //            addSystem(ColorSchemeSystem(mapEntity))
             addSystem(ColorSyncSystem())
 //            addSystem(PlayerCameraSystem(mapEntity, playerEntity))
@@ -117,7 +118,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         hidePlayUI()
         showLevelEditorUI()
         enableMoveTool()
-        removeEveryBullet(engine)
+        removePlayEntities(engine)
         resetEntitiesPosition(engine)
     }
 
@@ -127,6 +128,11 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
 
     private fun enableMoveTool() {
         levelEditorScreen.moveToolButton.isToggled = true
+    }
+
+    private fun removePlayEntities(engine: Engine) {
+        removeEveryBullet(engine)
+        engine.removeEntity(levelEntity)
     }
 
     private fun resetEntitiesPosition(engine: Engine) {
@@ -147,7 +153,6 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         entitiesToRemove.forEach {
             engine.removeAndResetEntity(it)
         }
-
     }
 
     private fun showLevelEditorUI() {
