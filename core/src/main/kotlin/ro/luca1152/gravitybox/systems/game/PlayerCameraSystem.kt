@@ -25,7 +25,7 @@ import com.badlogic.gdx.math.Vector3
 import ro.luca1152.gravitybox.components.LevelComponent
 import ro.luca1152.gravitybox.components.PlayerComponent
 import ro.luca1152.gravitybox.components.image
-import ro.luca1152.gravitybox.components.map
+import ro.luca1152.gravitybox.components.newMap
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.lerp
@@ -49,7 +49,7 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
 
     override fun update(deltaTime: Float) {
         smoothlyFollowPlayer()
-//        keepCameraWithinBounds() TODO()
+        keepCameraWithinBounds()
     }
 
     private fun smoothlyFollowPlayer() {
@@ -61,14 +61,17 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
     }
 
     private fun keepCameraWithinBounds(zoom: Float = 1f) {
+        val mapWidth = levelEntity.newMap.widthInTiles
+        val mapHeight = levelEntity.newMap.heightInTiles
+
         var mapLeft = 0f
-        var mapRight = levelEntity.map.widthInTiles * zoom
-        if (levelEntity.map.widthInTiles * zoom > gameCamera.viewportWidth * zoom) {
+        var mapRight = mapWidth * zoom
+        if (mapWidth * zoom > gameCamera.viewportWidth * zoom) {
             mapLeft = (-1) * zoom
-            mapRight = (levelEntity.map.widthInTiles + 1) * zoom
+            mapRight = (mapWidth + 1) * zoom
         }
         val mapBottom = 0 * zoom
-        val mapTop = levelEntity.map.heightInTiles * zoom
+        val mapTop = mapHeight * zoom
         val cameraHalfWidth = gameCamera.viewportWidth / 2f * zoom
         val cameraHalfHeight = gameCamera.viewportHeight / 2f * zoom
         val cameraLeft = gameCamera.position.x - cameraHalfWidth

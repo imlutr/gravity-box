@@ -33,6 +33,8 @@ import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.NewMapComponent
+import ro.luca1152.gravitybox.components.body
+import ro.luca1152.gravitybox.components.newMap
 import ro.luca1152.gravitybox.components.undoRedo
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.entities.game.LevelEntity
@@ -57,6 +59,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
                         private val manager: AssetManager = Injekt.get(),
                         private val gameStage: GameStage = Injekt.get(),
                         private val gameViewport: GameViewport = Injekt.get(),
+                        private val gameCamera: GameCamera = Injekt.get(),
                         private val uiStage: UIStage = Injekt.get()) : KtxScreen {
     // UI
     private var screenIsHiding = false
@@ -119,15 +122,16 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private fun createGameEntities() {
         inputEntity = EntityFactory.createInputEntity(toggledButton)
         undoRedoEntity = EntityFactory.createUndoRedoEntity()
-        LevelEntity.createEntity()
-        createPlayer()
+        val levelEntity = LevelEntity.createEntity()
+        val playerEntity = PlayerEntity.createEntity(0,
+                MathUtils.floor(levelEntity.newMap.widthInTiles / 2f) + .5f,
+                MathUtils.floor(levelEntity.newMap.heightInTiles / 2f) + .5f)
+        centerCameraOnPlayer(playerEntity)
     }
 
-    private fun createPlayer() {
-        PlayerEntity.createEntity(0,
-                MathUtils.floor(gameViewport.worldWidth / 2f) + .5f,
-                MathUtils.floor(gameViewport.worldHeight / 2f) + .5f
-        )
+    private fun centerCameraOnPlayer(playerEntity: Entity) {
+        val playerPosition = playerEntity.body.body.worldCenter
+        gameCamera.position.set(playerPosition.x, playerPosition.y, 0f)
     }
 
     private fun handleGameInput() {
