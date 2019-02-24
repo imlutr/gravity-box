@@ -22,7 +22,9 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Pool.Poolable
@@ -30,6 +32,7 @@ import ktx.actors.minus
 import ktx.actors.plus
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 import ro.luca1152.gravitybox.pixelsToMeters
+import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -45,11 +48,13 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
         get() = img.width
         set(value) {
             img.width = value
+            updateOrigin()
         }
     var height: Float
         get() = img.height
         set(value) {
             img.height = value
+            updateOrigin()
         }
 
     /** The X position of the Image's center. */
@@ -84,7 +89,7 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             img.color = value
         }
 
-    fun set(texture: Texture, x: Float, y: Float, width: Float = 0f, height: Float = 0f) {
+    fun set(texture: Texture, x: Float, y: Float, width: Float = 0f, height: Float = 0f, rotationInDeg: Float = 0f) {
         img.run {
             drawable = TextureRegionDrawable(TextureRegion(texture))
             when (width == 0f && height == 0f) {
@@ -92,6 +97,7 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
                 false -> setSize(width, height)
             }
             setOrigin(this.width / 2f, this.height / 2f)
+            rotation = rotationInDeg
         }
 
         // ImageComponent.setX() should be used, and not img.setPosition()
@@ -105,6 +111,42 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
     fun setPosition(x: Float, y: Float) {
         this.x = x
         this.y = y
+    }
+
+    private fun updateOrigin() {
+        img.run {
+            originX = width / 2f
+            originY = height / 2f
+        }
+    }
+
+    /**
+     * Creates a [Box2D] body based on the image's size and rotation. It should be used only
+     * if the size of the intended body is the same as the entity's image.
+     */
+    fun imageToBox2DBody(bodyType: BodyDef.BodyType,
+                         categoryBits: Short = EntityCategory.OBSTACLE.bits, maskBits: Short = EntityCategory.OBSTACLE.bits,
+                         density: Float = 1f, friction: Float = 0.2f,
+                         world: World = Injekt.get()): Body {
+        val bodyDef = BodyDef().apply {
+            type = bodyType
+            fixedRotation = false
+        }
+        val polygonShape = PolygonShape().apply {
+            setAsBox(width / 2f, height / 2f)
+        }
+        val fixtureDef = FixtureDef().apply {
+            shape = polygonShape
+            filter.categoryBits = categoryBits
+            filter.maskBits = maskBits
+            this.density = density
+            this.friction = friction
+        }
+        return world.createBody(bodyDef).apply {
+            createFixture(fixtureDef)
+            polygonShape.dispose()
+            setTransform(x, y, img.rotation * MathUtils.degreesToRadians)
+        }
     }
 
     override fun reset() {

@@ -19,19 +19,37 @@ package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.math.Polygon
+import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
-import ro.luca1152.gravitybox.utils.kotlin.Reference
-import ro.luca1152.gravitybox.utils.ui.ToggleButton
 
-/** Keeps track of which UI button is currently toggled. */
-class ButtonListenerComponent(var toggledButton: Reference<ToggleButton>) : Component, Poolable {
-    override fun reset() {
-        toggledButton = Reference()
+/** Contains a shape which is drawn in the DebugRenderingSystem. */
+class DebugComponent : Component, Poolable {
+    var polygon: Polygon? = null
+    var rectangle: Rectangle? = null
+    var point: Vector2? = null
+
+    fun set(polygon: Polygon) {
+        this.polygon = polygon
     }
 
-    companion object : ComponentResolver<ButtonListenerComponent>(ButtonListenerComponent::class.java)
+    fun set(rectangle: Rectangle) {
+        this.rectangle = rectangle
+    }
+
+    fun set(point: Vector2) {
+        this.point = point
+    }
+
+    override fun reset() {
+        polygon = null
+        rectangle = null
+    }
+
+    companion object : ComponentResolver<DebugComponent>(DebugComponent::class.java)
 }
 
-val Entity.buttonListener: ButtonListenerComponent
-    get() = ButtonListenerComponent[this]
+val Entity.debug: DebugComponent
+    get() = DebugComponent[this]

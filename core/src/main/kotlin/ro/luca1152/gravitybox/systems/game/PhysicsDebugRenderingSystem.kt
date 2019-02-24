@@ -23,7 +23,6 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
@@ -38,7 +37,6 @@ import uy.kohesive.injekt.api.get
 
 @Suppress("LibGDXFlushInsideLoop")
 class PhysicsDebugRenderingSystem(private val world: World = Injekt.get(),
-                                  private val batch: Batch = Injekt.get(),
                                   private val shapeRenderer: ShapeRenderer = Injekt.get(),
                                   private val gameViewport: GameViewport = Injekt.get(),
                                   private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
@@ -51,7 +49,6 @@ class PhysicsDebugRenderingSystem(private val world: World = Injekt.get(),
 
     override fun update(deltaTime: Float) {
         gameViewport.apply()
-        batch.projectionMatrix = gameCamera.combined
         shapeRenderer.projectionMatrix = gameCamera.combined
         drawDebugPhysics()
     }
@@ -66,8 +63,8 @@ class PhysicsDebugRenderingSystem(private val world: World = Injekt.get(),
 
     private fun drawXAtOrigins() {
         shapeRenderer.set(ShapeRenderer.ShapeType.Line)
-        for (entity in engine.getEntitiesFor(Family.all(PhysicsComponent::class.java).get())) {
-            val body = entity.physics.body
+        for (entity in engine.getEntitiesFor(Family.all(BodyComponent::class.java).get())) {
+            val body = entity.body.body
             if (body.type == BodyDef.BodyType.DynamicBody && body.userData != null) {
                 (body.userData as Entity).run {
                     when {
@@ -77,11 +74,7 @@ class PhysicsDebugRenderingSystem(private val world: World = Injekt.get(),
                         this.tryGet(BulletComponent) != null -> shapeRenderer.color = Color.YELLOW
                     }
                     if (this.tryGet(PlayerComponent) != null)
-                        shapeRenderer.x(
-                                image.img.x + image.img.originX,
-                                image.img.y + image.img.originY,
-                                .05f
-                        )
+                        shapeRenderer.x(image.img.x + image.img.originX, image.img.y + image.img.originY, .05f)
                 }
 
             }

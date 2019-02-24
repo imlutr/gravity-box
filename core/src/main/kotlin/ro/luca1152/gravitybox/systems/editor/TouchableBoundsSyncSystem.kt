@@ -15,26 +15,23 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.systems.game
+package ro.luca1152.gravitybox.systems.editor
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
-import com.badlogic.ashley.signals.Signal
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.math.Vector2
-import ro.luca1152.gravitybox.components.PhysicsComponent
-import ro.luca1152.gravitybox.components.PlayerComponent
-import ro.luca1152.gravitybox.components.physics
-import ro.luca1152.gravitybox.events.GameEvent
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import ro.luca1152.gravitybox.components.ImageComponent
+import ro.luca1152.gravitybox.components.TouchableBoundsComponent
+import ro.luca1152.gravitybox.components.image
+import ro.luca1152.gravitybox.components.touchableBounds
 
-/** Restarts the level when the player is off-screen. */
-class AutoRestartSystem(private val gameEventSignal: Signal<GameEvent> = Injekt.get()) : IteratingSystem(Family.all(PlayerComponent::class.java, PhysicsComponent::class.java).get()) {
+/** Syncs the [TouchableBoundsComponent]'s position and size with [ImageComponent]'s.*/
+class TouchableBoundsSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, TouchableBoundsComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (playerIsUnderMap(entity.physics.body.worldCenter))
-            gameEventSignal.dispatch(GameEvent.LEVEL_RESTART)
+        entity.touchableBounds.run {
+            setPosition(entity.image.x, entity.image.y)
+            setSize(entity.image.width, entity.image.height)
+            boundsImage.rotation = entity.image.img.rotation
+        }
     }
-
-    private fun playerIsUnderMap(playerPosition: Vector2) = playerPosition.y < -10f
 }

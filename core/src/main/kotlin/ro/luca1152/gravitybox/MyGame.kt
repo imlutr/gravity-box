@@ -28,9 +28,7 @@ import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
 import ro.luca1152.gravitybox.screens.*
-import ro.luca1152.gravitybox.utils.kotlin.GameCamera
-import ro.luca1152.gravitybox.utils.kotlin.GameStage
-import ro.luca1152.gravitybox.utils.kotlin.GameViewport
+import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
@@ -51,6 +49,7 @@ class MyGame : KtxGame<Screen>() {
 
     private fun initializeDependencyInjection() {
         Injekt.run {
+            addSingleton(PooledEngine())
             addSingleton(this@MyGame)
             addSingleton(SpriteBatch() as Batch)
             addSingleton(ShapeRenderer())
@@ -58,7 +57,9 @@ class MyGame : KtxGame<Screen>() {
             addSingleton(GameCamera)
             addSingleton(GameViewport)
             addSingleton(GameStage)
-            addSingleton(PooledEngine())
+            addSingleton(UICamera)
+            addSingleton(UIViewport)
+            addSingleton(UIStage)
         }
     }
 

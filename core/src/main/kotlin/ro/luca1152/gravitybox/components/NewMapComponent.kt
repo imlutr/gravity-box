@@ -20,30 +20,46 @@ package ro.luca1152.gravitybox.components
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.Body
-import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
-import ro.luca1152.gravitybox.utils.kotlin.bodies
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/** Contains a Box2D body. */
-class PhysicsComponent(private val world: World = Injekt.get()) : Component, Poolable {
-    var body: Body = world.createBody(BodyDef())
+@Suppress("PrivatePropertyName")
+class NewMapComponent : Component, Poolable {
+    companion object : ComponentResolver<NewMapComponent>(NewMapComponent::class.java) {
+        const val GRAVITY = -25f
+    }
 
-    fun set(body: Body, userData: Entity) {
-        this.body = body
-        body.userData = userData
+    val world: World = Injekt.get()
+    var widthInTiles = 0
+    var heightInTiles = 0
+    /**
+     * The level number of the currently stored map. It may differ from the level intended
+     * to be played stored in [LevelComponent].
+     */
+    var levelNumber = 0
+
+    fun set(widthInTiles: Int, heightInTiles: Int) {
+        this.widthInTiles = widthInTiles
+        this.heightInTiles = heightInTiles
     }
 
     override fun reset() {
-        if (world.bodies.contains(body, false))
-            world.destroyBody(body)
+        destroyAllBodies()
+        levelNumber = 0
     }
 
-    companion object : ComponentResolver<PhysicsComponent>(PhysicsComponent::class.java)
+    private fun destroyAllBodies() {
+        val bodiesToRemove = Array<Body>()
+        world.getBodies(bodiesToRemove)
+        bodiesToRemove.forEach {
+            world.destroyBody(it)
+        }
+    }
 }
 
-val Entity.physics: PhysicsComponent
-    get() = PhysicsComponent[this]
+val Entity.newMap: NewMapComponent
+    get() = NewMapComponent[this]

@@ -21,12 +21,15 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.tryGet
 
-/** Syncs [PhysicsComponent] properties with other components. */
-class PhysicsSyncSystem : IteratingSystem(Family.all(PhysicsComponent::class.java).one(ImageComponent::class.java, CollisionBoxComponent::class.java).get()) {
+/** Syncs [BodyComponent] properties with other components. */
+class PhysicsSyncSystem : IteratingSystem(Family.all(BodyComponent::class.java).one(ImageComponent::class.java, CollisionBoxComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
+        if (entity.body.body.type == BodyDef.BodyType.StaticBody)
+            return
         if (entity.tryGet(ImageComponent) != null)
             syncBodyPropertiesWithImage(entity, entity.image)
         if (entity.tryGet(CollisionBoxComponent) != null)
@@ -34,14 +37,14 @@ class PhysicsSyncSystem : IteratingSystem(Family.all(PhysicsComponent::class.jav
     }
 
     private fun syncBodyPropertiesWithImage(physicsEntity: Entity, image: ImageComponent) {
-        image.setPosition(physicsEntity.physics.body.worldCenter.x, physicsEntity.physics.body.worldCenter.y)
-        image.img.rotation = physicsEntity.physics.body.angle * MathUtils.radDeg
+        image.setPosition(physicsEntity.body.body.worldCenter.x, physicsEntity.body.body.worldCenter.y)
+        image.img.rotation = physicsEntity.body.body.angle * MathUtils.radDeg
     }
 
     private fun syncBodyPositionWithCollisionBox(physicsEntity: Entity, collisionBox: CollisionBoxComponent) {
         collisionBox.box.setPosition(
-                physicsEntity.physics.body.worldCenter.x - collisionBox.size / 2f,
-                physicsEntity.physics.body.worldCenter.y - collisionBox.size / 2f
+                physicsEntity.body.body.worldCenter.x - collisionBox.size / 2f,
+                physicsEntity.body.body.worldCenter.y - collisionBox.size / 2f
         )
     }
 }

@@ -17,29 +17,33 @@
 
 package ro.luca1152.gravitybox.screens
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.MapComponent
+import ro.luca1152.gravitybox.components.NewMapComponent
+import ro.luca1152.gravitybox.components.body
+import ro.luca1152.gravitybox.components.newMap
+import ro.luca1152.gravitybox.components.undoRedo
 import ro.luca1152.gravitybox.entities.EntityFactory
+import ro.luca1152.gravitybox.entities.game.LevelEntity
+import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.editor.*
 import ro.luca1152.gravitybox.systems.game.ColorSyncSystem
+import ro.luca1152.gravitybox.systems.game.DebugRenderingSystem
 import ro.luca1152.gravitybox.systems.game.ImageRenderingSystem
 import ro.luca1152.gravitybox.systems.game.UpdateGameCameraSystem
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -51,136 +55,55 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
-class LevelEditorScreen(
-    private val engine: PooledEngine = Injekt.get(),
-    private val batch: Batch = Injekt.get(),
-    private val manager: AssetManager = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get(),
-    private val gameViewport: GameViewport = Injekt.get()
-) : KtxScreen {
+class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
+                        private val manager: AssetManager = Injekt.get(),
+                        private val gameStage: GameStage = Injekt.get(),
+                        private val gameViewport: GameViewport = Injekt.get(),
+                        private val gameCamera: GameCamera = Injekt.get(),
+                        private val uiStage: UIStage = Injekt.get()) : KtxScreen {
     // UI
+    private var screenIsHiding = false
     private lateinit var skin: Skin
-    private lateinit var uiStage: Stage
-    private lateinit var root: Table
-    private lateinit var toggledButton: Reference<ToggleButton>
-    private lateinit var focusedObject: Reference<Image>
+    val root: Table = createRootTable()
+    private val toggledButton = Reference<ToggleButton>()
+    private lateinit var undoButton: ClickButton
+    private lateinit var redoButton: ClickButton
+    lateinit var moveToolButton: ToggleButton
 
     // Game
-    private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
+    private val world = World(Vector2(0f, NewMapComponent.GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
+    private lateinit var inputEntity: Entity
+    private lateinit var undoRedoEntity: Entity
 
     // Input
-    private lateinit var inputMultiplexer: InputMultiplexer
+    private val inputMultiplexer = InputMultiplexer()
 
     override fun show() {
-        createUI()
+        resetVariables()
         createGame()
-
-        // Handle input
-        Gdx.input.inputProcessor = inputMultiplexer
+        createUI()
+        handleAllInput()
     }
 
-    private fun createUI() {
-        // Initialize lateinit vars
+    private fun resetVariables() {
+        uiStage.clear()
         skin = manager.get<Skin>("skins/uiskin.json")
-        uiStage = Stage(ExtendViewport(720f, 1280f), batch)
-        toggledButton = Reference()
-        inputMultiplexer = InputMultiplexer()
-
-        // Add UI widgets
-        root = createRootTable().apply {
-            uiStage.addActor(this)
-            add(createLeftColumn()).growY().expandX().left()
-            add(createRightColumn()).growY().expandX().right()
-        }
-
-        // Make everything fade in
-        uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
-        gameStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
-
-        // Handle input
-        inputMultiplexer.addProcessor(uiStage)
-    }
-
-    private fun createRootTable() = Table().apply {
-        setFillParent(true)
-        padLeft(62f).padRight(62f)
-        padBottom(110f).padTop(110f)
-    }
-
-
-    private fun createLeftColumn(): Table {
-        fun createUndoButton(toggledButton: Reference<ToggleButton>) =
-            ClickButton(skin, "small-button").apply {
-                addIcon("undo-icon")
-                setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                setToggledButtonReference(toggledButton)
-            }
-
-        fun createEraseButton(toggledButton: Reference<ToggleButton>) =
-            ToggleButton(skin, "small-button").apply {
-                addIcon("erase-icon")
-                setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                setToggledButtonReference(toggledButton)
-            }
-
-        fun createMoveToolButton(toggledButton: Reference<ToggleButton>) =
-            ToggleButton(skin, "small-button").apply {
-                addIcon("move-icon")
-                setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                setToggledButtonReference(toggledButton)
-                type = ButtonType.MOVE_TOOL_BUTTON
-                isToggled = true
-            }
-
-        fun createPlaceToolButton(toggledButton: Reference<ToggleButton>) =
-            ToggleButton(skin, "small-button").apply {
-                addIcon("platform-icon")
-                setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                setToggledButtonReference(toggledButton)
-                type = ButtonType.PLACE_TOOL_BUTTON
-            }
-
-        fun createBackButton(toggledButton: Reference<ToggleButton>) =
-            ClickButton(skin, "small-button").apply {
-                addIcon("back-icon")
-                iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
-                setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                setToggledButtonReference(toggledButton)
-                setToggleOffEveryOtherButton(true)
-                addClickRunnable(Runnable {
-                    uiStage.addAction(
-                        sequence(
-                            fadeOut(.5f),
-                            run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
-                        )
-                    )
-                })
-            }
-
-        return Table().apply {
-            // If I don't pass [toggledButton] as an argument it doesn't work
-            add(createUndoButton(toggledButton)).top().space(50f).row()
-            add(createEraseButton(toggledButton)).top().space(50f).row()
-            add(createMoveToolButton(toggledButton)).top().space(50f).row()
-            add(createPlaceToolButton(toggledButton)).top().row()
-            add(createBackButton(toggledButton)).expand().bottom()
-        }
-    }
-
-    private fun createRightColumn(): Table {
-        fun createRedoButton() = ClickButton(skin, "small-button").apply {
-            addIcon("redo-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        }
-
-        return Table().apply {
-            add(createRedoButton()).expand().top()
-        }
+        root.clear()
+        toggledButton.set(null)
+        inputMultiplexer.clear()
+        screenIsHiding = false
     }
 
     private fun createGame() {
-        // Dependency injection
+        addSingletonsToDependencyInjection()
+        setOwnBox2DContactListener()
+        createGameEntities()
+        handleGameInput()
+        addGameSystems()
+    }
+
+    private fun addSingletonsToDependencyInjection() {
         Injekt.run {
             addSingleton(world)
             addSingleton(gameEventSignal)
@@ -190,45 +113,201 @@ class LevelEditorScreen(
             addSingleton(OverlayViewport)
             addSingleton(OverlayStage)
         }
+    }
 
-        // Provide own implementation for what happens after Box2D collisions
+    private fun setOwnBox2DContactListener() {
         world.setContactListener(WorldContactListener())
+    }
 
-        // Create entities
-        val buttonListener = EntityFactory.createButtonListenerEntity(toggledButton)
+    private fun createGameEntities() {
+        inputEntity = EntityFactory.createInputEntity(toggledButton)
+        undoRedoEntity = EntityFactory.createUndoRedoEntity()
+        val levelEntity = LevelEntity.createEntity()
+        val playerEntity = PlayerEntity.createEntity(0,
+                MathUtils.floor(levelEntity.newMap.widthInTiles / 2f) + .5f,
+                MathUtils.floor(levelEntity.newMap.heightInTiles / 2f) + .5f)
+        centerCameraOnPlayer(playerEntity)
+    }
 
-        // Handle Input
-        inputMultiplexer.addProcessor(gameStage)
+    private fun centerCameraOnPlayer(playerEntity: Entity) {
+        val playerPosition = playerEntity.body.body.worldCenter
+        gameCamera.position.set(playerPosition.x, playerPosition.y, 0f)
+    }
+
+    private fun handleGameInput() {
         inputMultiplexer.addProcessor(Injekt.get<OverlayStage>())
+        inputMultiplexer.addProcessor(gameStage)
+    }
 
-        // Add systems
+    fun addGameSystems() {
         engine.run {
+            addSystem(UndoRedoSystem())
             addSystem(ColorSyncSystem())
+            addSystem(ObjectPlacementSystem())
+            addSystem(ZoomingSystem())
+            addSystem(PanningSystem())
             addSystem(ObjectSelectionSystem())
-            addSystem(ObjectPlacementSystem(buttonListener))
-            addSystem(ZoomingSystem(buttonListener))
-            addSystem(PanningSystem(buttonListener))
             addSystem(UpdateGameCameraSystem())
             addSystem(OverlayCameraSyncSystem())
             addSystem(OverlayPositioningSystem())
+            addSystem(TouchableBoundsSyncSystem())
             addSystem(GridRenderingSystem())
             addSystem(ImageRenderingSystem())
             addSystem(OverlayRenderingSystem())
+            addSystem(DebugRenderingSystem())
         }
     }
 
+    private fun createUI() {
+        root.run {
+            uiStage.addActor(this)
+            add(createLeftColumn()).growY().expandX().left()
+            add(createMiddleColumn()).growY().expandX().center()
+            add(createRightColumn()).growY().expandX().right()
+        }
+
+        // Make everything fade in
+        uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
+        gameStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
+
+        handleUIInput()
+    }
+
+    private fun handleUIInput() {
+        // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
+        inputMultiplexer.addProcessor(0, uiStage)
+    }
+
+    fun createRootTable() = Table().apply {
+        setFillParent(true)
+        padLeft(62f).padRight(62f)
+        padBottom(110f).padTop(110f)
+    }
+
+    private fun createUndoButton() = ClickButton(skin, "small-button").apply {
+        addIcon("undo-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            undoRedoEntity.undoRedo.undo()
+        })
+    }
+
+    private fun createRedoButton() = ClickButton(skin, "small-button").apply {
+        addIcon("redo-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            undoRedoEntity.undoRedo.redo()
+        })
+    }
+
+    private fun createMoveToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
+        addIcon("move-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setToggledButtonReference(toggledButton)
+        type = ButtonType.MOVE_TOOL_BUTTON
+        isToggled = true
+    }
+
+    private fun createLeftColumn(): Table {
+        undoButton = createUndoButton()
+        moveToolButton = createMoveToolButton(toggledButton)
+
+        fun createPlaceToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
+            addIcon("platform-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setToggledButtonReference(toggledButton)
+            type = ButtonType.PLACE_TOOL_BUTTON
+        }
+
+        fun createBackButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
+            addIcon("back-icon")
+            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setToggledButtonReference(toggledButton)
+            setToggleOffEveryOtherButton(true)
+            addClickRunnable(Runnable {
+                uiStage.addAction(
+                        sequence(
+                                fadeOut(.5f),
+                                run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
+                        )
+                )
+            })
+        }
+
+        return Table().apply {
+            // If I don't pass [toggledButton] as an argument it doesn't work
+            add(undoButton).top().space(50f).row()
+            add(moveToolButton).top().space(50f).row()
+            add(createPlaceToolButton(toggledButton)).top().row()
+            add(createBackButton(toggledButton)).expand().bottom()
+        }
+    }
+
+    private fun createMiddleColumn(): Table {
+        fun createPlayButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
+            addIcon("play-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setToggledButtonReference(toggledButton)
+            setToggleOffEveryOtherButton(true)
+            addClickRunnable(Runnable {
+                engine.addSystem(PlayingSystem(this@LevelEditorScreen))
+            })
+        }
+
+        return Table().apply {
+            add(createPlayButton(toggledButton)).expand().bottom()
+        }
+    }
+
+    private fun createRightColumn(): Table {
+        redoButton = createRedoButton()
+        return Table().apply {
+            add(redoButton).expand().top()
+        }
+    }
+
+    private fun handleAllInput() {
+        Gdx.input.inputProcessor = inputMultiplexer
+    }
+
     private fun update(delta: Float) {
-        engine.update(delta)
         uiStage.act(delta)
+        if (screenIsHiding)
+            return
+
+        engine.update(delta)
         gameStage.camera.update()
+        updateUndoRedoButtonsColor()
+    }
+
+    private fun updateUndoRedoButtonsColor() {
+        when (undoRedoEntity.undoRedo.canUndo()) {
+            false -> grayOutButton(undoButton)
+            true -> resetButtonColor(undoButton)
+        }
+        when (undoRedoEntity.undoRedo.canRedo()) {
+            false -> grayOutButton(redoButton)
+            true -> resetButtonColor(redoButton)
+        }
+    }
+
+    private fun grayOutButton(button: ClickButton) {
+        button.run {
+            setColors(ColorScheme.currentDarkColor, ColorScheme.currentDarkColor)
+            color.a = .3f
+        }
+    }
+
+    private fun resetButtonColor(button: ClickButton) {
+        button.run {
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            color.a = 1f
+        }
     }
 
     override fun render(delta: Float) {
-        clearScreen(
-            ColorScheme.currentLightColor.r,
-            ColorScheme.currentLightColor.g,
-            ColorScheme.currentLightColor.b
-        )
+        clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
         update(delta) // This MUST be after clearScreen() because draw functions may be called in engine.update()
         uiStage.draw()
     }
@@ -237,9 +316,16 @@ class LevelEditorScreen(
         gameViewport.update(width, height, true)
     }
 
+    override fun hide() {
+        screenIsHiding = true
+        engine.run {
+            removeAllSystems()
+            removeAllEntities()
+        }
+    }
+
     override fun dispose() {
-        if (::uiStage.isInitialized)
-            uiStage.dispose()
+        uiStage.dispose()
         gameStage.dispose()
     }
 }

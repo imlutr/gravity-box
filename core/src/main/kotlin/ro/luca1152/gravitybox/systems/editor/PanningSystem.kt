@@ -20,10 +20,12 @@ package ro.luca1152.gravitybox.systems.editor
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter
-import ro.luca1152.gravitybox.components.buttonListener
+import ro.luca1152.gravitybox.components.InputComponent
+import ro.luca1152.gravitybox.components.input
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.ui.ButtonType
@@ -31,27 +33,29 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Adds a detector which handles pan gestures. */
-class PanningSystem(private val buttonListenerEntity: Entity,
-                    private val gameCamera: GameCamera = Injekt.get(),
+class PanningSystem(private val gameCamera: GameCamera = Injekt.get(),
                     private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+    private lateinit var inputEntity: Entity
     private val gestureDetector = GestureDetector(object : GestureAdapter() {
         override fun pan(x: Float, y: Float, deltaX: Float, deltaY: Float): Boolean {
             if (!moveToolIsUsed())
                 return false
 
+            inputEntity.input.isPanning = true
             panCamera(deltaX, deltaY)
 
             return true
         }
 
-        private fun moveToolIsUsed() = buttonListenerEntity.buttonListener.toggledButton.get()?.type != ButtonType.MOVE_TOOL_BUTTON
+        private fun moveToolIsUsed() = inputEntity.input.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
 
         private fun panCamera(deltaX: Float, deltaY: Float) {
             gameCamera.position.add(-deltaX.pixelsToMeters * gameCamera.zoom, deltaY.pixelsToMeters * gameCamera.zoom, 0f)
         }
     })
 
-    override fun addedToEngine(engine: Engine?) {
+    override fun addedToEngine(engine: Engine) {
+        inputEntity = engine.getEntitiesFor(Family.all(InputComponent::class.java).get()).first()
         inputMultiplexer.addProcessor(gestureDetector)
     }
 

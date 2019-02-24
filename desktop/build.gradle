@@ -17,27 +17,28 @@
 
 apply plugin: 'application'
 
-sourceSets.main.resources.srcDirs += [ rootProject.file('assets').absolutePath ]
+sourceSets.main.resources.srcDirs += [rootProject.file('assets').absolutePath]
 mainClassName = 'ro.luca1152.gravitybox.desktop.DesktopLauncher'
 eclipse.project.name = appName + '-desktop'
 sourceCompatibility = 1.7
 
 dependencies {
-  api project(':core')
-  api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-  api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-  api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-  api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+    api project(':core')
+    api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+    api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
 }
 
 jar {
-  archiveName "${appName}-${version}.jar"
-  from { configurations.compile.collect { zipTree(it) } }
-  manifest {
-    attributes 'Main-Class': project.mainClassName
-  }
+    archiveName "${appName}-${version}.jar"
+    from { configurations.compile.collect { zipTree(it) } }
+    manifest {
+        attributes 'Main-Class': project.mainClassName
+    }
 }
 
 run {
-  ignoreExitValue = true
+    ignoreExitValue = true
 }

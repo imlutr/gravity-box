@@ -22,12 +22,12 @@ package ro.luca1152.gravitybox.utils.box2d
  * Every Box2D body stores its own bits (categoryBits) and the bits of the bodies it can collide with (maskBits).
  */
 enum class EntityCategory(bits: Int) {
-    NONE(0x0000),
-    FINISH(0x0001),
-    POINT(0x0001),
-    PLAYER(0x0002),
-    OBSTACLE(0x0003),
-    BULLET(0x0004);
+    NONE(0b00000),
+    FINISH(0b00001),
+    POINT(0b00001),
+    PLAYER(0b0010),
+    BULLET(0b00100),
+    OBSTACLE(0b00110);
 
-    var bits: Short = bits.toShort()
+    val bits: Short = bits.toShort()
 }

@@ -21,21 +21,24 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.systems.game.MapCreationSystem
 
-/** Contains an [id] variable. */
-class IdComponent : Component, Poolable {
-    var id = -1
+/** A component which contains the [levelNumber] of the level intended to be played. */
+class LevelComponent : Component, Poolable {
+    /** If true, the [MapCreationSystem] will run and update the [NewMapComponent]. */
+    var forceUpdateMap = false
 
-    fun set(id: Int) {
-        this.id = id
-    }
+    var restartLevel = false
+    var levelNumber = 0
 
     override fun reset() {
-        id = -1
+        levelNumber = 0
+        forceUpdateMap = false
+        restartLevel = false
     }
 
-    companion object : ComponentResolver<IdComponent>(IdComponent::class.java)
+    companion object : ComponentResolver<LevelComponent>(LevelComponent::class.java)
 }
 
-val Entity.id: IdComponent
-    get() = IdComponent[this]
+val Entity.level: LevelComponent
+    get() = LevelComponent[this]

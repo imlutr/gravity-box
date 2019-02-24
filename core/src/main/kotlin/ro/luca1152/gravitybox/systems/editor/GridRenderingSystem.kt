@@ -18,14 +18,19 @@
 package ro.luca1152.gravitybox.systems.editor
 
 import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.graphics.copy
+import ro.luca1152.gravitybox.components.LevelComponent
+import ro.luca1152.gravitybox.components.newMap
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -35,37 +40,44 @@ class GridRenderingSystem(private val gameStage: GameStage = Injekt.get(),
                           private val manager: AssetManager = Injekt.get()) : EntitySystem() {
     private val LINE_COLOR = ColorScheme.currentDarkColor.copy(alpha = .2f)
     private val LINE_WIDTH = 2f.pixelsToMeters
-    private lateinit var grid: Group
+    private val gridGroup = Group()
+    private lateinit var levelEntity: Entity
 
-    override fun addedToEngine(engine: Engine?) {
-        grid = Group().apply {
-            gameStage.addActor(this)
-            addActor(createVerticalLines())
-            addActor(createHorizontalLines())
+    override fun addedToEngine(engine: Engine) {
+        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        gridGroup.run {
+            clear()
+            addActor(createVerticalLines(levelEntity.newMap.widthInTiles, levelEntity.newMap.heightInTiles))
+            addActor(createHorizontalLines(levelEntity.newMap.widthInTiles, levelEntity.newMap.heightInTiles))
         }
+        gameStage.addActor(gridGroup)
     }
 
-    private fun createVerticalLines() = Group().apply {
-        for (x in 0 until 50) {
+    private fun createVerticalLines(mapWidth: Int, mapHeight: Int) = Group().apply {
+        for (x in 0 until mapWidth + 1) {
             addActor(Image(manager.get<Texture>("graphics/pixel.png")).apply {
                 color = LINE_COLOR
-                setSize(LINE_WIDTH, 50f)
+                setSize(LINE_WIDTH, mapHeight.toFloat())
                 setPosition(x.toFloat(), 0f)
             })
         }
     }
 
-    private fun createHorizontalLines() = Group().apply {
-        for (y in 0 until 50) {
+    private fun createHorizontalLines(mapWidth: Int, mapHeight: Int) = Group().apply {
+        for (y in 0 until mapHeight + 1) {
             addActor(Image(manager.get<Texture>("graphics/pixel.png")).apply {
                 color = LINE_COLOR
-                setSize(50f, LINE_WIDTH)
+                setSize(mapWidth.toFloat(), LINE_WIDTH)
                 setPosition(0f, y.toFloat())
             })
         }
     }
 
+    override fun update(deltaTime: Float) {
+        gridGroup.toBack()
+    }
+
     override fun removedFromEngine(engine: Engine?) {
-        grid.remove()
+        gridGroup.remove()
     }
 }

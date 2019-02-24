@@ -17,19 +17,36 @@
 
 package ro.luca1152.gravitybox.systems.game
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.core.Family
+import com.badlogic.gdx.math.Vector3
+import ro.luca1152.gravitybox.components.LevelComponent
+import ro.luca1152.gravitybox.components.PlayerComponent
 import ro.luca1152.gravitybox.components.image
-import ro.luca1152.gravitybox.components.map
+import ro.luca1152.gravitybox.components.newMap
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
+import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.lerp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Makes the game [gameCamera] follow the [playerEntity]. */
-class PlayerCameraSystem(private val mapEntity: Entity,
-                         private val playerEntity: Entity,
-                         private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
+class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
+    private lateinit var levelEntity: Entity
+    private lateinit var playerEntity: Entity
+    private var initialCameraZoom = 1f
+    private var initialCameraPosition = Vector3()
+
+    override fun addedToEngine(engine: Engine) {
+        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
+        initialCameraZoom = gameCamera.zoom
+        initialCameraPosition.set(gameCamera.position)
+        gameCamera.zoom = 1f
+    }
+
     override fun update(deltaTime: Float) {
         smoothlyFollowPlayer()
         keepCameraWithinBounds()
@@ -44,14 +61,17 @@ class PlayerCameraSystem(private val mapEntity: Entity,
     }
 
     private fun keepCameraWithinBounds(zoom: Float = 1f) {
+        val mapWidth = levelEntity.newMap.widthInTiles
+        val mapHeight = levelEntity.newMap.heightInTiles
+
         var mapLeft = 0f
-        var mapRight = mapEntity.map.widthInTiles * zoom
-        if (mapEntity.map.widthInTiles * zoom > gameCamera.viewportWidth * zoom) {
+        var mapRight = mapWidth * zoom
+        if (mapWidth * zoom > gameCamera.viewportWidth * zoom) {
             mapLeft = (-1) * zoom
-            mapRight = (mapEntity.map.widthInTiles + 1) * zoom
+            mapRight = (mapWidth + 1) * zoom
         }
         val mapBottom = 0 * zoom
-        val mapTop = mapEntity.map.heightInTiles * zoom
+        val mapTop = mapHeight * zoom
         val cameraHalfWidth = gameCamera.viewportWidth / 2f * zoom
         val cameraHalfHeight = gameCamera.viewportHeight / 2f * zoom
         val cameraLeft = gameCamera.position.x - cameraHalfWidth
@@ -73,4 +93,16 @@ class PlayerCameraSystem(private val mapEntity: Entity,
             cameraTop >= mapTop -> gameCamera.position.y = mapTop - cameraHalfHeight
         }
     }
+
+    override fun removedFromEngine(engine: Engine) {
+        resetCameraToInitialState()
+    }
+
+    private fun resetCameraToInitialState() {
+        gameCamera.run {
+            zoom = initialCameraZoom
+            position.set(initialCameraPosition)
+        }
+    }
+
 }

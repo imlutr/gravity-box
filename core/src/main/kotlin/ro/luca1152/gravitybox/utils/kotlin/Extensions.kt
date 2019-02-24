@@ -17,10 +17,18 @@
 
 package ro.luca1152.gravitybox.utils.kotlin
 
+import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Polygon
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Array
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -33,18 +41,11 @@ fun Vector3.lerp(targetX: Float, targetY: Float, targetZ: Float = 0f, progress: 
     return this
 }
 
-/**
- * Used to compare a color that was linearly interpolated using lerp, resulting in imprecision.
- */
+/** Used to compare a color that was linearly interpolated using lerp, resulting in imprecision. */
 fun Color.approxEqualTo(color: Color): Boolean {
-    return (Math.abs(this.r - color.r) <= 1 / 255f) && (Math.abs(this.g - color.g) <= 1 / 255f) && (Math.abs(
-            this.b - color.b
-    ) <= 1 / 255f)
+    return (Math.abs(this.r - color.r) <= 1 / 255f) && (Math.abs(this.g - color.g) <= 1 / 255f) && (Math.abs(this.b - color.b) <= 1 / 255f)
 }
 
-/**
- * Sets [this] color to [color] without copying the alpha value to keep its transparency.
- */
 fun Color.setWithoutAlpha(color: Color) {
     this.r = color.r
     this.g = color.g
@@ -58,15 +59,47 @@ val World.bodies: Array<Body>
         return bodyArray
     }
 
-private var coords = Vector3()
-fun screenToWorldCoordinates(
-        screenX: Int, screenY: Int,
-        gameCamera: GameCamera = Injekt.get()
-): Vector3 {
-    coords.run {
-        x = screenX.toFloat()
-        y = screenY.toFloat()
-    }
+fun screenToWorldCoordinates(screenX: Int, screenY: Int, gameCamera: GameCamera = Injekt.get()): Vector3 {
+    val coords = Vector3(screenX.toFloat(), screenY.toFloat(), 0f)
     gameCamera.unproject(coords)
     return coords
+}
+
+fun Stage.hitScreen(screenX: Int, screenY: Int, touchable: Boolean = true): Actor? {
+    val stageCoords = screenToStageCoordinates(Vector2(screenX.toFloat(), screenY.toFloat()))
+    return hit(stageCoords.x, stageCoords.y, touchable)
+}
+
+fun Float.roundToNearest(nearest: Float, threshold: Float, startingValue: Float = 0f): Float {
+    val valueRoundedDown = MathUtils.floor(this / nearest) * nearest
+    val valueRoundedUp = MathUtils.ceil(this / nearest) * nearest
+    return when {
+        Math.abs((this + startingValue) - valueRoundedDown) < threshold -> valueRoundedDown - startingValue
+        Math.abs((this + startingValue) - valueRoundedUp) < threshold -> valueRoundedUp - startingValue
+        else -> this
+    }
+}
+
+fun Polygon.getRectangleCenter(): Vector2 {
+    require(vertices.size == 4 * 2) { "The Polygon given is not a rectangle." }
+
+    val vertices = transformedVertices
+    return Vector2((vertices[0] + vertices[4]) / 2f, (vertices[1] + vertices[5]) / 2f)
+}
+
+/**
+ * Returns the first entity of [Engine.getEntitiesFor].
+ * If there is more than one or no Entity found, [IllegalStateException] is thrown.
+ */
+fun Engine.getSingletonFor(family: Family): Entity {
+    val entitiesFound = getEntitiesFor(family)
+    check(entitiesFound.size() <= 1) { "A singleton can't be instantiated more than once." }
+    check(entitiesFound.size() != 0) { "No singleton found for the given Family. " }
+    return entitiesFound.first()
+}
+
+fun Engine.removeAllSystems() {
+    systems.forEach {
+        removeSystem(it)
+    }
 }

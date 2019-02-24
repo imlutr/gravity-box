@@ -24,6 +24,32 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 
 class ClickButton(skin: Skin, styleName: String) : Button(skin, styleName) {
     private var clickRunnable: Runnable? = null
+    private var clickListener = object : ClickListener() {
+        override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+            color = downColor
+            icon?.color = downColor
+            return true
+        }
+
+        override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+            color = upColor
+            icon?.color = upColor
+
+            // If there is any click runnable, it should be ran.
+            // It is here and not in addClickRunnable() because I can't override a function after an object (the listener) is created.
+            if (isOver(this@ClickButton, x, y)) {
+                // Toggle off every other button if the click button was set to do so
+                if (toggleOffButtons)
+                    toggledButton.get()?.isToggled = false
+
+                clickRunnable?.run()
+            }
+        }
+    }
+
+    init {
+        addListener(clickListener)
+    }
 
     /**
      * Set what happens after the button is clicked.
@@ -38,32 +64,10 @@ class ClickButton(skin: Skin, styleName: String) : Button(skin, styleName) {
         this.upColor = upColor
         this.downColor = downColor
 
-        // Update the colors of the button and icon
-        color = upColor
-        icon?.color = upColor
-
-        // Add listener so when the button is clicked, the colors change.
-        addListener(object : ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                color = downColor
-                icon?.color = downColor
-                return true
-            }
-
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                color = upColor
-                icon?.color = upColor
-
-                // If there is any click runnable, it should be ran.
-                // It is here and not in addClickRunnable() because I can't override a function after an object (the listener) is created.
-                if (isOver(this@ClickButton, x, y)) {
-                    // Toggle off every other button if the click button was set to do so
-                    if (toggleOffButtons)
-                        toggledButton.get()?.isToggled = false
-
-                    clickRunnable?.run()
-                }
-            }
-        })
+        // Initialize the colors, if it's the case
+        if (color == Color.WHITE) {
+            color = upColor
+            icon?.color = upColor
+        }
     }
 }

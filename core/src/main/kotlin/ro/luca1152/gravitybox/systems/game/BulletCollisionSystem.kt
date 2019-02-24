@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.systems.game
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
@@ -24,29 +25,33 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
-import ro.luca1152.gravitybox.components.BulletComponent
-import ro.luca1152.gravitybox.components.ImageComponent
-import ro.luca1152.gravitybox.components.bullet
-import ro.luca1152.gravitybox.components.physics
+import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.entities.EntityFactory
+import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 
 /** Handles what happens when a bullet collides with a map object. */
-class BulletCollisionSystem(private val playerEntity: Entity,
-                            private val world: World = Injekt.get()) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
+class BulletCollisionSystem(private val world: World = Injekt.get()) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
+    private lateinit var playerEntity: Entity
+
+    override fun addedToEngine(engine: Engine) {
+        super.addedToEngine(engine)
+        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
+    }
+
     override fun processEntity(bullet: Entity, deltaTime: Float) {
         if (bullet.bullet.collidedWithPlatform) {
-            EntityFactory.createExplosionImage(bullet.physics.body.worldCenter)
-            applyBlastImpulse(bullet.physics.body)
+            EntityFactory.createExplosionImage(bullet.body.body.worldCenter)
+            applyBlastImpulse(bullet.body.body)
             engine.removeAndResetEntity(bullet)
         }
     }
 
     private fun applyBlastImpulse(bullet: Body) {
-        val playerBody = playerEntity.physics.body
+        val playerBody = playerEntity.body.body
         val closestBody = getClosestBodyToExplosion(bullet.worldCenter, playerBody.worldCenter)
         if (noObstacleFoundBetween(closestBody, playerBody))
             playerBody.applyBlastImpulse(bullet.worldCenter, playerBody.worldCenter, 150f)
@@ -82,7 +87,7 @@ class BulletCollisionSystem(private val playerEntity: Entity,
         // Apply the force
         this.applyLinearImpulse(
                 blastDir.nor().scl(impulseMag),
-                playerEntity.physics.body.worldCenter,
+                playerEntity.body.body.worldCenter,
                 true
         )
     }

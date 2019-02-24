@@ -1,5 +1,8 @@
 {
   BitmapFont: {
+    bold-37: {
+      file: nunito-extra-bold-40.fnt
+    }
     bold-50: {
       file: nunito-bold-50.fnt
     }

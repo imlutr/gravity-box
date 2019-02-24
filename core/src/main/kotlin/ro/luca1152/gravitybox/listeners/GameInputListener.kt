@@ -24,7 +24,7 @@ import com.badlogic.gdx.math.Vector2
 import ktx.app.KtxInputAdapter
 import ktx.math.times
 import ro.luca1152.gravitybox.components.BulletComponent
-import ro.luca1152.gravitybox.components.physics
+import ro.luca1152.gravitybox.components.body
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
@@ -35,8 +35,8 @@ import uy.kohesive.injekt.api.get
 class GameInputListener(private val playerEntity: Entity,
                         private val gameEventSignal: Signal<GameEvent> = Injekt.get()) : KtxInputAdapter {
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        val coords = screenToWorldCoordinates(screenX, screenY)
-        createBullet(coords.x, coords.y)
+        val coordinates = screenToWorldCoordinates(screenX, screenY)
+        createBullet(coordinates.x, coordinates.y)
 
         return true
     }
@@ -52,10 +52,10 @@ class GameInputListener(private val playerEntity: Entity,
     private var velocity = Vector2()
     private fun createBullet(touchX: Float, touchY: Float) {
         val bullet = EntityFactory.createBullet(playerEntity)
-        velocity = playerEntity.physics.body.worldCenter.cpy()
+        velocity = playerEntity.body.body.worldCenter.cpy()
         velocity.x -= touchX; velocity.y -= touchY
         velocity.nor()
         velocity *= -BulletComponent.SPEED
-        bullet.physics.body.linearVelocity = velocity
+        bullet.body.body.linearVelocity = velocity
     }
 }
