@@ -91,9 +91,8 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
             addSystem(LevelRestartSystem())
 //            addSystem(ColorSchemeSystem(mapEntity))
             addSystem(ColorSyncSystem())
-//            addSystem(PlayerCameraSystem(mapEntity, playerEntity))
+            addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
-//            addSystem(MapRenderingSystem(mapEntity))
             addSystem(ImageRenderingSystem())
             addSystem(PhysicsDebugRenderingSystem())
         }

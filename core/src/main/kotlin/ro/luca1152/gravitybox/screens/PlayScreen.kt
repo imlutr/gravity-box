@@ -76,7 +76,7 @@ class PlayScreen(
             addSystem(LevelAutoRestartSystem())
             addSystem(ColorSchemeSystem(mapEntity))
             addSystem(ColorSyncSystem())
-            addSystem(PlayerCameraSystem(mapEntity, playerEntity))
+            addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(MapRenderingSystem(mapEntity))
 //            addSystem(PhysicsDebugRenderingSystem())
