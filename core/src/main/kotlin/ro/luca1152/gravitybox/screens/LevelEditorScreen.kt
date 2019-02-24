@@ -58,6 +58,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
                         private val gameViewport: GameViewport = Injekt.get(),
                         private val uiStage: UIStage = Injekt.get()) : KtxScreen {
     // UI
+    private var screenIsHiding = false
     private lateinit var skin: Skin
     val root: Table = createRootTable()
     private val toggledButton = Reference<ToggleButton>()
@@ -87,6 +88,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         root.clear()
         toggledButton.set(null)
         inputMultiplexer.clear()
+        screenIsHiding = false
     }
 
     private fun createGame() {
@@ -264,8 +266,11 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     }
 
     private fun update(delta: Float) {
-        engine.update(delta)
         uiStage.act(delta)
+        if (screenIsHiding)
+            return
+
+        engine.update(delta)
         gameStage.camera.update()
         updateUndoRedoButtonsColor()
     }
@@ -303,6 +308,14 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
 
     override fun resize(width: Int, height: Int) {
         gameViewport.update(width, height, true)
+    }
+
+    override fun hide() {
+        screenIsHiding = true
+        engine.run {
+            removeAllSystems()
+            removeAllEntities()
+        }
     }
 
     override fun dispose() {
