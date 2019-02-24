@@ -34,12 +34,18 @@ class NewMapComponent : Component, Poolable {
     }
 
     val world: World = Injekt.get()
-
+    var widthInTiles = 0
+    var heightInTiles = 0
     /**
      * The level number of the currently stored map. It may differ from the level intended
      * to be played stored in [LevelComponent].
      */
     var levelNumber = 0
+
+    fun set(widthInTiles: Int, heightInTiles: Int) {
+        this.widthInTiles = widthInTiles
+        this.heightInTiles = heightInTiles
+    }
 
     override fun reset() {
         destroyAllBodies()

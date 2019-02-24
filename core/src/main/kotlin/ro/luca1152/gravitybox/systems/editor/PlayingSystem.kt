@@ -27,11 +27,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
-import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.ui.ClickButton
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
@@ -40,15 +40,17 @@ import uy.kohesive.injekt.api.get
 class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
                     private val uiStage: UIStage = Injekt.get(),
                     private val manager: AssetManager = Injekt.get()) : EntitySystem() {
-    private lateinit var skin: Skin
     private val rootTable = levelEditorScreen.createRootTable()
+    private lateinit var skin: Skin
     private lateinit var levelEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         skin = manager.get<Skin>("skins/uiskin.json")
+        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get()).apply {
+            level.forceUpdateMap = true
+        }
         hideLevelEditorUI()
         removeAllSystems(false)
-        createPlayEntities()
         addPlaySystems()
         showPlayUI()
     }
@@ -68,12 +70,6 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         }
         if (removePlayingSystem)
             engine.removeSystem(this)
-    }
-
-    private fun createPlayEntities() {
-        levelEntity = LevelEntity.createEntity().apply {
-            level.forceUpdateMap = true
-        }
     }
 
     private fun addPlaySystems() {
@@ -131,7 +127,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
 
     private fun removePlayEntities(engine: Engine) {
         removeEveryBullet(engine)
-        engine.removeEntity(levelEntity)
+//        engine.removeEntity(levelEntity)
     }
 
     private fun resetEntitiesPosition(engine: Engine) {

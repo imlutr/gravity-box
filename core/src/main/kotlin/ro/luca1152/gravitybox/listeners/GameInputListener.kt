@@ -35,8 +35,8 @@ import uy.kohesive.injekt.api.get
 class GameInputListener(private val playerEntity: Entity,
                         private val gameEventSignal: Signal<GameEvent> = Injekt.get()) : KtxInputAdapter {
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        val coords = screenToWorldCoordinates(screenX, screenY)
-        createBullet(coords.x, coords.y)
+        val coordinates = screenToWorldCoordinates(screenX, screenY)
+        createBullet(coordinates.x, coordinates.y)
 
         return true
     }

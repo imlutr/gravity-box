@@ -35,6 +35,7 @@ import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.NewMapComponent
 import ro.luca1152.gravitybox.components.undoRedo
 import ro.luca1152.gravitybox.entities.EntityFactory
+import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
@@ -118,6 +119,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private fun createGameEntities() {
         inputEntity = EntityFactory.createInputEntity(toggledButton)
         undoRedoEntity = EntityFactory.createUndoRedoEntity()
+        LevelEntity.createEntity()
         createPlayer()
     }
 
@@ -304,7 +306,6 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
         update(delta) // This MUST be after clearScreen() because draw functions may be called in engine.update()
         uiStage.draw()
-//        println(engine.getEntitiesFor(Family.all(BulletComponent::class.java).get()).size())
     }
 
     override fun resize(width: Int, height: Int) {

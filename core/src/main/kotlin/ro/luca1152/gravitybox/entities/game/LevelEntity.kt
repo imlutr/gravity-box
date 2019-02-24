@@ -20,13 +20,19 @@ package ro.luca1152.gravitybox.entities.game
 import com.badlogic.ashley.core.PooledEngine
 import ro.luca1152.gravitybox.components.LevelComponent
 import ro.luca1152.gravitybox.components.NewMapComponent
+import ro.luca1152.gravitybox.components.newMap
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object LevelEntity {
+    private const val DEFAULT_MAP_WIDTH = 15
+    private const val DEFAULT_MAP_HEIGHT = 15
+
     fun createEntity(engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         add(engine.createComponent(LevelComponent::class.java))
-        add(engine.createComponent(NewMapComponent::class.java))
+        add(engine.createComponent(NewMapComponent::class.java)).run {
+            newMap.set(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT)
+        }
         engine.addEntity(this)
     }!!
 }
