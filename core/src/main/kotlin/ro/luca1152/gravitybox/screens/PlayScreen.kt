@@ -73,7 +73,7 @@ class PlayScreen(
             addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
             addSystem(PointSystem(mapEntity.map))
-            addSystem(LevelOffScreenRestartSystem())
+            addSystem(OffScreenLevelRestartSystem())
             addSystem(ColorSchemeSystem(mapEntity))
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem())

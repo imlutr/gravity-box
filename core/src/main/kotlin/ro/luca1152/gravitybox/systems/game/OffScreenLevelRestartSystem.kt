@@ -32,7 +32,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Marks the level as to be restarted when the player is off-screen. */
-class LevelOffScreenRestartSystem(private val gameEventSignal: Signal<GameEvent> = Injekt.get()) : EntitySystem() {
+class OffScreenLevelRestartSystem(private val gameEventSignal: Signal<GameEvent> = Injekt.get()) : EntitySystem() {
     private lateinit var playerEntity: Entity
     private lateinit var levelEntity: Entity
     private val playerIsOffScreen
