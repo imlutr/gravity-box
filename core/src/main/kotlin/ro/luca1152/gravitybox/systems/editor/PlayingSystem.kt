@@ -118,6 +118,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         enableMoveTool()
         removePlayEntities(engine)
         resetEntitiesPosition(engine)
+        resetColorScheme()
     }
 
     private fun hidePlayUI() {
@@ -150,6 +151,11 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         entitiesToRemove.forEach {
             engine.removeAndResetEntity(it)
         }
+    }
+
+    private fun resetColorScheme() {
+        ColorScheme.currentDarkColor = ColorScheme.darkColor
+        ColorScheme.currentLightColor = ColorScheme.lightColor
     }
 
     private fun showLevelEditorUI() {
