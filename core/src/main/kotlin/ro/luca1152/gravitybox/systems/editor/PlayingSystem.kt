@@ -127,7 +127,6 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
 
     private fun removePlayEntities(engine: Engine) {
         removeEveryBullet(engine)
-//        engine.removeEntity(levelEntity)
     }
 
     private fun resetEntitiesPosition(engine: Engine) {

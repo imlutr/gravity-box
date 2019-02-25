@@ -21,10 +21,8 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
-import ro.luca1152.gravitybox.components.BodyComponent
-import ro.luca1152.gravitybox.components.LevelComponent
-import ro.luca1152.gravitybox.components.body
-import ro.luca1152.gravitybox.components.level
+import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 
 /** Handles what happens when a level is marked as to be restarted. */
@@ -44,6 +42,9 @@ class LevelRestartSystem : EntitySystem() {
     private fun restartTheLevel() {
         engine.getEntitiesFor(Family.all(BodyComponent::class.java).get()).forEach {
             it.body.resetToInitialState()
+        }
+        engine.getEntitiesFor(Family.all(BulletComponent::class.java).get()).forEach {
+            engine.removeAndResetEntity(it)
         }
         levelEntity.level.restartLevel = false
     }
