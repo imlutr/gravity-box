@@ -126,7 +126,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
                 levelEntity.newMap.widthInTiles / 2f - .5f,
                 4f
         )
-        val playerEntity = PlayerEntity.createEntity(0,
+        PlayerEntity.createEntity(0,
                 platformEntity.image.leftX + PlayerEntity.WIDTH / 2f,
                 platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
         )
@@ -134,12 +134,13 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
                 platformEntity.image.rightX - FinishEntity.WIDTH / 2f,
                 platformEntity.image.topY + FinishEntity.HEIGHT / 2f
         )
-        centerCameraOnPlayer(playerEntity)
+        centerCameraOnPlatform(platformEntity)
     }
 
-    private fun centerCameraOnPlayer(playerEntity: Entity) {
-        val playerPosition = playerEntity.body.body.worldCenter
-        gameCamera.position.set(playerPosition.x, playerPosition.y, 0f)
+    private fun centerCameraOnPlatform(platformEntity: Entity) {
+        val platformPosition = platformEntity.body.body.worldCenter
+        val deltaY = 2f
+        gameCamera.position.set(platformPosition.x, platformPosition.y + deltaY, 0f)
     }
 
     private fun handleGameInput() {
