@@ -78,7 +78,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                 super.touchUp(event, x, y, pointer, button)
                 undoRedoEntity.undoRedo.addExecutedCommand(ResizeCommand(selectedMapObject!!,
                         image.width - initialImageWidth, image.height - initialImageHeight,
-                        image.img.x - initialImageX, image.img.y - initialImageY))
+                        image.leftX - initialImageX, image.bottomY - initialImageY))
             }
         })
     }
@@ -113,7 +113,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                 super.touchUp(event, x, y, pointer, button)
                 undoRedoEntity.undoRedo.addExecutedCommand(ResizeCommand(selectedMapObject!!,
                         image.width - initialImageWidth, image.height - initialImageHeight,
-                        image.img.x - initialImageX, image.img.y - initialImageY))
+                        image.leftX - initialImageX, image.bottomY - initialImageY))
             }
         })
     }
@@ -145,7 +145,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                 super.touchDragged(event, x, y, pointer)
 
                 val mouseCoords = screenToWorldCoordinates(Gdx.input.x, Gdx.input.y)
-                var newRotation = toPositiveAngle(MathUtils.atan2(mouseCoords.y - image.y, mouseCoords.x - image.x) * MathUtils.radiansToDegrees)
+                var newRotation = toPositiveAngle(MathUtils.atan2(mouseCoords.y - image.centerY, mouseCoords.x - image.centerX) * MathUtils.radiansToDegrees)
 
                 // The rotate button is not on the same Ox axis as the map object, which in turn affects the rotation
                 val deltaAngle = getAngleBetween(this@apply, image)
@@ -202,7 +202,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
             override fun dragStart(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.dragStart(event, x, y, pointer)
-                initialImageX = image.x
+                initialImageX = image.centerX
                 initialMouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
             }
 
@@ -211,16 +211,16 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                 if (!isDragging) return // Make sure dragStart() is called first
 
                 val mouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
-                image.x = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
-                image.x = image.x.roundToNearest(.5f, .15f)
+                image.centerX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
+                image.centerX = image.centerX.roundToNearest(.5f, .15f)
 
                 repositionOverlay()
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
-                if (image.x != initialImageX)
-                    undoRedoEntity.undoRedo.addExecutedCommand(MoveCommand(selectedMapObject!!, image.x - initialImageX, 0f))
+                if (image.centerX != initialImageX)
+                    undoRedoEntity.undoRedo.addExecutedCommand(MoveCommand(selectedMapObject!!, image.centerX - initialImageX, 0f))
             }
         })
     }
@@ -235,7 +235,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
             override fun dragStart(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.dragStart(event, x, y, pointer)
-                initialImageY = image.y
+                initialImageY = image.centerY
                 initialMouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
             }
 
@@ -244,16 +244,16 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                 if (!isDragging) return // Make sure dragStart() is called first
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
-                image.y = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
-                image.y = image.y.roundToNearest(.5f, .15f, 0f)
+                image.centerY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
+                image.centerY = image.centerY.roundToNearest(.5f, .15f, 0f)
 
                 repositionOverlay()
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
-                if (image.y != initialImageY)
-                    undoRedoEntity.undoRedo.addExecutedCommand(MoveCommand(selectedMapObject!!, 0f, image.y - initialImageY))
+                if (image.centerY != initialImageY)
+                    undoRedoEntity.undoRedo.addExecutedCommand(MoveCommand(selectedMapObject!!, 0f, image.centerY - initialImageY))
             }
         })
     }
@@ -325,7 +325,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         // Scale the platform correctly, taking in consideration its rotation and the scaling direction
         val localLeft = if (toLeft) -(newWidth - image.width) else 0f
         val localRight = if (toRight) (newWidth - image.width) else 0f
-        updateObjectPolygon(image.img.x, image.img.y, image.width, image.height, image.img.rotation, localLeft, localRight)
+        updateObjectPolygon(image.leftX, image.bottomY, image.width, image.height, image.img.rotation, localLeft, localRight)
         val position = selectedMapObjectPolygon.getRectangleCenter()
         image.width = newWidth
         image.setPosition(position.x, position.y)
@@ -351,7 +351,6 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             rotation = rotationInDegrees
         }
     }
-
 
 
     private fun getSelectedObject(): Entity? {
@@ -401,7 +400,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
     private fun repositionOverlay() {
         val image = selectedMapObject!!.image
-        val objectCoords = worldToOverlayCameraCoordinates(image.x, image.y)
+        val objectCoords = worldToOverlayCameraCoordinates(image.centerX, image.centerY)
         overlayLevel2.run {
             x = objectCoords.x - overlayLevel2.width / 2f
             y = objectCoords.y - leftArrowButton.height / 2f

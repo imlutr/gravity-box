@@ -171,8 +171,8 @@ class ResizeCommand(override val affectedEntity: Entity,
         affectedEntity.image.run {
             width += deltaWidth
             height += deltaHeight
-            x += deltaX
-            y += deltaY
+            centerX += deltaX
+            centerY += deltaY
         }
     }
 
@@ -180,8 +180,8 @@ class ResizeCommand(override val affectedEntity: Entity,
         affectedEntity.image.run {
             width -= deltaWidth
             height -= deltaHeight
-            x -= deltaX
-            y -= deltaY
+            centerX -= deltaX
+            centerY -= deltaY
         }
     }
 }

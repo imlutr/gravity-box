@@ -21,32 +21,47 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
-import com.badlogic.ashley.signals.Signal
 import ro.luca1152.gravitybox.components.LevelComponent
 import ro.luca1152.gravitybox.components.PlayerComponent
-import ro.luca1152.gravitybox.components.body
 import ro.luca1152.gravitybox.components.level
-import ro.luca1152.gravitybox.events.GameEvent
+import ro.luca1152.gravitybox.components.player
+import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
 
-/** Marks the level as to be restarted when the player is off-screen. */
-class LevelAutoRestartSystem(private val gameEventSignal: Signal<GameEvent> = Injekt.get()) : EntitySystem() {
-    private lateinit var playerEntity: Entity
+/** Handles what happens when a level is finished. */
+class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) : EntitySystem() {
     private lateinit var levelEntity: Entity
-    private val playerIsOffScreen
-        get() = playerEntity.body.body.worldCenter.y < -10f
+    private lateinit var playerEntity: Entity
+
+    // The color scheme is the one that tells whether the level was finished: if the current color scheme
+    // is the same as the dark color scheme, then it means that the level was finished. I should change
+    // this in the future.
+    private val colorSchemeIsFullyTransitioned
+        get() = ColorScheme.currentDarkColor.approxEqualTo(ColorScheme.darkColor2)
+    private val levelIsFinished
+        get() = playerEntity.player.isInsideFinishPoint && colorSchemeIsFullyTransitioned
 
     override fun addedToEngine(engine: Engine) {
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
         levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
     }
 
     override fun update(deltaTime: Float) {
-        if (playerIsOffScreen) {
-            gameEventSignal.dispatch(GameEvent.LEVEL_RESTART) // TODO: Remove signals
+        if (!levelIsFinished)
+            return
+        handleLevelFinish()
+    }
+
+    private fun handleLevelFinish() {
+        // Used in the level editor
+        if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
+        else {
+            // TODO
         }
+    }
+
+    override fun removedFromEngine(engine: Engine?) {
     }
 }

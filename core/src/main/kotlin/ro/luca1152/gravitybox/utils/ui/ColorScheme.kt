@@ -21,10 +21,10 @@ import com.badlogic.gdx.graphics.Color
 
 object ColorScheme {
     // The colors from the color scheme
-    private var lightColor = Color()
-    private var darkColor = Color()
-    private var lightColor2 = Color()
-    private var darkColor2 = Color()
+    var lightColor = Color()
+    var darkColor = Color()
+    var lightColor2 = Color()
+    var darkColor2 = Color()
 
     var hue = 180f
 

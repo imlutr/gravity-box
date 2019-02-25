@@ -83,9 +83,12 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
             addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
 //            addSystem(PointSystem(mapEntity.map))
-            addSystem(LevelAutoRestartSystem())
+            addSystem(OffScreenLevelRestartSystem())
+            addSystem(KeyboardLevelRestartSystem())
+            addSystem(LevelFinishDetectionSystem())
+            addSystem(LevelFinishSystem(restartLevelWhenFinished = true))
             addSystem(LevelRestartSystem())
-//            addSystem(ColorSchemeSystem(mapEntity))
+            addSystem(FinishPointColorSystem())
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
@@ -115,6 +118,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         enableMoveTool()
         removePlayEntities(engine)
         resetEntitiesPosition(engine)
+        resetColorScheme()
     }
 
     private fun hidePlayUI() {
@@ -127,14 +131,13 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
 
     private fun removePlayEntities(engine: Engine) {
         removeEveryBullet(engine)
-//        engine.removeEntity(levelEntity)
     }
 
     private fun resetEntitiesPosition(engine: Engine) {
         engine.getEntitiesFor(Family.all(ImageComponent::class.java, BodyComponent::class.java).get()).forEach {
             it.image.run {
-                this.x = it.body.initialX
-                this.y = it.body.initialY
+                this.centerX = it.body.initialX
+                this.centerY = it.body.initialY
                 this.img.rotation = it.body.initialRotationRad * MathUtils.radiansToDegrees
             }
         }
@@ -148,6 +151,11 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         entitiesToRemove.forEach {
             engine.removeAndResetEntity(it)
         }
+    }
+
+    private fun resetColorScheme() {
+        ColorScheme.currentDarkColor = ColorScheme.darkColor
+        ColorScheme.currentLightColor = ColorScheme.lightColor
     }
 
     private fun showLevelEditorUI() {

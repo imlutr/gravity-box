@@ -46,6 +46,9 @@ object FinishEntity {
         add(engine.createComponent(BodyComponent::class.java)).run {
             body.set(image.imageToBox2DBody(BodyDef.BodyType.StaticBody, CATEGORY_BITS, MASK_BITS), this, CATEGORY_BITS, MASK_BITS)
         }
+        add(engine.createComponent(CollisionBoxComponent::class.java)).run {
+            collisionBox.set(WIDTH, HEIGHT)
+        }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)
         }
@@ -53,5 +56,5 @@ object FinishEntity {
             mapObjectOverlay.set(showMovementButtons = true, showRotationButton = false, showResizingButtons = false, showDeletionButton = false)
         }
         engine.addEntity(this)
-    }
+    }!!
 }

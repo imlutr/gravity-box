@@ -27,8 +27,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object PlayerEntity {
-    private const val WIDTH = 1f
-    private const val HEIGHT = 1f
+    const val WIDTH = 1f
+    const val HEIGHT = 1f
     val CATEGORY_BITS = EntityCategory.PLAYER.bits
     val MASK_BITS = EntityCategory.OBSTACLE.bits
     const val FRICTION = 2f
@@ -51,6 +51,9 @@ object PlayerEntity {
         add(engine.createComponent(BodyComponent::class.java)).run {
             body.set(image.imageToBox2DBody(BodyDef.BodyType.DynamicBody, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION),
                     this, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION)
+        }
+        add(engine.createComponent(CollisionBoxComponent::class.java)).run {
+            collisionBox.set(WIDTH, HEIGHT)
         }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)

@@ -27,7 +27,8 @@ enum class EntityCategory(bits: Int) {
     POINT(0b00001),
     PLAYER(0b0010),
     BULLET(0b00100),
-    OBSTACLE(0b00110);
+    PLATFORM(0b01000),
+    OBSTACLE(0b01110);
 
     val bits: Short = bits.toShort()
 }

@@ -57,8 +57,7 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             updateOrigin()
         }
 
-    /** The X position of the Image's center. */
-    var x: Float
+    var centerX: Float
         get() {
             if (width == 0f)
                 error { "The width can't be 0." }
@@ -69,9 +68,17 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
                 error { "The width can't be 0." }
             img.x = value - width / 2f
         }
-
-    /** The Y position of the Image's center. */
-    var y: Float
+    var leftX: Float
+        get() = img.x
+        set(value) {
+            img.x = value
+        }
+    var rightX: Float
+        get() = img.x + width
+        set(value) {
+            img.x = value - width
+        }
+    var centerY: Float
         get() {
             if (height == 0f)
                 error { "The height can't be 0." }
@@ -81,6 +88,16 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             if (height == 0f)
                 error { "The height can't be 0." }
             img.y = value - height / 2f
+        }
+    var bottomY: Float
+        get() = img.y
+        set(value) {
+            img.y = value
+        }
+    var topY: Float
+        get() = img.y + height
+        set(value) {
+            img.y = value - height
         }
 
     var color: Color
@@ -100,7 +117,7 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             rotation = rotationInDeg
         }
 
-        // ImageComponent.setX() should be used, and not img.setPosition()
+        // ImageComponent.centerX should be used, and not img.setPosition()
         setPosition(x, y)
 
         stage + img
@@ -109,8 +126,8 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
     fun set(texture: Texture, position: Vector2) = set(texture, position.x, position.y)
 
     fun setPosition(x: Float, y: Float) {
-        this.x = x
-        this.y = y
+        this.centerX = x
+        this.centerY = y
     }
 
     private fun updateOrigin() {
@@ -145,7 +162,7 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
         return world.createBody(bodyDef).apply {
             createFixture(fixtureDef)
             polygonShape.dispose()
-            setTransform(x, y, img.rotation * MathUtils.degreesToRadians)
+            setTransform(centerX, centerY, img.rotation * MathUtils.degreesToRadians)
         }
     }
 

@@ -54,7 +54,7 @@ object EntityFactory {
             shape = PolygonShape().apply { setAsBox(.15f, .15f) }
             density = .2f
             filter.categoryBits = EntityCategory.BULLET.bits
-            filter.maskBits = EntityCategory.BULLET.bits
+            filter.maskBits = EntityCategory.PLATFORM.bits
         }
         val body = world.createBody(bodyDef).apply {
             createFixture(fixtureDef)

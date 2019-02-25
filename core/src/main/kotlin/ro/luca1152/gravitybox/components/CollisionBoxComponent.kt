@@ -29,16 +29,25 @@ import ro.luca1152.gravitybox.components.utils.ComponentResolver
  */
 class CollisionBoxComponent : Component, Poolable {
     val box = Rectangle()
-
-    var size = 0f
+    var width = 0f
+    var height = 0f
+    var size = 0f // TODO: Remove this
 
     fun set(size: Float) {
         this.size = size
         box.setSize(size)
     }
 
+    fun set(width: Float, height: Float) {
+        this.width = width
+        this.height = height
+        box.setSize(width, height)
+    }
+
     override fun reset() {
         box.set(0f, 0f, 0f, 0f)
+        width = 0f
+        height = 0f
     }
 
     companion object : ComponentResolver<CollisionBoxComponent>(CollisionBoxComponent::class.java)

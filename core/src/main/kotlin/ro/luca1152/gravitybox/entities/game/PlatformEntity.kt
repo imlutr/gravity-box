@@ -30,7 +30,7 @@ object PlatformEntity {
     private const val DEFAULT_WIDTH = 1f
     private const val DEFAULT_HEIGHT = .25f
     private const val DEFAULT_ROTATION = 0f
-    val CATEGORY_BITS = EntityCategory.OBSTACLE.bits
+    val CATEGORY_BITS = EntityCategory.PLATFORM.bits
     val MASK_BITS = EntityCategory.OBSTACLE.bits
 
     fun createEntity(id: Int, x: Float, y: Float,

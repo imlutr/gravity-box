@@ -22,30 +22,34 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 
-/** Handles what happens when a level is marked as to be restarted. */
-class LevelRestartSystem : EntitySystem() {
+/** Detects when the player is inside the finish point, and updates variables accordingly. */
+class LevelFinishDetectionSystem : EntitySystem() {
     private lateinit var levelEntity: Entity
+    private lateinit var playerEntity: Entity
+    private lateinit var finishEntity: Entity
+    private val playerIsInsideFinishPoint
+        get() = playerEntity.collisionBox.box.overlaps(finishEntity.collisionBox.box)
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
+        finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
     }
 
     override fun update(deltaTime: Float) {
-        if (!levelEntity.level.restartLevel)
-            return
-        restartTheLevel()
+        updateVariables()
     }
 
-    private fun restartTheLevel() {
-        engine.getEntitiesFor(Family.all(BodyComponent::class.java).get()).forEach {
-            it.body.resetToInitialState()
+    private fun updateVariables() {
+        when (playerIsInsideFinishPoint) {
+            true -> {
+                playerEntity.player.isInsideFinishPoint = true
+            }
+            else -> {
+                playerEntity.player.isInsideFinishPoint = false
+            }
         }
-        engine.getEntitiesFor(Family.all(BulletComponent::class.java).get()).forEach {
-            engine.removeAndResetEntity(it)
-        }
-        levelEntity.level.restartLevel = false
     }
 }
