@@ -23,6 +23,7 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.tryGet
+import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
@@ -70,6 +71,11 @@ class MapCreationSystem(private val levelEntity: Entity) : EntitySystem() {
                     maskBits = PlayerEntity.MASK_BITS
                     friction = PlayerEntity.FRICTION
                     density = PlayerEntity.DENSITY
+                }
+                it.tryGet(FinishComponent) != null -> {
+                    bodyType = BodyDef.BodyType.StaticBody
+                    categoryBits = FinishEntity.CATEGORY_BITS
+                    maskBits = FinishEntity.MASK_BITS
                 }
             }
             it.body.set(it.image.imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction), it, categoryBits, maskBits, density, friction)
