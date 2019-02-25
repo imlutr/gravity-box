@@ -26,39 +26,32 @@ import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-object PlatformEntity {
-    private const val DEFAULT_WIDTH = 1f
-    private const val DEFAULT_HEIGHT = .25f
-    private const val DEFAULT_ROTATION = 0f
-    val CATEGORY_BITS = EntityCategory.OBSTACLE.bits
-    val MASK_BITS = EntityCategory.OBSTACLE.bits
+object FinishEntity {
+    const val WIDTH = 2f
+    const val HEIGHT = 2f
+    val CATEGORY_BITS = EntityCategory.FINISH.bits
+    val MASK_BITS = EntityCategory.FINISH.bits
 
     fun createEntity(id: Int, x: Float, y: Float,
-                     width: Float = DEFAULT_WIDTH, height: Float = DEFAULT_HEIGHT,
-                     rotationInDeg: Float = DEFAULT_ROTATION,
-                     engine: PooledEngine = Injekt.get(),
-                     manager: AssetManager = Injekt.get()) = engine.createEntity().apply {
+                     manager: AssetManager = Injekt.get(),
+                     engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         add(engine.createComponent(NewMapObjectComponent::class.java)).run {
             newMapObject.set(id)
         }
-        add(engine.createComponent(PlatformComponent::class.java))
+        add(engine.createComponent(FinishComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(manager.get<Texture>("graphics/pixel.png"), x, y, width, height, rotationInDeg)
+            image.set(manager.get<Texture>("graphics/finish.png"), x, y, WIDTH, HEIGHT)
             image.img.userObject = this
         }
         add(engine.createComponent(BodyComponent::class.java)).run {
-            body.set(image.imageToBox2DBody(BodyDef.BodyType.StaticBody), this, CATEGORY_BITS, MASK_BITS)
+            body.set(image.imageToBox2DBody(BodyDef.BodyType.StaticBody, CATEGORY_BITS, MASK_BITS), this, CATEGORY_BITS, MASK_BITS)
         }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)
         }
         add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
-            mapObjectOverlay.set(showMovementButtons = true, showRotationButton = true, showResizingButtons = true, showDeletionButton = true)
+            mapObjectOverlay.set(showMovementButtons = true, showRotationButton = false, showResizingButtons = false, showDeletionButton = false)
         }
-        add(engine.createComponent(TouchableBoundsComponent::class.java)).run {
-            touchableBounds.set(this, 0f, 1f - height)
-        }
-
         engine.addEntity(this)
-    }!!
+    }
 }

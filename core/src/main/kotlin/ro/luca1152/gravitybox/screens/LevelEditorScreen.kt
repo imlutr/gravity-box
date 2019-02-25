@@ -32,11 +32,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.NewMapComponent
-import ro.luca1152.gravitybox.components.body
-import ro.luca1152.gravitybox.components.newMap
-import ro.luca1152.gravitybox.components.undoRedo
+import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.entities.EntityFactory
+import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.events.GameEvent
@@ -123,9 +121,10 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         inputEntity = EntityFactory.createInputEntity(toggledButton)
         undoRedoEntity = EntityFactory.createUndoRedoEntity()
         val levelEntity = LevelEntity.createEntity()
-        val playerEntity = PlayerEntity.createEntity(0,
-                MathUtils.floor(levelEntity.newMap.widthInTiles / 2f) + .5f,
+        val playerEntity = PlayerEntity.createEntity(0, 6.5f,
                 MathUtils.floor(levelEntity.newMap.heightInTiles / 2f) + .5f)
+        FinishEntity.createEntity(0, playerEntity.image.x + playerEntity.image.width / 2f + FinishEntity.WIDTH / 2f + 1f,
+                playerEntity.image.y + FinishEntity.HEIGHT / 2f - playerEntity.image.height / 2f)
         centerCameraOnPlayer(playerEntity)
     }
 
