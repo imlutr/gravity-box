@@ -21,19 +21,14 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.tryGet
 
-/** Syncs [BodyComponent] properties with other components. */
+/** Syncs [BodyComponent]'s properties with other components. */
 class PhysicsSyncSystem : IteratingSystem(Family.all(BodyComponent::class.java).one(ImageComponent::class.java, CollisionBoxComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (entity.body.body.type == BodyDef.BodyType.StaticBody)
-            return
-        if (entity.tryGet(ImageComponent) != null)
-            syncBodyPropertiesWithImage(entity, entity.image)
-        if (entity.tryGet(CollisionBoxComponent) != null)
-            syncBodyPositionWithCollisionBox(entity, entity.collisionBox)
+        if (entity.tryGet(ImageComponent) != null) syncBodyPropertiesWithImage(entity, entity.image)
+        if (entity.tryGet(CollisionBoxComponent) != null) syncBodyPositionWithCollisionBox(entity, entity.collisionBox)
     }
 
     private fun syncBodyPropertiesWithImage(physicsEntity: Entity, image: ImageComponent) {
@@ -43,8 +38,8 @@ class PhysicsSyncSystem : IteratingSystem(Family.all(BodyComponent::class.java).
 
     private fun syncBodyPositionWithCollisionBox(physicsEntity: Entity, collisionBox: CollisionBoxComponent) {
         collisionBox.box.setPosition(
-                physicsEntity.body.body.worldCenter.x - collisionBox.size / 2f,
-                physicsEntity.body.body.worldCenter.y - collisionBox.size / 2f
+                physicsEntity.body.body.worldCenter.x - physicsEntity.collisionBox.width / 2f,
+                physicsEntity.body.body.worldCenter.y - physicsEntity.collisionBox.height / 2f
         )
     }
 }

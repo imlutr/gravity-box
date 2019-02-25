@@ -52,6 +52,9 @@ object PlayerEntity {
             body.set(image.imageToBox2DBody(BodyDef.BodyType.DynamicBody, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION),
                     this, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION)
         }
+        add(engine.createComponent(CollisionBoxComponent::class.java)).run {
+            collisionBox.set(WIDTH, HEIGHT)
+        }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)
         }

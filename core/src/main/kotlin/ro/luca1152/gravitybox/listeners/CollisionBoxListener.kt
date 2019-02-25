@@ -22,12 +22,11 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.utils.ImmutableArray
-import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 
 class CollisionBoxListener : EntitySystem() {
-    var entities: ImmutableArray<Entity> = ImmutableArray(Array.of(Entity::class.java))
+    private lateinit var entities: ImmutableArray<Entity>
 
     override fun addedToEngine(engine: Engine) {
         entities = engine.getEntitiesFor(Family.all(CollisionBoxComponent::class.java).get())

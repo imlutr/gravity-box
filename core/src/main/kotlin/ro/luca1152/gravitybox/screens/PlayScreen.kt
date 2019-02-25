@@ -74,7 +74,7 @@ class PlayScreen(
             addSystem(PlatformRemovalSystem())
             addSystem(PointSystem(mapEntity.map))
             addSystem(OffScreenLevelRestartSystem())
-            addSystem(ColorSchemeSystem(mapEntity))
+            addSystem(FinishPointColorSystem())
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())

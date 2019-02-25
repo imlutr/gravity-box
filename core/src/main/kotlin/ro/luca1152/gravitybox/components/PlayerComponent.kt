@@ -25,6 +25,8 @@ import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
 /** Indicates that the entity is a player. */
 class PlayerComponent : Component, Poolable {
+    var isInsideFinishPoint = false
+
     fun reset(body: Body) {
         body.run {
             setTransform(0f, 0f, 0f) // Reset the position
@@ -34,7 +36,9 @@ class PlayerComponent : Component, Poolable {
         }
     }
 
-    override fun reset() {}
+    override fun reset() {
+        isInsideFinishPoint = false
+    }
 
     companion object : ComponentResolver<PlayerComponent>(PlayerComponent::class.java)
 }
