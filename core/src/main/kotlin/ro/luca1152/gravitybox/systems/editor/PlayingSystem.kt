@@ -83,7 +83,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
             addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
 //            addSystem(PointSystem(mapEntity.map))
-            addSystem(LevelAutoRestartSystem())
+            addSystem(LevelOffScreenRestartSystem())
             addSystem(LevelRestartSystem())
 //            addSystem(ColorSchemeSystem(mapEntity))
             addSystem(ColorSyncSystem())

@@ -83,6 +83,27 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             img.y = value - height / 2f
         }
 
+    var leftX: Float
+        get() = img.x
+        set(value) {
+            img.x = value
+        }
+    var rightX: Float
+        get() = img.x + width
+        set(value) {
+            img.x = value - width
+        }
+    var bottomY: Float
+        get() = img.y
+        set(value) {
+            img.y = value
+        }
+    var topY: Float
+        get() = img.y + height
+        set(value) {
+            img.y = value - height
+        }
+
     var color: Color
         get() = img.color
         set(value) {

@@ -23,7 +23,6 @@ import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
@@ -36,6 +35,7 @@ import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
+import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.WorldContactListener
@@ -121,10 +121,19 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         inputEntity = EntityFactory.createInputEntity(toggledButton)
         undoRedoEntity = EntityFactory.createUndoRedoEntity()
         val levelEntity = LevelEntity.createEntity()
-        val playerEntity = PlayerEntity.createEntity(0, 6.5f,
-                MathUtils.floor(levelEntity.newMap.heightInTiles / 2f) + .5f)
-        FinishEntity.createEntity(0, playerEntity.image.x + playerEntity.image.width / 2f + FinishEntity.WIDTH / 2f + 1f,
-                playerEntity.image.y + FinishEntity.HEIGHT / 2f - playerEntity.image.height / 2f)
+        val platformEntity = PlatformEntity.createEntity(0,
+                levelEntity.newMap.widthInTiles / 2f,
+                levelEntity.newMap.widthInTiles / 2f - .5f,
+                4f
+        )
+        val playerEntity = PlayerEntity.createEntity(0,
+                platformEntity.image.leftX + PlayerEntity.WIDTH / 2f,
+                platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
+        )
+        FinishEntity.createEntity(0,
+                platformEntity.image.rightX - FinishEntity.WIDTH / 2f,
+                platformEntity.image.topY + FinishEntity.HEIGHT / 2f
+        )
         centerCameraOnPlayer(playerEntity)
     }
 
