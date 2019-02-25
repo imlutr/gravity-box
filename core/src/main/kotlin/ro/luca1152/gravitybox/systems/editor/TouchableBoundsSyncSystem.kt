@@ -29,7 +29,7 @@ import ro.luca1152.gravitybox.components.touchableBounds
 class TouchableBoundsSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, TouchableBoundsComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         entity.touchableBounds.run {
-            setPosition(entity.image.x, entity.image.y)
+            setPosition(entity.image.centerX, entity.image.centerY)
             setSize(entity.image.width, entity.image.height)
             boundsImage.rotation = entity.image.img.rotation
         }

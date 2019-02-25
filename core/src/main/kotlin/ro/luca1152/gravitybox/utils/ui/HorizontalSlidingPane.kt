@@ -45,7 +45,7 @@ class HorizontalSlidingPane(private val pageWidth: Float,
     /** The page to which it will be automatically scrolled */
     private var targetPage = 1
 
-    /** The x to which it will be automatically scrolled. */
+    /** The centerX to which it will be automatically scrolled. */
     private val targetX
         get() = -((targetPage - 1) * pageWidth)
 

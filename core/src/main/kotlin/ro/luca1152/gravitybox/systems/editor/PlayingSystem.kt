@@ -132,8 +132,8 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
     private fun resetEntitiesPosition(engine: Engine) {
         engine.getEntitiesFor(Family.all(ImageComponent::class.java, BodyComponent::class.java).get()).forEach {
             it.image.run {
-                this.x = it.body.initialX
-                this.y = it.body.initialY
+                this.centerX = it.body.initialX
+                this.centerY = it.body.initialY
                 this.img.rotation = it.body.initialRotationRad * MathUtils.radiansToDegrees
             }
         }

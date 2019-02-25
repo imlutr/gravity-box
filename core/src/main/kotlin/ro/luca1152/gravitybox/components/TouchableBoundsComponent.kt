@@ -43,7 +43,7 @@ class TouchableBoundsComponent(private val gameStage: GameStage = Injekt.get()) 
 
         setExtraSize(extraWidth, extraHeight)
         setSize(linkedEntity.image.width, linkedEntity.image.height)
-        setPosition(linkedEntity.image.x, linkedEntity.image.y)
+        setPosition(linkedEntity.image.centerX, linkedEntity.image.centerY)
         boundsImage.run {
             color = Color.CLEAR
             userObject = linkedEntity
