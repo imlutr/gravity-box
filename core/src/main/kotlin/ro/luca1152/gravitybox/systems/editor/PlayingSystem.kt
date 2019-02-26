@@ -54,15 +54,10 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
             level.forceUpdateMap = true
         }
         playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
-        centerCameraOnPlayer()
         hideLevelEditorUI()
         removeAllSystems(false)
         addPlaySystems()
         showPlayUI()
-    }
-
-    private fun centerCameraOnPlayer() {
-        gameCamera.position.set(playerEntity.image.centerX, playerEntity.image.centerY, 0f)
     }
 
     private fun hideLevelEditorUI() {

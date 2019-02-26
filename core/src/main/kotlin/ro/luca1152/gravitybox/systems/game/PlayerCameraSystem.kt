@@ -45,6 +45,11 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
         initialCameraZoom = gameCamera.zoom
         initialCameraPosition.set(gameCamera.position)
         gameCamera.zoom = 1f
+        instantlyCenterCameraOnPlayer()
+    }
+
+    private fun instantlyCenterCameraOnPlayer() {
+        gameCamera.position.set(playerEntity.image.centerX, playerEntity.image.centerY, 0f)
     }
 
     override fun update(deltaTime: Float) {
