@@ -25,7 +25,6 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Array
-import ktx.graphics.copy
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
@@ -117,13 +116,13 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
     }
 
     override fun removedFromEngine(engine: Engine) {
-        levelEditorScreen.addGameSystems()
         resetColorScheme()
         hidePlayUI()
         showLevelEditorUI()
         enableMoveTool()
         removePlayEntities(engine)
         resetEntitiesPosition(engine)
+        levelEditorScreen.addGameSystems()
     }
 
     private fun hidePlayUI() {
@@ -159,8 +158,8 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
     }
 
     private fun resetColorScheme() {
-        ColorScheme.currentDarkColor = ColorScheme.darkColor.copy()
-        ColorScheme.currentLightColor = ColorScheme.lightColor.copy()
+        ColorScheme.currentDarkColor.set(ColorScheme.darkColor)
+        ColorScheme.currentLightColor.set(ColorScheme.lightColor)
     }
 
     private fun showLevelEditorUI() {
