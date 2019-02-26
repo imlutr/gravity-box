@@ -30,7 +30,6 @@ import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
-import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.ui.ClickButton
@@ -40,12 +39,12 @@ import uy.kohesive.injekt.api.get
 
 class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
                     private val uiStage: UIStage = Injekt.get(),
-                    private val manager: AssetManager = Injekt.get(),
-                    private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
+                    private val manager: AssetManager = Injekt.get()) : EntitySystem() {
     private val rootTable = levelEditorScreen.createRootTable()
     private lateinit var skin: Skin
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
+    private lateinit var finishEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         skin = manager.get<Skin>("skins/uiskin.json")
@@ -53,17 +52,25 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
             level.forceUpdateMap = true
         }
         playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
+        finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
+        makeFinishPointEndlesslyBlink()
         hideLevelEditorUI()
-        removeAllSystems(false)
+        removeAllSystems(includingThisSystem = false)
         addPlaySystems()
         showPlayUI()
+    }
+
+    private fun makeFinishPointEndlesslyBlink() {
+        finishEntity.run {
+            finish.addPermanentFadeInFadeOutActions(image)
+        }
     }
 
     private fun hideLevelEditorUI() {
         levelEditorScreen.root.isVisible = false
     }
 
-    private fun removeAllSystems(removePlayingSystem: Boolean) {
+    private fun removeAllSystems(includingThisSystem: Boolean) {
         val systemsToRemove = Array<EntitySystem>()
         engine.systems.forEach {
             if (it != this)
@@ -72,7 +79,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         systemsToRemove.forEach {
             engine.removeSystem(it)
         }
-        if (removePlayingSystem)
+        if (includingThisSystem)
             engine.removeSystem(this)
     }
 
@@ -122,6 +129,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         enableMoveTool()
         removePlayEntities(engine)
         resetEntitiesPosition(engine)
+        removeFinishPointEndlessBlink()
         levelEditorScreen.addGameSystems()
     }
 
@@ -144,6 +152,13 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
                 this.centerY = it.body.initialY
                 this.img.rotation = it.body.initialRotationRad * MathUtils.radiansToDegrees
             }
+        }
+    }
+
+    private fun removeFinishPointEndlessBlink() {
+        finishEntity.image.img.run {
+            clearActions()
+            color.a = 1f
         }
     }
 

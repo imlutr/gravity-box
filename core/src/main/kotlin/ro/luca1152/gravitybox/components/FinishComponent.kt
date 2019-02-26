@@ -18,12 +18,38 @@
 package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
 /** Indicates that the entity is a finish point. */
 class FinishComponent : Component, Poolable {
-    override fun reset() {}
+    var blinkEndlessly = true
+
+    fun set(blinkEndlessly: Boolean = true, finishImage: ImageComponent) {
+        this.blinkEndlessly = blinkEndlessly
+        if (blinkEndlessly)
+            addPermanentFadeInFadeOutActions(finishImage)
+    }
+
+    fun addPermanentFadeInFadeOutActions(image: ImageComponent) {
+        image.img.addAction(RepeatAction().apply {
+            action = Actions.sequence(
+                    Actions.fadeOut(1f),
+                    Actions.fadeIn(1f)
+            )
+            count = RepeatAction.FOREVER
+        })
+    }
+
+    override fun reset() {
+        blinkEndlessly = true
+    }
 
     companion object : ComponentResolver<FinishComponent>(FinishComponent::class.java)
 }
+
+val Entity.finish: FinishComponent
+    get() = FinishComponent[this]

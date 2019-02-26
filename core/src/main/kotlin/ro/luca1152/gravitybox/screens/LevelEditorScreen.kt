@@ -128,7 +128,8 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         )
         FinishEntity.createEntity(0,
                 platformEntity.image.rightX - FinishEntity.WIDTH / 2f,
-                platformEntity.image.topY + FinishEntity.HEIGHT / 2f
+                platformEntity.image.topY + FinishEntity.HEIGHT / 2f,
+                blinkEndlessly = false
         )
         PlayerEntity.createEntity(0,
                 platformEntity.image.leftX + PlayerEntity.WIDTH / 2f,

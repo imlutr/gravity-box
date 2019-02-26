@@ -33,15 +33,18 @@ object FinishEntity {
     val MASK_BITS = EntityCategory.FINISH.bits
 
     fun createEntity(id: Int, x: Float, y: Float,
+                     blinkEndlessly: Boolean = true,
                      manager: AssetManager = Injekt.get(),
                      engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
         add(engine.createComponent(NewMapObjectComponent::class.java)).run {
             newMapObject.set(id)
         }
-        add(engine.createComponent(FinishComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
             image.set(manager.get<Texture>("graphics/finish.png"), x, y, WIDTH, HEIGHT)
             image.img.userObject = this
+        }
+        add(engine.createComponent(FinishComponent::class.java)).run {
+            finish.set(blinkEndlessly, image)
         }
         add(engine.createComponent(BodyComponent::class.java)).run {
             body.set(image.imageToBox2DBody(BodyDef.BodyType.StaticBody, CATEGORY_BITS, MASK_BITS), this, CATEGORY_BITS, MASK_BITS)
