@@ -54,8 +54,8 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
 
     private fun smoothlyFollowPlayer() {
         gameCamera.position.lerp(
-                playerEntity.image.centerX + playerEntity.image.width / 2f,
-                playerEntity.image.centerY + playerEntity.image.height / 2f,
+                playerEntity.image.centerX,
+                playerEntity.image.centerY,
                 progress = .15f
         )
     }
