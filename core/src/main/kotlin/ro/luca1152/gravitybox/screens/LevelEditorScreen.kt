@@ -152,6 +152,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     fun addGameSystems() {
         engine.run {
             addSystem(UndoRedoSystem())
+            addSystem(SelectedObjectColorSystem())
             addSystem(ColorSyncSystem())
             addSystem(ObjectPlacementSystem())
             addSystem(ZoomingSystem())

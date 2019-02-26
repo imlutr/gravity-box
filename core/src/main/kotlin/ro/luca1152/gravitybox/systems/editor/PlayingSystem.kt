@@ -41,6 +41,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
                     private val uiStage: UIStage = Injekt.get(),
                     private val manager: AssetManager = Injekt.get()) : EntitySystem() {
     private val rootTable = levelEditorScreen.createRootTable()
+    private var previouslySelectedMapObject: Entity? = null
     private lateinit var skin: Skin
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
@@ -55,6 +56,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
         makeFinishPointEndlesslyBlink()
         hideLevelEditorUI()
+        deselectMapObject()
         removeAllSystems(includingThisSystem = false)
         addPlaySystems()
         showPlayUI()
@@ -68,6 +70,17 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
 
     private fun hideLevelEditorUI() {
         levelEditorScreen.root.isVisible = false
+    }
+
+    private fun deselectMapObject() {
+        val selectedMapObjects = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())
+        when {
+            selectedMapObjects.size() == 1 -> previouslySelectedMapObject = selectedMapObjects.first()
+            else -> previouslySelectedMapObject = null
+        }
+        previouslySelectedMapObject?.run {
+            remove(SelectedObjectComponent::class.java)
+        }
     }
 
     private fun removeAllSystems(includingThisSystem: Boolean) {
@@ -85,7 +98,6 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
 
     private fun addPlaySystems() {
         engine.run {
-            //addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
             addSystem(MapCreationSystem(levelEntity))
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
@@ -100,6 +112,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
             addSystem(LevelFinishSystem(restartLevelWhenFinished = true))
             addSystem(LevelRestartSystem())
             addSystem(FinishPointColorSystem())
+            addSystem(SelectedObjectColorSystem())
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
@@ -130,6 +143,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         removePlayEntities(engine)
         resetEntitiesPosition(engine)
         removeFinishPointEndlessBlink()
+        reselectMapObject(engine)
         levelEditorScreen.addGameSystems()
     }
 
@@ -159,6 +173,12 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
         finishEntity.image.img.run {
             clearActions()
             color.a = 1f
+        }
+    }
+
+    private fun reselectMapObject(engine: Engine) {
+        previouslySelectedMapObject?.run {
+            add(engine.createComponent(SelectedObjectComponent::class.java))
         }
     }
 

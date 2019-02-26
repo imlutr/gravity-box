@@ -24,7 +24,10 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.scenes.scene2d.Actor
-import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.InputComponent
+import ro.luca1152.gravitybox.components.SelectedObjectComponent
+import ro.luca1152.gravitybox.components.input
+import ro.luca1152.gravitybox.components.selectedObject
 import ro.luca1152.gravitybox.components.utils.tryGet
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.hitScreen
@@ -90,14 +93,12 @@ class ObjectSelectionSystem(private val inputMultiplexer: InputMultiplexer = Inj
     private fun selectObject(selectedObject: Entity) {
         selectedObject.run {
             add(engine.createComponent(SelectedObjectComponent::class.java))
-            color.colorType = ColorType.DARKER_DARK
         }
     }
 
     private fun deselectObject(selectedObject: Entity) {
         selectedObject.run {
             remove(SelectedObjectComponent::class.java)
-            color.colorType = ColorType.DARK
         }
     }
 
