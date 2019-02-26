@@ -53,7 +53,7 @@ object FinishEntity {
             color.set(ColorType.DARK)
         }
         add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
-            mapObjectOverlay.set(showMovementButtons = true, showRotationButton = false, showResizingButtons = false, showDeletionButton = false)
+            mapObjectOverlay.set(showMovementButtons = true, showRotationButton = true, showResizingButtons = false, showDeletionButton = false)
         }
         engine.addEntity(this)
     }!!
