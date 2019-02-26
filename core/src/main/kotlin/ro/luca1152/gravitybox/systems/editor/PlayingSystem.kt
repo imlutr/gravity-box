@@ -105,7 +105,7 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
             addSystem(BulletCollisionSystem())
             addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
-//            addSystem(PointSystem(mapEntity.map))
+//            addSystem(PointSystem(mapEntity.map)) TODO
             addSystem(OffScreenLevelRestartSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())

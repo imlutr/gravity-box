@@ -50,7 +50,7 @@ erase-icon
   index: -1
 full-star
   rotate: false
-  xy: 1743, 27
+  xy: 1100, 132
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -78,7 +78,7 @@ heart-icon-empty
   index: -1
 left-arrow-icon
   rotate: false
-  xy: 1646, 13
+  xy: 589, 23
   size: 27, 42
   orig: 27, 42
   offset: 0, 0
@@ -162,7 +162,7 @@ redo-icon
   index: -1
 right-arrow-icon
   rotate: false
-  xy: 589, 23
+  xy: 866, 2
   size: 27, 42
   orig: 27, 42
   offset: 0, 0
@@ -192,28 +192,28 @@ small-button-inside
   index: -1
 small-horizontal-arrow
   rotate: false
-  xy: 1703, 31
+  xy: 1060, 136
   size: 38, 24
   orig: 38, 24
   offset: 0, 0
   index: -1
 small-left-arrow-icon
   rotate: false
-  xy: 1060, 138
+  xy: 618, 27
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
   index: -1
 small-right-arrow-icon
   rotate: false
-  xy: 1675, 17
+  xy: 895, 6
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
   index: -1
 small-rotate-icon
   rotate: false
-  xy: 1060, 178
+  xy: 1646, 20
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
@@ -225,16 +225,23 @@ small-round-button
   orig: 71, 71
   offset: 0, 0
   index: -1
+small-round-button-inside
+  rotate: false
+  xy: 1060, 162
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: -1
 small-vertical-arrow
   rotate: false
-  xy: 618, 27
+  xy: 923, 6
   size: 24, 38
   orig: 24, 38
   offset: 0, 0
   index: -1
 small-x-icon
   rotate: false
-  xy: 1097, 181
+  xy: 1683, 23
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

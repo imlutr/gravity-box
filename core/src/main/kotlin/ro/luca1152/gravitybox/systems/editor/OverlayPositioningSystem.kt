@@ -51,6 +51,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         addIcon("small-left-arrow-icon")
         iconCell!!.padLeft(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
         addListener(object : ClickListener() {
             private val image
                 get() = (selectedMapObject as Entity).image
@@ -88,6 +89,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         addIcon("small-right-arrow-icon")
         iconCell!!.padRight(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
         addListener(object : ClickListener() {
             private val image
                 get() = (selectedMapObject as Entity).image
@@ -124,6 +126,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
     private val deleteButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-x-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
         addClickRunnable(Runnable {
             val deleteCommand = DeleteCommand(selectedMapObject!!)
             deleteCommand.execute()
@@ -133,6 +136,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
     private val rotateButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-rotate-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
         addListener(object : DragListener() {
             private val image
                 get() = (selectedMapObject as Entity).image
@@ -199,6 +203,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
     private val horizontalPositionButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-horizontal-arrow")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
         addListener(object : DragListener() {
             private val image
                 get() = (selectedMapObject as Entity).image
@@ -233,6 +238,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
     private val verticalPositionButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-vertical-arrow")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
         addListener(object : DragListener() {
             private val image
                 get() = (selectedMapObject as Entity).image

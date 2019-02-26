@@ -25,7 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ro.luca1152.gravitybox.utils.kotlin.Reference
 
 /** Own extension of the [Button] class. */
-abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
+abstract class Button(skin: Skin,
+                      private val styleName: String) : Button(skin, styleName) {
     var icon: Image? = null
     var iconCell: Cell<Image>? = null
     var opaqueImage: Image? = null
@@ -75,7 +76,10 @@ abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
      */
     fun setOpaque(opaque: Boolean) {
         if (opaque) {
-            opaqueImage = Image(skin.getDrawable("small-button-inside")).apply {
+            check(skin.getDrawable("$styleName-inside") != null)
+            { "Can't make the button opaque: no inside texture was given for the button style used." }
+
+            opaqueImage = Image(skin.getDrawable("$styleName-inside")).apply {
                 setPosition(
                         this@Button.width / 2f - width / 2f,
                         this@Button.width / 2f - height / 2f
@@ -86,6 +90,8 @@ abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
 
             // Make the icon, if there's any, visible
             icon?.toFront()
+        } else {
+            opaqueImage?.remove()
         }
     }
 }
