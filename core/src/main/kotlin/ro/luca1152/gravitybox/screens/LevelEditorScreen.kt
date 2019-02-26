@@ -198,6 +198,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private fun createUndoButton() = ClickButton(skin, "small-button").apply {
         addIcon("undo-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
         addClickRunnable(Runnable {
             undoRedoEntity.undoRedo.undo()
         })
@@ -206,6 +207,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private fun createRedoButton() = ClickButton(skin, "small-button").apply {
         addIcon("redo-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
         addClickRunnable(Runnable {
             undoRedoEntity.undoRedo.redo()
         })
@@ -217,6 +219,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         setToggledButtonReference(toggledButton)
         type = ButtonType.MOVE_TOOL_BUTTON
         isToggled = true
+        setOpaque(true)
     }
 
     private fun createLeftColumn(): Table {
@@ -228,6 +231,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             setToggledButtonReference(toggledButton)
             type = ButtonType.PLACE_TOOL_BUTTON
+            setOpaque(true)
         }
 
         fun createBackButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
@@ -244,6 +248,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
                         )
                 )
             })
+            setOpaque(true)
         }
 
         return Table().apply {
@@ -264,6 +269,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             addClickRunnable(Runnable {
                 engine.addSystem(PlayingSystem(this@LevelEditorScreen))
             })
+            setOpaque(true)
         }
 
         return Table().apply {
@@ -306,6 +312,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private fun grayOutButton(button: ClickButton) {
         button.run {
             setColors(ColorScheme.currentDarkColor, ColorScheme.currentDarkColor)
+            opaqueImage?.color?.a = 0f
             color.a = .3f
         }
     }
@@ -313,6 +320,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
     private fun resetButtonColor(button: ClickButton) {
         button.run {
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            opaqueImage?.color?.a = 1f
             color.a = 1f
         }
     }

@@ -28,6 +28,7 @@ import ro.luca1152.gravitybox.utils.kotlin.Reference
 abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
     var icon: Image? = null
     var iconCell: Cell<Image>? = null
+    var opaqueImage: Image? = null
     var toggledButton = Reference<ToggleButton>()
     var toggleOffButtons = false
     var type = ButtonType.DEFAULT_BUTTON_TYPE
@@ -74,14 +75,14 @@ abstract class Button(skin: Skin, styleName: String) : Button(skin, styleName) {
      */
     fun setOpaque(opaque: Boolean) {
         if (opaque) {
-            // Add the inside texture of the button and set its color to the background color
-            addActor(Image(skin.getDrawable("small-button-inside")).apply {
+            opaqueImage = Image(skin.getDrawable("small-button-inside")).apply {
                 setPosition(
                         this@Button.width / 2f - width / 2f,
                         this@Button.width / 2f - height / 2f
                 )
                 color = ColorScheme.currentLightColor
-            })
+            }
+            addActor(opaqueImage)
 
             // Make the icon, if there's any, visible
             icon?.toFront()
