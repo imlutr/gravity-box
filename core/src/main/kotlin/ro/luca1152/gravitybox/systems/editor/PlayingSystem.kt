@@ -31,6 +31,7 @@ import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
+import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.ui.ClickButton
@@ -40,20 +41,28 @@ import uy.kohesive.injekt.api.get
 
 class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
                     private val uiStage: UIStage = Injekt.get(),
-                    private val manager: AssetManager = Injekt.get()) : EntitySystem() {
+                    private val manager: AssetManager = Injekt.get(),
+                    private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
     private val rootTable = levelEditorScreen.createRootTable()
     private lateinit var skin: Skin
     private lateinit var levelEntity: Entity
+    private lateinit var playerEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         skin = manager.get<Skin>("skins/uiskin.json")
         levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get()).apply {
             level.forceUpdateMap = true
         }
+        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
+        centerCameraOnPlayer()
         hideLevelEditorUI()
         removeAllSystems(false)
         addPlaySystems()
         showPlayUI()
+    }
+
+    private fun centerCameraOnPlayer() {
+        gameCamera.position.set(playerEntity.image.centerX, playerEntity.image.centerY, 0f)
     }
 
     private fun hideLevelEditorUI() {
@@ -114,12 +123,12 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
 
     override fun removedFromEngine(engine: Engine) {
         levelEditorScreen.addGameSystems()
+        resetColorScheme()
         hidePlayUI()
         showLevelEditorUI()
         enableMoveTool()
         removePlayEntities(engine)
         resetEntitiesPosition(engine)
-        resetColorScheme()
     }
 
     private fun hidePlayUI() {
