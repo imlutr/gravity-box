@@ -33,7 +33,6 @@ class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, C
                     ColorType.LIGHT -> ColorScheme.currentLightColor
                     ColorType.DARK -> ColorScheme.currentDarkColor
                     ColorType.DARKER_DARK -> ColorScheme.darkerDarkColor
-//                    else -> throw RuntimeException("${entity.color.colorType} was not initialized.")
                     else -> Color.RED
                 }
         )

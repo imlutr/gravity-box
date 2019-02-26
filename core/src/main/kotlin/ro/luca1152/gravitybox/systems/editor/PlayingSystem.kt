@@ -25,6 +25,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Array
+import ktx.graphics.copy
 import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
@@ -154,8 +155,8 @@ class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
     }
 
     private fun resetColorScheme() {
-        ColorScheme.currentDarkColor = ColorScheme.darkColor
-        ColorScheme.currentLightColor = ColorScheme.lightColor
+        ColorScheme.currentDarkColor = ColorScheme.darkColor.copy()
+        ColorScheme.currentLightColor = ColorScheme.lightColor.copy()
     }
 
     private fun showLevelEditorUI() {
