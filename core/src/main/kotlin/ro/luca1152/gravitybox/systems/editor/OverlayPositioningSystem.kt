@@ -60,6 +60,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             var initialImageY = 0f
 
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                super.touchDown(event, x, y, pointer, button)
                 image.img.run {
                     initialImageWidth = width
                     initialImageHeight = height
@@ -76,9 +77,10 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
-                undoRedoEntity.undoRedo.addExecutedCommand(ResizeCommand(selectedMapObject!!,
-                        image.width - initialImageWidth, image.height - initialImageHeight,
-                        image.leftX - initialImageX, image.bottomY - initialImageY))
+                if (image.width != initialImageWidth || image.height != initialImageHeight)
+                    undoRedoEntity.undoRedo.addExecutedCommand(ResizeCommand(selectedMapObject!!,
+                            image.width - initialImageWidth, image.height - initialImageHeight,
+                            image.leftX - initialImageX, image.bottomY - initialImageY))
             }
         })
     }
@@ -95,6 +97,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             var initialImageY = 0f
 
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                super.touchDown(event, x, y, pointer, button)
                 image.img.run {
                     initialImageWidth = width
                     initialImageHeight = height
@@ -111,9 +114,10 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
-                undoRedoEntity.undoRedo.addExecutedCommand(ResizeCommand(selectedMapObject!!,
-                        image.width - initialImageWidth, image.height - initialImageHeight,
-                        image.leftX - initialImageX, image.bottomY - initialImageY))
+                if (image.width != initialImageWidth || image.height != initialImageHeight)
+                    undoRedoEntity.undoRedo.addExecutedCommand(ResizeCommand(selectedMapObject!!,
+                            image.width - initialImageWidth, image.height - initialImageHeight,
+                            image.leftX - initialImageX, image.bottomY - initialImageY))
             }
         })
     }
@@ -135,6 +139,7 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             var initialImageRotation = 0f
 
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                super.touchDown(event, x, y, pointer, button)
                 rotationLabel.isVisible = true
                 initialImageRotation = image.img.rotation
                 updateRotationLabel()
@@ -200,10 +205,11 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             private var initialImageX = 0f
             private var initialMouseXInWorldCoords = 0f
 
-            override fun dragStart(event: InputEvent?, x: Float, y: Float, pointer: Int) {
-                super.dragStart(event, x, y, pointer)
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                super.touchDown(event, x, y, pointer, button)
                 initialImageX = image.centerX
                 initialMouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
+                return true
             }
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
@@ -233,10 +239,11 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             private var initialImageY = 0f
             private var initialMouseYInWorldCoords = 0f
 
-            override fun dragStart(event: InputEvent?, x: Float, y: Float, pointer: Int) {
-                super.dragStart(event, x, y, pointer)
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                super.touchDown(event, x, y, pointer, button)
                 initialImageY = image.centerY
                 initialMouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
+                return true
             }
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
