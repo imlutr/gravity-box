@@ -1,0 +1,30 @@
+{
+  "id": 1,
+  "width": 192,
+  "height": 192,
+  "player": {
+    "id": 0,
+    "position": {
+      "x": 64,
+      "y": 64
+    }
+  },
+  "finish": {
+    "id": 1,
+    "position": {
+      "x": 192,
+      "y": 192
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "id": 2,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "width": 192
+      }
+    }
+  ]
+}
