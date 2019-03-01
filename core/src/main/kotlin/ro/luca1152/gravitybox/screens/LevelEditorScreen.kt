@@ -124,13 +124,13 @@ class LevelEditorScreen(
         undoRedoEntity = EntityFactory.createUndoRedoEntity()
         val levelEntity = LevelEntity.createEntity()
         val platformEntity = PlatformEntity.createEntity(
-            0,
+            2,
             levelEntity.newMap.widthInTiles / 2f,
             levelEntity.newMap.widthInTiles / 2f - .5f,
             4f
         )
         FinishEntity.createEntity(
-            0,
+            1,
             platformEntity.image.rightX - FinishEntity.WIDTH / 2f,
             platformEntity.image.topY + FinishEntity.HEIGHT / 2f,
             blinkEndlessly = false

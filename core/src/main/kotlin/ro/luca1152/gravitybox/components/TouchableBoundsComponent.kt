@@ -53,7 +53,7 @@ class TouchableBoundsComponent(private val gameStage: GameStage = Injekt.get()) 
 
     fun setPosition(centerX: Float, centerY: Float) {
         require(boundsImage.width != 0f && boundsImage.height != 0f)
-        { "Setting the position based on the center coordinates requires the size to be setObject." }
+        { "Setting the position based on the center coordinates requires the size to be set." }
 
         boundsImage.run {
             x = centerX - width / 2f

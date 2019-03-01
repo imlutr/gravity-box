@@ -53,8 +53,11 @@ class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Inj
         private fun createPlatformAt(screenX: Int, screenY: Int) {
             val coords = screenToWorldCoordinates(screenX, screenY)
             val platformWidth = .5f
+            val id =
+                engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
+                    .size()
             val platform = PlatformEntity.createEntity(
-                0,
+                id,
                 MathUtils.floor(coords.x).toFloat() + .5f,
                 MathUtils.floor(coords.y).toFloat() + .5f,
                 platformWidth

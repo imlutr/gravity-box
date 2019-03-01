@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Pool.Poolable
@@ -129,6 +130,14 @@ class AddCommand(
         affectedEntity.tryGet(ColorComponent)?.run {
             colorType = ColorType.DARK
         }
+        affectedEntity.tryGet(NewMapObjectComponent).run {
+            val newId = affectedEntity.newMapObject.id
+            engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
+                .forEach {
+                    if (it != affectedEntity && it.newMapObject.id >= newId)
+                        it.newMapObject.id++
+                }
+        }
         affectedEntity.remove(DeletedMapObjectComponent::class.java)
     }
 
@@ -142,6 +151,14 @@ class AddCommand(
         }
         affectedEntity.tryGet(BodyComponent)?.run {
             destroyBody()
+        }
+        affectedEntity.tryGet(NewMapObjectComponent).run {
+            val deletedId = affectedEntity.newMapObject.id
+            engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
+                .forEach {
+                    if (it.newMapObject.id > deletedId)
+                        it.newMapObject.id--
+                }
         }
         affectedEntity.add(engine.createComponent(DeletedMapObjectComponent::class.java))
         affectedEntity.remove(SelectedObjectComponent::class.java)
