@@ -42,7 +42,6 @@ class NewMapComponent : Component, Poolable {
     }
 
     val world: World = Injekt.get()
-    var objectsCount = 0
     var widthInTiles = 0
     var heightInTiles = 0
     /**
@@ -107,12 +106,11 @@ class NewMapComponent : Component, Poolable {
     override fun reset() {
         destroyAllBodies()
         levelNumber = 0
-        objectsCount = 0
         widthInTiles = 0
         heightInTiles = 0
     }
 
-    private fun destroyAllBodies() {
+    fun destroyAllBodies() {
         val bodiesToRemove = Array<Body>()
         world.getBodies(bodiesToRemove)
         bodiesToRemove.forEach {

@@ -45,7 +45,7 @@ class MapCreationSystem(private val levelEntity: Entity) : EntitySystem() {
 
     private fun updateMap() {
         levelEntity.newMap.run {
-            reset()
+            destroyAllBodies()
             levelNumber = levelEntity.level.levelNumber
             createBox2DBodies()
         }
