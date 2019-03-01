@@ -37,8 +37,8 @@ class FinishComponent : Component, Poolable {
     fun addPermanentFadeInFadeOutActions(image: ImageComponent) {
         image.img.addAction(RepeatAction().apply {
             action = Actions.sequence(
-                    Actions.fadeOut(1f),
-                    Actions.fadeIn(1f)
+                Actions.fadeOut(1f),
+                Actions.fadeIn(1f)
             )
             count = RepeatAction.FOREVER
         })

@@ -52,7 +52,8 @@ class MapCreationSystem(private val levelEntity: Entity) : EntitySystem() {
     }
 
     private fun createBox2DBodies() {
-        val mapObjects = engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
+        val mapObjects =
+            engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
         mapObjects.forEach {
             var bodyType = BodyDef.BodyType.StaticBody
             var categoryBits = EntityCategory.NONE.bits
@@ -78,7 +79,14 @@ class MapCreationSystem(private val levelEntity: Entity) : EntitySystem() {
                     maskBits = FinishEntity.MASK_BITS
                 }
             }
-            it.body.set(it.image.imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction), it, categoryBits, maskBits, density, friction)
+            it.body.set(
+                it.image.imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction),
+                it,
+                categoryBits,
+                maskBits,
+                density,
+                friction
+            )
         }
     }
 }

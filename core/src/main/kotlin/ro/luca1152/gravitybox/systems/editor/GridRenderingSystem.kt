@@ -36,8 +36,10 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 @Suppress("PrivatePropertyName")
-class GridRenderingSystem(private val gameStage: GameStage = Injekt.get(),
-                          private val manager: AssetManager = Injekt.get()) : EntitySystem() {
+class GridRenderingSystem(
+    private val gameStage: GameStage = Injekt.get(),
+    private val manager: AssetManager = Injekt.get()
+) : EntitySystem() {
     private val LINE_COLOR = ColorScheme.currentDarkColor.copy(alpha = .2f)
     private val LINE_WIDTH = 2f.pixelsToMeters
     private val gridGroup = Group()

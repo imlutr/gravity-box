@@ -74,8 +74,10 @@ abstract class Command {
     abstract fun unexecute()
 }
 
-class MoveCommand(override val affectedEntity: Entity,
-                  private val deltaX: Float, private val deltaY: Float) : Command() {
+class MoveCommand(
+    override val affectedEntity: Entity,
+    private val deltaX: Float, private val deltaY: Float
+) : Command() {
     init {
         check(affectedEntity.tryGet(ImageComponent) != null)
         { "The [affectedEntity] must have an [ImageComponent]." }
@@ -90,8 +92,10 @@ class MoveCommand(override val affectedEntity: Entity,
     }
 }
 
-class RotateCommand(override val affectedEntity: Entity,
-                    private val deltaAngle: Float) : Command() {
+class RotateCommand(
+    override val affectedEntity: Entity,
+    private val deltaAngle: Float
+) : Command() {
     init {
         check(affectedEntity.tryGet(ImageComponent) != null)
         { "The [affectedEntity] must have an [ImageComponent]." }
@@ -106,8 +110,10 @@ class RotateCommand(override val affectedEntity: Entity,
     }
 }
 
-class AddCommand(override val affectedEntity: Entity,
-                 private val engine: PooledEngine = Injekt.get()) : Command() {
+class AddCommand(
+    override val affectedEntity: Entity,
+    private val engine: PooledEngine = Injekt.get()
+) : Command() {
     override fun execute() {
         affectedEntity.tryGet(ImageComponent)?.run {
             img.isVisible = true
@@ -159,9 +165,11 @@ class DeleteCommand(override val affectedEntity: Entity) : Command() {
  * given to [deltaX] and [deltaY]. This is not done in an additional [MoveCommand] because undo() would
  * then have to be called two times (or the undo button pressed two times), instead of once.
  */
-class ResizeCommand(override val affectedEntity: Entity,
-                    private val deltaWidth: Float, private val deltaHeight: Float,
-                    private val deltaX: Float = 0f, private val deltaY: Float = 0f) : Command() {
+class ResizeCommand(
+    override val affectedEntity: Entity,
+    private val deltaWidth: Float, private val deltaHeight: Float,
+    private val deltaX: Float = 0f, private val deltaY: Float = 0f
+) : Command() {
     init {
         check(affectedEntity.tryGet(ImageComponent) != null)
         { "The [affectedEntity] must have an [ImageComponent]." }

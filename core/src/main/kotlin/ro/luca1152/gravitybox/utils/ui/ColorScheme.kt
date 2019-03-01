@@ -54,22 +54,22 @@ object ColorScheme {
         // Functions to generate the color scheme's colors based on a hue (1-360)
 
         fun getLightColor(hue: Int) =
-                Color().fromHsv(hue.toFloat(), 10f / 100f, 91f / 100f).apply { a = 1f }!!
+            Color().fromHsv(hue.toFloat(), 10f / 100f, 91f / 100f).apply { a = 1f }!!
 
         fun getDarkColor(hue: Int) =
-                Color().fromHsv(hue.toFloat(), 42f / 100f, 57f / 100f).apply { a = 1f }!!
+            Color().fromHsv(hue.toFloat(), 42f / 100f, 57f / 100f).apply { a = 1f }!!
 
         fun getLightColor2(hue: Int) =
-                Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f).apply { a = 1f }!!
+            Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f).apply { a = 1f }!!
 
         fun getDarkColor2(hue: Int) =
-                Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f).apply { a = 1f }!!
+            Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f).apply { a = 1f }!!
 
         fun getDarkerDarkColor(hue: Int) =
-                Color().fromHsv(hue.toFloat(), 55f / 100f, 29f / 100f).apply { a = 1f }!!
+            Color().fromHsv(hue.toFloat(), 55f / 100f, 29f / 100f).apply { a = 1f }!!
 
         fun getLighterLightColor(hue: Int) =
-                Color().fromHsv(hue.toFloat(), 33 / 100f, 80 / 100f).apply { a = 1f }!!
+            Color().fromHsv(hue.toFloat(), 33 / 100f, 80 / 100f).apply { a = 1f }!!
 
         // Store the new colors
         lightColor = getLightColor(hue)

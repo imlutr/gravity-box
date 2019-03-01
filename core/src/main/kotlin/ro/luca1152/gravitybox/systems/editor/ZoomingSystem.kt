@@ -35,8 +35,10 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Adds a detector which handles zoom gestures. */
-class ZoomingSystem(private val gameCamera: GameCamera = Injekt.get(),
-                    private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+class ZoomingSystem(
+    private val gameCamera: GameCamera = Injekt.get(),
+    private val inputMultiplexer: InputMultiplexer = Injekt.get()
+) : EntitySystem() {
     private lateinit var inputEntity: Entity
 
     companion object {

@@ -25,8 +25,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ro.luca1152.gravitybox.utils.kotlin.Reference
 
 /** Own extension of the [Button] class. */
-abstract class Button(skin: Skin,
-                      private val styleName: String) : Button(skin, styleName) {
+abstract class Button(
+    skin: Skin,
+    private val styleName: String
+) : Button(skin, styleName) {
     var icon: Image? = null
     var iconCell: Cell<Image>? = null
     var opaqueImage: Image? = null
@@ -81,8 +83,8 @@ abstract class Button(skin: Skin,
 
             opaqueImage = Image(skin.getDrawable("$styleName-inside")).apply {
                 setPosition(
-                        this@Button.width / 2f - width / 2f,
-                        this@Button.width / 2f - height / 2f
+                    this@Button.width / 2f - width / 2f,
+                    this@Button.width / 2f - height / 2f
                 )
                 color = ColorScheme.currentLightColor
             }

@@ -26,10 +26,12 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener
 
 /** A horizontal pane that contains multiple pages and can scroll between them. */
-class HorizontalSlidingPane(private val pageWidth: Float,
-                            private val pageHeight: Float,
-                            private val flingSpeedThreshold: Float = 600f,
-                            private val overScrollDistance: Float = 100f) : Group() {
+class HorizontalSlidingPane(
+    private val pageWidth: Float,
+    private val pageHeight: Float,
+    private val flingSpeedThreshold: Float = 600f,
+    private val overScrollDistance: Float = 100f
+) : Group() {
     private val pages: Group = Group()
 
     val pageCount
@@ -67,7 +69,11 @@ class HorizontalSlidingPane(private val pageWidth: Float,
         }
 
         private fun keepXWithinBounds() {
-            pages.x = MathUtils.clamp(pages.x, -((pages.children.size - 1) * pageWidth + overScrollDistance), overScrollDistance)
+            pages.x = MathUtils.clamp(
+                pages.x,
+                -((pages.children.size - 1) * pageWidth + overScrollDistance),
+                overScrollDistance
+            )
         }
     }
 

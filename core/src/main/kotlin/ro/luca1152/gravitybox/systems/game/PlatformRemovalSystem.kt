@@ -26,7 +26,8 @@ import ro.luca1152.gravitybox.components.platform
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 
 /** Removes every platform marked for removal. */
-class PlatformRemovalSystem : IteratingSystem(Family.all(PlatformComponent::class.java, BodyComponent::class.java).get()) {
+class PlatformRemovalSystem :
+    IteratingSystem(Family.all(PlatformComponent::class.java, BodyComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.platform.remove)
             engine.removeAndResetEntity(entity)

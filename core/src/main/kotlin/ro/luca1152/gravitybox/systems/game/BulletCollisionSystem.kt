@@ -34,7 +34,8 @@ import uy.kohesive.injekt.api.get
 
 
 /** Handles what happens when a bullet collides with a map object. */
-class BulletCollisionSystem(private val world: World = Injekt.get()) : IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
+class BulletCollisionSystem(private val world: World = Injekt.get()) :
+    IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
     private lateinit var playerEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
@@ -66,7 +67,8 @@ class BulletCollisionSystem(private val world: World = Injekt.get()) : Iterating
         return closestBody
     }
 
-    private fun noObstacleFoundBetween(closestBody: Body?, playerBody: Body) = closestBody == playerBody || closestBody == null
+    private fun noObstacleFoundBetween(closestBody: Body?, playerBody: Body) =
+        closestBody == playerBody || closestBody == null
 
     private fun Body.applyBlastImpulse(blastCenter: Vector2, applyPoint: Vector2, blastPower: Float) {
         // Apply only on dynamic bodies so the impulse has an effect
@@ -86,9 +88,9 @@ class BulletCollisionSystem(private val world: World = Injekt.get()) : Iterating
 
         // Apply the force
         this.applyLinearImpulse(
-                blastDir.nor().scl(impulseMag),
-                playerEntity.body.body.worldCenter,
-                true
+            blastDir.nor().scl(impulseMag),
+            playerEntity.body.body.worldCenter,
+            true
         )
     }
 }
