@@ -58,6 +58,9 @@ object FinishEntity {
         add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
             mapObjectOverlay.set(showMovementButtons = true, showRotationButton = true, showResizingButtons = false, showDeletionButton = false)
         }
+        add(engine.createComponent(JsonComponent::class.java)).run {
+            json.setObject(this, "finish")
+        }
         engine.addEntity(this)
     }!!
 }

@@ -53,12 +53,14 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
-class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
-                        private val manager: AssetManager = Injekt.get(),
-                        private val gameStage: GameStage = Injekt.get(),
-                        private val gameViewport: GameViewport = Injekt.get(),
-                        private val gameCamera: GameCamera = Injekt.get(),
-                        private val uiStage: UIStage = Injekt.get()) : KtxScreen {
+class LevelEditorScreen(
+    private val engine: PooledEngine = Injekt.get(),
+    private val manager: AssetManager = Injekt.get(),
+    private val gameStage: GameStage = Injekt.get(),
+    private val gameViewport: GameViewport = Injekt.get(),
+    private val gameCamera: GameCamera = Injekt.get(),
+    private val uiStage: UIStage = Injekt.get()
+) : KtxScreen {
     // UI
     private var screenIsHiding = false
     private lateinit var skin: Skin
@@ -121,19 +123,22 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         inputEntity = EntityFactory.createInputEntity(toggledButton)
         undoRedoEntity = EntityFactory.createUndoRedoEntity()
         val levelEntity = LevelEntity.createEntity()
-        val platformEntity = PlatformEntity.createEntity(0,
-                levelEntity.newMap.widthInTiles / 2f,
-                levelEntity.newMap.widthInTiles / 2f - .5f,
-                4f
+        val platformEntity = PlatformEntity.createEntity(
+            0,
+            levelEntity.newMap.widthInTiles / 2f,
+            levelEntity.newMap.widthInTiles / 2f - .5f,
+            4f
         )
-        FinishEntity.createEntity(0,
-                platformEntity.image.rightX - FinishEntity.WIDTH / 2f,
-                platformEntity.image.topY + FinishEntity.HEIGHT / 2f,
-                blinkEndlessly = false
+        FinishEntity.createEntity(
+            0,
+            platformEntity.image.rightX - FinishEntity.WIDTH / 2f,
+            platformEntity.image.topY + FinishEntity.HEIGHT / 2f,
+            blinkEndlessly = false
         )
-        PlayerEntity.createEntity(0,
-                platformEntity.image.leftX + PlayerEntity.WIDTH / 2f,
-                platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
+        PlayerEntity.createEntity(
+            0,
+            platformEntity.image.leftX + PlayerEntity.WIDTH / 2f,
+            platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
         )
         centerCameraOnPlatform(platformEntity)
     }
@@ -151,6 +156,7 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
 
     fun addGameSystems() {
         engine.run {
+            addSystem(LevelSavingSystem())
             addSystem(UndoRedoSystem())
             addSystem(SelectedObjectColorSystem())
             addSystem(ColorSyncSystem())
@@ -213,14 +219,15 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
         })
     }
 
-    private fun createMoveToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
-        addIcon("move-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        setToggledButtonReference(toggledButton)
-        type = ButtonType.MOVE_TOOL_BUTTON
-        isToggled = true
-        setOpaque(true)
-    }
+    private fun createMoveToolButton(toggledButton: Reference<ToggleButton>) =
+        ToggleButton(skin, "small-button").apply {
+            addIcon("move-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setToggledButtonReference(toggledButton)
+            type = ButtonType.MOVE_TOOL_BUTTON
+            isToggled = true
+            setOpaque(true)
+        }
 
     private fun createLeftColumn(): Table {
         undoButton = createUndoButton()
@@ -242,10 +249,10 @@ class LevelEditorScreen(private val engine: PooledEngine = Injekt.get(),
             setToggleOffEveryOtherButton(true)
             addClickRunnable(Runnable {
                 uiStage.addAction(
-                        sequence(
-                                fadeOut(.5f),
-                                run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
-                        )
+                    sequence(
+                        fadeOut(.5f),
+                        run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
+                    )
                 )
             })
             setOpaque(true)

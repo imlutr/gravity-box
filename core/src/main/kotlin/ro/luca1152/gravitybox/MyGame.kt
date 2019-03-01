@@ -98,6 +98,9 @@ const val PPM = 64f
 val Int.pixelsToMeters: Float
     get() = this / PPM
 
+val Int.metersToPixels: Float
+    get() = this * PPM
+
 val Float.pixelsToMeters: Float
     get() = this / PPM
 

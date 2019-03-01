@@ -33,11 +33,13 @@ object PlatformEntity {
     val CATEGORY_BITS = EntityCategory.PLATFORM.bits
     val MASK_BITS = EntityCategory.OBSTACLE.bits
 
-    fun createEntity(id: Int, x: Float, y: Float,
-                     width: Float = DEFAULT_WIDTH, height: Float = DEFAULT_HEIGHT,
-                     rotationInDeg: Float = DEFAULT_ROTATION,
-                     engine: PooledEngine = Injekt.get(),
-                     manager: AssetManager = Injekt.get()) = engine.createEntity().apply {
+    fun createEntity(
+        id: Int, x: Float, y: Float,
+        width: Float, height: Float = DEFAULT_HEIGHT,
+        rotationInDeg: Float = DEFAULT_ROTATION,
+        engine: PooledEngine = Injekt.get(),
+        manager: AssetManager = Injekt.get()
+    ) = engine.createEntity().apply {
         add(engine.createComponent(NewMapObjectComponent::class.java)).run {
             newMapObject.set(id)
         }
@@ -53,10 +55,18 @@ object PlatformEntity {
             color.set(ColorType.DARK)
         }
         add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
-            mapObjectOverlay.set(showMovementButtons = true, showRotationButton = true, showResizingButtons = true, showDeletionButton = true)
+            mapObjectOverlay.set(
+                showMovementButtons = true,
+                showRotationButton = true,
+                showResizingButtons = true,
+                showDeletionButton = true
+            )
         }
         add(engine.createComponent(TouchableBoundsComponent::class.java)).run {
             touchableBounds.set(this, 0f, 1f - height)
+        }
+        add(engine.createComponent(JsonComponent::class.java)).run {
+            json.setArrayObject(this)
         }
 
         engine.addEntity(this)

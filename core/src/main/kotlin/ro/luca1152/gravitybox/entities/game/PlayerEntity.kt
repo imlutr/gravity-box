@@ -34,14 +34,21 @@ object PlayerEntity {
     const val FRICTION = 2f
     const val DENSITY = 1.15f
 
-    fun createEntity(id: Int, x: Float, y: Float,
-                     manager: AssetManager = Injekt.get(),
-                     engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+    fun createEntity(
+        id: Int, x: Float, y: Float,
+        manager: AssetManager = Injekt.get(),
+        engine: PooledEngine = Injekt.get()
+    ) = engine.createEntity().apply {
         add(engine.createComponent(NewMapObjectComponent::class.java)).run {
             this.newMapObject.set(id)
         }
         add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
-            mapObjectOverlay.set(showMovementButtons = true, showRotationButton = true, showResizingButtons = false, showDeletionButton = false)
+            mapObjectOverlay.set(
+                showMovementButtons = true,
+                showRotationButton = true,
+                showResizingButtons = false,
+                showDeletionButton = false
+            )
         }
         add(engine.createComponent(PlayerComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
@@ -49,14 +56,19 @@ object PlayerEntity {
             image.img.userObject = this
         }
         add(engine.createComponent(BodyComponent::class.java)).run {
-            body.set(image.imageToBox2DBody(BodyDef.BodyType.DynamicBody, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION),
-                    this, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION)
+            body.set(
+                image.imageToBox2DBody(BodyDef.BodyType.DynamicBody, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION),
+                this, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION
+            )
         }
         add(engine.createComponent(CollisionBoxComponent::class.java)).run {
             collisionBox.set(WIDTH, HEIGHT)
         }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)
+        }
+        add(engine.createComponent(JsonComponent::class.java)).run {
+            json.setObject(this, "player")
         }
         engine.addEntity(this)
     }!!
