@@ -18,74 +18,81 @@
 package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.PooledEngine
-import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
-import ro.luca1152.gravitybox.components.MapComponent.Companion.GRAVITY
-import ro.luca1152.gravitybox.components.map
-import ro.luca1152.gravitybox.entities.EntityFactory
-import ro.luca1152.gravitybox.events.GameEvent
+import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.entities.game.FinishEntity
+import ro.luca1152.gravitybox.entities.game.LevelEntity
+import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
-import ro.luca1152.gravitybox.listeners.GameInputListener
 import ro.luca1152.gravitybox.listeners.WorldContactListener
+import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
-import ro.luca1152.gravitybox.utils.box2d.MapBodyBuilder
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.ui.ColorScheme.currentLightColor
 import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(
     private val engine: PooledEngine = Injekt.get(),
     private val gameViewport: GameViewport = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get()
+    private val gameStage: GameStage = Injekt.get(),
+    private val world: World = Injekt.get(),
+    private val inputMultiplexer: InputMultiplexer = Injekt.get()
 ) : KtxScreen {
-    private val world = World(Vector2(0f, GRAVITY), true)
-    private val gameEventSignal = Signal<GameEvent>()
+    override fun show() {
+        setOwnBox2DContactListener()
+        createGameEntities()
+        addGameSystems()
+        handleAllInput()
+        // Handle input
+    }
 
-    init {
-        // Dependency injection
-        Injekt.run {
-            addSingleton(world)
-            addSingleton(gameEventSignal)
-        }
-
-        // Provide own implementation for what happens after collisions
+    private fun setOwnBox2DContactListener() {
         world.setContactListener(WorldContactListener())
     }
 
-    override fun show() {
-        // Create entities
-        val mapEntity = EntityFactory.createMap(LevelSelectorScreen.chosenLevel)
-        val finishEntity = EntityFactory.createFinish(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap))
-        val playerEntity = EntityFactory.createPlayer(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap))
+    private fun createGameEntities() {
+        LevelEntity.createEntity(LevelSelectorScreen.chosenLevel).run {
+            level.loadMap = true
+            level.forceUpdateMap = true
+        }
+        PlayerEntity.createEntity()
+        FinishEntity.createEntity()
+    }
 
-        // Add systems
+    private fun addGameSystems() {
         engine.run {
-            addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
+            addSystem(MapLoadingSystem())
+            addSystem(MapBodiesCreationSystem())
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
+            addSystem(ShootingSystem())
             addSystem(BulletCollisionSystem())
             addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
-            addSystem(PointSystem(mapEntity.map))
+//            addSystem(PointSystem(mapEntity.map)) TODO
             addSystem(OffScreenLevelRestartSystem())
+            addSystem(KeyboardLevelRestartSystem())
+            addSystem(LevelFinishDetectionSystem())
+            addSystem(LevelFinishSystem())
+            addSystem(LevelRestartSystem())
             addSystem(FinishPointColorSystem())
+            addSystem(SelectedObjectColorSystem())
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
-            addSystem(MapRenderingSystem(mapEntity))
-//            addSystem(PhysicsDebugRenderingSystem())
             addSystem(ImageRenderingSystem())
+            addSystem(PhysicsDebugRenderingSystem())
         }
+    }
 
-        // Handle input
-        Gdx.input.inputProcessor = GameInputListener(playerEntity)
+    private fun handleAllInput() {
+        Gdx.input.inputProcessor = inputMultiplexer
     }
 
     override fun render(delta: Float) {

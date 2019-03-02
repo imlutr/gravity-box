@@ -136,13 +136,7 @@ class LevelSelectorScreen(
             })))
 
             addListener(object : ClickListener() {
-                override fun touchDown(
-                    event: InputEvent?,
-                    x: Float,
-                    y: Float,
-                    pointer: Int,
-                    button: Int
-                ): Boolean {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                     addAction(
                         sequence(
                             delay(.05f),
@@ -155,13 +149,7 @@ class LevelSelectorScreen(
                     return true
                 }
 
-                override fun touchUp(
-                    event: InputEvent?,
-                    x: Float,
-                    y: Float,
-                    pointer: Int,
-                    button: Int
-                ) {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     setAllColors(ColorScheme.currentDarkColor)
                     if (!horizontalSlidingPane.isPanning && isOver(this@apply, x, y)) {
                         chosenLevel = Math.min(level, MyGame.LEVELS_NUMBER)
@@ -269,11 +257,7 @@ class LevelSelectorScreen(
 
     override fun render(delta: Float) {
         update(delta)
-        clearScreen(
-            ColorScheme.currentLightColor.r,
-            ColorScheme.currentLightColor.g,
-            ColorScheme.currentLightColor.b
-        )
+        clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
         uiStage.draw()
     }
 

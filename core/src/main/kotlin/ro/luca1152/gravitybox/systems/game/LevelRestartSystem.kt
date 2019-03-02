@@ -21,9 +21,9 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
-import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 
 /** Handles what happens when a level is marked as to be restarted. */
 class LevelRestartSystem : EntitySystem() {

@@ -21,8 +21,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
-import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.components.utils.tryGet
+import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Syncs [BodyComponent]'s properties with other components. */
 class PhysicsSyncSystem : IteratingSystem(

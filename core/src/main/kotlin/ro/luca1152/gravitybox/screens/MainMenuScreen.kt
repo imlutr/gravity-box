@@ -113,7 +113,6 @@ class MainMenuScreen(
                         playButtonIcon.color = ColorScheme.currentDarkColor
 
                         if (isOver(this@apply, x, y)) {
-                            LevelSelectorScreen.chosenLevel = 1
                             uiStage.addAction(
                                 sequence(
                                     fadeOut(.5f),

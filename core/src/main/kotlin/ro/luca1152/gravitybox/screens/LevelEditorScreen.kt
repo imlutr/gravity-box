@@ -31,8 +31,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.entities.EntityFactory
+import ro.luca1152.gravitybox.components.editor.undoRedo
+import ro.luca1152.gravitybox.components.game.MapComponent
+import ro.luca1152.gravitybox.components.game.body
+import ro.luca1152.gravitybox.components.game.image
+import ro.luca1152.gravitybox.components.game.map
+import ro.luca1152.gravitybox.entities.editor.InputEntity
+import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
@@ -59,7 +64,8 @@ class LevelEditorScreen(
     private val gameStage: GameStage = Injekt.get(),
     private val gameViewport: GameViewport = Injekt.get(),
     private val gameCamera: GameCamera = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get()
+    private val uiStage: UIStage = Injekt.get(),
+    private val inputMultiplexer: InputMultiplexer = Injekt.get()
 ) : KtxScreen {
     // UI
     private var screenIsHiding = false
@@ -71,13 +77,10 @@ class LevelEditorScreen(
     lateinit var moveToolButton: ToggleButton
 
     // Game
-    private val world = World(Vector2(0f, NewMapComponent.GRAVITY), true)
+    private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
-
-    // Input
-    private val inputMultiplexer = InputMultiplexer()
 
     override fun show() {
         resetVariables()
@@ -105,9 +108,7 @@ class LevelEditorScreen(
 
     private fun addSingletonsToDependencyInjection() {
         Injekt.run {
-            addSingleton(world)
             addSingleton(gameEventSignal)
-            addSingleton(inputMultiplexer)
             addSingleton(skin)
             addSingleton(OverlayCamera)
             addSingleton(OverlayViewport)
@@ -120,13 +121,13 @@ class LevelEditorScreen(
     }
 
     private fun createGameEntities() {
-        inputEntity = EntityFactory.createInputEntity(toggledButton)
-        undoRedoEntity = EntityFactory.createUndoRedoEntity()
-        val levelEntity = LevelEntity.createEntity()
+        inputEntity = InputEntity.createEntity(toggledButton)
+        undoRedoEntity = UndoRedoEntity.createEntity()
+        val levelEntity = LevelEntity.createEntity(0, 16, 19)
         val platformEntity = PlatformEntity.createEntity(
             2,
-            levelEntity.newMap.widthInTiles / 2f,
-            levelEntity.newMap.widthInTiles / 2f - .5f,
+            levelEntity.map.widthInTiles / 2f,
+            levelEntity.map.widthInTiles / 2f - .5f,
             4f
         )
         FinishEntity.createEntity(

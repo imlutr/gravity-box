@@ -26,8 +26,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import ro.luca1152.gravitybox.components.DebugComponent
-import ro.luca1152.gravitybox.components.debug
+import ro.luca1152.gravitybox.components.editor.DebugComponent
+import ro.luca1152.gravitybox.components.editor.debug
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import uy.kohesive.injekt.Injekt

@@ -74,9 +74,4 @@ class ToggleButton(skin: Skin, styleName: String) : Button(skin, styleName) {
             }
         })
     }
-
-    /** Sets what happens after the button is toggled ON. */
-    fun addToggleRunnable(toggleRunnable: Runnable) {
-        this.toggleRunnable = toggleRunnable
-    }
 }

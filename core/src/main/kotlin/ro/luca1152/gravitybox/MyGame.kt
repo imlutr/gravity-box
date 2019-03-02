@@ -18,15 +18,18 @@
 package ro.luca1152.gravitybox
 
 import com.badlogic.ashley.core.PooledEngine
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
+import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.screens.*
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
@@ -37,7 +40,7 @@ import uy.kohesive.injekt.api.get
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
     companion object {
-        const val LEVELS_NUMBER = 1
+        const val LEVELS_NUMBER = 2
     }
 
     override fun create() {
@@ -49,17 +52,19 @@ class MyGame : KtxGame<Screen>() {
 
     private fun initializeDependencyInjection() {
         Injekt.run {
-            addSingleton(PooledEngine())
             addSingleton(this@MyGame)
             addSingleton(SpriteBatch() as Batch)
-            addSingleton(ShapeRenderer())
             addSingleton(AssetManager())
             addSingleton(GameCamera)
-            addSingleton(GameViewport)
             addSingleton(GameStage)
+            addSingleton(GameViewport)
+            addSingleton(InputMultiplexer())
+            addSingleton(PooledEngine())
+            addSingleton(ShapeRenderer())
             addSingleton(UICamera)
-            addSingleton(UIViewport)
             addSingleton(UIStage)
+            addSingleton(UIViewport)
+            addSingleton(World(Vector2(0f, MapComponent.GRAVITY), true))
         }
     }
 

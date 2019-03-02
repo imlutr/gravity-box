@@ -24,8 +24,8 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter
-import ro.luca1152.gravitybox.components.InputComponent
-import ro.luca1152.gravitybox.components.input
+import ro.luca1152.gravitybox.components.editor.InputComponent
+import ro.luca1152.gravitybox.components.editor.input
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.ui.ButtonType

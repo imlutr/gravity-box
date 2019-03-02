@@ -35,14 +35,8 @@ object ColorScheme {
     /** Stores the current dark color. Used in transitions between the two color schemes. */
     var currentDarkColor = Color()
     /** Stores the target light color towards which currentLightColor must transition. */
-    val currentLightLerpColor
-        get() = if (useDarkColorScheme) lightColor2 else lightColor
-    /** Stores the target dark color towards which currentLightColor must transition. */
-    val currentDarkLerpColor
-        get() = if (useDarkColorScheme) darkColor2 else darkColor
 
     var darkerDarkColor = Color()
-    var lighterLightColor = Color()
 
     init {
         // Load the initial colors
@@ -68,16 +62,12 @@ object ColorScheme {
         fun getDarkerDarkColor(hue: Int) =
             Color().fromHsv(hue.toFloat(), 55f / 100f, 29f / 100f).apply { a = 1f }!!
 
-        fun getLighterLightColor(hue: Int) =
-            Color().fromHsv(hue.toFloat(), 33 / 100f, 80 / 100f).apply { a = 1f }!!
-
         // Store the new colors
         lightColor = getLightColor(hue)
         darkColor = getDarkColor(hue)
         lightColor2 = getLightColor2(hue)
         darkColor2 = getDarkColor2(hue)
         darkerDarkColor = getDarkerDarkColor(hue)
-        lighterLightColor = getLighterLightColor(hue)
 
         // Update the current colors too because this function is called when changing the levels
         // and there is no transition between levels' colors, only when the player enters/leaves the finish point.

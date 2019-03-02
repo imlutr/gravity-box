@@ -20,18 +20,16 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import ro.luca1152.gravitybox.components.BodyComponent
-import ro.luca1152.gravitybox.components.MapComponent
-import ro.luca1152.gravitybox.components.PointComponent
-import ro.luca1152.gravitybox.components.point
-import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
+import ro.luca1152.gravitybox.components.game.BodyComponent
+import ro.luca1152.gravitybox.components.game.PointComponent
+import ro.luca1152.gravitybox.components.game.point
+import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 
 /** Removes points once they are collected. */
-class PointSystem(private val map: MapComponent) :
-    IteratingSystem(Family.all(PointComponent::class.java, BodyComponent::class.java).get()) {
+class PointSystem : IteratingSystem(Family.all(PointComponent::class.java, BodyComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.point.isCollected) {
-            map.collectedPoints++
+//            map.collectedPoints++
             engine.removeAndResetEntity(entity)
         }
     }

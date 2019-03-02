@@ -22,7 +22,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.utils.ImmutableArray
-import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 
 class CollisionBoxListener : EntitySystem() {

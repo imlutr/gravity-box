@@ -23,10 +23,10 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputMultiplexer
 import ktx.app.KtxInputAdapter
-import ro.luca1152.gravitybox.components.BulletComponent
-import ro.luca1152.gravitybox.components.PlayerComponent
-import ro.luca1152.gravitybox.components.body
-import ro.luca1152.gravitybox.entities.EntityFactory
+import ro.luca1152.gravitybox.components.game.BulletComponent
+import ro.luca1152.gravitybox.components.game.PlayerComponent
+import ro.luca1152.gravitybox.components.game.body
+import ro.luca1152.gravitybox.entities.game.BulletEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import uy.kohesive.injekt.Injekt
@@ -44,7 +44,8 @@ class ShootingSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get
     }
 
     private fun createBullet(worldX: Float, worldY: Float) {
-        val bullet = EntityFactory.createBullet(playerEntity)
+        val playerPosition = playerEntity.body.body.worldCenter
+        val bullet = BulletEntity.createEntity(playerPosition.x, playerPosition.y)
         val velocity = playerEntity.body.body.worldCenter.cpy()
         velocity.sub(worldX, worldY)
         velocity.nor()

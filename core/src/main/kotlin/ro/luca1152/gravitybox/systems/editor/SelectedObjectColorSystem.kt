@@ -20,8 +20,12 @@ package ro.luca1152.gravitybox.systems.editor
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.components.utils.tryGet
+import ro.luca1152.gravitybox.components.editor.SelectedObjectComponent
+import ro.luca1152.gravitybox.components.game.ColorComponent
+import ro.luca1152.gravitybox.components.game.ColorType
+import ro.luca1152.gravitybox.components.game.ImageComponent
+import ro.luca1152.gravitybox.components.game.color
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Colors the selected map object accordingly. */
 class SelectedObjectColorSystem :
