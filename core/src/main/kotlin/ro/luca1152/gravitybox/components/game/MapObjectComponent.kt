@@ -19,32 +19,19 @@ package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.maps.MapObject
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.utils.Pool
-import ro.luca1152.gravitybox.pixelsToMeters
+import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Indicates that the entity is a (Tiled) map object.*/
-class MapObjectComponent : Component, Pool.Poolable {
-    var obj: MapObject = MapObject()
-    val position = Vector2()
-    val worldCenter = Vector2()
-    var width = 0f
-    var height = 0f
+/** Contains an [id] variable. */
+class MapObjectComponent : Component, Poolable {
+    var id = -1
 
-    fun set(mapObject: MapObject) {
-        this.obj = mapObject
-        width = (obj.properties["width"] as Float).pixelsToMeters
-        height = (obj.properties["height"] as Float).pixelsToMeters
-        position.set((obj.properties["x"] as Float).pixelsToMeters, (obj.properties["y"] as Float).pixelsToMeters)
-        worldCenter.set(position.x + width / 2f, position.y + height / 2f)
+    fun set(id: Int) {
+        this.id = id
     }
 
     override fun reset() {
-        position.set(0f, 0f)
-        worldCenter.set(0f, 0f)
-        width = 0f; height = 0f
+        id = -1
     }
 
     companion object : ComponentResolver<MapObjectComponent>(MapObjectComponent::class.java)

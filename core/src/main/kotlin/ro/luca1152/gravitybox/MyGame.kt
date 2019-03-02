@@ -29,7 +29,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
-import ro.luca1152.gravitybox.components.game.NewMapComponent
+import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.screens.*
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
@@ -64,7 +64,7 @@ class MyGame : KtxGame<Screen>() {
             addSingleton(UICamera)
             addSingleton(UIStage)
             addSingleton(UIViewport)
-            addSingleton(World(Vector2(0f, NewMapComponent.GRAVITY), true))
+            addSingleton(World(Vector2(0f, MapComponent.GRAVITY), true))
         }
     }
 

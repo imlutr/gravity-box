@@ -26,7 +26,7 @@ import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
 /** Indicates that the entity is a finish point. */
 class FinishComponent : Component, Poolable {
-    var blinkEndlessly = true
+    private var blinkEndlessly = true
 
     fun set(blinkEndlessly: Boolean = true, finishImage: ImageComponent) {
         this.blinkEndlessly = blinkEndlessly

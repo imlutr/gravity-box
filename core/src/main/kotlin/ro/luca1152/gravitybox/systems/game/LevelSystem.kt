@@ -24,10 +24,7 @@ import com.badlogic.ashley.signals.Signal
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.GameEvent
-import ro.luca1152.gravitybox.utils.box2d.MapBodyBuilder
-import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -54,9 +51,10 @@ class LevelSystem(
     }
 
     private fun levelFinished(): Boolean {
-        return mapEntity.map.isFinished && ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(
-            ColorScheme.currentDarkLerpColor
-        )
+//        return mapEntity.map.isFinished && ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(
+//            ColorScheme.currentDarkLerpColor
+//        )
+        return false
     }
 
     private fun restartLevel() {
@@ -66,23 +64,15 @@ class LevelSystem(
                 .exclude(PlayerComponent::class.java, FinishComponent::class.java).get()
         ))
             engine.removeAndResetEntity(entity)
-        mapEntity.map.set(mapEntity.map.levelNumber)
+//        mapEntity.map.set(mapEntity.map.levelNumber)
     }
 
     private fun nextLevel() {
-        mapEntity.map.levelNumber++
+//        mapEntity.map.levelNumber++
         restartLevel()
         resetEntities()
     }
 
     private fun resetEntities() {
-        playerEntity.body.run {
-            reset()
-            set(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap), playerEntity)
-        }
-        finishEntity.body.run {
-            reset()
-            set(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap), finishEntity)
-        }
     }
 }

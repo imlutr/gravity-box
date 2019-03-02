@@ -42,8 +42,8 @@ object FinishEntity {
         manager: AssetManager = Injekt.get(),
         engine: PooledEngine = Injekt.get()
     ) = engine.createEntity().apply {
-        add(engine.createComponent(NewMapObjectComponent::class.java)).run {
-            newMapObject.set(id)
+        add(engine.createComponent(MapObjectComponent::class.java)).run {
+            mapObject.set(id)
         }
         add(engine.createComponent(ImageComponent::class.java)).run {
             image.set(manager.get<Texture>("graphics/finish.png"), x, y, WIDTH, HEIGHT)

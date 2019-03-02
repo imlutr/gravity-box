@@ -43,8 +43,8 @@ object PlayerEntity {
         manager: AssetManager = Injekt.get(),
         engine: PooledEngine = Injekt.get()
     ) = engine.createEntity().apply {
-        add(engine.createComponent(NewMapObjectComponent::class.java)).run {
-            this.newMapObject.set(id)
+        add(engine.createComponent(MapObjectComponent::class.java)).run {
+            this.mapObject.set(id)
         }
         add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
             mapObjectOverlay.set(

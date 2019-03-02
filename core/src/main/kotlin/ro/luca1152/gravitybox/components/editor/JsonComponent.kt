@@ -51,8 +51,8 @@ class JsonComponent : Component, Poolable {
             if (tryGet(PlatformComponent) != null) json.run {
                 writeValue("type", "platform")
             }
-            if (tryGet(NewMapObjectComponent) != null) json.run {
-                writeValue("id", newMapObject.id)
+            if (tryGet(MapObjectComponent) != null) json.run {
+                writeValue("id", mapObject.id)
             }
             if (tryGet(ImageComponent) != null) json.run {
                 writeObjectStart("position")

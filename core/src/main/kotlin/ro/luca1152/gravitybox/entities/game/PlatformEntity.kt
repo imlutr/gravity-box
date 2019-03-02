@@ -28,7 +28,6 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object PlatformEntity {
-    private const val DEFAULT_WIDTH = 1f
     private const val DEFAULT_HEIGHT = .25f
     private const val DEFAULT_ROTATION = 0f
     val CATEGORY_BITS = EntityCategory.PLATFORM.bits
@@ -41,8 +40,8 @@ object PlatformEntity {
         engine: PooledEngine = Injekt.get(),
         manager: AssetManager = Injekt.get()
     ) = engine.createEntity().apply {
-        add(engine.createComponent(NewMapObjectComponent::class.java)).run {
-            newMapObject.set(id)
+        add(engine.createComponent(MapObjectComponent::class.java)).run {
+            mapObject.set(id)
         }
         add(engine.createComponent(PlatformComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {

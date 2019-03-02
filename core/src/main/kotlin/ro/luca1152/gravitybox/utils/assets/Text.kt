@@ -22,19 +22,9 @@ import com.badlogic.gdx.files.FileHandle
 class Text {
     var string: String = ""
 
-    constructor() {
-        string = "".toByteArray().toString()
-    }
-
     constructor(byteArray: ByteArray) {
         string = String(byteArray)
     }
 
-    constructor(string: String) : this(string.toByteArray())
     constructor(file: FileHandle) : this(file.readBytes())
-    constructor(text: Text) : this(text.string.toByteArray())
-
-    fun clear() {
-        string = String("".toByteArray())
-    }
 }

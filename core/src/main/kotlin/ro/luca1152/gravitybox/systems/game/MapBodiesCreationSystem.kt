@@ -35,7 +35,7 @@ import ro.luca1152.gravitybox.utils.kotlin.tryGet
 class MapBodiesCreationSystem : EntitySystem() {
     private lateinit var levelEntity: Entity
     private val shouldUpdateMap
-        get() = levelEntity.level.forceUpdateMap || (levelEntity.newMap.levelNumber != levelEntity.level.levelNumber)
+        get() = levelEntity.level.forceUpdateMap || (levelEntity.map.levelNumber != levelEntity.level.levelNumber)
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
@@ -52,7 +52,7 @@ class MapBodiesCreationSystem : EntitySystem() {
     }
 
     private fun updateMap() {
-        levelEntity.newMap.run {
+        levelEntity.map.run {
             destroyAllBodies()
             levelNumber = levelEntity.level.levelNumber
             createBox2DBodies()
@@ -61,7 +61,7 @@ class MapBodiesCreationSystem : EntitySystem() {
 
     private fun createBox2DBodies() {
         val mapObjects =
-            engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
+            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
         mapObjects.forEach {
             var bodyType = BodyDef.BodyType.StaticBody
             var categoryBits = EntityCategory.NONE.bits

@@ -25,7 +25,7 @@ import com.badlogic.gdx.math.Vector3
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.image
-import ro.luca1152.gravitybox.components.game.newMap
+import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.lerp
@@ -66,8 +66,8 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
     }
 
     private fun keepCameraWithinBounds(zoom: Float = 1f) {
-        val mapWidth = levelEntity.newMap.widthInTiles
-        val mapHeight = levelEntity.newMap.heightInTiles
+        val mapWidth = levelEntity.map.widthInTiles
+        val mapHeight = levelEntity.map.heightInTiles
 
         var mapLeft = 0f
         var mapRight = mapWidth * zoom

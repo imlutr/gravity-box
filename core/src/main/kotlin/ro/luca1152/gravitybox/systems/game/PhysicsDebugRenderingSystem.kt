@@ -28,11 +28,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.components.game.MapObjectComponent
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -60,7 +58,6 @@ class PhysicsDebugRenderingSystem(
         b2DDebugRenderer.render(world, gameCamera.combined)
         shapeRenderer.begin()
         drawXAtOrigins()
-        drawFullAndEmptyPlatforms()
         shapeRenderer.end()
     }
 
@@ -81,27 +78,6 @@ class PhysicsDebugRenderingSystem(
                 }
 
             }
-        }
-    }
-
-    private fun drawFullAndEmptyPlatforms() {
-        shapeRenderer.color = ColorScheme.currentDarkColor
-        for (entity in engine.getEntitiesFor(
-            Family.all(
-                PlatformComponent::class.java,
-                MapObjectComponent::class.java
-            ).get()
-        )) {
-            when (entity.platform.isDynamic) {
-                true -> shapeRenderer.set(ShapeRenderer.ShapeType.Line)
-                false -> shapeRenderer.set(ShapeRenderer.ShapeType.Filled)
-            }
-            shapeRenderer.rect(
-                entity.mapObject.position.x,
-                entity.mapObject.position.y,
-                entity.mapObject.width,
-                entity.mapObject.height
-            )
         }
     }
 }

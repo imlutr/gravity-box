@@ -19,8 +19,8 @@ package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.ashley.core.PooledEngine
 import ro.luca1152.gravitybox.components.game.LevelComponent
-import ro.luca1152.gravitybox.components.game.NewMapComponent
-import ro.luca1152.gravitybox.components.game.newMap
+import ro.luca1152.gravitybox.components.game.MapComponent
+import ro.luca1152.gravitybox.components.game.map
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -28,8 +28,8 @@ object LevelEntity {
     fun createEntity(width: Int = 0, height: Int = 0, engine: PooledEngine = Injekt.get()) =
         engine.createEntity().apply {
         add(engine.createComponent(LevelComponent::class.java))
-        add(engine.createComponent(NewMapComponent::class.java)).run {
-            newMap.set(width, height)
+            add(engine.createComponent(MapComponent::class.java)).run {
+                map.set(width, height)
         }
         engine.addEntity(this)
     }!!

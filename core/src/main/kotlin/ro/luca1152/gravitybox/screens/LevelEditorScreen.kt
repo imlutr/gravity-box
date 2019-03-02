@@ -32,10 +32,10 @@ import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.editor.undoRedo
-import ro.luca1152.gravitybox.components.game.NewMapComponent
+import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.components.game.body
 import ro.luca1152.gravitybox.components.game.image
-import ro.luca1152.gravitybox.components.game.newMap
+import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.entities.editor.InputEntity
 import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
 import ro.luca1152.gravitybox.entities.game.FinishEntity
@@ -77,7 +77,7 @@ class LevelEditorScreen(
     lateinit var moveToolButton: ToggleButton
 
     // Game
-    private val world = World(Vector2(0f, NewMapComponent.GRAVITY), true)
+    private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
@@ -126,8 +126,8 @@ class LevelEditorScreen(
         val levelEntity = LevelEntity.createEntity(16, 19)
         val platformEntity = PlatformEntity.createEntity(
             2,
-            levelEntity.newMap.widthInTiles / 2f,
-            levelEntity.newMap.widthInTiles / 2f - .5f,
+            levelEntity.map.widthInTiles / 2f,
+            levelEntity.map.widthInTiles / 2f - .5f,
             4f
         )
         FinishEntity.createEntity(

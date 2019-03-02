@@ -25,7 +25,7 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.components.editor.*
-import ro.luca1152.gravitybox.components.game.NewMapObjectComponent
+import ro.luca1152.gravitybox.components.game.MapObjectComponent
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.ButtonType
@@ -55,7 +55,7 @@ class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Inj
             val coords = screenToWorldCoordinates(screenX, screenY)
             val platformWidth = .5f
             val id =
-                engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
+                engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
                     .size()
             val platform = PlatformEntity.createEntity(
                 id,

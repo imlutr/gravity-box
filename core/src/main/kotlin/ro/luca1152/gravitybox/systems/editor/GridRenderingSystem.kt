@@ -27,7 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.graphics.copy
 import ro.luca1152.gravitybox.components.game.LevelComponent
-import ro.luca1152.gravitybox.components.game.newMap
+import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
@@ -49,8 +49,8 @@ class GridRenderingSystem(
         levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
         gridGroup.run {
             clear()
-            addActor(createVerticalLines(levelEntity.newMap.widthInTiles, levelEntity.newMap.heightInTiles))
-            addActor(createHorizontalLines(levelEntity.newMap.widthInTiles, levelEntity.newMap.heightInTiles))
+            addActor(createVerticalLines(levelEntity.map.widthInTiles, levelEntity.map.heightInTiles))
+            addActor(createHorizontalLines(levelEntity.map.widthInTiles, levelEntity.map.heightInTiles))
         }
         gameStage.addActor(gridGroup)
     }

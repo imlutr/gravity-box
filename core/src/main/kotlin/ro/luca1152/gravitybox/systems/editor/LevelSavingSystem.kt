@@ -25,7 +25,7 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import ktx.app.KtxInputAdapter
 import ro.luca1152.gravitybox.components.game.LevelComponent
-import ro.luca1152.gravitybox.components.game.newMap
+import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -35,7 +35,7 @@ class LevelSavingSystem(private val inputMultiplexer: InputMultiplexer = Injekt.
     private val inputAdapter = object : KtxInputAdapter {
         override fun keyDown(keycode: Int): Boolean {
             if (keycode == Input.Keys.S) {
-                levelEntity.newMap.saveMap()
+                levelEntity.map.saveMap()
                 return true
             }
             return false

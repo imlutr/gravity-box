@@ -35,8 +35,8 @@ import uy.kohesive.injekt.api.get
  * will still register. If an entity doesn't have this component, its bounds will be the default size.
  */
 class TouchableBoundsComponent(private val gameStage: GameStage = Injekt.get()) : Component, Poolable {
-    var extraWidth = 0f
-    var extraHeight = 0f
+    private var extraWidth = 0f
+    private var extraHeight = 0f
     var boundsImage = Image()
 
     fun set(linkedEntity: Entity, extraWidth: Float, extraHeight: Float) {

@@ -131,12 +131,12 @@ class AddCommand(
         affectedEntity.tryGet(ColorComponent)?.run {
             colorType = ColorType.DARK
         }
-        affectedEntity.tryGet(NewMapObjectComponent).run {
-            val newId = affectedEntity.newMapObject.id
-            engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
+        affectedEntity.tryGet(MapObjectComponent).run {
+            val newId = affectedEntity.mapObject.id
+            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
                 .forEach {
-                    if (it != affectedEntity && it.newMapObject.id >= newId)
-                        it.newMapObject.id++
+                    if (it != affectedEntity && it.mapObject.id >= newId)
+                        it.mapObject.id++
                 }
         }
         affectedEntity.remove(DeletedMapObjectComponent::class.java)
@@ -153,12 +153,12 @@ class AddCommand(
         affectedEntity.tryGet(BodyComponent)?.run {
             destroyBody()
         }
-        affectedEntity.tryGet(NewMapObjectComponent).run {
-            val deletedId = affectedEntity.newMapObject.id
-            engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
+        affectedEntity.tryGet(MapObjectComponent).run {
+            val deletedId = affectedEntity.mapObject.id
+            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
                 .forEach {
-                    if (it.newMapObject.id > deletedId)
-                        it.newMapObject.id--
+                    if (it.mapObject.id > deletedId)
+                        it.mapObject.id--
                 }
         }
         affectedEntity.add(engine.createComponent(DeletedMapObjectComponent::class.java))
