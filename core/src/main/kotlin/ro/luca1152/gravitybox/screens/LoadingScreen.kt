@@ -17,12 +17,12 @@
 
 package ro.luca1152.gravitybox.screens
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
@@ -30,6 +30,8 @@ import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
+import ro.luca1152.gravitybox.utils.assetmanager.Text
+import ro.luca1152.gravitybox.utils.assetmanager.TextLoader
 import ro.luca1152.gravitybox.utils.ui.ColorScheme.currentLightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -40,7 +42,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
     override fun show() {
         loadGraphics()
         loadAudio()
-//        loadMaps()
+        loadMaps()
     }
 
     private fun loadGraphics() {
@@ -64,10 +66,11 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
     }
 
     private fun loadMaps() {
+        val mapsCount = Gdx.files.internal("maps/game").list().count()
         manager.run {
-            setLoader<TiledMap, TmxMapLoader.Parameters>(TiledMap::class.java, TmxMapLoader())
-            for (i in 1..MyGame.LEVELS_NUMBER)
-                load<TiledMap>("maps/game/map-$i.tmx")
+            setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
+            for (i in 1..mapsCount)
+                load<Text>("maps/game/map-$i.json")
         }
     }
 

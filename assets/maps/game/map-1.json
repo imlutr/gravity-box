@@ -1,19 +1,19 @@
 {
-  "id": 1,
-  "width": 192,
-  "height": 192,
+  "id": 0,
+  "width": 1024,
+  "height": 1216,
   "player": {
     "id": 0,
     "position": {
-      "x": 64,
-      "y": 64
+      "x": 416,
+      "y": 520
     }
   },
   "finish": {
     "id": 1,
     "position": {
-      "x": 192,
-      "y": 192
+      "x": 576,
+      "y": 552
     }
   },
   "objects": [
@@ -21,10 +21,10 @@
       "type": "platform",
       "id": 2,
       "position": {
-        "x": 0,
-        "y": 0
+        "x": 512,
+        "y": 480
       },
-      "width": 192
+      "width": 256
     }
   ]
 }
