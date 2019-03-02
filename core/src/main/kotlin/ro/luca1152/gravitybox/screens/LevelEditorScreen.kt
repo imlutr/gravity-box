@@ -123,7 +123,7 @@ class LevelEditorScreen(
     private fun createGameEntities() {
         inputEntity = InputEntity.createEntity(toggledButton)
         undoRedoEntity = UndoRedoEntity.createEntity()
-        val levelEntity = LevelEntity.createEntity()
+        val levelEntity = LevelEntity.createEntity(16, 19)
         val platformEntity = PlatformEntity.createEntity(
             2,
             levelEntity.newMap.widthInTiles / 2f,

@@ -23,6 +23,7 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
+import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
@@ -56,13 +57,17 @@ class PlayScreen(
     }
 
     private fun createGameEntities() {
-        LevelEntity.createEntity()
+        LevelEntity.createEntity().run {
+            level.loadMap = true
+            level.forceUpdateMap = true
+        }
         PlayerEntity.createEntity()
         FinishEntity.createEntity()
     }
 
     private fun addGameSystems() {
         engine.run {
+            addSystem(MapLoadingSystem())
             addSystem(MapBodiesCreationSystem())
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())

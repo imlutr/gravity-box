@@ -25,13 +25,11 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object LevelEntity {
-    private const val DEFAULT_MAP_WIDTH = 16
-    private const val DEFAULT_MAP_HEIGHT = 19
-
-    fun createEntity(engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+    fun createEntity(width: Int = 0, height: Int = 0, engine: PooledEngine = Injekt.get()) =
+        engine.createEntity().apply {
         add(engine.createComponent(LevelComponent::class.java))
         add(engine.createComponent(NewMapComponent::class.java)).run {
-            newMap.set(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT)
+            newMap.set(width, height)
         }
         engine.addEntity(this)
     }!!
