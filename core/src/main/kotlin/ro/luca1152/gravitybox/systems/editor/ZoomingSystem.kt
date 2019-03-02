@@ -27,8 +27,8 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
-import ro.luca1152.gravitybox.components.InputComponent
-import ro.luca1152.gravitybox.components.input
+import ro.luca1152.gravitybox.components.editor.InputComponent
+import ro.luca1152.gravitybox.components.editor.input
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.ui.ButtonType
 import uy.kohesive.injekt.Injekt

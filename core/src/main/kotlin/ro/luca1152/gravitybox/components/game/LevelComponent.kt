@@ -15,24 +15,30 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.systems.game.MapCreationSystem
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Indicates that the entity is a platform. */
-class PlatformComponent : Component, Poolable {
-    var remove = false
-    var isDynamic = false
+/** A component which contains the [levelNumber] of the level intended to be played. */
+class LevelComponent : Component, Poolable {
+    /** If true, the [MapCreationSystem] will run and update the [NewMapComponent]. */
+    var forceUpdateMap = false
+
+    var restartLevel = false
+    var levelNumber = 0
 
     override fun reset() {
-        remove = false
+        levelNumber = 0
+        forceUpdateMap = false
+        restartLevel = false
     }
 
-    companion object : ComponentResolver<PlatformComponent>(PlatformComponent::class.java)
+    companion object : ComponentResolver<LevelComponent>(LevelComponent::class.java)
 }
 
-val Entity.platform: PlatformComponent
-    get() = PlatformComponent[this]
+val Entity.level: LevelComponent
+    get() = LevelComponent[this]

@@ -15,27 +15,28 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.editor
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Indicates that the entity is a bullet. */
-class BulletComponent : Component, Poolable {
-    var collidedWithPlatform = false
-    var collidedWith = Entity()
+/** Indicates that the (map) object was selected.  */
+class SelectedObjectComponent : Component, Poolable {
+    /** The overlay level that will be shown (1 or 2). */
+    var level = 1
+        set(value) {
+            require(value == 1 || value == 2)
+            field = value
+        }
 
     override fun reset() {
-        collidedWithPlatform = false
-        collidedWith = Entity()
+        level = 1
     }
 
-    companion object : ComponentResolver<BulletComponent>(BulletComponent::class.java) {
-        const val SPEED = 15f
-    }
+    companion object : ComponentResolver<SelectedObjectComponent>(SelectedObjectComponent::class.java)
 }
 
-val Entity.bullet: BulletComponent
-    get() = BulletComponent[this]
+val Entity.selectedObject: SelectedObjectComponent
+    get() = SelectedObjectComponent[this]

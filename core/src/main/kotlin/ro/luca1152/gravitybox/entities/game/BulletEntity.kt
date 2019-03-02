@@ -24,7 +24,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
 import ktx.assets.getAsset
-import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get

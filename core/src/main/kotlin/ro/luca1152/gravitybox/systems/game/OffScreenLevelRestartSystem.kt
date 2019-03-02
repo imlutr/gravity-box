@@ -22,10 +22,10 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.signals.Signal
-import ro.luca1152.gravitybox.components.LevelComponent
-import ro.luca1152.gravitybox.components.PlayerComponent
-import ro.luca1152.gravitybox.components.body
-import ro.luca1152.gravitybox.components.level
+import ro.luca1152.gravitybox.components.game.LevelComponent
+import ro.luca1152.gravitybox.components.game.PlayerComponent
+import ro.luca1152.gravitybox.components.game.body
+import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import uy.kohesive.injekt.Injekt

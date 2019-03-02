@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
-import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 
 /** Detects when the player is inside the finish point, and updates variables accordingly. */

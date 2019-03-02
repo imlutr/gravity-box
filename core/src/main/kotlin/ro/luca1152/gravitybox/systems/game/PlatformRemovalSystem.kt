@@ -20,10 +20,10 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import ro.luca1152.gravitybox.components.BodyComponent
-import ro.luca1152.gravitybox.components.PlatformComponent
-import ro.luca1152.gravitybox.components.platform
-import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
+import ro.luca1152.gravitybox.components.game.BodyComponent
+import ro.luca1152.gravitybox.components.game.PlatformComponent
+import ro.luca1152.gravitybox.components.game.platform
+import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 
 /** Removes every platform marked for removal. */
 class PlatformRemovalSystem :

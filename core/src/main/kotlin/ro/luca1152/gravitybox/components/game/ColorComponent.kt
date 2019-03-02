@@ -15,23 +15,34 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.utils.Pool
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Indicates that the entity is a point. */
-class PointComponent : Component, Pool.Poolable {
-    var isCollected = false
+/** Every entity that has this component will have its color in sync with the color scheme. */
+class ColorComponent : Component, Poolable {
+    var colorType = ColorType.NULL
 
-    override fun reset() {
-        isCollected = false
+    fun set(colorType: ColorType) {
+        this.colorType = colorType
     }
 
-    companion object : ComponentResolver<PointComponent>(PointComponent::class.java)
+    override fun reset() {
+        colorType = ColorType.NULL
+    }
+
+    companion object : ComponentResolver<ColorComponent>(ColorComponent::class.java)
 }
 
-val Entity.point: PointComponent
-    get() = PointComponent[this]
+val Entity.color: ColorComponent
+    get() = ColorComponent[this]
+
+enum class ColorType {
+    LIGHT,
+    DARK,
+    DARKER_DARK,
+    NULL
+}

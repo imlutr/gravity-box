@@ -15,43 +15,41 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.editor
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/**
- * Used to detect when the player is in the finish point.
- * Box2D collisions can't be used because the player doesn't collide with the finish point.
- */
-class CollisionBoxComponent : Component, Poolable {
-    val box = Rectangle()
-    var width = 0f
-    var height = 0f
-    var size = 0f // TODO: Remove this
+/** Contains a shape which is drawn in the DebugRenderingSystem. */
+class DebugComponent : Component, Poolable {
+    var polygon: Polygon? = null
+    var rectangle: Rectangle? = null
+    var point: Vector2? = null
 
-    fun set(size: Float) {
-        this.size = size
-        box.setSize(size)
+    fun set(polygon: Polygon) {
+        this.polygon = polygon
     }
 
-    fun set(width: Float, height: Float) {
-        this.width = width
-        this.height = height
-        box.setSize(width, height)
+    fun set(rectangle: Rectangle) {
+        this.rectangle = rectangle
+    }
+
+    fun set(point: Vector2) {
+        this.point = point
     }
 
     override fun reset() {
-        box.set(0f, 0f, 0f, 0f)
-        width = 0f
-        height = 0f
+        polygon = null
+        rectangle = null
     }
 
-    companion object : ComponentResolver<CollisionBoxComponent>(CollisionBoxComponent::class.java)
+    companion object : ComponentResolver<DebugComponent>(DebugComponent::class.java)
 }
 
-val Entity.collisionBox: CollisionBoxComponent
-    get() = CollisionBoxComponent[this]
+val Entity.debug: DebugComponent
+    get() = DebugComponent[this]

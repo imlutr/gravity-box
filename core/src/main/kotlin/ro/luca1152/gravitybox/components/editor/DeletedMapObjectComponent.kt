@@ -15,15 +15,19 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.editor
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Indicates that the entity is an explosion (the circle that appears when the bullet collides with a platform). */
-class ExplosionComponent : Component, Poolable {
-    override fun reset() {}
+/**
+ * Indicates that the map object was deleted (either by undo/redo or by pressing
+ * the delete button from the overlay.
+ */
+class DeletedMapObjectComponent : Component, Poolable {
+    override fun reset() {
+    }
 
-    companion object : ComponentResolver<ExplosionComponent>(ExplosionComponent::class.java)
+    companion object : ComponentResolver<DeletedMapObjectComponent>(DeletedMapObjectComponent::class.java)
 }

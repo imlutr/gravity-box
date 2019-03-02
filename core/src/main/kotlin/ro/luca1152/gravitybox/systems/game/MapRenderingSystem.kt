@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import ro.luca1152.gravitybox.PPM
-import ro.luca1152.gravitybox.components.map
+import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.ui.ColorScheme

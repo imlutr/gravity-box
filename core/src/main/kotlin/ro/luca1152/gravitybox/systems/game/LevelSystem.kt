@@ -21,12 +21,12 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.signals.Signal
-import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.box2d.MapBodyBuilder
 import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
+import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get

@@ -15,28 +15,16 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+@file:Suppress("PrivatePropertyName", "HasPlatformType")
+
+package ro.luca1152.gravitybox.utils.components
+
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
 
-/** Indicates that the (map) object was selected.  */
-class SelectedObjectComponent : Component, Poolable {
-    /** The overlay level that will be shown (1 or 2). */
-    var level = 1
-        set(value) {
-            require(value == 1 || value == 2)
-            field = value
-        }
-
-    override fun reset() {
-        level = 1
-    }
-
-    companion object : ComponentResolver<SelectedObjectComponent>(SelectedObjectComponent::class.java)
+open class ComponentResolver<T : Component>(componentClass: Class<T>) {
+    private val MAPPER = ComponentMapper.getFor(componentClass)!!
+    operator fun get(entity: Entity) = MAPPER[entity]
 }
-
-val Entity.selectedObject: SelectedObjectComponent
-    get() = SelectedObjectComponent[this]

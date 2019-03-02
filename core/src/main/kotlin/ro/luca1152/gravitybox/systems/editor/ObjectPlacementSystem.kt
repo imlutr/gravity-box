@@ -24,7 +24,8 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
-import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.game.NewMapObjectComponent
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.ButtonType

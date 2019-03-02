@@ -15,29 +15,24 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components.utils
+package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
-import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/**
- * Returns the component if the has the [componentResolver].
- * Otherwise, it returns null.
- */
-fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? = componentResolver[this]
+/** Indicates that the entity is a platform. */
+class PlatformComponent : Component, Poolable {
+    var remove = false
+    var isDynamic = false
 
-/** Removes the [entity] from the engine and resets each of its components. */
-fun Engine.removeAndResetEntity(entity: Entity) {
-    // Reset every component so you don't have to manually reset them for
-    // each entity, such as calling world.destroyBody(entity.body.body).
-    for (component in entity.components) {
-        if (component is Poolable)
-            component.reset()
-        entity.remove(component::class.java)
+    override fun reset() {
+        remove = false
     }
 
-    // Call the default removeEntity() function
-    this.removeEntity(entity)
+    companion object : ComponentResolver<PlatformComponent>(PlatformComponent::class.java)
 }
+
+val Entity.platform: PlatformComponent
+    get() = PlatformComponent[this]

@@ -20,8 +20,8 @@ package ro.luca1152.gravitybox.systems.editor
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import ro.luca1152.gravitybox.components.UndoRedoComponent
-import ro.luca1152.gravitybox.components.undoRedo
+import ro.luca1152.gravitybox.components.editor.UndoRedoComponent
+import ro.luca1152.gravitybox.components.editor.undoRedo
 
 class UndoRedoSystem : IteratingSystem(Family.all(UndoRedoComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {

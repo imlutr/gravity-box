@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.utils.kotlin
 
+import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
@@ -30,6 +31,8 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Array
+import com.badlogic.gdx.utils.Pool
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -102,4 +105,24 @@ fun Engine.removeAllSystems() {
     systems.forEach {
         removeSystem(it)
     }
+}
+
+/**
+ * Returns the component if the has the [componentResolver].
+ * Otherwise, it returns null.
+ */
+fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? = componentResolver[this]
+
+/** Removes the [entity] from the engine and resets each of its components. */
+fun Engine.removeAndResetEntity(entity: Entity) {
+    // Reset every component so you don't have to manually reset them for
+    // each entity, such as calling world.destroyBody(entity.body.body).
+    for (component in entity.components) {
+        if (component is Pool.Poolable)
+            component.reset()
+        entity.remove(component::class.java)
+    }
+
+    // Call the default removeEntity() function
+    this.removeEntity(entity)
 }

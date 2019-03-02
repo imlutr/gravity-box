@@ -23,7 +23,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
-import ro.luca1152.gravitybox.components.MapComponent.Companion.GRAVITY
+import ro.luca1152.gravitybox.components.game.MapComponent.Companion.GRAVITY
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.listeners.WorldContactListener

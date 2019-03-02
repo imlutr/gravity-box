@@ -25,10 +25,10 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
-import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.ExplosionImageEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

@@ -23,8 +23,8 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.math.Vector2
 import ktx.app.KtxInputAdapter
 import ktx.math.times
-import ro.luca1152.gravitybox.components.BulletComponent
-import ro.luca1152.gravitybox.components.body
+import ro.luca1152.gravitybox.components.game.BulletComponent
+import ro.luca1152.gravitybox.components.game.body
 import ro.luca1152.gravitybox.entities.game.BulletEntity
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates

@@ -15,41 +15,27 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.math.Polygon
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Contains a shape which is drawn in the DebugRenderingSystem. */
-class DebugComponent : Component, Poolable {
-    var polygon: Polygon? = null
-    var rectangle: Rectangle? = null
-    var point: Vector2? = null
-
-    fun set(polygon: Polygon) {
-        this.polygon = polygon
-    }
-
-    fun set(rectangle: Rectangle) {
-        this.rectangle = rectangle
-    }
-
-    fun set(point: Vector2) {
-        this.point = point
-    }
+/** Indicates that the entity is a bullet. */
+class BulletComponent : Component, Poolable {
+    var collidedWithPlatform = false
+    var collidedWith = Entity()
 
     override fun reset() {
-        polygon = null
-        rectangle = null
+        collidedWithPlatform = false
+        collidedWith = Entity()
     }
 
-    companion object : ComponentResolver<DebugComponent>(DebugComponent::class.java)
+    companion object : ComponentResolver<BulletComponent>(BulletComponent::class.java) {
+        const val SPEED = 15f
+    }
 }
 
-val Entity.debug: DebugComponent
-    get() = DebugComponent[this]
+val Entity.bullet: BulletComponent
+    get() = BulletComponent[this]

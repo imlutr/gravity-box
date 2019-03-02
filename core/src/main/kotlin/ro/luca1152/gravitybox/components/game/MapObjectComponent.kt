@@ -15,15 +15,15 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
 import ro.luca1152.gravitybox.pixelsToMeters
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
 /** Indicates that the entity is a (Tiled) map object.*/
 class MapObjectComponent : Component, Pool.Poolable {

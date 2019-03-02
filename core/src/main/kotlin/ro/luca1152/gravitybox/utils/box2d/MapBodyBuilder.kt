@@ -23,7 +23,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import ro.luca1152.gravitybox.PPM
-import ro.luca1152.gravitybox.components.MapComponent
+import ro.luca1152.gravitybox.components.game.MapComponent
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

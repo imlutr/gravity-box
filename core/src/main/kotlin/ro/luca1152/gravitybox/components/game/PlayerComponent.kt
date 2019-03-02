@@ -15,27 +15,33 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Contains an [id] variable. */
-class NewMapObjectComponent : Component, Poolable {
-    var id = -1
+/** Indicates that the entity is a player. */
+class PlayerComponent : Component, Poolable {
+    var isInsideFinishPoint = false
 
-    fun set(id: Int) {
-        this.id = id
+    fun reset(body: Body) {
+        body.run {
+            setTransform(0f, 0f, 0f) // Reset the position
+            applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
+            setLinearVelocity(0f, 0f)
+            angularVelocity = 0f
+        }
     }
 
     override fun reset() {
-        id = -1
+        isInsideFinishPoint = false
     }
 
-    companion object : ComponentResolver<NewMapObjectComponent>(NewMapObjectComponent::class.java)
+    companion object : ComponentResolver<PlayerComponent>(PlayerComponent::class.java)
 }
 
-val Entity.newMapObject: NewMapObjectComponent
-    get() = NewMapObjectComponent[this]
+val Entity.player: PlayerComponent
+    get() = PlayerComponent[this]

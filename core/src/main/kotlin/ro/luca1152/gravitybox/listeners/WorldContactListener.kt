@@ -23,12 +23,12 @@ import com.badlogic.gdx.physics.box2d.Contact
 import com.badlogic.gdx.physics.box2d.ContactImpulse
 import com.badlogic.gdx.physics.box2d.ContactListener
 import com.badlogic.gdx.physics.box2d.Manifold
-import ro.luca1152.gravitybox.components.BulletComponent
-import ro.luca1152.gravitybox.components.PlatformComponent
-import ro.luca1152.gravitybox.components.bullet
-import ro.luca1152.gravitybox.components.platform
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
-import ro.luca1152.gravitybox.components.utils.tryGet
+import ro.luca1152.gravitybox.components.game.BulletComponent
+import ro.luca1152.gravitybox.components.game.PlatformComponent
+import ro.luca1152.gravitybox.components.game.bullet
+import ro.luca1152.gravitybox.components.game.platform
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Dispatches the appropriate events for every Box2D collisions. */
 class WorldContactListener : ContactListener {

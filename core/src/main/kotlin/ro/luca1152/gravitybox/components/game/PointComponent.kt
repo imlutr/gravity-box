@@ -15,16 +15,23 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("PrivatePropertyName", "HasPlatformType")
-
-package ro.luca1152.gravitybox.components.utils
-
+package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
-import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.utils.Pool
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-open class ComponentResolver<T : Component>(componentClass: Class<T>) {
-    private val MAPPER = ComponentMapper.getFor(componentClass)!!
-    operator fun get(entity: Entity) = MAPPER[entity]
+/** Indicates that the entity is a point. */
+class PointComponent : Component, Pool.Poolable {
+    var isCollected = false
+
+    override fun reset() {
+        isCollected = false
+    }
+
+    companion object : ComponentResolver<PointComponent>(PointComponent::class.java)
 }
+
+val Entity.point: PointComponent
+    get() = PointComponent[this]

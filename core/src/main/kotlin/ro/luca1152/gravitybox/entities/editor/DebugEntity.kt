@@ -18,7 +18,7 @@
 package ro.luca1152.gravitybox.entities.editor
 
 import com.badlogic.ashley.core.PooledEngine
-import ro.luca1152.gravitybox.components.DebugComponent
+import ro.luca1152.gravitybox.components.editor.DebugComponent
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

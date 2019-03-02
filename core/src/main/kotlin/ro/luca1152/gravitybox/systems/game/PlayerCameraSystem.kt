@@ -22,10 +22,10 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.math.Vector3
-import ro.luca1152.gravitybox.components.LevelComponent
-import ro.luca1152.gravitybox.components.PlayerComponent
-import ro.luca1152.gravitybox.components.image
-import ro.luca1152.gravitybox.components.newMap
+import ro.luca1152.gravitybox.components.game.LevelComponent
+import ro.luca1152.gravitybox.components.game.PlayerComponent
+import ro.luca1152.gravitybox.components.game.image
+import ro.luca1152.gravitybox.components.game.newMap
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.lerp

@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.editor
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
@@ -23,8 +23,9 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
-import ro.luca1152.gravitybox.components.utils.tryGet
+import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.*

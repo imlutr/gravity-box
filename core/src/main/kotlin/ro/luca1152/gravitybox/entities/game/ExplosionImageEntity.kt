@@ -22,8 +22,8 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.assets.getAsset
-import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
+import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

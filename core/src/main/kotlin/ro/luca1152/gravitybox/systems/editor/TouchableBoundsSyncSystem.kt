@@ -20,10 +20,10 @@ package ro.luca1152.gravitybox.systems.editor
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import ro.luca1152.gravitybox.components.ImageComponent
-import ro.luca1152.gravitybox.components.TouchableBoundsComponent
-import ro.luca1152.gravitybox.components.image
-import ro.luca1152.gravitybox.components.touchableBounds
+import ro.luca1152.gravitybox.components.editor.TouchableBoundsComponent
+import ro.luca1152.gravitybox.components.editor.touchableBounds
+import ro.luca1152.gravitybox.components.game.ImageComponent
+import ro.luca1152.gravitybox.components.game.image
 
 /** Syncs the [TouchableBoundsComponent]'s position and size with [ImageComponent]'s.*/
 class TouchableBoundsSyncSystem :

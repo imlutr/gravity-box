@@ -18,7 +18,7 @@
 package ro.luca1152.gravitybox.entities.editor
 
 import com.badlogic.ashley.core.PooledEngine
-import ro.luca1152.gravitybox.components.UndoRedoComponent
+import ro.luca1152.gravitybox.components.editor.UndoRedoComponent
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

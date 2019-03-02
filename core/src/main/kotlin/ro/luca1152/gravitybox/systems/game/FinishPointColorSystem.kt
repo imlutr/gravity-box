@@ -22,8 +22,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IntervalSystem
 import com.badlogic.gdx.graphics.Color
-import ro.luca1152.gravitybox.components.PlayerComponent
-import ro.luca1152.gravitybox.components.player
+import ro.luca1152.gravitybox.components.game.PlayerComponent
+import ro.luca1152.gravitybox.components.game.player
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 

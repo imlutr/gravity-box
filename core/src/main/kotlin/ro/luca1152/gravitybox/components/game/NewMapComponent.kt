@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
@@ -29,9 +29,11 @@ import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonWriter
 import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.collections.sortBy
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
-import ro.luca1152.gravitybox.components.utils.tryGet
+import ro.luca1152.gravitybox.components.editor.DeletedMapObjectComponent
+import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.metersToPixels
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.StringWriter

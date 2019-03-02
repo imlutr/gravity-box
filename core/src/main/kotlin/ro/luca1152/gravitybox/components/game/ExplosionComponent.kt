@@ -15,34 +15,15 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components
+package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
-import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.utils.ComponentResolver
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Every entity that has this component will have its color in sync with the color scheme. */
-class ColorComponent : Component, Poolable {
-    var colorType = ColorType.NULL
+/** Indicates that the entity is an explosion (the circle that appears when the bullet collides with a platform). */
+class ExplosionComponent : Component, Poolable {
+    override fun reset() {}
 
-    fun set(colorType: ColorType) {
-        this.colorType = colorType
-    }
-
-    override fun reset() {
-        colorType = ColorType.NULL
-    }
-
-    companion object : ComponentResolver<ColorComponent>(ColorComponent::class.java)
-}
-
-val Entity.color: ColorComponent
-    get() = ColorComponent[this]
-
-enum class ColorType {
-    LIGHT,
-    DARK,
-    DARKER_DARK,
-    NULL
+    companion object : ComponentResolver<ExplosionComponent>(ExplosionComponent::class.java)
 }

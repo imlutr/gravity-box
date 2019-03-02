@@ -30,7 +30,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ktx.actors.plus
-import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.game.ImageComponent
+import ro.luca1152.gravitybox.components.game.image
 import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.*

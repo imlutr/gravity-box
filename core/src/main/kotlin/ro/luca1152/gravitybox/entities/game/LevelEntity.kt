@@ -18,9 +18,9 @@
 package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.ashley.core.PooledEngine
-import ro.luca1152.gravitybox.components.LevelComponent
-import ro.luca1152.gravitybox.components.NewMapComponent
-import ro.luca1152.gravitybox.components.newMap
+import ro.luca1152.gravitybox.components.game.LevelComponent
+import ro.luca1152.gravitybox.components.game.NewMapComponent
+import ro.luca1152.gravitybox.components.game.newMap
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

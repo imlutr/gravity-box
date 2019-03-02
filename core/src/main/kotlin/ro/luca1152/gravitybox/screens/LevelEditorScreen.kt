@@ -31,7 +31,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.editor.undoRedo
+import ro.luca1152.gravitybox.components.game.NewMapComponent
+import ro.luca1152.gravitybox.components.game.body
+import ro.luca1152.gravitybox.components.game.image
+import ro.luca1152.gravitybox.components.game.newMap
 import ro.luca1152.gravitybox.entities.editor.InputEntity
 import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
 import ro.luca1152.gravitybox.entities.game.FinishEntity

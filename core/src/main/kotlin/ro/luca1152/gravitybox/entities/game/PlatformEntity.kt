@@ -21,7 +21,8 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.physics.box2d.BodyDef
-import ro.luca1152.gravitybox.components.*
+import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
