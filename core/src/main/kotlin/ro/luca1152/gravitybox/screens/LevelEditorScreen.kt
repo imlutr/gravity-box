@@ -285,10 +285,20 @@ class LevelEditorScreen(
         }
     }
 
+
     private fun createRightColumn(): Table {
+        fun createSettingsButton() = ClickButton(skin, "small-button").apply {
+            addIcon("settings-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            addClickRunnable(Runnable {
+            })
+            setOpaque(true)
+        }
+
         redoButton = createRedoButton()
         return Table().apply {
-            add(redoButton).expand().top()
+            add(redoButton).expand().top().row()
+            add(createSettingsButton()).expand().bottom()
         }
     }
 

@@ -39,8 +39,9 @@ class ClickButton(skin: Skin, styleName: String) : Button(skin, styleName) {
             // It is here and not in addClickRunnable() because I can't override a function after an object (the listener) is created.
             if (isOver(this@ClickButton, x, y)) {
                 // Toggle off every other button if the click button was set to do so
-                if (toggleOffButtons)
+                if (toggleOffButtons) {
                     toggledButton.get()?.isToggled = false
+                }
 
                 clickRunnable?.run()
             }
