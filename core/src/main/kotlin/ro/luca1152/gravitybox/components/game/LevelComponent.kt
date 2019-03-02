@@ -29,6 +29,10 @@ class LevelComponent : Component, Poolable {
     var restartLevel = false
     var levelNumber = 0
 
+    fun set(levelNumber: Int) {
+        this.levelNumber = levelNumber
+    }
+
     override fun reset() {
         loadMap = false
         forceUpdateMap = false

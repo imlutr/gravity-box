@@ -103,7 +103,7 @@ class MapComponent : Component, Poolable {
             writeObjectEnd()
         }
 
-        val fileHandle = Gdx.files.local("maps/level-editor/map-1.json")
+        val fileHandle = Gdx.files.local("maps/editor/map-1.json")
         fileHandle.writeString(json.prettyPrint(json.writer.writer.toString()), false)
     }
 

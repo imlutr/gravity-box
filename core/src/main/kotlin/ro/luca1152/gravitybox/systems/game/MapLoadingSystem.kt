@@ -57,7 +57,7 @@ class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : Entit
             level.loadMap = false
             map.destroyAllBodies()
         }
-        val jsonData = manager.get<Text>("maps/game/map-1.json").string
+        val jsonData = manager.get<Text>("maps/game/map-${levelEntity.level.levelNumber}.json").string
         val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
 
         createMap(mapFactory.width, mapFactory.height, mapFactory.id)

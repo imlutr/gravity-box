@@ -57,7 +57,7 @@ class PlayScreen(
     }
 
     private fun createGameEntities() {
-        LevelEntity.createEntity().run {
+        LevelEntity.createEntity(LevelSelectorScreen.chosenLevel).run {
             level.loadMap = true
             level.forceUpdateMap = true
         }
