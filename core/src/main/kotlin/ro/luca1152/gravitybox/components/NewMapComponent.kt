@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.core.PooledEngine
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Array
@@ -99,7 +100,9 @@ class NewMapComponent : Component, Poolable {
 
             writeObjectEnd()
         }
-        println(json.prettyPrint(json.writer.writer.toString()))
+
+        val fileHandle = Gdx.files.local("maps/level-editor/map-1.json")
+        fileHandle.writeString(json.prettyPrint(json.writer.writer.toString()), false)
     }
 
 

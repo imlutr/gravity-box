@@ -40,7 +40,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
     override fun show() {
         loadGraphics()
         loadAudio()
-        loadMaps()
+//        loadMaps()
     }
 
     private fun loadGraphics() {
@@ -67,7 +67,7 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
         manager.run {
             setLoader<TiledMap, TmxMapLoader.Parameters>(TiledMap::class.java, TmxMapLoader())
             for (i in 1..MyGame.LEVELS_NUMBER)
-                load<TiledMap>("maps/map-$i.tmx")
+                load<TiledMap>("maps/game/map-$i.tmx")
         }
     }
 
