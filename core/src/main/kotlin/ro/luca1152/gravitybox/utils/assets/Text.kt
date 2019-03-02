@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.assetmanager
+package ro.luca1152.gravitybox.utils.assets
 
 import com.badlogic.gdx.files.FileHandle
 

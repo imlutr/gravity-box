@@ -30,8 +30,8 @@ import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.utils.assetmanager.Text
-import ro.luca1152.gravitybox.utils.assetmanager.TextLoader
+import ro.luca1152.gravitybox.utils.assets.Text
+import ro.luca1152.gravitybox.utils.assets.TextLoader
 import ro.luca1152.gravitybox.utils.ui.ColorScheme.currentLightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
