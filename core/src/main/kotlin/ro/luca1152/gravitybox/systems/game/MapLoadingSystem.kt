@@ -22,6 +22,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
@@ -56,6 +57,7 @@ class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : Entit
         levelEntity.run {
             level.loadMap = false
             map.destroyAllBodies()
+            removePlatforms()
         }
         val jsonData = manager.get<Text>("maps/game/map-${levelEntity.level.levelNumber}.json").string
         val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
@@ -64,6 +66,16 @@ class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : Entit
         createPlayer(mapFactory.player)
         createFinish(mapFactory.finish)
         createPlatforms(mapFactory.objects)
+    }
+
+    private fun removePlatforms() {
+        val entitiesToRemove = Array<Entity>()
+        engine.getEntitiesFor(Family.all(PlatformComponent::class.java).get()).forEach {
+            entitiesToRemove.add(it)
+        }
+        entitiesToRemove.forEach {
+            engine.removeEntity(it)
+        }
     }
 
     private fun createMap(width: Int, height: Int, id: Int) {

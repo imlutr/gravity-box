@@ -54,11 +54,14 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
     }
 
     private fun handleLevelFinish() {
-        // Used in the level editor
         if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
         else {
-            // TODO
+            levelEntity.level.run {
+                levelNumber++
+                loadMap = true
+                forceUpdateMap = true
+            }
         }
     }
 

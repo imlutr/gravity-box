@@ -79,7 +79,7 @@ class PlayScreen(
             addSystem(OffScreenLevelRestartSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())
-            addSystem(LevelFinishSystem(restartLevelWhenFinished = true))
+            addSystem(LevelFinishSystem())
             addSystem(LevelRestartSystem())
             addSystem(FinishPointColorSystem())
             addSystem(SelectedObjectColorSystem())
