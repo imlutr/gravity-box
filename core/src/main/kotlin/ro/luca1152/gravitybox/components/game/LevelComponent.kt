@@ -20,21 +20,20 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.systems.game.MapCreationSystem
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
 /** A component which contains the [levelNumber] of the level intended to be played. */
 class LevelComponent : Component, Poolable {
-    /** If true, the [MapCreationSystem] will run and update the [NewMapComponent]. */
+    var loadMap = false
     var forceUpdateMap = false
-
     var restartLevel = false
     var levelNumber = 0
 
     override fun reset() {
-        levelNumber = 0
+        loadMap = false
         forceUpdateMap = false
         restartLevel = false
+        levelNumber = 0
     }
 
     companion object : ComponentResolver<LevelComponent>(LevelComponent::class.java)

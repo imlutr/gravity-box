@@ -37,7 +37,7 @@ object FinishEntity {
     val MASK_BITS = EntityCategory.FINISH.bits
 
     fun createEntity(
-        id: Int, x: Float, y: Float,
+        id: Int = 0, x: Float = 0f, y: Float = 0f,
         blinkEndlessly: Boolean = true,
         manager: AssetManager = Injekt.get(),
         engine: PooledEngine = Injekt.get()

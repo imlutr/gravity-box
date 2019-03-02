@@ -101,7 +101,7 @@ class PlayingSystem(
 
     private fun addPlaySystems() {
         engine.run {
-            addSystem(MapCreationSystem(levelEntity))
+            addSystem(MapBodiesCreationSystem())
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(ShootingSystem())

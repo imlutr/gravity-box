@@ -21,27 +21,31 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
+import com.badlogic.gdx.assets.AssetManager
 import ro.luca1152.gravitybox.components.game.LevelComponent
-import ro.luca1152.gravitybox.components.game.PlayerComponent
-import ro.luca1152.gravitybox.components.game.body
 import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.components.game.newMap
+import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-/** Marks the level as to be restarted when the player is off-screen. */
-class OffScreenLevelRestartSystem : EntitySystem() {
-    private lateinit var playerEntity: Entity
+class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : EntitySystem() {
     private lateinit var levelEntity: Entity
-    private val playerIsOffScreen
-        get() = playerEntity.body.body.worldCenter.y < -10f
 
     override fun addedToEngine(engine: Engine) {
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
         levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
     }
 
     override fun update(deltaTime: Float) {
-        if (playerIsOffScreen) {
-            levelEntity.level.restartLevel = true
-        }
+        if (!levelEntity.level.loadMap)
+            return
+        loadMap()
+    }
+
+    private fun loadMap() {
+        levelEntity.level.loadMap = false
+        levelEntity.newMap.destroyAllBodies()
+        println(manager.get<Text>("maps/game/map-1.json"))
     }
 }

@@ -39,7 +39,7 @@ object PlayerEntity {
     const val DENSITY = 1.15f
 
     fun createEntity(
-        id: Int, x: Float, y: Float,
+        id: Int = 0, x: Float = 0f, y: Float = 0f,
         manager: AssetManager = Injekt.get(),
         engine: PooledEngine = Injekt.get()
     ) = engine.createEntity().apply {

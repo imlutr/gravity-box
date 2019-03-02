@@ -64,7 +64,8 @@ class LevelEditorScreen(
     private val gameStage: GameStage = Injekt.get(),
     private val gameViewport: GameViewport = Injekt.get(),
     private val gameCamera: GameCamera = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get()
+    private val uiStage: UIStage = Injekt.get(),
+    private val inputMultiplexer: InputMultiplexer = Injekt.get()
 ) : KtxScreen {
     // UI
     private var screenIsHiding = false
@@ -80,9 +81,6 @@ class LevelEditorScreen(
     private val gameEventSignal = Signal<GameEvent>()
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
-
-    // Input
-    private val inputMultiplexer = InputMultiplexer()
 
     override fun show() {
         resetVariables()
@@ -110,9 +108,7 @@ class LevelEditorScreen(
 
     private fun addSingletonsToDependencyInjection() {
         Injekt.run {
-            addSingleton(world)
             addSingleton(gameEventSignal)
-            addSingleton(inputMultiplexer)
             addSingleton(skin)
             addSingleton(OverlayCamera)
             addSingleton(OverlayViewport)

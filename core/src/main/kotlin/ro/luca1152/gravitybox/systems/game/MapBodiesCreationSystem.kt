@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.systems.game
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
@@ -27,21 +28,27 @@ import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
+import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Adds Box2D bodies to every map. It is called every time the level changes. */
-class MapCreationSystem(private val levelEntity: Entity) : EntitySystem() {
+class MapBodiesCreationSystem : EntitySystem() {
+    private lateinit var levelEntity: Entity
     private val shouldUpdateMap
         get() = levelEntity.level.forceUpdateMap || (levelEntity.newMap.levelNumber != levelEntity.level.levelNumber)
+
+    override fun addedToEngine(engine: Engine) {
+        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+    }
 
     override fun update(deltaTime: Float) {
         if (!shouldUpdateMap)
             return
 
-        if (levelEntity.level.forceUpdateMap)
+        if (levelEntity.level.forceUpdateMap) {
             levelEntity.level.forceUpdateMap = false
-
-        updateMap()
+            updateMap()
+        }
     }
 
     private fun updateMap() {
