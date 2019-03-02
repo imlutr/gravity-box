@@ -33,8 +33,10 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Adds a detector which handles pan gestures. */
-class PanningSystem(private val gameCamera: GameCamera = Injekt.get(),
-                    private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+class PanningSystem(
+    private val gameCamera: GameCamera = Injekt.get(),
+    private val inputMultiplexer: InputMultiplexer = Injekt.get()
+) : EntitySystem() {
     private lateinit var inputEntity: Entity
     private val gestureDetector = GestureDetector(object : GestureAdapter() {
         override fun pan(x: Float, y: Float, deltaX: Float, deltaY: Float): Boolean {
@@ -50,7 +52,11 @@ class PanningSystem(private val gameCamera: GameCamera = Injekt.get(),
         private fun moveToolIsUsed() = inputEntity.input.toggledButton.get()?.type == ButtonType.MOVE_TOOL_BUTTON
 
         private fun panCamera(deltaX: Float, deltaY: Float) {
-            gameCamera.position.add(-deltaX.pixelsToMeters * gameCamera.zoom, deltaY.pixelsToMeters * gameCamera.zoom, 0f)
+            gameCamera.position.add(
+                -deltaX.pixelsToMeters * gameCamera.zoom,
+                deltaY.pixelsToMeters * gameCamera.zoom,
+                0f
+            )
         }
     })
 

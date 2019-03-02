@@ -33,9 +33,11 @@ import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class DebugRenderingSystem(private val shapeRenderer: ShapeRenderer = Injekt.get(),
-                           private val gameViewport: GameViewport = Injekt.get(),
-                           private val gameCamera: GameCamera = Injekt.get()) : IteratingSystem(Family.all(DebugComponent::class.java).get()) {
+class DebugRenderingSystem(
+    private val shapeRenderer: ShapeRenderer = Injekt.get(),
+    private val gameViewport: GameViewport = Injekt.get(),
+    private val gameCamera: GameCamera = Injekt.get()
+) : IteratingSystem(Family.all(DebugComponent::class.java).get()) {
     init {
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl20.glLineWidth(3f)

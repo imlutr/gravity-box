@@ -25,7 +25,12 @@ import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.tryGet
 
 /** Syncs [BodyComponent]'s properties with other components. */
-class PhysicsSyncSystem : IteratingSystem(Family.all(BodyComponent::class.java).one(ImageComponent::class.java, CollisionBoxComponent::class.java).get()) {
+class PhysicsSyncSystem : IteratingSystem(
+    Family.all(BodyComponent::class.java).one(
+        ImageComponent::class.java,
+        CollisionBoxComponent::class.java
+    ).get()
+) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.tryGet(ImageComponent) != null) syncBodyPropertiesWithImage(entity, entity.image)
         if (entity.tryGet(CollisionBoxComponent) != null) syncBodyPositionWithCollisionBox(entity, entity.collisionBox)
@@ -38,8 +43,8 @@ class PhysicsSyncSystem : IteratingSystem(Family.all(BodyComponent::class.java).
 
     private fun syncBodyPositionWithCollisionBox(physicsEntity: Entity, collisionBox: CollisionBoxComponent) {
         collisionBox.box.setPosition(
-                physicsEntity.body.body.worldCenter.x - physicsEntity.collisionBox.width / 2f,
-                physicsEntity.body.body.worldCenter.y - physicsEntity.collisionBox.height / 2f
+            physicsEntity.body.body.worldCenter.x - physicsEntity.collisionBox.width / 2f,
+            physicsEntity.body.body.worldCenter.y - physicsEntity.collisionBox.height / 2f
         )
     }
 }

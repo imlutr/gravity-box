@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Pool.Poolable
@@ -74,8 +75,10 @@ abstract class Command {
     abstract fun unexecute()
 }
 
-class MoveCommand(override val affectedEntity: Entity,
-                  private val deltaX: Float, private val deltaY: Float) : Command() {
+class MoveCommand(
+    override val affectedEntity: Entity,
+    private val deltaX: Float, private val deltaY: Float
+) : Command() {
     init {
         check(affectedEntity.tryGet(ImageComponent) != null)
         { "The [affectedEntity] must have an [ImageComponent]." }
@@ -90,8 +93,10 @@ class MoveCommand(override val affectedEntity: Entity,
     }
 }
 
-class RotateCommand(override val affectedEntity: Entity,
-                    private val deltaAngle: Float) : Command() {
+class RotateCommand(
+    override val affectedEntity: Entity,
+    private val deltaAngle: Float
+) : Command() {
     init {
         check(affectedEntity.tryGet(ImageComponent) != null)
         { "The [affectedEntity] must have an [ImageComponent]." }
@@ -106,8 +111,10 @@ class RotateCommand(override val affectedEntity: Entity,
     }
 }
 
-class AddCommand(override val affectedEntity: Entity,
-                 private val engine: PooledEngine = Injekt.get()) : Command() {
+class AddCommand(
+    override val affectedEntity: Entity,
+    private val engine: PooledEngine = Injekt.get()
+) : Command() {
     override fun execute() {
         affectedEntity.tryGet(ImageComponent)?.run {
             img.isVisible = true
@@ -123,6 +130,14 @@ class AddCommand(override val affectedEntity: Entity,
         affectedEntity.tryGet(ColorComponent)?.run {
             colorType = ColorType.DARK
         }
+        affectedEntity.tryGet(NewMapObjectComponent).run {
+            val newId = affectedEntity.newMapObject.id
+            engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
+                .forEach {
+                    if (it != affectedEntity && it.newMapObject.id >= newId)
+                        it.newMapObject.id++
+                }
+        }
         affectedEntity.remove(DeletedMapObjectComponent::class.java)
     }
 
@@ -136,6 +151,14 @@ class AddCommand(override val affectedEntity: Entity,
         }
         affectedEntity.tryGet(BodyComponent)?.run {
             destroyBody()
+        }
+        affectedEntity.tryGet(NewMapObjectComponent).run {
+            val deletedId = affectedEntity.newMapObject.id
+            engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
+                .forEach {
+                    if (it.newMapObject.id > deletedId)
+                        it.newMapObject.id--
+                }
         }
         affectedEntity.add(engine.createComponent(DeletedMapObjectComponent::class.java))
         affectedEntity.remove(SelectedObjectComponent::class.java)
@@ -159,9 +182,11 @@ class DeleteCommand(override val affectedEntity: Entity) : Command() {
  * given to [deltaX] and [deltaY]. This is not done in an additional [MoveCommand] because undo() would
  * then have to be called two times (or the undo button pressed two times), instead of once.
  */
-class ResizeCommand(override val affectedEntity: Entity,
-                    private val deltaWidth: Float, private val deltaHeight: Float,
-                    private val deltaX: Float = 0f, private val deltaY: Float = 0f) : Command() {
+class ResizeCommand(
+    override val affectedEntity: Entity,
+    private val deltaWidth: Float, private val deltaHeight: Float,
+    private val deltaX: Float = 0f, private val deltaY: Float = 0f
+) : Command() {
     init {
         check(affectedEntity.tryGet(ImageComponent) != null)
         { "The [affectedEntity] must have an [ImageComponent]." }

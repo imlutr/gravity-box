@@ -44,9 +44,11 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
 
     var body: Body = world.createBody(BodyDef())
 
-    fun set(body: Body, userData: Entity,
-            categoryBits: Short = EntityCategory.NONE.bits, maskBits: Short = EntityCategory.NONE.bits,
-            density: Float = 1f, friction: Float = .2f) {
+    fun set(
+        body: Body, userData: Entity,
+        categoryBits: Short = EntityCategory.NONE.bits, maskBits: Short = EntityCategory.NONE.bits,
+        density: Float = 1f, friction: Float = .2f
+    ) {
         this.body = body
         body.userData = userData
 

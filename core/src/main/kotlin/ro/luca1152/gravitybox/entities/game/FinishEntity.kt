@@ -32,10 +32,12 @@ object FinishEntity {
     val CATEGORY_BITS = EntityCategory.FINISH.bits
     val MASK_BITS = EntityCategory.FINISH.bits
 
-    fun createEntity(id: Int, x: Float, y: Float,
-                     blinkEndlessly: Boolean = true,
-                     manager: AssetManager = Injekt.get(),
-                     engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
+    fun createEntity(
+        id: Int, x: Float, y: Float,
+        blinkEndlessly: Boolean = true,
+        manager: AssetManager = Injekt.get(),
+        engine: PooledEngine = Injekt.get()
+    ) = engine.createEntity().apply {
         add(engine.createComponent(NewMapObjectComponent::class.java)).run {
             newMapObject.set(id)
         }
@@ -47,7 +49,12 @@ object FinishEntity {
             finish.set(blinkEndlessly, image)
         }
         add(engine.createComponent(BodyComponent::class.java)).run {
-            body.set(image.imageToBox2DBody(BodyDef.BodyType.StaticBody, CATEGORY_BITS, MASK_BITS), this, CATEGORY_BITS, MASK_BITS)
+            body.set(
+                image.imageToBox2DBody(BodyDef.BodyType.StaticBody, CATEGORY_BITS, MASK_BITS),
+                this,
+                CATEGORY_BITS,
+                MASK_BITS
+            )
         }
         add(engine.createComponent(CollisionBoxComponent::class.java)).run {
             collisionBox.set(WIDTH, HEIGHT)
@@ -56,7 +63,15 @@ object FinishEntity {
             color.set(ColorType.DARK)
         }
         add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
-            mapObjectOverlay.set(showMovementButtons = true, showRotationButton = true, showResizingButtons = false, showDeletionButton = false)
+            mapObjectOverlay.set(
+                showMovementButtons = true,
+                showRotationButton = true,
+                showResizingButtons = false,
+                showDeletionButton = false
+            )
+        }
+        add(engine.createComponent(JsonComponent::class.java)).run {
+            json.setObject(this, "finish")
         }
         engine.addEntity(this)
     }!!

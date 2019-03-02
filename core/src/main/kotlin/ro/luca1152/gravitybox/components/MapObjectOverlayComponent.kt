@@ -29,8 +29,10 @@ class MapObjectOverlayComponent : Component, Poolable {
     var showResizingButtons = true
     var showDeletionButton = true
 
-    fun set(showMovementButtons: Boolean, showRotationButton: Boolean,
-            showResizingButtons: Boolean, showDeletionButton: Boolean) {
+    fun set(
+        showMovementButtons: Boolean, showRotationButton: Boolean,
+        showResizingButtons: Boolean, showDeletionButton: Boolean
+    ) {
         this.showMovementButtons = showMovementButtons
         this.showRotationButton = showRotationButton
         this.showResizingButtons = showResizingButtons

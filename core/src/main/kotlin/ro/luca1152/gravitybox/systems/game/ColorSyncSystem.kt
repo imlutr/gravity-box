@@ -29,12 +29,12 @@ import ro.luca1152.gravitybox.utils.ui.ColorScheme
 class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, ColorComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         entity.image.color.setWithoutAlpha(
-                when (entity.color.colorType) {
-                    ColorType.LIGHT -> ColorScheme.currentLightColor
-                    ColorType.DARK -> ColorScheme.currentDarkColor
-                    ColorType.DARKER_DARK -> ColorScheme.darkerDarkColor
-                    else -> Color.RED
-                }
+            when (entity.color.colorType) {
+                ColorType.LIGHT -> ColorScheme.currentLightColor
+                ColorType.DARK -> ColorScheme.currentDarkColor
+                ColorType.DARKER_DARK -> ColorScheme.darkerDarkColor
+                else -> Color.RED
+            }
         )
     }
 }

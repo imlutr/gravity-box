@@ -41,12 +41,14 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Positions the overlay over the selected platform. */
-class OverlayPositioningSystem(skin: Skin = Injekt.get(),
-                               private val gameStage: GameStage = Injekt.get(),
-                               private val gameCamera: GameCamera = Injekt.get(),
-                               private val overlayCamera: OverlayCamera = Injekt.get(),
-                               private val overlayStage: OverlayStage = Injekt.get(),
-                               private val engine: PooledEngine = Injekt.get()) : EntitySystem() {
+class OverlayPositioningSystem(
+    skin: Skin = Injekt.get(),
+    private val gameStage: GameStage = Injekt.get(),
+    private val gameCamera: GameCamera = Injekt.get(),
+    private val overlayCamera: OverlayCamera = Injekt.get(),
+    private val overlayStage: OverlayStage = Injekt.get(),
+    private val engine: PooledEngine = Injekt.get()
+) : EntitySystem() {
     private val leftArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-left-arrow-icon")
         iconCell!!.padLeft(-4f) // The icon doesn't LOOK centered
@@ -79,9 +81,13 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 if (image.width != initialImageWidth || image.height != initialImageHeight)
-                    undoRedoEntity.undoRedo.addExecutedCommand(ResizeCommand(selectedMapObject!!,
+                    undoRedoEntity.undoRedo.addExecutedCommand(
+                        ResizeCommand(
+                            selectedMapObject!!,
                             image.width - initialImageWidth, image.height - initialImageHeight,
-                            image.leftX - initialImageX, image.bottomY - initialImageY))
+                            image.leftX - initialImageX, image.bottomY - initialImageY
+                        )
+                    )
             }
         })
     }
@@ -117,9 +123,13 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 if (image.width != initialImageWidth || image.height != initialImageHeight)
-                    undoRedoEntity.undoRedo.addExecutedCommand(ResizeCommand(selectedMapObject!!,
+                    undoRedoEntity.undoRedo.addExecutedCommand(
+                        ResizeCommand(
+                            selectedMapObject!!,
                             image.width - initialImageWidth, image.height - initialImageHeight,
-                            image.leftX - initialImageX, image.bottomY - initialImageY))
+                            image.leftX - initialImageX, image.bottomY - initialImageY
+                        )
+                    )
             }
         })
     }
@@ -154,7 +164,12 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                 super.touchDragged(event, x, y, pointer)
 
                 val mouseCoords = screenToWorldCoordinates(Gdx.input.x, Gdx.input.y)
-                var newRotation = toPositiveAngle(MathUtils.atan2(mouseCoords.y - image.centerY, mouseCoords.x - image.centerX) * MathUtils.radiansToDegrees)
+                var newRotation = toPositiveAngle(
+                    MathUtils.atan2(
+                        mouseCoords.y - image.centerY,
+                        mouseCoords.x - image.centerX
+                    ) * MathUtils.radiansToDegrees
+                )
 
                 // The rotate button is not on the same Ox axis as the map object, which in turn affects the rotation
                 val deltaAngle = getAngleBetween(this@apply, image)
@@ -175,16 +190,27 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
                 super.touchUp(event, x, y, pointer, button)
                 rotationLabel.isVisible = false
                 if (image.img.rotation != initialImageRotation)
-                    undoRedoEntity.undoRedo.addExecutedCommand(RotateCommand(selectedMapObject!!, image.img.rotation - initialImageRotation))
+                    undoRedoEntity.undoRedo.addExecutedCommand(
+                        RotateCommand(
+                            selectedMapObject!!,
+                            image.img.rotation - initialImageRotation
+                        )
+                    )
             }
 
             private fun getAngleBetween(rotateButton: Button, objectImage: ImageComponent): Float {
                 val oldRotation = overlayLevel1.rotation
                 overlayLevel1.rotation = 0f // Makes calculating the angle easier
                 val buttonCoords = rotateButton.localToScreenCoordinates(Vector2(0f, 0f))
-                val objectCenterCoords = objectImage.img.localToScreenCoordinates(Vector2(objectImage.width / 2f, objectImage.height / 2f))
+                val objectCenterCoords =
+                    objectImage.img.localToScreenCoordinates(Vector2(objectImage.width / 2f, objectImage.height / 2f))
                 overlayLevel1.rotation = oldRotation
-                return Math.abs(MathUtils.atan2(buttonCoords.y - objectCenterCoords.y, buttonCoords.x - objectCenterCoords.x) * MathUtils.radiansToDegrees)
+                return Math.abs(
+                    MathUtils.atan2(
+                        buttonCoords.y - objectCenterCoords.y,
+                        buttonCoords.x - objectCenterCoords.x
+                    ) * MathUtils.radiansToDegrees
+                )
             }
 
             private fun updateRotationLabel() {
@@ -231,7 +257,13 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 if (image.centerX != initialImageX)
-                    undoRedoEntity.undoRedo.addExecutedCommand(MoveCommand(selectedMapObject!!, image.centerX - initialImageX, 0f))
+                    undoRedoEntity.undoRedo.addExecutedCommand(
+                        MoveCommand(
+                            selectedMapObject!!,
+                            image.centerX - initialImageX,
+                            0f
+                        )
+                    )
             }
         })
     }
@@ -266,7 +298,13 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 if (image.centerY != initialImageY)
-                    undoRedoEntity.undoRedo.addExecutedCommand(MoveCommand(selectedMapObject!!, 0f, image.centerY - initialImageY))
+                    undoRedoEntity.undoRedo.addExecutedCommand(
+                        MoveCommand(
+                            selectedMapObject!!,
+                            0f,
+                            image.centerY - initialImageY
+                        )
+                    )
             }
         })
     }
@@ -276,7 +314,8 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
     private val undoRedoEntity: Entity = engine.getEntitiesFor(Family.all(UndoRedoComponent::class.java).get()).first()
     private val selectedMapObjectPolygon = Polygon().apply { vertices = FloatArray(8) }
     private val labels = Group().apply { this + rotationLabel }
-    private val overlayLevel1 = Group().apply { this + horizontalPositionButton + verticalPositionButton + rotateButton }
+    private val overlayLevel1 =
+        Group().apply { this + horizontalPositionButton + verticalPositionButton + rotateButton }
     private val overlayLevel2 = Group().apply { this + leftArrowButton + rightArrowButton + deleteButton }
     private val buttonsPaddingX = 20f
     private val buttonsPaddingY = 50f
@@ -320,8 +359,10 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         labels.isVisible = true
     }
 
-    private fun scaleMapObject(xDragged: Float, yDragged: Float, buttonDragged: Button, linkedMapObject: Entity,
-                               toLeft: Boolean = false, toRight: Boolean = false) {
+    private fun scaleMapObject(
+        xDragged: Float, yDragged: Float, buttonDragged: Button, linkedMapObject: Entity,
+        toLeft: Boolean = false, toRight: Boolean = false
+    ) {
         if (!toLeft && !toRight)
             error { "No scale direction given." }
         if (toLeft && toRight)
@@ -338,7 +379,15 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         // Scale the platform correctly, taking in consideration its rotation and the scaling direction
         val localLeft = if (toLeft) -(newWidth - image.width) else 0f
         val localRight = if (toRight) (newWidth - image.width) else 0f
-        updateObjectPolygon(image.leftX, image.bottomY, image.width, image.height, image.img.rotation, localLeft, localRight)
+        updateObjectPolygon(
+            image.leftX,
+            image.bottomY,
+            image.width,
+            image.height,
+            image.img.rotation,
+            localLeft,
+            localRight
+        )
         val position = selectedMapObjectPolygon.getRectangleCenter()
         image.width = newWidth
         image.setPosition(position.x, position.y)
@@ -350,7 +399,15 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
         repositionOverlay()
     }
 
-    private fun updateObjectPolygon(x: Float, y: Float, width: Float, height: Float, rotationInDegrees: Float = 0f, localLeft: Float = 0f, localRight: Float = 0f) {
+    private fun updateObjectPolygon(
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        rotationInDegrees: Float = 0f,
+        localLeft: Float = 0f,
+        localRight: Float = 0f
+    ) {
         selectedMapObjectPolygon.run {
             rotation = 0f
             vertices.run {
@@ -379,15 +436,20 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
     private fun repositionButtons() {
         val image = selectedMapObject!!.image
         leftArrowButton.setPosition(0f, 0f)
-        rightArrowButton.setPosition(leftArrowButton.width + buttonsPaddingX + image.width.metersToPixels / gameCamera.zoom + buttonsPaddingX, 0f)
+        rightArrowButton.setPosition(
+            leftArrowButton.width + buttonsPaddingX + image.width.metersToPixels / gameCamera.zoom + buttonsPaddingX,
+            0f
+        )
         deleteButton.run {
             setPosition(rightArrowButton.x, deleteButton.height + buttonsPaddingY)
             icon!!.rotation = 360f - image.img.rotation
         }
         rotateButton.setPosition(rightArrowButton.x, rightArrowButton.y + rightArrowButton.height + buttonsPaddingY)
         horizontalPositionButton.run {
-            setPosition(overlayLevel1.width / 2f - horizontalPositionButton.width / 2f,
-                    -height / 2f - image.height.metersToPixels / 2f / gameCamera.zoom - buttonsPaddingX)
+            setPosition(
+                overlayLevel1.width / 2f - horizontalPositionButton.width / 2f,
+                -height / 2f - image.height.metersToPixels / 2f / gameCamera.zoom - buttonsPaddingX
+            )
             icon!!.rotation = 360f - image.img.rotation
         }
         verticalPositionButton.run {
@@ -399,7 +461,8 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
     private fun updateOverlaySize() {
         val image = selectedMapObject!!.image
         overlayLevel2.run {
-            width = leftArrowButton.width + buttonsPaddingX + (image.width.metersToPixels / gameCamera.zoom) + buttonsPaddingX + rightArrowButton.width
+            width =
+                leftArrowButton.width + buttonsPaddingX + (image.width.metersToPixels / gameCamera.zoom) + buttonsPaddingX + rightArrowButton.width
             height = rightArrowButton.height + buttonsPaddingY + rotateButton.height
             setOrigin(width / 2f, leftArrowButton.height / 2f)
             rotation = image.img.rotation
@@ -434,7 +497,8 @@ class OverlayPositioningSystem(skin: Skin = Injekt.get(),
 
     private fun updateOverlayShown() {
         val level = (selectedMapObject as Entity).selectedObject.level
-        val showLevel2Overlay = selectedMapObject!!.mapObjectOverlay.showResizingButtons || selectedMapObject!!.mapObjectOverlay.showDeletionButton
+        val showLevel2Overlay =
+            selectedMapObject!!.mapObjectOverlay.showResizingButtons || selectedMapObject!!.mapObjectOverlay.showDeletionButton
         overlayLevel1.isVisible = if (showLevel2Overlay) (level == 1) else true
         overlayLevel2.isVisible = if (showLevel2Overlay) (level == 2) else false
     }

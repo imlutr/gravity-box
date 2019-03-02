@@ -32,10 +32,12 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Handles every event related to levels, such as restarting the level. */
-class LevelSystem(private var mapEntity: Entity,
-                  private val finishEntity: Entity,
-                  private val playerEntity: Entity,
-                  gameEventSignal: Signal<GameEvent> = Injekt.get()) : EntitySystem() {
+class LevelSystem(
+    private var mapEntity: Entity,
+    private val finishEntity: Entity,
+    private val playerEntity: Entity,
+    gameEventSignal: Signal<GameEvent> = Injekt.get()
+) : EntitySystem() {
     private val eventQueue = EventQueue()
 
     init {
@@ -52,13 +54,17 @@ class LevelSystem(private var mapEntity: Entity,
     }
 
     private fun levelFinished(): Boolean {
-        return mapEntity.map.isFinished && ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(ColorScheme.currentDarkLerpColor)
+        return mapEntity.map.isFinished && ColorScheme.useDarkColorScheme && ColorScheme.currentDarkColor.approxEqualTo(
+            ColorScheme.currentDarkLerpColor
+        )
     }
 
     private fun restartLevel() {
         playerEntity.player.reset(playerEntity.body.body)
-        for (entity in engine.getEntitiesFor(Family.one(BodyComponent::class.java, PlatformComponent::class.java)
-                .exclude(PlayerComponent::class.java, FinishComponent::class.java).get()))
+        for (entity in engine.getEntitiesFor(
+            Family.one(BodyComponent::class.java, PlatformComponent::class.java)
+                .exclude(PlayerComponent::class.java, FinishComponent::class.java).get()
+        ))
             engine.removeAndResetEntity(entity)
         mapEntity.map.set(mapEntity.map.levelNumber)
     }

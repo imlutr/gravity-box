@@ -24,7 +24,8 @@ import ro.luca1152.gravitybox.components.*
 import ro.luca1152.gravitybox.components.utils.tryGet
 
 /** Colors the selected map object accordingly. */
-class SelectedObjectColorSystem : IteratingSystem(Family.all(ColorComponent::class.java, ImageComponent::class.java).get()) {
+class SelectedObjectColorSystem :
+    IteratingSystem(Family.all(ColorComponent::class.java, ImageComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         updateColor(entity)
     }

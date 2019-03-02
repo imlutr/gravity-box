@@ -141,10 +141,12 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
      * Creates a [Box2D] body based on the image's size and rotation. It should be used only
      * if the size of the intended body is the same as the entity's image.
      */
-    fun imageToBox2DBody(bodyType: BodyDef.BodyType,
-                         categoryBits: Short = EntityCategory.OBSTACLE.bits, maskBits: Short = EntityCategory.OBSTACLE.bits,
-                         density: Float = 1f, friction: Float = 0.2f,
-                         world: World = Injekt.get()): Body {
+    fun imageToBox2DBody(
+        bodyType: BodyDef.BodyType,
+        categoryBits: Short = EntityCategory.OBSTACLE.bits, maskBits: Short = EntityCategory.OBSTACLE.bits,
+        density: Float = 1f, friction: Float = 0.2f,
+        world: World = Injekt.get()
+    ): Body {
         val bodyDef = BodyDef().apply {
             type = bodyType
             fixedRotation = false

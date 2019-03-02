@@ -27,7 +27,8 @@ import ro.luca1152.gravitybox.components.point
 import ro.luca1152.gravitybox.components.utils.removeAndResetEntity
 
 /** Removes points once they are collected. */
-class PointSystem(private val map: MapComponent) : IteratingSystem(Family.all(PointComponent::class.java, BodyComponent::class.java).get()) {
+class PointSystem(private val map: MapComponent) :
+    IteratingSystem(Family.all(PointComponent::class.java, BodyComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.point.isCollected) {
             map.collectedPoints++

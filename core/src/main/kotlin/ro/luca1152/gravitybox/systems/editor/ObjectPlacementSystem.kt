@@ -32,7 +32,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Places objects at touch when the place tool is used. */
-class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get()) :
+    EntitySystem() {
     private lateinit var undoRedoEntity: Entity
     private lateinit var inputEntity: Entity
 
@@ -46,17 +47,28 @@ class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Inj
             return true
         }
 
-        private fun placeToolIsUsed() = inputEntity.input.toggledButton.get()?.type == ButtonType.PLACE_TOOL_BUTTON
+        private fun placeToolIsUsed() =
+            inputEntity.input.toggledButton.get()?.type == ButtonType.PLACE_TOOL_BUTTON
 
         private fun createPlatformAt(screenX: Int, screenY: Int) {
             val coords = screenToWorldCoordinates(screenX, screenY)
-            val platform = PlatformEntity.createEntity(0, MathUtils.floor(coords.x).toFloat() + .5f, MathUtils.floor(coords.y).toFloat() + .5f)
+            val platformWidth = .5f
+            val id =
+                engine.getEntitiesFor(Family.all(NewMapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
+                    .size()
+            val platform = PlatformEntity.createEntity(
+                id,
+                MathUtils.floor(coords.x).toFloat() + .5f,
+                MathUtils.floor(coords.y).toFloat() + .5f,
+                platformWidth
+            )
             undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(platform))
         }
     }
 
     override fun addedToEngine(engine: Engine) {
-        undoRedoEntity = engine.getEntitiesFor(Family.all(UndoRedoComponent::class.java).get()).first()
+        undoRedoEntity =
+            engine.getEntitiesFor(Family.all(UndoRedoComponent::class.java).get()).first()
         inputEntity = engine.getEntitiesFor(Family.all(InputComponent::class.java).get()).first()
         inputMultiplexer.addProcessor(inputAdapter)
     }

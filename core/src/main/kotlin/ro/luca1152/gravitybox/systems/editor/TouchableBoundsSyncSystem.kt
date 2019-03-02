@@ -26,7 +26,8 @@ import ro.luca1152.gravitybox.components.image
 import ro.luca1152.gravitybox.components.touchableBounds
 
 /** Syncs the [TouchableBoundsComponent]'s position and size with [ImageComponent]'s.*/
-class TouchableBoundsSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, TouchableBoundsComponent::class.java).get()) {
+class TouchableBoundsSyncSystem :
+    IteratingSystem(Family.all(ImageComponent::class.java, TouchableBoundsComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         entity.touchableBounds.run {
             setPosition(entity.image.centerX, entity.image.centerY)

@@ -37,9 +37,11 @@ import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PlayingSystem(private val levelEditorScreen: LevelEditorScreen,
-                    private val uiStage: UIStage = Injekt.get(),
-                    private val manager: AssetManager = Injekt.get()) : EntitySystem() {
+class PlayingSystem(
+    private val levelEditorScreen: LevelEditorScreen,
+    private val uiStage: UIStage = Injekt.get(),
+    private val manager: AssetManager = Injekt.get()
+) : EntitySystem() {
     private val rootTable = levelEditorScreen.createRootTable()
     private var previouslySelectedMapObject: Entity? = null
     private lateinit var skin: Skin

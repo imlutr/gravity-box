@@ -37,7 +37,7 @@ import uy.kohesive.injekt.api.get
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
     companion object {
-        const val LEVELS_NUMBER = 4
+        const val LEVELS_NUMBER = 1
     }
 
     override fun create() {
@@ -97,6 +97,9 @@ const val PPM = 64f
 
 val Int.pixelsToMeters: Float
     get() = this / PPM
+
+val Int.metersToPixels: Float
+    get() = this * PPM
 
 val Float.pixelsToMeters: Float
     get() = this / PPM
