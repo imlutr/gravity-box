@@ -25,7 +25,7 @@ import ktx.app.KtxInputAdapter
 import ktx.math.times
 import ro.luca1152.gravitybox.components.BulletComponent
 import ro.luca1152.gravitybox.components.body
-import ro.luca1152.gravitybox.entities.EntityFactory
+import ro.luca1152.gravitybox.entities.game.BulletEntity
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import uy.kohesive.injekt.Injekt
@@ -53,7 +53,8 @@ class GameInputListener(
 
     private var velocity = Vector2()
     private fun createBullet(touchX: Float, touchY: Float) {
-        val bullet = EntityFactory.createBullet(playerEntity)
+        val playerPosition = playerEntity.body.body.worldCenter
+        val bullet = BulletEntity.createEntity(playerPosition.x, playerPosition.y)
         velocity = playerEntity.body.body.worldCenter.cpy()
         velocity.x -= touchX; velocity.y -= touchY
         velocity.nor()

@@ -32,7 +32,8 @@ import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.*
-import ro.luca1152.gravitybox.entities.EntityFactory
+import ro.luca1152.gravitybox.entities.editor.InputEntity
+import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
@@ -120,8 +121,8 @@ class LevelEditorScreen(
     }
 
     private fun createGameEntities() {
-        inputEntity = EntityFactory.createInputEntity(toggledButton)
-        undoRedoEntity = EntityFactory.createUndoRedoEntity()
+        inputEntity = InputEntity.createEntity(toggledButton)
+        undoRedoEntity = UndoRedoEntity.createEntity()
         val levelEntity = LevelEntity.createEntity()
         val platformEntity = PlatformEntity.createEntity(
             2,

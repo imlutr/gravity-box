@@ -19,20 +19,15 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.ashley.signals.Signal
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.components.MapComponent.Companion.GRAVITY
-import ro.luca1152.gravitybox.components.map
-import ro.luca1152.gravitybox.entities.EntityFactory
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
-import ro.luca1152.gravitybox.listeners.GameInputListener
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.game.*
-import ro.luca1152.gravitybox.utils.box2d.MapBodyBuilder
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.ui.ColorScheme.currentLightColor
@@ -61,31 +56,31 @@ class PlayScreen(
 
     override fun show() {
         // Create entities
-        val mapEntity = EntityFactory.createMap(LevelSelectorScreen.chosenLevel)
-        val finishEntity = EntityFactory.createFinish(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap))
-        val playerEntity = EntityFactory.createPlayer(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap))
+//        val mapEntity = EntityFactory.createMap(LevelSelectorScreen.chosenLevel)
+//        val finishEntity = EntityFactory.createFinish(MapBodyBuilder.buildFinishBody(mapEntity.map.tiledMap))
+//        val playerEntity = EntityFactory.createPlayer(MapBodyBuilder.buildPlayerBody(mapEntity.map.tiledMap))
 
         // Add systems
         engine.run {
-            addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
+            //            addSystem(LevelSystem(mapEntity, finishEntity, playerEntity))
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(BulletCollisionSystem())
             addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
-            addSystem(PointSystem(mapEntity.map))
+//            addSystem(PointSystem(mapEntity.map))
             addSystem(OffScreenLevelRestartSystem())
             addSystem(FinishPointColorSystem())
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
-            addSystem(MapRenderingSystem(mapEntity))
+//            addSystem(MapRenderingSystem(mapEntity))
 //            addSystem(PhysicsDebugRenderingSystem())
             addSystem(ImageRenderingSystem())
         }
 
         // Handle input
-        Gdx.input.inputProcessor = GameInputListener(playerEntity)
+//        Gdx.input.inputProcessor = GameInputListener(playerEntity)
     }
 
     override fun render(delta: Float) {
