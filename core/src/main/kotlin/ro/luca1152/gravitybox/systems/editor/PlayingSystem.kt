@@ -23,11 +23,13 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.editor.SelectedObjectComponent
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
+import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
@@ -41,7 +43,8 @@ import uy.kohesive.injekt.api.get
 class PlayingSystem(
     private val levelEditorScreen: LevelEditorScreen,
     private val uiStage: UIStage = Injekt.get(),
-    private val manager: AssetManager = Injekt.get()
+    private val manager: AssetManager = Injekt.get(),
+    private val world: World = Injekt.get()
 ) : EntitySystem() {
     private val rootTable = levelEditorScreen.createRootTable()
     private var previouslySelectedMapObject: Entity? = null
@@ -57,12 +60,17 @@ class PlayingSystem(
         }
         playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
         finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
+        setOwnBox2DContactListener()
         makeFinishPointEndlesslyBlink()
         hideLevelEditorUI()
         deselectMapObject()
         removeAllSystems(includingThisSystem = false)
         addPlaySystems()
         showPlayUI()
+    }
+
+    private fun setOwnBox2DContactListener() {
+        world.setContactListener(WorldContactListener())
     }
 
     private fun makeFinishPointEndlesslyBlink() {

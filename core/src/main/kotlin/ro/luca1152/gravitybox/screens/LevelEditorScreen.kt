@@ -23,16 +23,18 @@ import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.editor.undoRedo
-import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.components.game.body
 import ro.luca1152.gravitybox.components.game.image
 import ro.luca1152.gravitybox.components.game.map
@@ -43,7 +45,6 @@ import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.events.GameEvent
-import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.editor.*
 import ro.luca1152.gravitybox.systems.game.ColorSyncSystem
 import ro.luca1152.gravitybox.systems.game.DebugRenderingSystem
@@ -77,7 +78,6 @@ class LevelEditorScreen(
     lateinit var moveToolButton: ToggleButton
 
     // Game
-    private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
     private val gameEventSignal = Signal<GameEvent>()
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
@@ -100,7 +100,6 @@ class LevelEditorScreen(
 
     private fun createGame() {
         addSingletonsToDependencyInjection()
-        setOwnBox2DContactListener()
         createGameEntities()
         handleGameInput()
         addGameSystems()
@@ -114,10 +113,6 @@ class LevelEditorScreen(
             addSingleton(OverlayViewport)
             addSingleton(OverlayStage)
         }
-    }
-
-    private fun setOwnBox2DContactListener() {
-        world.setContactListener(WorldContactListener())
     }
 
     private fun createGameEntities() {
@@ -287,10 +282,36 @@ class LevelEditorScreen(
 
 
     private fun createRightColumn(): Table {
+        fun createSettingsPopUp() = Table().apply {
+            val frameImage = Image(this@LevelEditorScreen.skin.getDrawable("pop-up-frame")).apply {
+                setSize(500f, 400f)
+                color = ColorScheme.currentDarkColor
+            }
+            val insideImage = Image(manager.get<Texture>("graphics/pixel.png")).apply {
+                val borderWidth = 14f
+                setSize(frameImage.width - 2 * borderWidth, frameImage.height - 2 * borderWidth)
+                setPosition(borderWidth, borderWidth)
+                color = ColorScheme.currentLightColor
+            }
+            addActor(frameImage)
+            addActor(insideImage)
+            setSize(frameImage.width, frameImage.height)
+            touchable = Touchable.enabled
+            addListener(object : ClickListener() {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    return true
+                }
+            })
+//            add(frameImage).size(frameImage.width, frameImage.height)
+            setPosition(uiStage.width / 2f - width / 2f, uiStage.height / 2f - height / 2f)
+        }
+
         fun createSettingsButton() = ClickButton(skin, "small-button").apply {
             addIcon("settings-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             addClickRunnable(Runnable {
+                val popUp = createSettingsPopUp()
+                uiStage.addActor(popUp)
             })
             setOpaque(true)
         }
