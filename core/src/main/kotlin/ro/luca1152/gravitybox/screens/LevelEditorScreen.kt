@@ -26,8 +26,11 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Array
+import com.badlogic.gdx.utils.Json
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
+import ktx.collections.contains
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.editor.undoRedo
 import ro.luca1152.gravitybox.components.game.body
@@ -45,6 +48,8 @@ import ro.luca1152.gravitybox.systems.game.ColorSyncSystem
 import ro.luca1152.gravitybox.systems.game.DebugRenderingSystem
 import ro.luca1152.gravitybox.systems.game.ImageRenderingSystem
 import ro.luca1152.gravitybox.systems.game.UpdateGameCameraSystem
+import ro.luca1152.gravitybox.utils.assets.Text
+import ro.luca1152.gravitybox.utils.json.MapFactory
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.*
 import uy.kohesive.injekt.Injekt
@@ -73,6 +78,7 @@ class LevelEditorScreen(
     private val gameEventSignal = Signal<GameEvent>()
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
+    private lateinit var levelEntity: Entity
 
     override fun show() {
         resetVariables()
@@ -110,7 +116,7 @@ class LevelEditorScreen(
     private fun createGameEntities() {
         inputEntity = InputEntity.createEntity(toggledButton)
         undoRedoEntity = UndoRedoEntity.createEntity()
-        val levelEntity = LevelEntity.createEntity(0, 16, 19)
+        levelEntity = LevelEntity.createEntity(getFirstUnusedLevelId(), 16, 19)
         val platformEntity = PlatformEntity.createEntity(
             2,
             levelEntity.map.widthInTiles / 2f,
@@ -129,6 +135,19 @@ class LevelEditorScreen(
             platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
         )
         centerCameraOnPlatform(platformEntity)
+    }
+
+    private fun getFirstUnusedLevelId(): Int {
+        val usedIds = Array<Int>()
+        Gdx.files.local("maps/editor").list().forEach {
+            val jsonData = manager.get<Text>(it.path()).string
+            val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
+            usedIds.add(mapFactory.id)
+        }
+        var id = 0
+        while (usedIds.contains(id))
+            id++
+        return id
     }
 
     private fun centerCameraOnPlatform(platformEntity: Entity) {
@@ -283,6 +302,9 @@ class LevelEditorScreen(
                 val saveButton = ClickTextButton("Save", skin, "text-only-button").apply {
                     upColor = ColorScheme.currentDarkColor
                     downColor = ColorScheme.darkerDarkColor
+                    clickRunnable = Runnable {
+                        levelEntity.map.saveMap()
+                    }
                 }
                 val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {
                     upColor = ColorScheme.currentDarkColor
@@ -298,7 +320,6 @@ class LevelEditorScreen(
                     add(loadButton).expand().top().row()
                     add(resizeButton).expand().top()
                 }
-
 
                 uiStage.addActor(popUp)
             })
@@ -355,7 +376,7 @@ class LevelEditorScreen(
 
     override fun render(delta: Float) {
         clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
-        update(delta) // This MUST be after clearScreen() because draw functions may be called in engine.update()
+        update(delta)
         uiStage.draw()
     }
 

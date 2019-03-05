@@ -66,11 +66,25 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
     }
 
     private fun loadMaps() {
-        val mapsCount = Gdx.files.internal("maps/game").list().count()
-        manager.run {
-            setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
-            for (i in 1..mapsCount)
-                load<Text>("maps/game/map-$i.json")
+        loadGameMaps()
+        loadEditorMaps()
+    }
+
+    private fun loadGameMaps() {
+        Gdx.files.internal("maps/game").list().forEach {
+            manager.run {
+                setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
+                load<Text>(it.path())
+            }
+        }
+    }
+
+    private fun loadEditorMaps() {
+        Gdx.files.internal("maps/editor").list().forEach {
+            manager.run {
+                setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
+                load<Text>(it.path())
+            }
         }
     }
 
