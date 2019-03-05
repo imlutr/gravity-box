@@ -19,7 +19,7 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
+import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
@@ -71,18 +71,19 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
     }
 
     private fun loadGameMaps() {
-        Gdx.files.internal("maps/game").list().forEach {
+        Gdx.files.local("maps/game").list().forEach {
             manager.run {
-                setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
+                setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
                 load<Text>(it.path())
             }
         }
     }
 
     private fun loadEditorMaps() {
-        Gdx.files.internal("maps/editor").list().forEach {
+        Gdx.files.local("maps/editor").list().forEach {
+            println("${it.path()} loaded")
             manager.run {
-                setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
+                setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
                 load<Text>(it.path())
             }
         }
