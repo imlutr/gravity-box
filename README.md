@@ -1,7 +1,7 @@
 # Gravity Box
-A minimalist 2D puzzle platformer written in Kotlin & libGDX. 
+A minimalist puzzle platformer written in Kotlin & libGDX. 
 
-It is the mobile port of my [Game Maker's Toolkit Jam 2018](https://itch.io/jam/gmtk-2018) entry, made in 48 hours, which placed 152nd (out of 1042). You can play the original version [here](https://luca1152.itch.io/gravity-box). 
+This is the mobile port of my [Game Maker's Toolkit Jam 2018](https://itch.io/jam/gmtk-2018) entry, made in 48 hours, which placed 152nd (out of 1042). You can play the original version [here](https://luca1152.itch.io/gravity-box). 
 
 ![](https://i.imgur.com/0Hg4uK4.gif)
 
