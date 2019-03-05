@@ -274,35 +274,32 @@ class LevelEditorScreen(
 
 
     private fun createRightColumn(): Table {
-//        fun createSettingsPopUp() = Table().apply {
-//            val frameImage = Image(this@LevelEditorScreen.skin.getDrawable("pop-up-frame")).apply {
-//                setSize(500f, 400f)
-//                color = ColorScheme.currentDarkColor
-//            }
-//            val insideImage = Image(manager.get<Texture>("graphics/pixel.png")).apply {
-//                val borderWidth = 14f
-//                setSize(frameImage.width - 2 * borderWidth, frameImage.height - 2 * borderWidth)
-//                setPosition(borderWidth, borderWidth)
-//                color = ColorScheme.currentLightColor
-//            }
-//            addActor(frameImage)
-//            addActor(insideImage)
-//            setSize(frameImage.width, frameImage.height)
-//            touchable = Touchable.enabled
-//            addListener(object : ClickListener() {
-//                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-//                    return true
-//                }
-//            })
-////            add(frameImage).size(frameImage.width, frameImage.height)
-//            setPosition(uiStage.width / 2f - width / 2f, uiStage.height / 2f - height / 2f)
-//        }
-
         fun createSettingsButton() = ClickButton(skin, "small-button").apply {
             addIcon("settings-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             addClickRunnable(Runnable {
                 val popUp = PopUp(500f, 400f)
+
+                val saveButton = ClickTextButton("Save", skin, "text-only-button").apply {
+                    upColor = ColorScheme.currentDarkColor
+                    downColor = ColorScheme.darkerDarkColor
+                }
+                val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {
+                    upColor = ColorScheme.currentDarkColor
+                    downColor = ColorScheme.darkerDarkColor
+                }
+                val resizeButton = ClickTextButton("Resize", skin, "text-only-button").apply {
+                    upColor = ColorScheme.currentDarkColor
+                    downColor = ColorScheme.darkerDarkColor
+                }
+
+                popUp.widget.run {
+                    add(saveButton).expand().top().row()
+                    add(loadButton).expand().top().row()
+                    add(resizeButton).expand().top()
+                }
+
+
                 uiStage.addActor(popUp)
             })
             setOpaque(true)
