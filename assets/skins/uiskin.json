@@ -12,6 +12,9 @@
     bold-65: {
       file: nunito-bold-65.fnt
     }
+    bold-80: {
+      file: nunito-bold-80.fnt
+    }
   }
   ButtonStyle: {
     big-button: {
@@ -38,6 +41,10 @@
       font: bold-50,
       up: small-button,
       down: small-button
+    }
+
+    text-only-button: {
+      font: bold-80
     }
   }
 }

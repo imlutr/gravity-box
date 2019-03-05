@@ -55,7 +55,7 @@ class PopUp(
         setSize(width - 2 * frameWidthPx, height - 2 * frameWidthPx)
         color = ColorScheme.currentLightColor
     }
-    private val widget = Table().apply {
+    val widget = Table().apply {
         setSize(width, height)
         setPosition(uiStage.viewport.worldWidth / 2f - width / 2f, uiStage.viewport.worldHeight / 2f - height / 2f)
         addActor(widgetOpaqueBackground.apply {
@@ -66,6 +66,7 @@ class PopUp(
             val additionalPadding = 5
             setPosition(width - this.width / 2f - additionalPadding, height - this.height / 2f - additionalPadding)
         })
+        pad(frameWidthPx + 15f)
     }
 
     init {
