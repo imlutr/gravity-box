@@ -23,14 +23,9 @@ import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
@@ -51,10 +46,7 @@ import ro.luca1152.gravitybox.systems.game.DebugRenderingSystem
 import ro.luca1152.gravitybox.systems.game.ImageRenderingSystem
 import ro.luca1152.gravitybox.systems.game.UpdateGameCameraSystem
 import ro.luca1152.gravitybox.utils.kotlin.*
-import ro.luca1152.gravitybox.utils.ui.ButtonType
-import ro.luca1152.gravitybox.utils.ui.ClickButton
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
-import ro.luca1152.gravitybox.utils.ui.ToggleButton
+import ro.luca1152.gravitybox.utils.ui.*
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
@@ -282,35 +274,35 @@ class LevelEditorScreen(
 
 
     private fun createRightColumn(): Table {
-        fun createSettingsPopUp() = Table().apply {
-            val frameImage = Image(this@LevelEditorScreen.skin.getDrawable("pop-up-frame")).apply {
-                setSize(500f, 400f)
-                color = ColorScheme.currentDarkColor
-            }
-            val insideImage = Image(manager.get<Texture>("graphics/pixel.png")).apply {
-                val borderWidth = 14f
-                setSize(frameImage.width - 2 * borderWidth, frameImage.height - 2 * borderWidth)
-                setPosition(borderWidth, borderWidth)
-                color = ColorScheme.currentLightColor
-            }
-            addActor(frameImage)
-            addActor(insideImage)
-            setSize(frameImage.width, frameImage.height)
-            touchable = Touchable.enabled
-            addListener(object : ClickListener() {
-                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                    return true
-                }
-            })
-//            add(frameImage).size(frameImage.width, frameImage.height)
-            setPosition(uiStage.width / 2f - width / 2f, uiStage.height / 2f - height / 2f)
-        }
+//        fun createSettingsPopUp() = Table().apply {
+//            val frameImage = Image(this@LevelEditorScreen.skin.getDrawable("pop-up-frame")).apply {
+//                setSize(500f, 400f)
+//                color = ColorScheme.currentDarkColor
+//            }
+//            val insideImage = Image(manager.get<Texture>("graphics/pixel.png")).apply {
+//                val borderWidth = 14f
+//                setSize(frameImage.width - 2 * borderWidth, frameImage.height - 2 * borderWidth)
+//                setPosition(borderWidth, borderWidth)
+//                color = ColorScheme.currentLightColor
+//            }
+//            addActor(frameImage)
+//            addActor(insideImage)
+//            setSize(frameImage.width, frameImage.height)
+//            touchable = Touchable.enabled
+//            addListener(object : ClickListener() {
+//                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+//                    return true
+//                }
+//            })
+////            add(frameImage).size(frameImage.width, frameImage.height)
+//            setPosition(uiStage.width / 2f - width / 2f, uiStage.height / 2f - height / 2f)
+//        }
 
         fun createSettingsButton() = ClickButton(skin, "small-button").apply {
             addIcon("settings-icon")
             setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
             addClickRunnable(Runnable {
-                val popUp = createSettingsPopUp()
+                val popUp = PopUp(500f, 400f)
                 uiStage.addActor(popUp)
             })
             setOpaque(true)
