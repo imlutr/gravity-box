@@ -24,8 +24,10 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import ktx.app.KtxScreen
@@ -304,6 +306,19 @@ class LevelEditorScreen(
                     downColor = ColorScheme.darkerDarkColor
                     clickRunnable = Runnable {
                         levelEntity.map.saveMap()
+
+                        val messagePopUp = PopUp(400f, 200f)
+                        messagePopUp.widget.run {
+                            val label = Label(
+                                "Level saved\nsuccessfully.",
+                                this@LevelEditorScreen.skin,
+                                "semi-bold-50",
+                                ColorScheme.currentDarkColor
+                            )
+                            label.setAlignment(Align.center, Align.center)
+                            add(label)
+                        }
+                        uiStage.addActor(messagePopUp)
                     }
                 }
                 val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {

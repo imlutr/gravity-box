@@ -15,6 +15,9 @@
     bold-80: {
       file: nunito-bold-80.fnt
     }
+    semi-bold-50: {
+      file: nunito-sbold-50.fnt
+    }
   }
   ButtonStyle: {
     big-button: {
