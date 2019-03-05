@@ -59,7 +59,7 @@ class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : Entit
             map.destroyAllBodies()
             removePlatforms()
         }
-        val jsonData = manager.get<Text>("maps/game/map-${levelEntity.level.levelNumber}.json").string
+        val jsonData = manager.get<Text>("maps/game/map-${levelEntity.level.levelId}.json").string
         val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
 
         createMap(mapFactory.width, mapFactory.height, mapFactory.id)
@@ -81,7 +81,7 @@ class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : Entit
     private fun createMap(width: Int, height: Int, id: Int) {
         levelEntity.run {
             map.run {
-                levelNumber = id
+                levelId = id
                 widthInTiles = width.pixelsToMeters.toInt()
                 heightInTiles = height.pixelsToMeters.toInt()
             }

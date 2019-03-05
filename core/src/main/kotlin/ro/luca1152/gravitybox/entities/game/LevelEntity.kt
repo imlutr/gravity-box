@@ -32,7 +32,7 @@ object LevelEntity {
                 level.set(levelId)
             }
             add(engine.createComponent(MapComponent::class.java)).run {
-                map.set(width, height)
+                map.set(width, height, levelId)
             }
             engine.addEntity(this)
         }!!

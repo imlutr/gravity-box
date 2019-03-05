@@ -22,22 +22,22 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** A component which contains the [levelNumber] of the level intended to be played. */
+/** A component which contains the [levelId] of the level intended to be played. */
 class LevelComponent : Component, Poolable {
     var loadMap = false
     var forceUpdateMap = false
     var restartLevel = false
-    var levelNumber = 0
+    var levelId = 0
 
     fun set(levelNumber: Int) {
-        this.levelNumber = levelNumber
+        this.levelId = levelNumber
     }
 
     override fun reset() {
         loadMap = false
         forceUpdateMap = false
         restartLevel = false
-        levelNumber = 0
+        levelId = 0
     }
 
     companion object : ComponentResolver<LevelComponent>(LevelComponent::class.java)

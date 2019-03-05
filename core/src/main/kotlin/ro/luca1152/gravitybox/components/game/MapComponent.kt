@@ -22,21 +22,27 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonWriter
 import com.badlogic.gdx.utils.Pool.Poolable
+import com.badlogic.gdx.utils.TimeUtils
 import ktx.collections.sortBy
 import ro.luca1152.gravitybox.components.editor.DeletedMapObjectComponent
 import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.metersToPixels
+import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.json.MapFactory
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.StringWriter
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Suppress("PrivatePropertyName")
 class MapComponent : Component, Poolable {
@@ -44,21 +50,22 @@ class MapComponent : Component, Poolable {
         const val GRAVITY = -25f
     }
 
-    val world: World = Injekt.get()
     var widthInTiles = 0
     var heightInTiles = 0
-    /**
-     * The level number of the currently stored map. It may differ from the level intended
-     * to be played stored in [LevelComponent].
-     */
-    var levelNumber = 0
+    var levelId = 0
 
-    fun set(widthInTiles: Int, heightInTiles: Int) {
+    fun set(widthInTiles: Int, heightInTiles: Int, levelId: Int) {
         this.widthInTiles = widthInTiles
         this.heightInTiles = heightInTiles
+        this.levelId = levelId
     }
 
-    fun saveMap(engine: PooledEngine = Injekt.get()) {
+    fun saveMap() {
+        val json = getJsonFromMap()
+        writeJsonToFile(json)
+    }
+
+    private fun getJsonFromMap(engine: PooledEngine = Injekt.get()): Json {
         var player: Entity? = null
         var finishPoint: Entity? = null
         val platforms = Array<Entity>()
@@ -79,14 +86,13 @@ class MapComponent : Component, Poolable {
         check(player != null) { "A map must have a player." }
         check(finishPoint != null) { "A map must have a finish point." }
 
-        val json = Json()
-        json.run {
+        return Json().apply {
             setOutputType(JsonWriter.OutputType.json)
             setWriter(JsonWriter(StringWriter()))
             writeObjectStart()
 
             // Map properties
-            writeValue("id", levelNumber)
+            writeValue("id", levelId)
             writeValue("width", widthInTiles.metersToPixels)
             writeValue("height", heightInTiles.metersToPixels)
 
@@ -102,20 +108,49 @@ class MapComponent : Component, Poolable {
 
             writeObjectEnd()
         }
+    }
 
-        val fileHandle = Gdx.files.local("maps/editor/map-1.json")
+    private fun writeJsonToFile(json: Json) {
+        val fileFolder = "maps/editor"
+        val existentFileName = getMapFileNameForId(levelId)
+        if (existentFileName != "") {
+            Gdx.files.local("$fileFolder/$existentFileName").delete()
+        }
+        val fileHandle = Gdx.files.local("$fileFolder/${getNewFileName()}")
         fileHandle.writeString(json.prettyPrint(json.writer.writer.toString()), false)
     }
 
+    private fun getMapFileNameForId(
+        mapId: Int,
+        manager: AssetManager = Injekt.get()
+    ): String {
+        Gdx.files.local("maps/editor").list().forEach {
+            val jsonData = if (manager.isLoaded(it.path())) {
+                manager.get<Text>(it.path()).string
+            } else {
+                Gdx.files.local(it.path()).readString()
+            }
+            val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
+            if (mapFactory.id == mapId)
+                return it.name()
+        }
+        return ""
+    }
+
+    private fun getNewFileName(): String {
+        val date = Date(TimeUtils.millis())
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z'.json'", Locale.getDefault())
+        return formatter.format(date)
+    }
 
     override fun reset() {
         destroyAllBodies()
-        levelNumber = 0
+        levelId = 0
         widthInTiles = 0
         heightInTiles = 0
     }
 
-    fun destroyAllBodies() {
+    fun destroyAllBodies(world: World = Injekt.get()) {
         val bodiesToRemove = Array<Body>()
         world.getBodies(bodiesToRemove)
         bodiesToRemove.forEach {
