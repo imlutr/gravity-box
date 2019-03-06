@@ -307,7 +307,7 @@ class LevelEditorScreen(
                     clickRunnable = Runnable {
                         levelEntity.map.saveMap()
 
-                        val messagePopUp = PopUp(400f, 200f)
+                        val messagePopUp = PopUp(450f, 250f)
                         messagePopUp.widget.run {
                             val label = Label(
                                 "Level saved\nsuccessfully.",

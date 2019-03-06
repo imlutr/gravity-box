@@ -5,9 +5,9 @@
         xmlns:dc="http://purl.org/dc/elements/1.1/"
         xmlns:cc="http://creativecommons.org/ns#"
         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns="http://www.w3.org/2000/svg"
         xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
         xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-        xmlns="http://www.w3.org/2000/svg"
         height="1122.5197"
         id="svg8"
         version="1.1"
@@ -504,14 +504,14 @@
             id="base"
             pagecolor="#ffffff"
             showborder="false"
-            showgrid="true"
+            showgrid="false"
             showguides="true"
             units="px"
             inkscape:bbox-nodes="true"
             inkscape:bbox-paths="true"
             inkscape:current-layer="layer1"
-            inkscape:cx="3572.9473"
-            inkscape:cy="-512.15283"
+            inkscape:cx="2387.3401"
+            inkscape:cy="-165.09965"
             inkscape:document-units="px"
             inkscape:measure-end="3774.09,-659.996"
             inkscape:measure-start="3774.27,-645.147"
@@ -3539,5 +3539,51 @@
          y="396.60226"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:21.16666603px;line-height:1.35000002;font-family:Nunito;-inkscape-font-specification:'Nunito Bold';text-align:center;text-anchor:middle;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
          id="tspan1881">Resize</tspan></text>
+      <rect
+              style="fill:#d1e8e8;fill-opacity:1;stroke:#549191;stroke-width:3.70173502;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+              height="49.214931"
+              id="rect951-3-6-7-3-6-3"
+              ry="0"
+              width="102.1316"
+              x="702.87225"
+              y="303.31943"/>
+      <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:-3.17235422px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="753.03192"
+       y="329.55341"
+       id="text1814"><tspan
+         sodipodi:role="line"
+         id="tspan1812"
+         x="753.03192"
+         y="338.91718"
+         style="stroke-width:0.26458332" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:6.4084115px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:-1.92092144px;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.16021028;stroke-opacity:1"
+       x="754.03107"
+       y="322.64636"
+       id="text1873-5"><tspan
+         sodipodi:role="line"
+         x="754.03107"
+         y="322.64636"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:12.81682301px;line-height:1.35000002;font-family:Nunito;-inkscape-font-specification:'Nunito Semi-Bold';text-align:center;text-anchor:middle;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.16021028;stroke-opacity:1"
+         id="tspan1881-9">Level  saved</tspan><tspan
+         sodipodi:role="line"
+         x="754.03107"
+         y="339.94907"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:12.81682301px;line-height:1.35000002;font-family:Nunito;-inkscape-font-specification:'Nunito Semi-Bold';text-align:center;text-anchor:middle;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.16021028;stroke-opacity:1"
+         id="tspan1854">successfully.</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1856"
+       style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;letter-spacing:0px;word-spacing:-11.99000072px"><flowRegion
+         id="flowRegion1858"><rect
+           id="rect1860"
+           width="121.62238"
+           height="87.681244"
+           x="2790.2434"
+           y="1211.6151" /></flowRegion><flowPara
+         id="flowPara1862"></flowPara></flowRoot>
   </g>
 </svg>
