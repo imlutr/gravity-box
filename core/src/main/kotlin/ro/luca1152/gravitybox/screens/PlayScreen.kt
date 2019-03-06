@@ -49,7 +49,6 @@ class PlayScreen(
         createGameEntities()
         addGameSystems()
         handleAllInput()
-        // Handle input
     }
 
     private fun setOwnBox2DContactListener() {
@@ -97,7 +96,7 @@ class PlayScreen(
 
     override fun render(delta: Float) {
         clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
-        engine.update(delta) // This MUST be after clearScreen() because draw functions may be called in engine.update()
+        engine.update(delta)
     }
 
     override fun resize(width: Int, height: Int) {

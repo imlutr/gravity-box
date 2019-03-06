@@ -25,6 +25,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.editor.SelectedObjectComponent
 import ro.luca1152.gravitybox.components.game.*
@@ -46,7 +47,11 @@ class PlayingSystem(
     private val manager: AssetManager = Injekt.get(),
     private val world: World = Injekt.get()
 ) : EntitySystem() {
-    private val rootTable = levelEditorScreen.createRootTable()
+    private val rootTable = Table().apply {
+        setFillParent(true)
+        padLeft(62f).padRight(62f)
+        padBottom(110f).padTop(110f)
+    }
     private var previouslySelectedMapObject: Entity? = null
     private lateinit var skin: Skin
     private lateinit var levelEntity: Entity
@@ -80,7 +85,7 @@ class PlayingSystem(
     }
 
     private fun hideLevelEditorUI() {
-        levelEditorScreen.root.isVisible = false
+        levelEditorScreen.rootTable.isVisible = false
     }
 
     private fun deselectMapObject() {
@@ -209,6 +214,6 @@ class PlayingSystem(
     }
 
     private fun showLevelEditorUI() {
-        levelEditorScreen.root.isVisible = true
+        levelEditorScreen.rootTable.isVisible = true
     }
 }

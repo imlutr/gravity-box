@@ -67,22 +67,141 @@ class LevelEditorScreen(
     private val uiStage: UIStage = Injekt.get(),
     private val inputMultiplexer: InputMultiplexer = Injekt.get()
 ) : KtxScreen {
-    // UI
-    private var screenIsHiding = false
-    private lateinit var skin: Skin
-    val root: Table = createRootTable()
+    private val skin = manager.get<Skin>("skins/uiskin.json")
     private val toggledButton = Reference<ToggleButton>()
-    private lateinit var undoButton: ClickButton
-    private lateinit var redoButton: ClickButton
-    lateinit var moveToolButton: ToggleButton
+    private val undoButton = ClickButton(skin, "small-button").apply {
+        addIcon("undo-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
+        addClickRunnable(Runnable {
+            undoRedoEntity.undoRedo.undo()
+        })
+    }
+    private val redoButton = ClickButton(skin, "small-button").apply {
+        addIcon("redo-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
+        addClickRunnable(Runnable {
+            undoRedoEntity.undoRedo.redo()
+        })
+    }
+    private val placeToolButton = ToggleButton(skin, "small-button").apply {
+        addIcon("platform-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setToggledButtonReference(this@LevelEditorScreen.toggledButton)
+        type = ButtonType.PLACE_TOOL_BUTTON
+        setOpaque(true)
+    }
+    val moveToolButton = ToggleButton(skin, "small-button").apply {
+        addIcon("move-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setToggledButtonReference(this@LevelEditorScreen.toggledButton)
+        type = ButtonType.MOVE_TOOL_BUTTON
+        isToggled = true
+        setOpaque(true)
+    }
+    private val backButton = ClickButton(skin, "small-button").apply {
+        addIcon("back-icon")
+        iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setToggledButtonReference(this@LevelEditorScreen.toggledButton)
+        setToggleOffEveryOtherButton(true)
+        addClickRunnable(Runnable {
+            uiStage.addAction(
+                sequence(
+                    fadeOut(.5f),
+                    run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
+                )
+            )
+        })
+        setOpaque(true)
+    }
+    private val playButton = ClickButton(skin, "small-button").apply {
+        addIcon("play-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setToggledButtonReference(this@LevelEditorScreen.toggledButton)
+        setToggleOffEveryOtherButton(true)
+        addClickRunnable(Runnable {
+            engine.addSystem(PlayingSystem(this@LevelEditorScreen))
+        })
+        setOpaque(true)
+    }
+    private val settingsButton = ClickButton(skin, "small-button").apply {
+        addIcon("settings-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            val popUp = PopUp(500f, 400f)
 
-    // Game
+            val saveButton = ClickTextButton("Save", skin, "text-only-button").apply {
+                upColor = ColorScheme.currentDarkColor
+                downColor = ColorScheme.darkerDarkColor
+                clickRunnable = Runnable {
+                    levelEntity.map.saveMap()
+
+                    val messagePopUp = PopUp(450f, 250f)
+                    messagePopUp.widget.run {
+                        val label = Label(
+                            "Level saved\nsuccessfully.",
+                            this@LevelEditorScreen.skin,
+                            "semi-bold-50",
+                            ColorScheme.currentDarkColor
+                        )
+                        label.setAlignment(Align.center, Align.center)
+                        add(label)
+                    }
+                    uiStage.addActor(messagePopUp)
+                }
+            }
+            val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {
+                upColor = ColorScheme.currentDarkColor
+                downColor = ColorScheme.darkerDarkColor
+            }
+            val resizeButton = ClickTextButton("Resize", skin, "text-only-button").apply {
+                upColor = ColorScheme.currentDarkColor
+                downColor = ColorScheme.darkerDarkColor
+            }
+
+            popUp.widget.run {
+                add(saveButton).expand().top().row()
+                add(loadButton).expand().top().row()
+                add(resizeButton).expand().top()
+            }
+
+            uiStage.addActor(popUp)
+        })
+        setOpaque(true)
+    }
+    private val leftColumn = Table().apply {
+        add(undoButton).top().space(50f).row()
+        add(moveToolButton).top().space(50f).row()
+        add(placeToolButton).top().row()
+        add(backButton).expand().bottom()
+    }
+    private val middleColumn = Table().apply {
+        add(playButton).expand().bottom()
+    }
+    private val rightColumn = Table().apply {
+        add(redoButton).expand().top().row()
+        add(settingsButton).expand().bottom()
+    }
+    val rootTable = Table().apply {
+        setFillParent(true)
+        padLeft(62f).padRight(62f)
+        padBottom(110f).padTop(110f)
+        add(leftColumn).growY().expandX().left()
+        add(middleColumn).growY().expandX().center()
+        add(rightColumn).growY().expandX().right()
+    }
+    private var screenIsHidden = false
+
     private val gameEventSignal = Signal<GameEvent>()
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
     private lateinit var levelEntity: Entity
 
     override fun show() {
+        uiStage.addActor(rootTable)
+        addDependencies()
         resetVariables()
         createGame()
         createUI()
@@ -90,22 +209,21 @@ class LevelEditorScreen(
     }
 
     private fun resetVariables() {
-        uiStage.clear()
-        skin = manager.get<Skin>("skins/uiskin.json")
-        root.clear()
-        toggledButton.set(null)
+        moveToolButton.run {
+            isToggled = true
+            toggledButton.set(this)
+        }
         inputMultiplexer.clear()
-        screenIsHiding = false
+        screenIsHidden = false
     }
 
     private fun createGame() {
-        addSingletonsToDependencyInjection()
         createGameEntities()
         handleGameInput()
         addGameSystems()
     }
 
-    private fun addSingletonsToDependencyInjection() {
+    private fun addDependencies() {
         Injekt.run {
             addSingleton(gameEventSignal)
             addSingleton(skin)
@@ -159,8 +277,10 @@ class LevelEditorScreen(
     }
 
     private fun handleGameInput() {
-        inputMultiplexer.addProcessor(Injekt.get<OverlayStage>())
-        inputMultiplexer.addProcessor(gameStage)
+        inputMultiplexer.run {
+            addProcessor(Injekt.get<OverlayStage>())
+            addProcessor(gameStage)
+        }
     }
 
     fun addGameSystems() {
@@ -185,167 +305,18 @@ class LevelEditorScreen(
     }
 
     private fun createUI() {
-        root.run {
-            uiStage.addActor(this)
-            add(createLeftColumn()).growY().expandX().left()
-            add(createMiddleColumn()).growY().expandX().center()
-            add(createRightColumn()).growY().expandX().right()
-        }
+        fadeEverythingIn()
+        handleUIInput()
+    }
 
-        // Make everything fade in
+    private fun fadeEverythingIn() {
         uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
         gameStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
-
-        handleUIInput()
     }
 
     private fun handleUIInput() {
         // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
         inputMultiplexer.addProcessor(0, uiStage)
-    }
-
-    fun createRootTable() = Table().apply {
-        setFillParent(true)
-        padLeft(62f).padRight(62f)
-        padBottom(110f).padTop(110f)
-    }
-
-    private fun createUndoButton() = ClickButton(skin, "small-button").apply {
-        addIcon("undo-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        setOpaque(true)
-        addClickRunnable(Runnable {
-            undoRedoEntity.undoRedo.undo()
-        })
-    }
-
-    private fun createRedoButton() = ClickButton(skin, "small-button").apply {
-        addIcon("redo-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        setOpaque(true)
-        addClickRunnable(Runnable {
-            undoRedoEntity.undoRedo.redo()
-        })
-    }
-
-    private fun createMoveToolButton(toggledButton: Reference<ToggleButton>) =
-        ToggleButton(skin, "small-button").apply {
-            addIcon("move-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setToggledButtonReference(toggledButton)
-            type = ButtonType.MOVE_TOOL_BUTTON
-            isToggled = true
-            setOpaque(true)
-        }
-
-    private fun createLeftColumn(): Table {
-        undoButton = createUndoButton()
-        moveToolButton = createMoveToolButton(toggledButton)
-
-        fun createPlaceToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
-            addIcon("platform-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setToggledButtonReference(toggledButton)
-            type = ButtonType.PLACE_TOOL_BUTTON
-            setOpaque(true)
-        }
-
-        fun createBackButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
-            addIcon("back-icon")
-            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setToggledButtonReference(toggledButton)
-            setToggleOffEveryOtherButton(true)
-            addClickRunnable(Runnable {
-                uiStage.addAction(
-                    sequence(
-                        fadeOut(.5f),
-                        run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
-                    )
-                )
-            })
-            setOpaque(true)
-        }
-
-        return Table().apply {
-            // If I don't pass [toggledButton] as an argument it doesn't work
-            add(undoButton).top().space(50f).row()
-            add(moveToolButton).top().space(50f).row()
-            add(createPlaceToolButton(toggledButton)).top().row()
-            add(createBackButton(toggledButton)).expand().bottom()
-        }
-    }
-
-    private fun createMiddleColumn(): Table {
-        fun createPlayButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
-            addIcon("play-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setToggledButtonReference(toggledButton)
-            setToggleOffEveryOtherButton(true)
-            addClickRunnable(Runnable {
-                engine.addSystem(PlayingSystem(this@LevelEditorScreen))
-            })
-            setOpaque(true)
-        }
-
-        return Table().apply {
-            add(createPlayButton(toggledButton)).expand().bottom()
-        }
-    }
-
-
-    private fun createRightColumn(): Table {
-        fun createSettingsButton() = ClickButton(skin, "small-button").apply {
-            addIcon("settings-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            addClickRunnable(Runnable {
-                val popUp = PopUp(500f, 400f)
-
-                val saveButton = ClickTextButton("Save", skin, "text-only-button").apply {
-                    upColor = ColorScheme.currentDarkColor
-                    downColor = ColorScheme.darkerDarkColor
-                    clickRunnable = Runnable {
-                        levelEntity.map.saveMap()
-
-                        val messagePopUp = PopUp(450f, 250f)
-                        messagePopUp.widget.run {
-                            val label = Label(
-                                "Level saved\nsuccessfully.",
-                                this@LevelEditorScreen.skin,
-                                "semi-bold-50",
-                                ColorScheme.currentDarkColor
-                            )
-                            label.setAlignment(Align.center, Align.center)
-                            add(label)
-                        }
-                        uiStage.addActor(messagePopUp)
-                    }
-                }
-                val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {
-                    upColor = ColorScheme.currentDarkColor
-                    downColor = ColorScheme.darkerDarkColor
-                }
-                val resizeButton = ClickTextButton("Resize", skin, "text-only-button").apply {
-                    upColor = ColorScheme.currentDarkColor
-                    downColor = ColorScheme.darkerDarkColor
-                }
-
-                popUp.widget.run {
-                    add(saveButton).expand().top().row()
-                    add(loadButton).expand().top().row()
-                    add(resizeButton).expand().top()
-                }
-
-                uiStage.addActor(popUp)
-            })
-            setOpaque(true)
-        }
-
-        redoButton = createRedoButton()
-        return Table().apply {
-            add(redoButton).expand().top().row()
-            add(createSettingsButton()).expand().bottom()
-        }
     }
 
     private fun handleAllInput() {
@@ -354,7 +325,7 @@ class LevelEditorScreen(
 
     private fun update(delta: Float) {
         uiStage.act(delta)
-        if (screenIsHiding)
+        if (screenIsHidden)
             return
 
         engine.update(delta)
@@ -400,11 +371,12 @@ class LevelEditorScreen(
     }
 
     override fun hide() {
-        screenIsHiding = true
+        screenIsHidden = true
         engine.run {
             removeAllSystems()
             removeAllEntities()
         }
+        uiStage.clear()
     }
 
     override fun dispose() {
