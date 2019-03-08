@@ -25,11 +25,13 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.utils.TimeUtils
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ktx.collections.contains
@@ -57,6 +59,9 @@ import ro.luca1152.gravitybox.utils.ui.*
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class LevelEditorScreen(
     private val engine: PooledEngine = Injekt.get(),
@@ -126,35 +131,96 @@ class LevelEditorScreen(
         })
         setOpaque(true)
     }
+    private val levelSavedPopUp = PopUp(450f, 250f, skin).apply {
+        widget.run {
+            val label = Label(
+                "Level saved\nsuccessfully.",
+                this@LevelEditorScreen.skin,
+                "semi-bold-50",
+                ColorScheme.currentDarkColor
+            )
+            label.setAlignment(Align.center, Align.center)
+            add(label)
+        }
+    }
+
+    private fun getLastEditedString(fileNameWithoutExtension: String): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())
+        val levelDate = formatter.parse(fileNameWithoutExtension)
+        val currentDate = Date(TimeUtils.millis())
+
+        val diffInMills = Math.abs(currentDate.time - levelDate.time)
+        val diffInYears = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 365
+        val diffInMonths = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 30
+        val diffInWeeks = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 7
+        val diffInDays = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS)
+        val diffInHours = TimeUnit.HOURS.convert(diffInMills, TimeUnit.MILLISECONDS)
+        val diffInMinutes = TimeUnit.MINUTES.convert(diffInMills, TimeUnit.MILLISECONDS)
+        val diffInSeconds = TimeUnit.SECONDS.convert(diffInMills, TimeUnit.MILLISECONDS)
+
+        return when {
+            diffInYears != 0L -> "$diffInYears year${if (diffInYears > 1) "s" else ""} ago"
+            diffInMonths != 0L -> "$diffInMonths month${if (diffInMonths > 1) "s" else ""} ago"
+            diffInWeeks != 0L -> "$diffInWeeks week${if (diffInWeeks > 1) "s" else ""} ago"
+            diffInDays != 0L -> "$diffInDays day${if (diffInDays > 1) "s" else ""} ago"
+            diffInHours != 0L -> "$diffInHours hour${if (diffInHours > 1) "s" else ""} ago"
+            diffInMinutes != 0L -> "$diffInMinutes minute${if (diffInMinutes > 1) "s" else ""} ago"
+            else -> "$diffInSeconds second${if (diffInSeconds > 1) "s" else ""} ago"
+        }
+    }
+
+    private fun createLoadLevelTable(width: Float) = Table(skin).apply {
+        val levels = Gdx.files.local("maps/editor").list().apply {
+            sortByDescending { it.path() }
+        }
+        levels.forEach {
+            val levelFactory = Json().fromJson(MapFactory::class.java, manager.get<Text>(it.path()).string)
+            val tableRow = Table(skin).apply {
+                val rowLeft = Table(skin).apply {
+                    val lastEdited = getLastEditedString(it.nameWithoutExtension())
+                    add(Label("Level #${levelFactory.id}", skin, "bold-57", ColorScheme.currentDarkColor)).left().row()
+                    add(Label(lastEdited, skin, "bold-37", ColorScheme.currentDarkColor)).left().row()
+                }
+                val rowRight = Table(skin).apply {
+                    add(ClickButton(skin, "simple-button").apply {
+                        addIcon("trash-can-icon")
+                        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+                    })
+                }
+                add(rowLeft).expand().left()
+                add(rowRight).expand().right()
+            }
+            add(tableRow).width(width).growX().spaceTop(25f).row()
+        }
+    }
+
+    private val loadLevelTable = createLoadLevelTable(430f)
+    private val loadLevelScrollPane = ScrollPane(loadLevelTable).apply {
+        setupOverscroll(50f, 80f, 200f)
+    }
+    private val loadLevelPopUp = PopUp(520f, 520f, skin).apply {
+        widget.add(loadLevelScrollPane)
+    }
     private val settingsButton = ClickButton(skin, "small-button").apply {
         addIcon("settings-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addClickRunnable(Runnable {
-            val popUp = PopUp(500f, 400f)
+            val popUp = PopUp(500f, 400f, skin)
 
             val saveButton = ClickTextButton("Save", skin, "text-only-button").apply {
                 upColor = ColorScheme.currentDarkColor
                 downColor = ColorScheme.darkerDarkColor
                 clickRunnable = Runnable {
                     levelEntity.map.saveMap()
-
-                    val messagePopUp = PopUp(450f, 250f)
-                    messagePopUp.widget.run {
-                        val label = Label(
-                            "Level saved\nsuccessfully.",
-                            this@LevelEditorScreen.skin,
-                            "semi-bold-50",
-                            ColorScheme.currentDarkColor
-                        )
-                        label.setAlignment(Align.center, Align.center)
-                        add(label)
-                    }
-                    uiStage.addActor(messagePopUp)
+                    uiStage.addActor(levelSavedPopUp)
                 }
             }
             val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {
                 upColor = ColorScheme.currentDarkColor
                 downColor = ColorScheme.darkerDarkColor
+                clickRunnable = Runnable {
+                    uiStage.addActor(loadLevelPopUp)
+                }
             }
             val resizeButton = ClickTextButton("Resize", skin, "text-only-button").apply {
                 upColor = ColorScheme.currentDarkColor

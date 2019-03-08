@@ -20,6 +20,8 @@
     }
   }
   ButtonStyle: {
+    simple-button: {
+    }
     big-button: {
       up: big-button,
       down: big-button

@@ -33,8 +33,8 @@ import uy.kohesive.injekt.api.get
 
 class PopUp(
     width: Float, height: Float,
+    skin: Skin,
     manager: AssetManager = Injekt.get(),
-    skin: Skin = Injekt.get(),
     private val uiStage: UIStage = Injekt.get()
 ) : Group() {
     private val frameWidthPx = 14f
@@ -82,16 +82,8 @@ class PopUp(
 
     private fun addRunnableToCloseButton() {
         closeButton.addClickRunnable(Runnable {
-            removeEverything()
+            remove()
         })
-    }
-
-    private fun removeEverything() {
-        widget.remove()
-        widgetFrame.remove()
-        widgetOpaqueBackground.remove()
-        screenTransparentBackground.remove()
-        remove()
     }
 
     private fun addListenerToScreenBackground() {
@@ -99,7 +91,7 @@ class PopUp(
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
                 if (isOver(screenTransparentBackground, x, y) && isOver(widgetOpaqueBackground, x, y)) {
-                    removeEverything()
+                    remove()
                 }
             }
         })
