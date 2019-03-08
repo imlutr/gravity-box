@@ -168,39 +168,6 @@ class LevelEditorScreen(
             else -> "$diffInSeconds second${if (diffInSeconds > 1) "s" else ""} ago"
         }
     }
-
-    private fun createLoadLevelTable(width: Float) = Table(skin).apply {
-        val levels = Gdx.files.local("maps/editor").list().apply {
-            sortByDescending { it.path() }
-        }
-        levels.forEach {
-            val levelFactory = Json().fromJson(MapFactory::class.java, manager.get<Text>(it.path()).string)
-            val tableRow = Table(skin).apply {
-                val rowLeft = Table(skin).apply {
-                    val lastEdited = getLastEditedString(it.nameWithoutExtension())
-                    add(Label("Level #${levelFactory.id}", skin, "bold-57", ColorScheme.currentDarkColor)).left().row()
-                    add(Label(lastEdited, skin, "bold-37", ColorScheme.currentDarkColor)).left().row()
-                }
-                val rowRight = Table(skin).apply {
-                    add(ClickButton(skin, "simple-button").apply {
-                        addIcon("trash-can-icon")
-                        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                    })
-                }
-                add(rowLeft).expand().left()
-                add(rowRight).expand().right()
-            }
-            add(tableRow).width(width).growX().spaceTop(25f).row()
-        }
-    }
-
-    private val loadLevelTable = createLoadLevelTable(430f)
-    private val loadLevelScrollPane = ScrollPane(loadLevelTable).apply {
-        setupOverscroll(50f, 80f, 200f)
-    }
-    private val loadLevelPopUp = PopUp(520f, 520f, skin).apply {
-        widget.add(loadLevelScrollPane)
-    }
     private val settingsButton = ClickButton(skin, "small-button").apply {
         addIcon("settings-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
@@ -219,7 +186,7 @@ class LevelEditorScreen(
                 upColor = ColorScheme.currentDarkColor
                 downColor = ColorScheme.darkerDarkColor
                 clickRunnable = Runnable {
-                    uiStage.addActor(loadLevelPopUp)
+                    uiStage.addActor(createLoadLevelPopUp())
                 }
             }
             val resizeButton = ClickTextButton("Resize", skin, "text-only-button").apply {
@@ -259,7 +226,6 @@ class LevelEditorScreen(
         add(rightColumn).growY().expandX().right()
     }
     private var screenIsHidden = false
-
     private val gameEventSignal = Signal<GameEvent>()
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
@@ -368,6 +334,43 @@ class LevelEditorScreen(
             addSystem(OverlayRenderingSystem())
             addSystem(DebugRenderingSystem())
         }
+    }
+
+    private fun createLoadLevelTable(width: Float) = Table(skin).apply {
+        val levels = Gdx.files.local("maps/editor").list().apply {
+            sortByDescending { it.path() }
+        }
+        levels.forEach {
+            val jsonData = if (manager.isLoaded(it.path())) {
+                manager.get<Text>(it.path()).string
+            } else {
+                Gdx.files.local(it.path()).readString()
+            }
+            val levelFactory = Json().fromJson(MapFactory::class.java, jsonData)
+            val tableRow = Table(skin).apply {
+                val rowLeft = Table(skin).apply {
+                    val lastEdited = getLastEditedString(it.nameWithoutExtension())
+                    add(Label("Level #${levelFactory.id}", skin, "bold-57", ColorScheme.currentDarkColor)).left().row()
+                    add(Label(lastEdited, skin, "bold-37", ColorScheme.currentDarkColor)).left().row()
+                }
+                val rowRight = Table(skin).apply {
+                    add(ClickButton(skin, "simple-button").apply {
+                        addIcon("trash-can-icon")
+                        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+                    })
+                }
+                add(rowLeft).expand().left()
+                add(rowRight).expand().right()
+            }
+            add(tableRow).width(width).growX().spaceTop(25f).row()
+        }
+    }
+
+    private fun createLoadLevelPopUp() = PopUp(500f, 400f, skin).apply {
+        val scrollPane = ScrollPane(createLoadLevelTable(430f)).apply {
+            setupOverscroll(50f, 80f, 200f)
+        }
+        widget.add(scrollPane).expand().top()
     }
 
     private fun createUI() {

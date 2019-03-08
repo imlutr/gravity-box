@@ -510,8 +510,8 @@
           inkscape:bbox-nodes="true"
           inkscape:bbox-paths="true"
           inkscape:current-layer="layer1"
-          inkscape:cx="3694.2247"
-          inkscape:cy="-940.28295"
+          inkscape:cx="4511.8565"
+          inkscape:cy="-354.74237"
           inkscape:document-units="px"
           inkscape:measure-end="3774.09,-659.996"
           inkscape:measure-start="3774.27,-645.147"
@@ -533,7 +533,7 @@
           inkscape:window-width="1920"
           inkscape:window-x="0"
           inkscape:window-y="0"
-          inkscape:zoom="1">
+          inkscape:zoom="0.70710678">
     <inkscape:grid
        empcolor="#7a1919"
        empopacity="0.25098039"
@@ -3573,32 +3573,28 @@
                 inkscape:connector-curvature="0"/>
       </g>
     </g>
-    <g
-            id="g1934"
-            transform="translate(0,-4.7625002)">
       <text
-         id="text2038"
-         y="324.45044"
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:9.06080151px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:-2.71597528px;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.22652003"
+       x="1092.9059"
+       y="319.68793"
+       id="text2038"><tspan
+         sodipodi:role="line"
          x="1092.9059"
-         style="font-style:normal;font-weight:normal;font-size:9.06080151px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:-2.71597528px;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.22652003"
-         xml:space="preserve"><tspan
-           id="tspan2040"
-           style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:14.49728203px;font-family:Nunito;-inkscape-font-specification:'Nunito Semi-Bold';fill:#549191;fill-opacity:1;stroke-width:0.22652003"
-           y="324.45044"
-           x="1092.9059"
-           sodipodi:role="line">Level #1</tspan></text>
-      <text
-         id="text2046"
-         y="333.70572"
+         y="319.68793"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:14.49728203px;font-family:Nunito;-inkscape-font-specification:'Nunito Semi-Bold';fill:#549191;fill-opacity:1;stroke-width:0.22652003"
+         id="tspan2040">Level #1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:7.867558px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:-2.35830069px;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.19668894"
+       x="1091.9257"
+       y="328.94321"
+       id="text2046"><tspan
+         sodipodi:role="line"
+         id="tspan2044"
          x="1091.9257"
-         style="font-style:normal;font-weight:normal;font-size:7.867558px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:-2.35830069px;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.19668894"
-         xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.4410696px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#549191;fill-opacity:1;stroke-width:0.19668894"
-           y="333.70572"
-           x="1091.9257"
-           id="tspan2044"
-           sodipodi:role="line">1                             day                                    ago</tspan></text>
-    </g>
+         y="328.94321"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.4410696px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#549191;fill-opacity:1;stroke-width:0.19668894">1                             day                                    ago</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:-3.17235422px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
