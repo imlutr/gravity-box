@@ -23,18 +23,25 @@ import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.Array
+import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.utils.TimeUtils
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
+import ktx.collections.contains
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.editor.undoRedo
-import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.components.game.body
 import ro.luca1152.gravitybox.components.game.image
+import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.entities.editor.InputEntity
 import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
@@ -43,20 +50,28 @@ import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.events.GameEvent
-import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.editor.*
 import ro.luca1152.gravitybox.systems.game.ColorSyncSystem
 import ro.luca1152.gravitybox.systems.game.DebugRenderingSystem
 import ro.luca1152.gravitybox.systems.game.ImageRenderingSystem
 import ro.luca1152.gravitybox.systems.game.UpdateGameCameraSystem
+import ro.luca1152.gravitybox.utils.assets.Text
+import ro.luca1152.gravitybox.utils.json.MapFactory
 import ro.luca1152.gravitybox.utils.kotlin.*
-import ro.luca1152.gravitybox.utils.ui.ButtonType
-import ro.luca1152.gravitybox.utils.ui.ClickButton
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
-import ro.luca1152.gravitybox.utils.ui.ToggleButton
+import ro.luca1152.gravitybox.utils.ui.button.ButtonType
+import ro.luca1152.gravitybox.utils.ui.button.ClickButton
+import ro.luca1152.gravitybox.utils.ui.button.ClickTextButton
+import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
+import ro.luca1152.gravitybox.utils.ui.popup.PopUp
+import ro.luca1152.gravitybox.utils.ui.popup.TextPopUp
+import ro.luca1152.gravitybox.utils.ui.popup.YesNoTextPopUp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class LevelEditorScreen(
     private val engine: PooledEngine = Injekt.get(),
@@ -67,22 +82,166 @@ class LevelEditorScreen(
     private val uiStage: UIStage = Injekt.get(),
     private val inputMultiplexer: InputMultiplexer = Injekt.get()
 ) : KtxScreen {
-    // UI
-    private var screenIsHiding = false
-    private lateinit var skin: Skin
-    val root: Table = createRootTable()
+    private val skin = manager.get<Skin>("skins/uiskin.json")
     private val toggledButton = Reference<ToggleButton>()
-    private lateinit var undoButton: ClickButton
-    private lateinit var redoButton: ClickButton
-    lateinit var moveToolButton: ToggleButton
+    private val undoButton = ClickButton(skin, "small-button").apply {
+        addIcon("undo-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
+        addClickRunnable(Runnable {
+            undoRedoEntity.undoRedo.undo()
+        })
+    }
+    private val redoButton = ClickButton(skin, "small-button").apply {
+        addIcon("redo-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setOpaque(true)
+        addClickRunnable(Runnable {
+            undoRedoEntity.undoRedo.redo()
+        })
+    }
+    private val placeToolButton = ToggleButton(skin, "small-button").apply {
+        addIcon("platform-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setToggledButtonReference(this@LevelEditorScreen.toggledButton)
+        type = ButtonType.PLACE_TOOL_BUTTON
+        setOpaque(true)
+    }
+    val moveToolButton = ToggleButton(skin, "small-button").apply {
+        addIcon("move-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setToggledButtonReference(this@LevelEditorScreen.toggledButton)
+        type = ButtonType.MOVE_TOOL_BUTTON
+        isToggled = true
+        setOpaque(true)
+    }
+    private val backButton = ClickButton(skin, "small-button").apply {
+        addIcon("back-icon")
+        iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setToggledButtonReference(this@LevelEditorScreen.toggledButton)
+        setToggleOffEveryOtherButton(true)
+        addClickRunnable(Runnable {
+            uiStage.addAction(
+                sequence(
+                    fadeOut(.5f),
+                    run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
+                )
+            )
+        })
+        setOpaque(true)
+    }
+    private val playButton = ClickButton(skin, "small-button").apply {
+        addIcon("play-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setToggledButtonReference(this@LevelEditorScreen.toggledButton)
+        setToggleOffEveryOtherButton(true)
+        addClickRunnable(Runnable {
+            engine.addSystem(PlayingSystem(this@LevelEditorScreen))
+        })
+        setOpaque(true)
+    }
+    private val saveConfirmationPopUp = YesNoTextPopUp(
+        520f, 400f,
+        "Are you sure you want to save the level?",
+        skin, "semi-bold-50",
+        ColorScheme.currentDarkColor, yesIsHighlighted = true
+    ).apply {
+        yesClickRunnable = Runnable {
+            uiStage.addActor(levelSavedTextPopUp)
+            levelEntity.map.saveMap()
+            remove()
+        }
+    }
+    private val levelSavedTextPopUp = TextPopUp(
+        450f, 250f,
+        "Level saved successfully.",
+        skin, "semi-bold-50", ColorScheme.currentDarkColor
+    )
+    private val deleteConfirmationPopUp = YesNoTextPopUp(
+        520f, 400f,
+        "Are you sure you want to delete the level #[x]?",
+        skin, "semi-bold-50",
+        ColorScheme.currentDarkColor, yesIsHighlighted = true
+    )
+    private val loadConfirmationPopUp = YesNoTextPopUp(
+        520f, 400f,
+        "Are you sure you want to load the level #[x]?",
+        skin, "semi-bold-50",
+        ColorScheme.currentDarkColor, yesIsHighlighted = true
+    )
+    private var loadLevelPopUp = PopUp(0f, 0f, skin)
+    private val settingsPopUp = PopUp(500f, 400f, skin).apply {
+        val saveButton = ClickTextButton("Save", skin, "text-only-button").apply {
+            upColor = ColorScheme.currentDarkColor
+            downColor = ColorScheme.darkerDarkColor
+            clickRunnable = Runnable {
+                uiStage.addActor(saveConfirmationPopUp)
+            }
+        }
+        val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {
+            upColor = ColorScheme.currentDarkColor
+            downColor = ColorScheme.darkerDarkColor
+            clickRunnable = Runnable {
+                loadLevelPopUp = createLoadLevelPopUp()
+                uiStage.addActor(loadLevelPopUp)
+            }
+        }
+        val resizeButton = ClickTextButton(
+            "Resize",
+            skin,
+            "text-only-button"
+        ).apply {
+            upColor = ColorScheme.currentDarkColor
+            downColor = ColorScheme.darkerDarkColor
+        }
 
-    // Game
-    private val world = World(Vector2(0f, MapComponent.GRAVITY), true)
+        widget.run {
+            add(saveButton).growX().expandY().top().row()
+            add(loadButton).growX().expandY().top().row()
+            add(resizeButton).expandY().growX().top()
+        }
+    }
+    private val settingsButton = ClickButton(skin, "small-button").apply {
+        addIcon("settings-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            uiStage.addActor(settingsPopUp)
+        })
+        setOpaque(true)
+    }
+    private val leftColumn = Table().apply {
+        add(undoButton).top().space(50f).row()
+        add(moveToolButton).top().space(50f).row()
+        add(placeToolButton).top().row()
+        add(backButton).expand().bottom()
+    }
+    private val middleColumn = Table().apply {
+        add(playButton).expand().bottom()
+    }
+    private val rightColumn = Table().apply {
+        add(redoButton).expand().top().row()
+        add(settingsButton).expand().bottom()
+    }
+    val rootTable = Table().apply {
+        setFillParent(true)
+        padLeft(62f).padRight(62f)
+        padBottom(110f).padTop(110f)
+        add(leftColumn).growY().expandX().left()
+        add(middleColumn).growY().expandX().center()
+        add(rightColumn).growY().expandX().right()
+    }
+    private var screenIsHidden = false
     private val gameEventSignal = Signal<GameEvent>()
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
+    private lateinit var levelEntity: Entity
+    private lateinit var playerEntity: Entity
+    private lateinit var finishEntity: Entity
 
     override fun show() {
+        uiStage.addActor(rootTable)
+        addDependencies()
         resetVariables()
         createGame()
         createUI()
@@ -90,23 +249,21 @@ class LevelEditorScreen(
     }
 
     private fun resetVariables() {
-        uiStage.clear()
-        skin = manager.get<Skin>("skins/uiskin.json")
-        root.clear()
-        toggledButton.set(null)
+        moveToolButton.run {
+            isToggled = true
+            toggledButton.set(this)
+        }
         inputMultiplexer.clear()
-        screenIsHiding = false
+        screenIsHidden = false
     }
 
     private fun createGame() {
-        addSingletonsToDependencyInjection()
-        setOwnBox2DContactListener()
         createGameEntities()
         handleGameInput()
         addGameSystems()
     }
 
-    private fun addSingletonsToDependencyInjection() {
+    private fun addDependencies() {
         Injekt.run {
             addSingleton(gameEventSignal)
             addSingleton(skin)
@@ -116,32 +273,45 @@ class LevelEditorScreen(
         }
     }
 
-    private fun setOwnBox2DContactListener() {
-        world.setContactListener(WorldContactListener())
-    }
-
     private fun createGameEntities() {
         inputEntity = InputEntity.createEntity(toggledButton)
         undoRedoEntity = UndoRedoEntity.createEntity()
-        val levelEntity = LevelEntity.createEntity(0, 16, 19)
+        levelEntity = LevelEntity.createEntity(getFirstUnusedLevelId(), 16, 19)
         val platformEntity = PlatformEntity.createEntity(
             2,
             levelEntity.map.widthInTiles / 2f,
             levelEntity.map.widthInTiles / 2f - .5f,
             4f
         )
-        FinishEntity.createEntity(
+        finishEntity = FinishEntity.createEntity(
             1,
             platformEntity.image.rightX - FinishEntity.WIDTH / 2f,
             platformEntity.image.topY + FinishEntity.HEIGHT / 2f,
             blinkEndlessly = false
         )
-        PlayerEntity.createEntity(
+        playerEntity = PlayerEntity.createEntity(
             0,
             platformEntity.image.leftX + PlayerEntity.WIDTH / 2f,
             platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
         )
         centerCameraOnPlatform(platformEntity)
+    }
+
+    private fun getFirstUnusedLevelId(): Int {
+        val usedIds = Array<Int>()
+        Gdx.files.local("maps/editor").list().forEach {
+            val jsonData = if (manager.isLoaded(it.path())) {
+                manager.get<Text>(it.path()).string
+            } else {
+                Gdx.files.local(it.path()).readString()
+            }
+            val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
+            usedIds.add(mapFactory.id)
+        }
+        var id = 0
+        while (usedIds.contains(id))
+            id++
+        return id
     }
 
     private fun centerCameraOnPlatform(platformEntity: Entity) {
@@ -150,9 +320,16 @@ class LevelEditorScreen(
         gameCamera.position.set(platformPosition.x, platformPosition.y + deltaY, 0f)
     }
 
+    private fun centerCameraOnPlayer() {
+        val playerPosition = playerEntity.body.body.worldCenter
+        gameCamera.position.set(playerPosition.x, playerPosition.y, 0f)
+    }
+
     private fun handleGameInput() {
-        inputMultiplexer.addProcessor(Injekt.get<OverlayStage>())
-        inputMultiplexer.addProcessor(gameStage)
+        inputMultiplexer.run {
+            addProcessor(Injekt.get<OverlayStage>())
+            addProcessor(gameStage)
+        }
     }
 
     fun addGameSystems() {
@@ -176,120 +353,137 @@ class LevelEditorScreen(
         }
     }
 
-    private fun createUI() {
-        root.run {
-            uiStage.addActor(this)
-            add(createLeftColumn()).growY().expandX().left()
-            add(createMiddleColumn()).growY().expandX().center()
-            add(createRightColumn()).growY().expandX().right()
-        }
+    private fun getLastEditedString(fileNameWithoutExtension: String): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())
+        val levelDate = formatter.parse(fileNameWithoutExtension)
+        val currentDate = Date(TimeUtils.millis())
 
-        // Make everything fade in
+        val diffInMills = Math.abs(currentDate.time - levelDate.time)
+        val diffInYears = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 365
+        val diffInMonths = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 30
+        val diffInWeeks = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 7
+        val diffInDays = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS)
+        val diffInHours = TimeUnit.HOURS.convert(diffInMills, TimeUnit.MILLISECONDS)
+        val diffInMinutes = TimeUnit.MINUTES.convert(diffInMills, TimeUnit.MILLISECONDS)
+        val diffInSeconds = TimeUnit.SECONDS.convert(diffInMills, TimeUnit.MILLISECONDS)
+
+        return when {
+            diffInYears != 0L -> "$diffInYears year${if (diffInYears > 1) "s" else ""} ago"
+            diffInMonths != 0L -> "$diffInMonths month${if (diffInMonths > 1) "s" else ""} ago"
+            diffInWeeks != 0L -> "$diffInWeeks week${if (diffInWeeks > 1) "s" else ""} ago"
+            diffInDays != 0L -> "$diffInDays day${if (diffInDays > 1) "s" else ""} ago"
+            diffInHours != 0L -> "$diffInHours hour${if (diffInHours > 1) "s" else ""} ago"
+            diffInMinutes != 0L -> "$diffInMinutes minute${if (diffInMinutes > 1) "s" else ""} ago"
+            else -> "$diffInSeconds second${if (diffInSeconds > 1) "s" else ""} ago"
+        }
+    }
+
+    private fun createLoadLevelTable(width: Float) = Table(skin).apply {
+        val levels = Gdx.files.local("maps/editor").list().apply {
+            sortByDescending { it.path() }
+        }
+        levels.forEach {
+            val jsonData = if (manager.isLoaded(it.path())) {
+                manager.get<Text>(it.path()).string
+            } else {
+                Gdx.files.local(it.path()).readString()
+            }
+            val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
+            val tableRow = Table(skin).apply {
+                val rowLeft = createLoadLevelRowLeft(mapFactory, getLastEditedString(it.nameWithoutExtension()))
+                val rowRight = createLoadLevelRowRight(it.path(), mapFactory.id)
+                add(rowLeft).growX().expandY().left()
+                add(rowRight).expand().right()
+            }
+            add(tableRow).width(width).growX().spaceTop(25f).row()
+        }
+    }
+
+    private fun createLoadLevelRowLeft(mapFactory: MapFactory, lastEditedString: String) = Table(skin).apply {
+        val levelIdLabel = Label("Level #${mapFactory.id}", skin, "bold-57", Color.WHITE).apply {
+            color = ColorScheme.currentDarkColor
+        }
+        val lastEditedLabel = Label(lastEditedString, skin, "bold-37", Color.WHITE).apply {
+            color = ColorScheme.currentDarkColor
+        }
+        add(levelIdLabel).grow().left().row()
+        add(lastEditedLabel).grow().left().row()
+        addListener(object : ClickListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                super.touchDown(event, x, y, pointer, button)
+                levelIdLabel.color = ColorScheme.darkerDarkColor
+                lastEditedLabel.color = ColorScheme.darkerDarkColor
+                return true
+            }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                levelIdLabel.color = ColorScheme.currentDarkColor
+                lastEditedLabel.color = ColorScheme.currentDarkColor
+            }
+
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                loadConfirmationPopUp.run {
+                    textLabel.setText("Are you sure you want to load the level #${mapFactory.id}?")
+                    uiStage.addActor(this)
+                    yesClickRunnable = Runnable {
+                        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity)
+                        centerCameraOnPlayer()
+                        removeSettingsPopUp = true
+                        loadLevelPopUp.remove()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun createLoadLevelRowRight(levelFilePath: String, levelId: Int) = Table(skin).apply {
+        add(ClickButton(skin, "simple-button").apply {
+            addIcon("trash-can-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            addClickRunnable(Runnable {
+                deleteConfirmationPopUp.run {
+                    textLabel.setText("Are you sure you want to delete the level #$levelId?")
+                    uiStage.addActor(this)
+                    yesClickRunnable = Runnable {
+                        Gdx.files.local(levelFilePath).delete()
+                        loadLevelPopUp.remove()
+                        updateLoadLevelPopUp = true
+                        val newId = getFirstUnusedLevelId()
+                        levelEntity.run {
+                            map.levelId = newId
+                            level.levelId = newId
+                        }
+                    }
+                }
+            })
+        })
+    }
+
+    private var updateLoadLevelPopUp = false
+    private var removeSettingsPopUp = false
+
+    private fun createLoadLevelPopUp() = PopUp(520f, 500f, skin).apply {
+        val scrollPane = ScrollPane(createLoadLevelTable(430f)).apply {
+            setupOverscroll(50f, 80f, 200f)
+        }
+        widget.add(scrollPane).expand().top()
+    }
+
+    private fun createUI() {
+        fadeEverythingIn()
+        handleUIInput()
+    }
+
+    private fun fadeEverythingIn() {
         uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
         gameStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
-
-        handleUIInput()
     }
 
     private fun handleUIInput() {
         // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
         inputMultiplexer.addProcessor(0, uiStage)
-    }
-
-    fun createRootTable() = Table().apply {
-        setFillParent(true)
-        padLeft(62f).padRight(62f)
-        padBottom(110f).padTop(110f)
-    }
-
-    private fun createUndoButton() = ClickButton(skin, "small-button").apply {
-        addIcon("undo-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        setOpaque(true)
-        addClickRunnable(Runnable {
-            undoRedoEntity.undoRedo.undo()
-        })
-    }
-
-    private fun createRedoButton() = ClickButton(skin, "small-button").apply {
-        addIcon("redo-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-        setOpaque(true)
-        addClickRunnable(Runnable {
-            undoRedoEntity.undoRedo.redo()
-        })
-    }
-
-    private fun createMoveToolButton(toggledButton: Reference<ToggleButton>) =
-        ToggleButton(skin, "small-button").apply {
-            addIcon("move-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setToggledButtonReference(toggledButton)
-            type = ButtonType.MOVE_TOOL_BUTTON
-            isToggled = true
-            setOpaque(true)
-        }
-
-    private fun createLeftColumn(): Table {
-        undoButton = createUndoButton()
-        moveToolButton = createMoveToolButton(toggledButton)
-
-        fun createPlaceToolButton(toggledButton: Reference<ToggleButton>) = ToggleButton(skin, "small-button").apply {
-            addIcon("platform-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setToggledButtonReference(toggledButton)
-            type = ButtonType.PLACE_TOOL_BUTTON
-            setOpaque(true)
-        }
-
-        fun createBackButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
-            addIcon("back-icon")
-            iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setToggledButtonReference(toggledButton)
-            setToggleOffEveryOtherButton(true)
-            addClickRunnable(Runnable {
-                uiStage.addAction(
-                    sequence(
-                        fadeOut(.5f),
-                        run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
-                    )
-                )
-            })
-            setOpaque(true)
-        }
-
-        return Table().apply {
-            // If I don't pass [toggledButton] as an argument it doesn't work
-            add(undoButton).top().space(50f).row()
-            add(moveToolButton).top().space(50f).row()
-            add(createPlaceToolButton(toggledButton)).top().row()
-            add(createBackButton(toggledButton)).expand().bottom()
-        }
-    }
-
-    private fun createMiddleColumn(): Table {
-        fun createPlayButton(toggledButton: Reference<ToggleButton>) = ClickButton(skin, "small-button").apply {
-            addIcon("play-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-            setToggledButtonReference(toggledButton)
-            setToggleOffEveryOtherButton(true)
-            addClickRunnable(Runnable {
-                engine.addSystem(PlayingSystem(this@LevelEditorScreen))
-            })
-            setOpaque(true)
-        }
-
-        return Table().apply {
-            add(createPlayButton(toggledButton)).expand().bottom()
-        }
-    }
-
-    private fun createRightColumn(): Table {
-        redoButton = createRedoButton()
-        return Table().apply {
-            add(redoButton).expand().top()
-        }
     }
 
     private fun handleAllInput() {
@@ -298,12 +492,25 @@ class LevelEditorScreen(
 
     private fun update(delta: Float) {
         uiStage.act(delta)
-        if (screenIsHiding)
+        if (screenIsHidden)
             return
-
         engine.update(delta)
         gameStage.camera.update()
         updateUndoRedoButtonsColor()
+        updatePopUps()
+    }
+
+    /** Updates pop-ups in the game loop to avoid recursion problems. */
+    private fun updatePopUps() {
+        if (updateLoadLevelPopUp) {
+            updateLoadLevelPopUp = false
+            loadLevelPopUp = createLoadLevelPopUp()
+            uiStage.addActor(loadLevelPopUp)
+        }
+        if (removeSettingsPopUp) {
+            removeSettingsPopUp = false
+            settingsPopUp.remove()
+        }
     }
 
     private fun updateUndoRedoButtonsColor() {
@@ -335,7 +542,7 @@ class LevelEditorScreen(
 
     override fun render(delta: Float) {
         clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
-        update(delta) // This MUST be after clearScreen() because draw functions may be called in engine.update()
+        update(delta)
         uiStage.draw()
     }
 
@@ -344,11 +551,12 @@ class LevelEditorScreen(
     }
 
     override fun hide() {
-        screenIsHiding = true
+        screenIsHidden = true
         engine.run {
             removeAllSystems()
             removeAllEntities()
         }
+        uiStage.clear()
     }
 
     override fun dispose() {

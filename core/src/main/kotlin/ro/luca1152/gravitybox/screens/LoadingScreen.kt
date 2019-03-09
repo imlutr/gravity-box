@@ -19,11 +19,12 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
+import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ktx.assets.getAsset
@@ -36,8 +37,13 @@ import ro.luca1152.gravitybox.utils.ui.ColorScheme.currentLightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScreen {
-    private var timer = 0f
+class LoadingScreen(
+    private val manager: AssetManager = Injekt.get(),
+    private val game: MyGame = Injekt.get()
+) : KtxScreen {
+    private var loadingAssetsTimer = 0f
+    private val finishedLoadingAssets
+        get() = manager.update()
 
     override fun show() {
         loadGraphics()
@@ -66,11 +72,26 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
     }
 
     private fun loadMaps() {
-        val mapsCount = Gdx.files.internal("maps/game").list().count()
-        manager.run {
-            setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
-            for (i in 1..mapsCount)
-                load<Text>("maps/game/map-$i.json")
+        loadGameMaps()
+        loadEditorMaps()
+    }
+
+    private fun loadGameMaps() {
+        Gdx.files.local("maps/game").list().forEach {
+            manager.run {
+                setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
+                load<Text>(it.path())
+            }
+        }
+    }
+
+    private fun loadEditorMaps() {
+        Gdx.files.local("maps/editor").list().forEach {
+            println("${it.path()} loaded")
+            manager.run {
+                setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
+                load<Text>(it.path())
+            }
         }
     }
 
@@ -80,12 +101,12 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
     }
 
     private fun update(delta: Float) {
-        timer += delta
-        // Finished loading assets
-        if (manager.update()) {
+        loadingAssetsTimer += delta
+        if (finishedLoadingAssets) {
+            logLoadingTime()
             smoothTextures()
-            info { "Finished loading assets in ${(timer * 100).toInt() / 100f}s." }
-            Injekt.get<MyGame>().setScreen<MainMenuScreen>()
+            addScreens()
+            game.setScreen<MainMenuScreen>()
         }
     }
 
@@ -108,5 +129,27 @@ class LoadingScreen(private val manager: AssetManager = Injekt.get()) : KtxScree
                 Texture.TextureFilter.Linear
             )
         }
+    }
+
+    /**
+     * Adds screens to the [KtxGame] so [KtxGame.setScreen] works.
+     *
+     * They are added here and not in [MyGame] because adding a screen automatically initializes it, where assets
+     * could be referenced, such as [Skin]s or [Texture]s.
+     *
+     * If the screens where added in [MyGame], then every variable which referenced assets loading here should have been
+     * declared as lateinit var, and initialized in [KtxScreen.show].
+     */
+    private fun addScreens() {
+        game.run {
+            addScreen(MainMenuScreen())
+            addScreen(LevelEditorScreen())
+            addScreen(LevelSelectorScreen())
+            addScreen(PlayScreen())
+        }
+    }
+
+    private fun logLoadingTime() {
+        info { "Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s." }
     }
 }

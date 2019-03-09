@@ -23,27 +23,35 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.editor.SelectedObjectComponent
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
+import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
-import ro.luca1152.gravitybox.utils.ui.ClickButton
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class PlayingSystem(
     private val levelEditorScreen: LevelEditorScreen,
     private val uiStage: UIStage = Injekt.get(),
-    private val manager: AssetManager = Injekt.get()
+    private val manager: AssetManager = Injekt.get(),
+    private val world: World = Injekt.get()
 ) : EntitySystem() {
-    private val rootTable = levelEditorScreen.createRootTable()
+    private val rootTable = Table().apply {
+        setFillParent(true)
+        padLeft(62f).padRight(62f)
+        padBottom(110f).padTop(110f)
+    }
     private var previouslySelectedMapObject: Entity? = null
     private lateinit var skin: Skin
     private lateinit var levelEntity: Entity
@@ -57,12 +65,17 @@ class PlayingSystem(
         }
         playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
         finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
+        setOwnBox2DContactListener()
         makeFinishPointEndlesslyBlink()
         hideLevelEditorUI()
         deselectMapObject()
         removeAllSystems(includingThisSystem = false)
         addPlaySystems()
         showPlayUI()
+    }
+
+    private fun setOwnBox2DContactListener() {
+        world.setContactListener(WorldContactListener())
     }
 
     private fun makeFinishPointEndlesslyBlink() {
@@ -72,7 +85,7 @@ class PlayingSystem(
     }
 
     private fun hideLevelEditorUI() {
-        levelEditorScreen.root.isVisible = false
+        levelEditorScreen.rootTable.isVisible = false
     }
 
     private fun deselectMapObject() {
@@ -201,6 +214,6 @@ class PlayingSystem(
     }
 
     private fun showLevelEditorUI() {
-        levelEditorScreen.root.isVisible = true
+        levelEditorScreen.rootTable.isVisible = true
     }
 }

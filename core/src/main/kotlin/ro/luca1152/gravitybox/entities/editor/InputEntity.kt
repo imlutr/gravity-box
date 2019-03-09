@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.PooledEngine
 import ro.luca1152.gravitybox.components.editor.InputComponent
 import ro.luca1152.gravitybox.components.editor.input
 import ro.luca1152.gravitybox.utils.kotlin.Reference
-import ro.luca1152.gravitybox.utils.ui.ToggleButton
+import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

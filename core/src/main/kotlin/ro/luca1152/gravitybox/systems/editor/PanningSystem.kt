@@ -28,7 +28,7 @@ import ro.luca1152.gravitybox.components.editor.InputComponent
 import ro.luca1152.gravitybox.components.editor.input
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
-import ro.luca1152.gravitybox.utils.ui.ButtonType
+import ro.luca1152.gravitybox.utils.ui.button.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 

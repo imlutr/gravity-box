@@ -26,13 +26,13 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object LevelEntity {
-    fun createEntity(levelNumber: Int = 0, width: Int = 0, height: Int = 0, engine: PooledEngine = Injekt.get()) =
+    fun createEntity(levelId: Int = 0, width: Int = 0, height: Int = 0, engine: PooledEngine = Injekt.get()) =
         engine.createEntity().apply {
             add(engine.createComponent(LevelComponent::class.java)).run {
-                level.set(levelNumber)
+                level.set(levelId)
             }
             add(engine.createComponent(MapComponent::class.java)).run {
-                map.set(width, height)
+                map.set(width, height, levelId)
             }
             engine.addEntity(this)
         }!!

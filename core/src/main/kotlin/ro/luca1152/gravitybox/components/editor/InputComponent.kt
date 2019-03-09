@@ -22,7 +22,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.Reference
-import ro.luca1152.gravitybox.utils.ui.ToggleButton
+import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
 
 /** Keeps track of which UI button is currently toggled. */
 class InputComponent : Component, Poolable {

@@ -58,7 +58,7 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
             levelEntity.level.restartLevel = true
         else {
             levelEntity.level.run {
-                levelNumber++
+                levelId++
                 loadMap = true
                 forceUpdateMap = true
             }

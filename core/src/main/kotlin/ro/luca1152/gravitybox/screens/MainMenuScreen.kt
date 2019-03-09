@@ -19,148 +19,105 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.utils.ui.ClickButton
+import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class MainMenuScreen(
-    private val batch: Batch = Injekt.get(),
-    private val manager: AssetManager = Injekt.get()
+    private val manager: AssetManager = Injekt.get(),
+    private val uiStage: UIStage = Injekt.get()
 ) : KtxScreen {
-    private lateinit var uiStage: Stage
-    private lateinit var skin: Skin
-    private lateinit var root: Table
+    private val skin = manager.get<Skin>("skins/uiskin.json")
+    private val logoImage = Image(skin, "gravity-box").apply {
+        color = ColorScheme.currentDarkColor
+    }
+    private val playButton = ClickButton(skin, "big-button").apply {
+        addIcon("play-button-empty").run {
+            icon!!.addAction(
+                forever(
+                    sequence(
+                        delay(.5f),
+                        fadeOut(1f),
+                        fadeIn(1f)
+                    )
+                )
+            )
+        }
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        addClickRunnable(Runnable {
+            uiStage.addAction(
+                sequence(
+                    fadeOut(.5f),
+                    run(Runnable {
+                        Injekt.get<MyGame>().setScreen<LevelSelectorScreen>()
+                    })
+                )
+            )
+        })
+    }
+    private val logo = Table().apply {
+        add(logoImage).row()
+        add(playButton).padTop(-214f + 18f).padLeft(-4f)
+    }
+    private val rateButton = ClickButton(skin, "small-button").apply {
+        addIcon("heart-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+    }
+    private val settingsButton = ClickButton(skin, "small-button").apply {
+        addIcon("settings-icon")
+        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+    }
+    private val bottomRow = Table().apply {
+        add(rateButton).expandX().left()
+        add(settingsButton).expandX().right()
+    }
+    private val rootTable = Table().apply {
+        padLeft(50f).padRight(50f)
+        padBottom(110f).padTop(110f)
+        setFillParent(true)
+        add(logo).expand().padTop(140f).row()
+        add(bottomRow).bottom().growX().pad(0f).padLeft(12f).padRight(12f)
+    }
 
     override fun show() {
-        uiStage = Stage(ExtendViewport(720f, 1280f), batch)
-        skin = manager.get<Skin>("skins/uiskin.json")
+        uiStage.addActor(rootTable)
+        fadeEverythingIn()
+        handleInput()
+    }
 
-        root = createRootTable().apply { uiStage.addActor(this) }
-        root.add(createLogo()).expand().padTop(140f).row()
-        val bottomRow = Table().apply {
-            add(createRateButton()).expandX().left()
-            add(createSettingsButton()).expandX().right()
-        }
-        root.add(bottomRow).bottom().growX().pad(0f).padLeft(12f).padRight(12f)
-
+    private fun fadeEverythingIn() {
         uiStage.addAction(
             sequence(
                 fadeOut(0f),
                 fadeIn(.5f)
             )
         )
+    }
 
+    private fun handleInput() {
         Gdx.input.inputProcessor = uiStage
     }
 
-    private fun createRootTable() = Table(skin).apply {
-        padLeft(50f).padRight(50f)
-        padBottom(110f).padTop(110f)
-        setFillParent(true)
-    }
-
-    private fun createLogo(): Table {
-        fun createPlayButton(): Button {
-            val playButtonIcon = Image(skin, "play-button-empty").apply {
-                color = ColorScheme.currentDarkColor
-                addAction(
-                    forever(
-                        sequence(
-                            delay(.5f),
-                            fadeOut(1f),
-                            fadeIn(1f)
-                        )
-                    )
-                )
-            }
-            val playButton = Button(skin, "big-button").apply {
-                color = ColorScheme.currentDarkColor
-                addListener(object : ClickListener() {
-                    override fun touchDown(
-                        event: InputEvent?,
-                        x: Float,
-                        y: Float,
-                        pointer: Int,
-                        button: Int
-                    ): Boolean {
-                        color = ColorScheme.darkerDarkColor
-                        playButtonIcon.color = ColorScheme.darkerDarkColor
-                        return true
-                    }
-
-                    override fun touchUp(
-                        event: InputEvent?,
-                        x: Float,
-                        y: Float,
-                        pointer: Int,
-                        button: Int
-                    ) {
-                        color = ColorScheme.currentDarkColor
-                        playButtonIcon.color = ColorScheme.currentDarkColor
-
-                        if (isOver(this@apply, x, y)) {
-                            uiStage.addAction(
-                                sequence(
-                                    fadeOut(.5f),
-                                    run(Runnable {
-                                        Injekt.get<MyGame>().setScreen<LevelSelectorScreen>()
-                                    })
-                                )
-                            )
-                        }
-                    }
-                })
-            }
-            playButton.add(playButtonIcon)
-
-            return playButton
-        }
-
-        fun createLogoImage() = Image(skin, "gravity-box").apply {
-            color = ColorScheme.currentDarkColor
-        }
-
-        return Table().apply {
-            add(createLogoImage()).row()
-            add(createPlayButton()).padTop(-214f + 18f).padLeft(-4f)
-        }
-    }
-
-    private fun createRateButton() = ClickButton(skin, "small-button").apply {
-        addIcon("heart-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-    }
-
-    private fun createSettingsButton() = ClickButton(skin, "small-button").apply {
-        addIcon("settings-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+    override fun render(delta: Float) {
+        update(delta)
+        clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
+        uiStage.draw()
     }
 
     private fun update(delta: Float) {
         uiStage.act(delta)
     }
 
-    override fun render(delta: Float) {
-        update(delta)
-        clearScreen(
-            ColorScheme.currentLightColor.r,
-            ColorScheme.currentLightColor.g,
-            ColorScheme.currentLightColor.b
-        )
-        uiStage.draw()
+    override fun hide() {
+        uiStage.clear()
     }
 }
