@@ -300,7 +300,11 @@ class LevelEditorScreen(
     private fun getFirstUnusedLevelId(): Int {
         val usedIds = Array<Int>()
         Gdx.files.local("maps/editor").list().forEach {
-            val jsonData = manager.get<Text>(it.path()).string
+            val jsonData = if (manager.isLoaded(it.path())) {
+                manager.get<Text>(it.path()).string
+            } else {
+                Gdx.files.local(it.path()).readString()
+            }
             val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
             usedIds.add(mapFactory.id)
         }
