@@ -141,6 +141,18 @@ class LevelEditorScreen(
         })
         setOpaque(true)
     }
+    private val saveConfirmationPopUp = YesNoTextPopUp(
+        520f, 400f,
+        "Are you sure you want to save the level?",
+        skin, "semi-bold-50",
+        ColorScheme.currentDarkColor, yesIsHighlighted = true
+    ).apply {
+        yesClickRunnable = Runnable {
+            uiStage.addActor(levelSavedTextPopUp)
+            levelEntity.map.saveMap()
+            remove()
+        }
+    }
     private val levelSavedTextPopUp = TextPopUp(
         450f, 250f,
         "Level saved successfully.",
@@ -169,8 +181,7 @@ class LevelEditorScreen(
                 upColor = ColorScheme.currentDarkColor
                 downColor = ColorScheme.darkerDarkColor
                 clickRunnable = Runnable {
-                    levelEntity.map.saveMap()
-                    uiStage.addActor(levelSavedTextPopUp)
+                    uiStage.addActor(saveConfirmationPopUp)
                 }
             }
             val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {
