@@ -141,7 +141,8 @@ class LevelSelectorScreen(
     ) = Button(skin, "small-button").apply button@{
         color = ColorScheme.currentDarkColor
         top().padTop(18f)
-        val numberLabel = DistanceFieldLabel(level.toString(), skin, "bold", 57f, ColorScheme.currentDarkColor).apply {
+        val numberLabel =
+            DistanceFieldLabel(level.toString(), skin, "extra-bold", 57f, ColorScheme.currentDarkColor).apply {
             this@button.add(this).expand().center().row()
         }
         val stars = createLevelButtonStars().apply {

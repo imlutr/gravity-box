@@ -143,7 +143,7 @@ class LevelEditorScreen(
     private val saveConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to save the level?",
-        skin, "semi-bold", 50f,
+        skin, "bold", 50f,
         ColorScheme.currentDarkColor,
         yesIsHighlighted = true
     ).apply {
@@ -161,19 +161,19 @@ class LevelEditorScreen(
     private val deleteConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to delete the level #[x]?",
-        skin, "semi-bold", 50f,
+        skin, "bold", 50f,
         ColorScheme.currentDarkColor,
         yesIsHighlighted = true
     )
     private val loadConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to load the level #[x]?",
-        skin, "semi-bold", 50f,
+        skin, "bold", 50f,
         ColorScheme.currentDarkColor,
         yesIsHighlighted = true
     )
     private var loadLevelPopUp = PopUp(0f, 0f, skin)
-    private val settingsPopUp = PopUp(500f, 400f, skin).apply {
+    private val settingsPopUp = PopUp(500f, 275f, skin).apply {
         val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 80f).apply {
             upColor = ColorScheme.currentDarkColor
             downColor = ColorScheme.darkerDarkColor
@@ -189,15 +189,12 @@ class LevelEditorScreen(
                 uiStage.addActor(loadLevelPopUp)
             }
         }
-        val resizeButton = ClickTextButton("simple-button", skin, "Resize", "bold", 80f).apply {
-            upColor = ColorScheme.currentDarkColor
-            downColor = ColorScheme.darkerDarkColor
-        }
-
         widget.run {
-            add(saveButton).growX().expandY().top().row()
-            add(loadButton).growX().expandY().top().row()
-            add(resizeButton).expandY().growX().top()
+            val buttonsTable = Table(skin).apply {
+                add(saveButton).growX().expandY().top().row()
+                add(loadButton).growX().expandY().top().row()
+            }
+            add(buttonsTable).grow()
         }
     }
     private val settingsButton = ClickButton(skin, "small-button").apply {
@@ -404,7 +401,7 @@ class LevelEditorScreen(
         )
         val lastEditedLabel = DistanceFieldLabel(
             lastEditedString, skin, "extra-bold",
-            57f, ColorScheme.currentDarkColor
+            37f, ColorScheme.currentDarkColor
         )
         add(levelIdLabel).grow().left().row()
         add(lastEditedLabel).grow().left().row()
@@ -468,7 +465,7 @@ class LevelEditorScreen(
         val scrollPane = ScrollPane(createLoadLevelTable(430f)).apply {
             setupOverscroll(50f, 80f, 200f)
         }
-        widget.add(scrollPane).expand().top()
+        widget.add(scrollPane).grow().top()
     }
 
     private fun createUI() {
