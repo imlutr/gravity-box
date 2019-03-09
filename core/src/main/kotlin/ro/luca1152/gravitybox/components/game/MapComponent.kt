@@ -33,10 +33,15 @@ import com.badlogic.gdx.utils.TimeUtils
 import ktx.collections.sortBy
 import ro.luca1152.gravitybox.components.editor.DeletedMapObjectComponent
 import ro.luca1152.gravitybox.components.editor.json
+import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.metersToPixels
+import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.json.FinishPrototype
 import ro.luca1152.gravitybox.utils.json.MapFactory
+import ro.luca1152.gravitybox.utils.json.ObjectPrototype
+import ro.luca1152.gravitybox.utils.json.PlayerPrototype
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -118,6 +123,73 @@ class MapComponent : Component, Poolable {
         }
         val fileHandle = Gdx.files.local("$fileFolder/${getNewFileName()}")
         fileHandle.writeString(json.prettyPrint(json.writer.writer.toString()), false)
+    }
+
+    fun loadMap(
+        mapFactory: MapFactory,
+        playerEntity: Entity, finishEntity: Entity,
+        engine: PooledEngine = Injekt.get()
+    ) {
+        destroyAllBodies()
+        removePlatforms()
+        createMap(mapFactory.width, mapFactory.height, mapFactory.id)
+        createPlayer(mapFactory.player, playerEntity)
+        createFinish(mapFactory.finish, finishEntity)
+        createPlatforms(mapFactory.objects)
+    }
+
+    private fun removePlatforms(engine: PooledEngine = Injekt.get()) {
+        val entitiesToRemove = Array<Entity>()
+        engine.getEntitiesFor(Family.all(PlatformComponent::class.java).get()).forEach {
+            entitiesToRemove.add(it)
+        }
+        entitiesToRemove.forEach {
+            engine.removeEntity(it)
+        }
+    }
+
+    private fun createMap(width: Int, height: Int, id: Int) {
+        levelId = id
+        widthInTiles = width.pixelsToMeters.toInt()
+        heightInTiles = height.pixelsToMeters.toInt()
+    }
+
+
+    private fun createPlayer(player: PlayerPrototype, playerEntity: Entity) {
+        playerEntity.run {
+            image.run {
+                centerX = player.position.x.pixelsToMeters
+                centerY = player.position.y.pixelsToMeters
+            }
+            mapObject.run {
+                id = player.id
+            }
+        }
+    }
+
+    private fun createFinish(finish: FinishPrototype, finishEntity: Entity) {
+        finishEntity.run {
+            image.run {
+                centerX = finish.position.x.pixelsToMeters
+                centerY = finish.position.y.pixelsToMeters
+            }
+            mapObject.run {
+                id = finish.id
+            }
+        }
+    }
+
+    private fun createPlatforms(objects: ArrayList<ObjectPrototype>) {
+        objects.forEach {
+            when {
+                it.type == "platform" -> PlatformEntity.createEntity(
+                    it.id,
+                    it.position.x.pixelsToMeters,
+                    it.position.y.pixelsToMeters,
+                    it.width.pixelsToMeters
+                )
+            }
+        }
     }
 
     private fun getMapFileNameForId(

@@ -160,54 +160,53 @@ class LevelEditorScreen(
     )
     private val deleteConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
-        "Are you sure you want to delete the level #x?",
+        "Are you sure you want to delete the level #[x]?",
         skin, "semi-bold-50",
         ColorScheme.currentDarkColor, yesIsHighlighted = true
     )
     private val loadConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
-        "Are you sure you want to load the level #x?",
+        "Are you sure you want to load the level #[x]?",
         skin, "semi-bold-50",
         ColorScheme.currentDarkColor, yesIsHighlighted = true
     )
     private var loadLevelPopUp = PopUp(0f, 0f, skin)
+    private val settingsPopUp = PopUp(500f, 400f, skin).apply {
+        val saveButton = ClickTextButton("Save", skin, "text-only-button").apply {
+            upColor = ColorScheme.currentDarkColor
+            downColor = ColorScheme.darkerDarkColor
+            clickRunnable = Runnable {
+                uiStage.addActor(saveConfirmationPopUp)
+            }
+        }
+        val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {
+            upColor = ColorScheme.currentDarkColor
+            downColor = ColorScheme.darkerDarkColor
+            clickRunnable = Runnable {
+                loadLevelPopUp = createLoadLevelPopUp()
+                uiStage.addActor(loadLevelPopUp)
+            }
+        }
+        val resizeButton = ClickTextButton(
+            "Resize",
+            skin,
+            "text-only-button"
+        ).apply {
+            upColor = ColorScheme.currentDarkColor
+            downColor = ColorScheme.darkerDarkColor
+        }
+
+        widget.run {
+            add(saveButton).growX().expandY().top().row()
+            add(loadButton).growX().expandY().top().row()
+            add(resizeButton).expandY().growX().top()
+        }
+    }
     private val settingsButton = ClickButton(skin, "small-button").apply {
         addIcon("settings-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addClickRunnable(Runnable {
-            val popUp = PopUp(500f, 400f, skin)
-
-            val saveButton = ClickTextButton("Save", skin, "text-only-button").apply {
-                upColor = ColorScheme.currentDarkColor
-                downColor = ColorScheme.darkerDarkColor
-                clickRunnable = Runnable {
-                    uiStage.addActor(saveConfirmationPopUp)
-                }
-            }
-            val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {
-                upColor = ColorScheme.currentDarkColor
-                downColor = ColorScheme.darkerDarkColor
-                clickRunnable = Runnable {
-                    loadLevelPopUp = createLoadLevelPopUp()
-                    uiStage.addActor(loadLevelPopUp)
-                }
-            }
-            val resizeButton = ClickTextButton(
-                "Resize",
-                skin,
-                "text-only-button"
-            ).apply {
-                upColor = ColorScheme.currentDarkColor
-                downColor = ColorScheme.darkerDarkColor
-            }
-
-            popUp.widget.run {
-                add(saveButton).growX().expandY().top().row()
-                add(loadButton).growX().expandY().top().row()
-                add(resizeButton).expandY().growX().top()
-            }
-
-            uiStage.addActor(popUp)
+            uiStage.addActor(settingsPopUp)
         })
         setOpaque(true)
     }
@@ -237,6 +236,8 @@ class LevelEditorScreen(
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
     private lateinit var levelEntity: Entity
+    private lateinit var playerEntity: Entity
+    private lateinit var finishEntity: Entity
 
     override fun show() {
         uiStage.addActor(rootTable)
@@ -282,13 +283,13 @@ class LevelEditorScreen(
             levelEntity.map.widthInTiles / 2f - .5f,
             4f
         )
-        FinishEntity.createEntity(
+        finishEntity = FinishEntity.createEntity(
             1,
             platformEntity.image.rightX - FinishEntity.WIDTH / 2f,
             platformEntity.image.topY + FinishEntity.HEIGHT / 2f,
             blinkEndlessly = false
         )
-        PlayerEntity.createEntity(
+        playerEntity = PlayerEntity.createEntity(
             0,
             platformEntity.image.leftX + PlayerEntity.WIDTH / 2f,
             platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
@@ -313,6 +314,11 @@ class LevelEditorScreen(
         val platformPosition = platformEntity.body.body.worldCenter
         val deltaY = 2f
         gameCamera.position.set(platformPosition.x, platformPosition.y + deltaY, 0f)
+    }
+
+    private fun centerCameraOnPlayer() {
+        val playerPosition = playerEntity.body.body.worldCenter
+        gameCamera.position.set(playerPosition.x, playerPosition.y, 0f)
     }
 
     private fun handleGameInput() {
@@ -378,10 +384,10 @@ class LevelEditorScreen(
             } else {
                 Gdx.files.local(it.path()).readString()
             }
-            val levelFactory = Json().fromJson(MapFactory::class.java, jsonData)
+            val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
             val tableRow = Table(skin).apply {
-                val rowLeft = createLoadLevelRowLeft(getLastEditedString(it.nameWithoutExtension()), levelFactory.id)
-                val rowRight = createLoadLevelRowRight(it.path(), levelFactory.id)
+                val rowLeft = createLoadLevelRowLeft(mapFactory, getLastEditedString(it.nameWithoutExtension()))
+                val rowRight = createLoadLevelRowRight(it.path(), mapFactory.id)
                 add(rowLeft).growX().expandY().left()
                 add(rowRight).expand().right()
             }
@@ -389,8 +395,8 @@ class LevelEditorScreen(
         }
     }
 
-    private fun createLoadLevelRowLeft(lastEditedString: String, levelId: Int) = Table(skin).apply {
-        val levelIdLabel = Label("Level #$levelId", skin, "bold-57", Color.WHITE).apply {
+    private fun createLoadLevelRowLeft(mapFactory: MapFactory, lastEditedString: String) = Table(skin).apply {
+        val levelIdLabel = Label("Level #${mapFactory.id}", skin, "bold-57", Color.WHITE).apply {
             color = ColorScheme.currentDarkColor
         }
         val lastEditedLabel = Label(lastEditedString, skin, "bold-37", Color.WHITE).apply {
@@ -415,8 +421,14 @@ class LevelEditorScreen(
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
                 loadConfirmationPopUp.run {
-                    textLabel.setText("Are you sure you want to load the level #$levelId?")
+                    textLabel.setText("Are you sure you want to load the level #${mapFactory.id}?")
                     uiStage.addActor(this)
+                    yesClickRunnable = Runnable {
+                        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity)
+                        centerCameraOnPlayer()
+                        removeSettingsPopUp = true
+                        loadLevelPopUp.remove()
+                    }
                 }
             }
         })
@@ -446,6 +458,7 @@ class LevelEditorScreen(
     }
 
     private var updateLoadLevelPopUp = false
+    private var removeSettingsPopUp = false
 
     private fun createLoadLevelPopUp() = PopUp(520f, 500f, skin).apply {
         val scrollPane = ScrollPane(createLoadLevelTable(430f)).apply {
@@ -480,18 +493,19 @@ class LevelEditorScreen(
         engine.update(delta)
         gameStage.camera.update()
         updateUndoRedoButtonsColor()
-        updateLoadLevelPopUp()
+        updatePopUps()
     }
 
-    /**
-     * Updates the pop-up when a level is deleted. It is done in this function, and
-     * not in the delete button's runnable because of a recursion problem.
-     */
-    private fun updateLoadLevelPopUp() {
+    /** Updates pop-ups in the game loop to avoid recursion problems. */
+    private fun updatePopUps() {
         if (updateLoadLevelPopUp) {
             updateLoadLevelPopUp = false
             loadLevelPopUp = createLoadLevelPopUp()
             uiStage.addActor(loadLevelPopUp)
+        }
+        if (removeSettingsPopUp) {
+            removeSettingsPopUp = false
+            settingsPopUp.remove()
         }
     }
 

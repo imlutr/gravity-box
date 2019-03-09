@@ -22,16 +22,10 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.entities.game.PlatformEntity
-import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.assets.Text
-import ro.luca1152.gravitybox.utils.json.FinishPrototype
 import ro.luca1152.gravitybox.utils.json.MapFactory
-import ro.luca1152.gravitybox.utils.json.ObjectPrototype
-import ro.luca1152.gravitybox.utils.json.PlayerPrototype
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -54,74 +48,11 @@ class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : Entit
     }
 
     private fun loadMap() {
-        levelEntity.run {
-            level.loadMap = false
-            map.destroyAllBodies()
-            removePlatforms()
-        }
         val jsonData = manager.get<Text>("maps/game/map-${levelEntity.level.levelId}.json").string
         val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
-
-        createMap(mapFactory.width, mapFactory.height, mapFactory.id)
-        createPlayer(mapFactory.player)
-        createFinish(mapFactory.finish)
-        createPlatforms(mapFactory.objects)
-    }
-
-    private fun removePlatforms() {
-        val entitiesToRemove = Array<Entity>()
-        engine.getEntitiesFor(Family.all(PlatformComponent::class.java).get()).forEach {
-            entitiesToRemove.add(it)
-        }
-        entitiesToRemove.forEach {
-            engine.removeEntity(it)
-        }
-    }
-
-    private fun createMap(width: Int, height: Int, id: Int) {
         levelEntity.run {
-            map.run {
-                levelId = id
-                widthInTiles = width.pixelsToMeters.toInt()
-                heightInTiles = height.pixelsToMeters.toInt()
-            }
-        }
-    }
-
-    private fun createPlayer(player: PlayerPrototype) {
-        playerEntity.run {
-            image.run {
-                centerX = player.position.x.pixelsToMeters
-                centerY = player.position.y.pixelsToMeters
-            }
-            mapObject.run {
-                id = player.id
-            }
-        }
-    }
-
-    private fun createFinish(finish: FinishPrototype) {
-        finishEntity.run {
-            image.run {
-                centerX = finish.position.x.pixelsToMeters
-                centerY = finish.position.y.pixelsToMeters
-            }
-            mapObject.run {
-                id = finish.id
-            }
-        }
-    }
-
-    private fun createPlatforms(objects: ArrayList<ObjectPrototype>) {
-        objects.forEach {
-            when {
-                it.type == "platform" -> PlatformEntity.createEntity(
-                    it.id,
-                    it.position.x.pixelsToMeters,
-                    it.position.y.pixelsToMeters,
-                    it.width.pixelsToMeters
-                )
-            }
+            level.loadMap = false
+            map.loadMap(mapFactory, playerEntity, finishEntity)
         }
     }
 }
