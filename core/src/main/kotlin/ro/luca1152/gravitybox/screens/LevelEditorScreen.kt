@@ -28,7 +28,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.TimeUtils
@@ -61,6 +60,7 @@ import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.button.ClickTextButton
 import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
 import ro.luca1152.gravitybox.utils.ui.popup.PopUp
+import ro.luca1152.gravitybox.utils.ui.popup.TextPopUp
 import ro.luca1152.gravitybox.utils.ui.popup.YesNoTextPopUp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
@@ -137,18 +137,11 @@ class LevelEditorScreen(
         })
         setOpaque(true)
     }
-    private val levelSavedPopUp = PopUp(450f, 250f, skin).apply {
-        widget.run {
-            val label = Label(
-                "Level saved\nsuccessfully.",
-                this@LevelEditorScreen.skin,
-                "semi-bold-50",
-                ColorScheme.currentDarkColor
-            )
-            label.setAlignment(Align.center, Align.center)
-            add(label)
-        }
-    }
+    private val levelSavedTextPopUp = TextPopUp(
+        450f, 250f,
+        "Level saved successfully.",
+        skin, "semi-bold-50", ColorScheme.currentDarkColor
+    )
     private val deleteConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to delete the level?",
@@ -166,7 +159,7 @@ class LevelEditorScreen(
                 downColor = ColorScheme.darkerDarkColor
                 clickRunnable = Runnable {
                     levelEntity.map.saveMap()
-                    uiStage.addActor(levelSavedPopUp)
+                    uiStage.addActor(levelSavedTextPopUp)
                 }
             }
             val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {

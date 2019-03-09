@@ -22,18 +22,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 
-class YesNoTextPopUp(
+class TextPopUp(
     width: Float, height: Float,
     text: CharSequence,
-    skin: Skin, fontName: String, textColor: Color,
-    yesIsHighlighted: Boolean = false, noIsHighlighted: Boolean = false
-) : YesNoPopUp(width, height, skin, yesIsHighlighted, noIsHighlighted) {
+    skin: Skin, fontName: String, textColor: Color
+) : PopUp(width, height, skin) {
     private val textLabel = Label(text, skin, fontName, textColor).apply {
         setWrap(true)
         setAlignment(Align.center, Align.center)
     }
 
     init {
-        emptySpace.add(textLabel).prefWidth(width - 50f).expand().center()
+        widget.add(textLabel).prefWidth(width - 50f).expand().center()
     }
 }
