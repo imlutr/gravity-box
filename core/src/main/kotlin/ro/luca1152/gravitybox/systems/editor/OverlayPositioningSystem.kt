@@ -36,9 +36,9 @@ import ro.luca1152.gravitybox.components.game.image
 import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.*
-import ro.luca1152.gravitybox.utils.ui.Button
-import ro.luca1152.gravitybox.utils.ui.ClickButton
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.button.Button
+import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -51,7 +51,10 @@ class OverlayPositioningSystem(
     private val overlayStage: OverlayStage = Injekt.get(),
     private val engine: PooledEngine = Injekt.get()
 ) : EntitySystem() {
-    private val leftArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
+    private val leftArrowButton: ClickButton = ClickButton(
+        skin,
+        "small-round-button"
+    ).apply {
         addIcon("small-left-arrow-icon")
         iconCell!!.padLeft(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
@@ -93,7 +96,10 @@ class OverlayPositioningSystem(
             }
         })
     }
-    private val rightArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
+    private val rightArrowButton: ClickButton = ClickButton(
+        skin,
+        "small-round-button"
+    ).apply {
         addIcon("small-right-arrow-icon")
         iconCell!!.padRight(-4f) // The icon doesn't LOOK centered
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
@@ -135,7 +141,10 @@ class OverlayPositioningSystem(
             }
         })
     }
-    private val deleteButton: ClickButton = ClickButton(skin, "small-round-button").apply {
+    private val deleteButton: ClickButton = ClickButton(
+        skin,
+        "small-round-button"
+    ).apply {
         addIcon("small-x-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         setOpaque(true)
@@ -145,7 +154,10 @@ class OverlayPositioningSystem(
             undoRedoEntity.undoRedo.addExecutedCommand(deleteCommand)
         })
     }
-    private val rotateButton: ClickButton = ClickButton(skin, "small-round-button").apply {
+    private val rotateButton: ClickButton = ClickButton(
+        skin,
+        "small-round-button"
+    ).apply {
         addIcon("small-rotate-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         setOpaque(true)
@@ -228,7 +240,10 @@ class OverlayPositioningSystem(
     private val rotationLabel = Label("", skin, "bold-37", ColorScheme.darkerDarkColor).apply {
         isVisible = false
     }
-    private val horizontalPositionButton = ClickButton(skin, "small-round-button").apply {
+    private val horizontalPositionButton = ClickButton(
+        skin,
+        "small-round-button"
+    ).apply {
         addIcon("small-horizontal-arrow")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         setOpaque(true)

@@ -55,7 +55,13 @@ import ro.luca1152.gravitybox.systems.game.UpdateGameCameraSystem
 import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.json.MapFactory
 import ro.luca1152.gravitybox.utils.kotlin.*
-import ro.luca1152.gravitybox.utils.ui.*
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.button.ButtonType
+import ro.luca1152.gravitybox.utils.ui.button.ClickButton
+import ro.luca1152.gravitybox.utils.ui.button.ClickTextButton
+import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
+import ro.luca1152.gravitybox.utils.ui.popup.PopUp
+import ro.luca1152.gravitybox.utils.ui.popup.YesNoTextPopUp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
@@ -143,31 +149,12 @@ class LevelEditorScreen(
             add(label)
         }
     }
-
-    private fun getLastEditedString(fileNameWithoutExtension: String): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())
-        val levelDate = formatter.parse(fileNameWithoutExtension)
-        val currentDate = Date(TimeUtils.millis())
-
-        val diffInMills = Math.abs(currentDate.time - levelDate.time)
-        val diffInYears = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 365
-        val diffInMonths = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 30
-        val diffInWeeks = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 7
-        val diffInDays = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS)
-        val diffInHours = TimeUnit.HOURS.convert(diffInMills, TimeUnit.MILLISECONDS)
-        val diffInMinutes = TimeUnit.MINUTES.convert(diffInMills, TimeUnit.MILLISECONDS)
-        val diffInSeconds = TimeUnit.SECONDS.convert(diffInMills, TimeUnit.MILLISECONDS)
-
-        return when {
-            diffInYears != 0L -> "$diffInYears year${if (diffInYears > 1) "s" else ""} ago"
-            diffInMonths != 0L -> "$diffInMonths month${if (diffInMonths > 1) "s" else ""} ago"
-            diffInWeeks != 0L -> "$diffInWeeks week${if (diffInWeeks > 1) "s" else ""} ago"
-            diffInDays != 0L -> "$diffInDays day${if (diffInDays > 1) "s" else ""} ago"
-            diffInHours != 0L -> "$diffInHours hour${if (diffInHours > 1) "s" else ""} ago"
-            diffInMinutes != 0L -> "$diffInMinutes minute${if (diffInMinutes > 1) "s" else ""} ago"
-            else -> "$diffInSeconds second${if (diffInSeconds > 1) "s" else ""} ago"
-        }
-    }
+    private val deleteConfirmationPopUp = YesNoTextPopUp(
+        520f, 400f,
+        "Are you sure you want to delete the level?",
+        skin, "semi-bold-50",
+        ColorScheme.currentDarkColor, yesIsHighlighted = true
+    )
     private val settingsButton = ClickButton(skin, "small-button").apply {
         addIcon("settings-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
@@ -189,7 +176,11 @@ class LevelEditorScreen(
                     uiStage.addActor(createLoadLevelPopUp())
                 }
             }
-            val resizeButton = ClickTextButton("Resize", skin, "text-only-button").apply {
+            val resizeButton = ClickTextButton(
+                "Resize",
+                skin,
+                "text-only-button"
+            ).apply {
                 upColor = ColorScheme.currentDarkColor
                 downColor = ColorScheme.darkerDarkColor
             }
@@ -336,6 +327,31 @@ class LevelEditorScreen(
         }
     }
 
+    private fun getLastEditedString(fileNameWithoutExtension: String): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())
+        val levelDate = formatter.parse(fileNameWithoutExtension)
+        val currentDate = Date(TimeUtils.millis())
+
+        val diffInMills = Math.abs(currentDate.time - levelDate.time)
+        val diffInYears = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 365
+        val diffInMonths = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 30
+        val diffInWeeks = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 7
+        val diffInDays = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS)
+        val diffInHours = TimeUnit.HOURS.convert(diffInMills, TimeUnit.MILLISECONDS)
+        val diffInMinutes = TimeUnit.MINUTES.convert(diffInMills, TimeUnit.MILLISECONDS)
+        val diffInSeconds = TimeUnit.SECONDS.convert(diffInMills, TimeUnit.MILLISECONDS)
+
+        return when {
+            diffInYears != 0L -> "$diffInYears year${if (diffInYears > 1) "s" else ""} ago"
+            diffInMonths != 0L -> "$diffInMonths month${if (diffInMonths > 1) "s" else ""} ago"
+            diffInWeeks != 0L -> "$diffInWeeks week${if (diffInWeeks > 1) "s" else ""} ago"
+            diffInDays != 0L -> "$diffInDays day${if (diffInDays > 1) "s" else ""} ago"
+            diffInHours != 0L -> "$diffInHours hour${if (diffInHours > 1) "s" else ""} ago"
+            diffInMinutes != 0L -> "$diffInMinutes minute${if (diffInMinutes > 1) "s" else ""} ago"
+            else -> "$diffInSeconds second${if (diffInSeconds > 1) "s" else ""} ago"
+        }
+    }
+
     private fun createLoadLevelTable(width: Float) = Table(skin).apply {
         val levels = Gdx.files.local("maps/editor").list().apply {
             sortByDescending { it.path() }
@@ -357,6 +373,9 @@ class LevelEditorScreen(
                     add(ClickButton(skin, "simple-button").apply {
                         addIcon("trash-can-icon")
                         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+                        addClickRunnable(Runnable {
+                            uiStage.addActor(deleteConfirmationPopUp)
+                        })
                     })
                 }
                 add(rowLeft).expand().left()
@@ -366,7 +385,7 @@ class LevelEditorScreen(
         }
     }
 
-    private fun createLoadLevelPopUp() = PopUp(500f, 400f, skin).apply {
+    private fun createLoadLevelPopUp() = PopUp(520f, 500f, skin).apply {
         val scrollPane = ScrollPane(createLoadLevelTable(430f)).apply {
             setupOverscroll(50f, 80f, 200f)
         }

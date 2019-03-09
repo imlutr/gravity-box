@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.ui
+package ro.luca1152.gravitybox.utils.ui.popup
 
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
@@ -28,23 +28,28 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.graphics.copy
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class PopUp(
+open class PopUp(
     width: Float, height: Float,
     skin: Skin,
     manager: AssetManager = Injekt.get(),
     private val uiStage: UIStage = Injekt.get()
 ) : Group() {
-    private val frameWidthPx = 14f
+    val borderThickness = 14f
     private val screenTransparentBackground = Image(manager.get<Texture>("graphics/pixel.png")).apply {
         setSize(uiStage.viewport.worldWidth, uiStage.viewport.worldHeight)
         color = ColorScheme.currentLightColor.copy(alpha = .4f)
     }
     private val closeButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-x-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(
+            ColorScheme.currentDarkColor,
+            ColorScheme.darkerDarkColor
+        )
         setOpaque(true)
     }
     private val widgetFrame = Image(skin.getDrawable("pop-up-frame")).apply {
@@ -52,21 +57,21 @@ class PopUp(
         color = ColorScheme.currentDarkColor
     }
     private val widgetOpaqueBackground = Image(manager.get<Texture>("graphics/pixel.png")).apply {
-        setSize(width - 2 * frameWidthPx, height - 2 * frameWidthPx)
+        setSize(width - 2 * borderThickness, height - 2 * borderThickness)
         color = ColorScheme.currentLightColor
     }
     val widget = Table().apply {
         setSize(width, height)
         setPosition(uiStage.viewport.worldWidth / 2f - width / 2f, uiStage.viewport.worldHeight / 2f - height / 2f)
         addActor(widgetOpaqueBackground.apply {
-            setPosition(frameWidthPx, frameWidthPx)
+            setPosition(borderThickness, borderThickness)
         })
         addActor(widgetFrame)
         addActor(closeButton.apply {
             val additionalPadding = 5
             setPosition(width - this.width / 2f - additionalPadding, height - this.height / 2f - additionalPadding)
         })
-        pad(frameWidthPx + 15f)
+        pad(borderThickness + 15f)
     }
 
     init {
