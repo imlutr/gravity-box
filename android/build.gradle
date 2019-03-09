@@ -43,7 +43,7 @@ android {
     defaultConfig {
         applicationId 'ro.luca1152.gravitybox'
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 26
     }
     buildTypes {
         debug {
