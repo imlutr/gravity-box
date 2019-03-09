@@ -28,7 +28,7 @@ class YesNoTextPopUp(
     skin: Skin, fontName: String, textColor: Color,
     yesIsHighlighted: Boolean = false, noIsHighlighted: Boolean = false
 ) : YesNoPopUp(width, height, skin, yesIsHighlighted, noIsHighlighted) {
-    private val textLabel = Label(text, skin, fontName, textColor).apply {
+    val textLabel = Label(text, skin, fontName, textColor).apply {
         setWrap(true)
         setAlignment(Align.center, Align.center)
     }

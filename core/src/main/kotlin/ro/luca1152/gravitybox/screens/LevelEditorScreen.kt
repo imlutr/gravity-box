@@ -23,11 +23,14 @@ import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.TimeUtils
@@ -145,7 +148,13 @@ class LevelEditorScreen(
     )
     private val deleteConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
-        "Are you sure you want to delete the level?",
+        "Are you sure you want to delete the level #x?",
+        skin, "semi-bold-50",
+        ColorScheme.currentDarkColor, yesIsHighlighted = true
+    )
+    private val loadConfirmationPopUp = YesNoTextPopUp(
+        520f, 400f,
+        "Are you sure you want to load the level #x?",
         skin, "semi-bold-50",
         ColorScheme.currentDarkColor, yesIsHighlighted = true
     )
@@ -182,9 +191,9 @@ class LevelEditorScreen(
             }
 
             popUp.widget.run {
-                add(saveButton).expand().top().row()
-                add(loadButton).expand().top().row()
-                add(resizeButton).expand().top()
+                add(saveButton).growX().expandY().top().row()
+                add(loadButton).growX().expandY().top().row()
+                add(resizeButton).expandY().growX().top()
             }
 
             uiStage.addActor(popUp)
@@ -360,37 +369,69 @@ class LevelEditorScreen(
             }
             val levelFactory = Json().fromJson(MapFactory::class.java, jsonData)
             val tableRow = Table(skin).apply {
-                val rowLeft = Table(skin).apply {
-                    val lastEdited = getLastEditedString(it.nameWithoutExtension())
-                    add(Label("Level #${levelFactory.id}", skin, "bold-57", ColorScheme.currentDarkColor)).left().row()
-                    add(Label(lastEdited, skin, "bold-37", ColorScheme.currentDarkColor)).left().row()
-                }
-                val rowRight = Table(skin).apply {
-                    add(ClickButton(skin, "simple-button").apply {
-                        addIcon("trash-can-icon")
-                        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
-                        addClickRunnable(Runnable {
-                            deleteConfirmationPopUp.run {
-                                uiStage.addActor(this)
-                                yesClickRunnable = Runnable {
-                                    Gdx.files.local(it.path()).delete()
-                                    loadLevelPopUp.remove()
-                                    updateLoadLevelPopUp = true
-                                    val newId = getFirstUnusedLevelId()
-                                    levelEntity.run {
-                                        map.levelId = newId
-                                        level.levelId = newId
-                                    }
-                                }
-                            }
-                        })
-                    })
-                }
-                add(rowLeft).expand().left()
+                val rowLeft = createLoadLevelRowLeft(getLastEditedString(it.nameWithoutExtension()), levelFactory.id)
+                val rowRight = createLoadLevelRowRight(it.path(), levelFactory.id)
+                add(rowLeft).growX().expandY().left()
                 add(rowRight).expand().right()
             }
             add(tableRow).width(width).growX().spaceTop(25f).row()
         }
+    }
+
+    private fun createLoadLevelRowLeft(lastEditedString: String, levelId: Int) = Table(skin).apply {
+        val levelIdLabel = Label("Level #$levelId", skin, "bold-57", Color.WHITE).apply {
+            color = ColorScheme.currentDarkColor
+        }
+        val lastEditedLabel = Label(lastEditedString, skin, "bold-37", Color.WHITE).apply {
+            color = ColorScheme.currentDarkColor
+        }
+        add(levelIdLabel).grow().left().row()
+        add(lastEditedLabel).grow().left().row()
+        addListener(object : ClickListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                super.touchDown(event, x, y, pointer, button)
+                levelIdLabel.color = ColorScheme.darkerDarkColor
+                lastEditedLabel.color = ColorScheme.darkerDarkColor
+                return true
+            }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                levelIdLabel.color = ColorScheme.currentDarkColor
+                lastEditedLabel.color = ColorScheme.currentDarkColor
+            }
+
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                loadConfirmationPopUp.run {
+                    textLabel.setText("Are you sure you want to load the level #$levelId?")
+                    uiStage.addActor(this)
+                }
+            }
+        })
+    }
+
+    private fun createLoadLevelRowRight(levelFilePath: String, levelId: Int) = Table(skin).apply {
+        add(ClickButton(skin, "simple-button").apply {
+            addIcon("trash-can-icon")
+            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            addClickRunnable(Runnable {
+                deleteConfirmationPopUp.run {
+                    textLabel.setText("Are you sure you want to delete the level #$levelId?")
+                    uiStage.addActor(this)
+                    yesClickRunnable = Runnable {
+                        Gdx.files.local(levelFilePath).delete()
+                        loadLevelPopUp.remove()
+                        updateLoadLevelPopUp = true
+                        val newId = getFirstUnusedLevelId()
+                        levelEntity.run {
+                            map.levelId = newId
+                            level.levelId = newId
+                        }
+                    }
+                }
+            })
+        })
     }
 
     private var updateLoadLevelPopUp = false
