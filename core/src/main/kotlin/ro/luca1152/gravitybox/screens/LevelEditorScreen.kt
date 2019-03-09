@@ -148,6 +148,7 @@ class LevelEditorScreen(
         skin, "semi-bold-50",
         ColorScheme.currentDarkColor, yesIsHighlighted = true
     )
+    private var loadLevelPopUp = PopUp(0f, 0f, skin)
     private val settingsButton = ClickButton(skin, "small-button").apply {
         addIcon("settings-icon")
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
@@ -166,7 +167,8 @@ class LevelEditorScreen(
                 upColor = ColorScheme.currentDarkColor
                 downColor = ColorScheme.darkerDarkColor
                 clickRunnable = Runnable {
-                    uiStage.addActor(createLoadLevelPopUp())
+                    loadLevelPopUp = createLoadLevelPopUp()
+                    uiStage.addActor(loadLevelPopUp)
                 }
             }
             val resizeButton = ClickTextButton(
@@ -367,7 +369,14 @@ class LevelEditorScreen(
                         addIcon("trash-can-icon")
                         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
                         addClickRunnable(Runnable {
-                            uiStage.addActor(deleteConfirmationPopUp)
+                            deleteConfirmationPopUp.run {
+                                uiStage.addActor(this)
+                                yesClickRunnable = Runnable {
+                                    Gdx.files.local(it.path()).delete()
+                                    loadLevelPopUp.remove()
+                                    updateLoadLevelPopUp = true
+                                }
+                            }
                         })
                     })
                 }
@@ -377,6 +386,8 @@ class LevelEditorScreen(
             add(tableRow).width(width).growX().spaceTop(25f).row()
         }
     }
+
+    private var updateLoadLevelPopUp = false
 
     private fun createLoadLevelPopUp() = PopUp(520f, 500f, skin).apply {
         val scrollPane = ScrollPane(createLoadLevelTable(430f)).apply {
@@ -408,10 +419,22 @@ class LevelEditorScreen(
         uiStage.act(delta)
         if (screenIsHidden)
             return
-
         engine.update(delta)
         gameStage.camera.update()
         updateUndoRedoButtonsColor()
+        updateLoadLevelPopUp()
+    }
+
+    /**
+     * Updates the pop-up when a level is deleted. It is done in this function, and
+     * not in the delete button's runnable because of a recursion problem.
+     */
+    private fun updateLoadLevelPopUp() {
+        if (updateLoadLevelPopUp) {
+            updateLoadLevelPopUp = false
+            loadLevelPopUp = createLoadLevelPopUp()
+            uiStage.addActor(loadLevelPopUp)
+        }
     }
 
     private fun updateUndoRedoButtonsColor() {
