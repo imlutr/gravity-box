@@ -38,6 +38,7 @@ import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.editor.undoRedo
 import ro.luca1152.gravitybox.components.game.body
 import ro.luca1152.gravitybox.components.game.image
+import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.entities.editor.InputEntity
 import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
@@ -375,6 +376,11 @@ class LevelEditorScreen(
                                     Gdx.files.local(it.path()).delete()
                                     loadLevelPopUp.remove()
                                     updateLoadLevelPopUp = true
+                                    val newId = getFirstUnusedLevelId()
+                                    levelEntity.run {
+                                        map.levelId = newId
+                                        level.levelId = newId
+                                    }
                                 }
                             }
                         })
