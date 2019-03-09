@@ -1,22 +1,90 @@
 {
   BitmapFont: {
-    bold-37: {
-      file: nunito-extra-bold-40.fnt
+    extra-light: {
+      file: extra-light.fnt
     }
-    bold-50: {
-      file: nunito-bold-50.fnt
+    extra-light-italic: {
+      file: extra-light-italic.fnt
     }
-    bold-57: {
-      file: nunito-bold-57.fnt
+    light: {
+      file: light.fnt
     }
-    bold-65: {
-      file: nunito-bold-65.fnt
+    light-italic: {
+      file: light-italic.fnt
     }
-    bold-80: {
-      file: nunito-bold-80.fnt
+    regular: {
+      file: regular.fnt
     }
-    semi-bold-50: {
-      file: nunito-sbold-50.fnt
+    regular-italic: {
+      file: regular-italic.fnt
+    }
+    semi-bold: {
+      file: semi-bold.fnt
+    }
+    semi-bold-italic: {
+      file: semi-bold-italic.fnt
+    }
+    bold: {
+      file: bold.fnt
+    }
+    bold-italic: {
+      file: bold-italic.fnt
+    }
+    extra-bold: {
+      file: extra-bold.fnt
+    }
+    extra-bold-italic: {
+      file: extra-bold-italic.fnt
+    }
+    black: {
+      file: black.fnt
+    }
+    black-italic: {
+      file: black-italic.fnt
+    }
+  }
+  LabelStyle: {
+    extra-light: {
+      font: extra-light
+    }
+    extra-light-italic: {
+      font: extra-light-italic
+    }
+    light: {
+      font: light
+    }
+    light-italic: {
+      font: light-italic
+    }
+    regular: {
+      font: regular
+    }
+    regular-italic: {
+      font: regular-italic
+    }
+    semi-bold: {
+      font: semi-bold
+    }
+    semi-bold-italic: {
+      font: semi-bold-italic
+    }
+    bold: {
+      font: bold
+    }
+    bold-italic: {
+      font: bold-italic
+    }
+    extra-bold: {
+      font: extra-bold
+    }
+    extra-bold-italic: {
+      font: extra-bold-italic
+    }
+    black: {
+      font: black
+    }
+    black-italic: {
+      font: black-italic
     }
   }
   ButtonStyle: {
@@ -33,23 +101,6 @@
     small-round-button: {
       up: small-round-button,
       down: small-round-button
-    }
-  }
-  TextButtonStyle: {
-    big-text-button: {
-      font: bold-50,
-      up: big-button,
-      down: big-button
-    }
-
-    small-text-button: {
-      font: bold-50,
-      up: small-button,
-      down: small-button
-    }
-
-    text-only-button: {
-      font: bold-80
     }
   }
 }

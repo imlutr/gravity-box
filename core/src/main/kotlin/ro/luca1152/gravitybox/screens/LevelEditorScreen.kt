@@ -23,10 +23,8 @@ import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -59,6 +57,7 @@ import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.json.MapFactory
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.button.ClickTextButton
@@ -144,8 +143,9 @@ class LevelEditorScreen(
     private val saveConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to save the level?",
-        skin, "semi-bold-50",
-        ColorScheme.currentDarkColor, yesIsHighlighted = true
+        skin, "semi-bold", 50f,
+        ColorScheme.currentDarkColor,
+        yesIsHighlighted = true
     ).apply {
         yesClickRunnable = Runnable {
             uiStage.addActor(levelSavedTextPopUp)
@@ -156,30 +156,32 @@ class LevelEditorScreen(
     private val levelSavedTextPopUp = TextPopUp(
         450f, 250f,
         "Level saved successfully.",
-        skin, "semi-bold-50", ColorScheme.currentDarkColor
+        skin, "bold", 50f, ColorScheme.currentDarkColor
     )
     private val deleteConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to delete the level #[x]?",
-        skin, "semi-bold-50",
-        ColorScheme.currentDarkColor, yesIsHighlighted = true
+        skin, "semi-bold", 50f,
+        ColorScheme.currentDarkColor,
+        yesIsHighlighted = true
     )
     private val loadConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to load the level #[x]?",
-        skin, "semi-bold-50",
-        ColorScheme.currentDarkColor, yesIsHighlighted = true
+        skin, "semi-bold", 50f,
+        ColorScheme.currentDarkColor,
+        yesIsHighlighted = true
     )
     private var loadLevelPopUp = PopUp(0f, 0f, skin)
     private val settingsPopUp = PopUp(500f, 400f, skin).apply {
-        val saveButton = ClickTextButton("Save", skin, "text-only-button").apply {
+        val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 80f).apply {
             upColor = ColorScheme.currentDarkColor
             downColor = ColorScheme.darkerDarkColor
             clickRunnable = Runnable {
                 uiStage.addActor(saveConfirmationPopUp)
             }
         }
-        val loadButton = ClickTextButton("Load", skin, "text-only-button").apply {
+        val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 80f).apply {
             upColor = ColorScheme.currentDarkColor
             downColor = ColorScheme.darkerDarkColor
             clickRunnable = Runnable {
@@ -187,11 +189,7 @@ class LevelEditorScreen(
                 uiStage.addActor(loadLevelPopUp)
             }
         }
-        val resizeButton = ClickTextButton(
-            "Resize",
-            skin,
-            "text-only-button"
-        ).apply {
+        val resizeButton = ClickTextButton("simple-button", skin, "Resize", "bold", 80f).apply {
             upColor = ColorScheme.currentDarkColor
             downColor = ColorScheme.darkerDarkColor
         }
@@ -400,12 +398,14 @@ class LevelEditorScreen(
     }
 
     private fun createLoadLevelRowLeft(mapFactory: MapFactory, lastEditedString: String) = Table(skin).apply {
-        val levelIdLabel = Label("Level #${mapFactory.id}", skin, "bold-57", Color.WHITE).apply {
-            color = ColorScheme.currentDarkColor
-        }
-        val lastEditedLabel = Label(lastEditedString, skin, "bold-37", Color.WHITE).apply {
-            color = ColorScheme.currentDarkColor
-        }
+        val levelIdLabel = DistanceFieldLabel(
+            "Level #${mapFactory.id}", skin, "bold",
+            57f, ColorScheme.currentDarkColor
+        )
+        val lastEditedLabel = DistanceFieldLabel(
+            lastEditedString, skin, "extra-bold",
+            57f, ColorScheme.currentDarkColor
+        )
         add(levelIdLabel).grow().left().row()
         add(lastEditedLabel).grow().left().row()
         addListener(object : ClickListener() {
