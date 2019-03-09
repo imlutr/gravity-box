@@ -18,16 +18,18 @@
 package ro.luca1152.gravitybox.utils.ui.popup
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
+import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 class TextPopUp(
     width: Float, height: Float,
     text: CharSequence,
-    skin: Skin, fontName: String, textColor: Color
+    skin: Skin, fontName: String,
+    textSize: Float = 32f,
+    textColor: Color = Color.WHITE
 ) : PopUp(width, height, skin) {
-    private val textLabel = Label(text, skin, fontName, textColor).apply {
+    private val textLabel = DistanceFieldLabel(text, skin, fontName, textSize, textColor).apply {
         setWrap(true)
         setAlignment(Align.center, Align.center)
     }

@@ -19,17 +19,21 @@ package ro.luca1152.gravitybox.utils.ui.button
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 class ClickTextButton(
+    buttonStyleName: String,
+    skin: Skin,
     text: String,
-    skin: Skin = Injekt.get(),
-    styleName: String
-) : TextButton(text, skin, styleName) {
+    labelStyleName: String,
+    textSize: Float = 32f
+) : Button(skin, buttonStyleName) {
+    val label = DistanceFieldLabel(text, skin, labelStyleName, fontSize = textSize).apply {
+        this@ClickTextButton.add(this)
+    }
     private val clickListener = object : ClickListener() {
         override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
             super.touchDown(event, x, y, pointer, button)

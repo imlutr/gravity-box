@@ -25,13 +25,17 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.ui.Button
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.HorizontalSlidingPane
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
@@ -50,7 +54,7 @@ class LevelSelectorScreen(
     private val bigEmptyStar = Image(skin, "big-empty-star").apply {
         color = ColorScheme.currentDarkColor
     }
-    private val starsCountLabel = Label("0/45", skin, "bold-65", ColorScheme.currentDarkColor)
+    private val starsCountLabel = DistanceFieldLabel("0/45", skin, "bold", 65f, ColorScheme.currentDarkColor)
     private val leftArrow = Image(skin.getDrawable("left-arrow-icon")).apply {
         color = ColorScheme.currentDarkColor
         isVisible = false
@@ -137,7 +141,7 @@ class LevelSelectorScreen(
     ) = Button(skin, "small-button").apply button@{
         color = ColorScheme.currentDarkColor
         top().padTop(18f)
-        val numberLabel = Label(level.toString(), skin, "bold-57", ColorScheme.currentDarkColor).apply {
+        val numberLabel = DistanceFieldLabel(level.toString(), skin, "bold", 57f, ColorScheme.currentDarkColor).apply {
             this@button.add(this).expand().center().row()
         }
         val stars = createLevelButtonStars().apply {
@@ -145,7 +149,7 @@ class LevelSelectorScreen(
         }
 
         fun setAllColors(color: Color) {
-            numberLabel.style.fontColor = color
+            numberLabel.color = color
             this.color.set(color)
             stars.cells.forEach { it.actor.color.set(color) }
         }

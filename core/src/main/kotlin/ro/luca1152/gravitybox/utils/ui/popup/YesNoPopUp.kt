@@ -46,7 +46,7 @@ open class YesNoPopUp(
         setPosition(-borderThickness, borderThickness / 2f)
         color = ColorScheme.currentDarkColor
     }
-    private val noButton = ClickTextButton("NO", skin, "text-only-button").apply {
+    private val noButton = ClickTextButton("simple-button", skin, "NO", "bold", 80f).apply {
         upColor = ColorScheme.currentDarkColor
         downColor = ColorScheme.darkerDarkColor
         clickRunnable = Runnable {
@@ -63,7 +63,7 @@ open class YesNoPopUp(
         setPosition(width / 2f - borderThickness, borderThickness / 2f)
         color = ColorScheme.currentDarkColor
     }
-    private val yesButton = ClickTextButton("YES", skin, "text-only-button").apply {
+    private val yesButton = ClickTextButton("simple-button", skin, "YES", "bold", 80f).apply {
         upColor = ColorScheme.currentDarkColor
         downColor = ColorScheme.darkerDarkColor
         clickRunnable = Runnable {
