@@ -152,7 +152,7 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             fixedRotation = false
         }
         val polygonShape = PolygonShape().apply {
-            setAsBox(width / 2f, height / 2f)
+            setAsBox(width / 2f - .01f, height / 2f - .01f)
         }
         val fixtureDef = FixtureDef().apply {
             shape = polygonShape

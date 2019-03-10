@@ -89,11 +89,7 @@ class MapBodiesCreationSystem : EntitySystem() {
             }
             it.body.set(
                 it.image.imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction),
-                it,
-                categoryBits,
-                maskBits,
-                density,
-                friction
+                it, categoryBits, maskBits, density, friction
             )
         }
     }
