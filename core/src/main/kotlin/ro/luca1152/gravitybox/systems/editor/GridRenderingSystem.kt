@@ -39,8 +39,14 @@ class GridRenderingSystem(
     private val gameStage: GameStage = Injekt.get(),
     private val manager: AssetManager = Injekt.get()
 ) : EntitySystem() {
-    private val LINE_COLOR = ColorScheme.currentDarkColor.copy(alpha = .2f)
-    private val LINE_WIDTH = 2f.pixelsToMeters
+    companion object {
+        private const val GRID_START_POSITION = -500
+        private const val GRID_END_POSITION = 500
+        private const val GRID_LENGTH = GRID_END_POSITION - GRID_START_POSITION
+        private val LINE_THICKNESS = 2f.pixelsToMeters
+        private val LINE_COLOR = ColorScheme.currentDarkColor.copy(alpha = .2f)
+    }
+
     private val gridGroup = Group()
     private lateinit var levelEntity: Entity
 
@@ -48,28 +54,28 @@ class GridRenderingSystem(
         levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
         gridGroup.run {
             clear()
-            addActor(createVerticalLines(50, 50))
-            addActor(createHorizontalLines(50, 50))
+            addActor(createVerticalLines())
+            addActor(createHorizontalLines())
         }
         gameStage.addActor(gridGroup)
     }
 
-    private fun createVerticalLines(mapWidth: Int, mapHeight: Int) = Group().apply {
-        for (x in 0 until mapWidth + 1) {
+    private fun createVerticalLines() = Group().apply {
+        for (x in GRID_START_POSITION..GRID_END_POSITION) {
             addActor(Image(manager.get<Texture>("graphics/pixel.png")).apply {
                 color = LINE_COLOR
-                setSize(LINE_WIDTH, mapHeight.toFloat())
-                setPosition(x.toFloat(), 0f)
+                setSize(LINE_THICKNESS, GRID_LENGTH.toFloat())
+                setPosition(x.toFloat(), GRID_START_POSITION.toFloat())
             })
         }
     }
 
-    private fun createHorizontalLines(mapWidth: Int, mapHeight: Int) = Group().apply {
-        for (y in 0 until mapHeight + 1) {
+    private fun createHorizontalLines() = Group().apply {
+        for (y in GRID_START_POSITION..GRID_END_POSITION) {
             addActor(Image(manager.get<Texture>("graphics/pixel.png")).apply {
                 color = LINE_COLOR
-                setSize(mapWidth.toFloat(), LINE_WIDTH)
-                setPosition(0f, y.toFloat())
+                setSize(GRID_LENGTH.toFloat(), LINE_THICKNESS)
+                setPosition(GRID_START_POSITION.toFloat(), y.toFloat())
             })
         }
     }
