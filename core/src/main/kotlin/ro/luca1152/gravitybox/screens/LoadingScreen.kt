@@ -87,7 +87,6 @@ class LoadingScreen(
 
     private fun loadEditorMaps() {
         Gdx.files.local("maps/editor").list().forEach {
-            println("${it.path()} loaded")
             manager.run {
                 setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
                 load<Text>(it.path())

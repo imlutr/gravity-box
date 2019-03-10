@@ -19,8 +19,6 @@ package ro.luca1152.gravitybox.utils.json
 
 class MapFactory {
     var id = 0
-    var width = 0
-    var height = 0
     var player = PlayerPrototype()
     var finish = FinishPrototype()
     var objects = ArrayList<ObjectPrototype>()

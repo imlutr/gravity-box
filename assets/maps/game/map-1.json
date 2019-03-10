@@ -1,19 +1,17 @@
 {
-  "id": 0,
-  "width": 1024,
-  "height": 1216,
+  "id": 1,
   "player": {
     "id": 0,
     "position": {
       "x": 416,
-      "y": 520
+      "y": 616
     }
   },
   "finish": {
     "id": 1,
     "position": {
       "x": 576,
-      "y": 552
+      "y": 648
     }
   },
   "objects": [
@@ -22,7 +20,7 @@
       "id": 2,
       "position": {
         "x": 512,
-        "y": 480
+        "y": 576
       },
       "width": 256
     }
