@@ -81,7 +81,6 @@ class MapComponent : Component, Poolable {
                 mapTop = Math.max(mapTop, topY)
             }
         }
-        println("L: $mapLeft | R: $mapRight | T: $mapTop | B: $mapBottom")
     }
 
     fun saveMap() {

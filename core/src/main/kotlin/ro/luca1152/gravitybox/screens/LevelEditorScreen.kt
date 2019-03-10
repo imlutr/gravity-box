@@ -275,7 +275,7 @@ class LevelEditorScreen(
         val platformEntity = PlatformEntity.createEntity(
             2,
             16f / 2f,
-            19f / 2f - .5f,
+            19f / 2f - .5f - PlatformEntity.DEFAULT_HEIGHT / 2f,
             4f
         )
         finishEntity = FinishEntity.createEntity(

@@ -28,8 +28,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object PlatformEntity {
-    private const val DEFAULT_HEIGHT = .25f
     private const val DEFAULT_ROTATION = 0f
+    const val DEFAULT_HEIGHT = .25f
     val CATEGORY_BITS = EntityCategory.PLATFORM.bits
     val MASK_BITS = EntityCategory.OBSTACLE.bits
 
