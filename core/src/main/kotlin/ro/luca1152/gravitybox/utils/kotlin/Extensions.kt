@@ -17,10 +17,8 @@
 
 package ro.luca1152.gravitybox.utils.kotlin
 
-import com.badlogic.ashley.core.Component
-import com.badlogic.ashley.core.Engine
-import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
+import com.badlogic.ashley.core.*
+import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
@@ -32,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool
+import ktx.app.KtxGame
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -102,9 +101,18 @@ fun Engine.getSingletonFor(family: Family): Entity {
 }
 
 fun Engine.removeAllSystems() {
+    val systemsToRemove = Array<EntitySystem>()
     systems.forEach {
-        removeSystem(it)
+        systemsToRemove.add(it)
     }
+    systemsToRemove.forEach {
+        it.engine.removeSystem(it)
+    }
+}
+
+fun Engine.clear() {
+    removeAllEntities()
+    removeAllSystems()
 }
 
 /**
@@ -125,4 +133,12 @@ fun Engine.removeAndResetEntity(entity: Entity) {
 
     // Call the default removeEntity() function
     this.removeEntity(entity)
+}
+
+fun <Type : Screen> KtxGame<Type>.setScreen(screen: Type) {
+    if (containsScreen(screen.javaClass)) {
+        removeScreen(screen.javaClass)
+    }
+    addScreen(screen.javaClass, screen)
+    setScreen(screen.javaClass)
 }
