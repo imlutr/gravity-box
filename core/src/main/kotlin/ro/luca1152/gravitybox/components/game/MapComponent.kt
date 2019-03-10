@@ -34,7 +34,6 @@ import ktx.collections.sortBy
 import ro.luca1152.gravitybox.components.editor.DeletedMapObjectComponent
 import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
-import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
@@ -55,14 +54,34 @@ class MapComponent : Component, Poolable {
         const val GRAVITY = -25f
     }
 
-    var widthInTiles = 0
-    var heightInTiles = 0
     var levelId = 0
+    var mapLeft = 0f
+    var mapRight = 0f
+    var mapTop = 0f
+    var mapBottom = 0f
 
-    fun set(widthInTiles: Int, heightInTiles: Int, levelId: Int) {
-        this.widthInTiles = widthInTiles
-        this.heightInTiles = heightInTiles
+    fun set(levelId: Int) {
         this.levelId = levelId
+    }
+
+    fun updateMapBounds(engine: PooledEngine = Injekt.get()) {
+        mapLeft = Float.MAX_VALUE
+        mapRight = Float.MIN_VALUE
+        mapTop = Float.MIN_VALUE
+        mapBottom = Float.MAX_VALUE
+        engine.getEntitiesFor(
+            Family.all(MapObjectComponent::class.java, ImageComponent::class.java).exclude(
+                DeletedMapObjectComponent::class.java
+            ).get()
+        ).forEach {
+            it.image.run {
+                mapLeft = Math.min(mapLeft, leftX)
+                mapRight = Math.max(mapRight, rightX)
+                mapBottom = Math.min(mapBottom, bottomY)
+                mapTop = Math.max(mapTop, topY)
+            }
+        }
+        println("L: $mapLeft | R: $mapRight | T: $mapTop | B: $mapBottom")
     }
 
     fun saveMap() {
@@ -98,8 +117,6 @@ class MapComponent : Component, Poolable {
 
             // Map properties
             writeValue("id", levelId)
-            writeValue("width", widthInTiles.metersToPixels)
-            writeValue("height", heightInTiles.metersToPixels)
 
             // Objects
             player!!.json.writeToJson(this)
@@ -127,15 +144,15 @@ class MapComponent : Component, Poolable {
 
     fun loadMap(
         mapFactory: MapFactory,
-        playerEntity: Entity, finishEntity: Entity,
-        engine: PooledEngine = Injekt.get()
+        playerEntity: Entity, finishEntity: Entity
     ) {
         destroyAllBodies()
         removePlatforms()
-        createMap(mapFactory.width, mapFactory.height, mapFactory.id)
+        createMap(mapFactory.id)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
         createPlatforms(mapFactory.objects)
+        updateMapBounds()
     }
 
     private fun removePlatforms(engine: PooledEngine = Injekt.get()) {
@@ -148,10 +165,8 @@ class MapComponent : Component, Poolable {
         }
     }
 
-    private fun createMap(width: Int, height: Int, id: Int) {
+    private fun createMap(id: Int) {
         levelId = id
-        widthInTiles = width.pixelsToMeters.toInt()
-        heightInTiles = height.pixelsToMeters.toInt()
     }
 
 
@@ -218,8 +233,10 @@ class MapComponent : Component, Poolable {
     override fun reset() {
         destroyAllBodies()
         levelId = 0
-        widthInTiles = 0
-        heightInTiles = 0
+        mapLeft = 0f
+        mapRight = 0f
+        mapTop = 0f
+        mapBottom = 0f
     }
 
     fun destroyAllBodies(world: World = Injekt.get()) {

@@ -66,36 +66,29 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
     }
 
     private fun keepCameraWithinBounds(zoom: Float = 1f) {
-        val mapWidth = levelEntity.map.widthInTiles
-        val mapHeight = levelEntity.map.heightInTiles
-
-        var mapLeft = 0f
-        var mapRight = mapWidth * zoom
-        if (mapWidth * zoom > gameCamera.viewportWidth * zoom) {
-            mapLeft = (-1) * zoom
-            mapRight = (mapWidth + 1) * zoom
-        }
-        val mapBottom = 0 * zoom
-        val mapTop = mapHeight * zoom
         val cameraHalfWidth = gameCamera.viewportWidth / 2f * zoom
         val cameraHalfHeight = gameCamera.viewportHeight / 2f * zoom
+        val mapLeft = (levelEntity.map.mapLeft - cameraHalfWidth) * zoom
+        val mapRight = (levelEntity.map.mapRight + cameraHalfWidth) * zoom
+        val mapBottom = (levelEntity.map.mapBottom - cameraHalfHeight) * zoom
+        val mapTop = (levelEntity.map.mapTop + cameraHalfHeight) * zoom
         val cameraLeft = gameCamera.position.x - cameraHalfWidth
         val cameraRight = gameCamera.position.x + cameraHalfWidth
         val cameraBottom = gameCamera.position.y - cameraHalfHeight
         val cameraTop = gameCamera.position.y + cameraHalfHeight
 
         // Clamp horizontal axis
-        when {
-            gameCamera.viewportWidth * zoom > mapRight -> gameCamera.position.x = mapRight / 2f
-            cameraLeft <= mapLeft -> gameCamera.position.x = mapLeft + cameraHalfWidth
-            cameraRight >= mapRight -> gameCamera.position.x = mapRight - cameraHalfWidth
+        if (cameraLeft <= mapLeft && mapLeft + 2 * cameraHalfWidth < mapRight) {
+            gameCamera.position.x = mapLeft + cameraHalfWidth
+        } else if (cameraRight >= mapRight) {
+            gameCamera.position.x = mapRight - cameraHalfWidth
         }
 
         // Clamp vertical axis
-        when {
-            gameCamera.viewportHeight * zoom > mapTop -> gameCamera.position.y = mapTop / 2f
-            cameraBottom <= mapBottom -> gameCamera.position.y = mapBottom + cameraHalfHeight
-            cameraTop >= mapTop -> gameCamera.position.y = mapTop - cameraHalfHeight
+        if (cameraTop >= mapTop && mapTop - 2 * cameraHalfHeight > mapBottom) {
+            gameCamera.position.y = mapTop - cameraHalfHeight
+        } else if (cameraBottom <= mapBottom) {
+            gameCamera.position.y = mapBottom + cameraHalfHeight
         }
     }
 

@@ -21,10 +21,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
-import ro.luca1152.gravitybox.components.game.LevelComponent
-import ro.luca1152.gravitybox.components.game.PlayerComponent
-import ro.luca1152.gravitybox.components.game.body
-import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 
 /** Marks the level as to be restarted when the player is off-screen. */
@@ -32,7 +29,7 @@ class OffScreenLevelRestartSystem : EntitySystem() {
     private lateinit var playerEntity: Entity
     private lateinit var levelEntity: Entity
     private val playerIsOffScreen
-        get() = playerEntity.body.body.worldCenter.y < -10f
+        get() = levelEntity.map.mapBottom + playerEntity.body.body.worldCenter.y < -10f
 
     override fun addedToEngine(engine: Engine) {
         playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())

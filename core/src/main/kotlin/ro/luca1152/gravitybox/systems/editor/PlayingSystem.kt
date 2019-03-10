@@ -72,6 +72,7 @@ class PlayingSystem(
         removeAllSystems(includingThisSystem = false)
         addPlaySystems()
         showPlayUI()
+        updateMapBounds()
     }
 
     private fun setOwnBox2DContactListener() {
@@ -140,6 +141,10 @@ class PlayingSystem(
     private fun showPlayUI() {
         rootTable.add(createBackButton()).expand().bottom().left()
         uiStage.addActor(rootTable)
+    }
+
+    private fun updateMapBounds() {
+        levelEntity.map.updateMapBounds()
     }
 
     private fun createBackButton() = ClickButton(skin, "small-button").apply {
