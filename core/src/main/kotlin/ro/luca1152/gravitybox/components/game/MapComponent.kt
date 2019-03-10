@@ -55,14 +55,33 @@ class MapComponent : Component, Poolable {
         const val GRAVITY = -25f
     }
 
+    var levelId = 0
     var widthInTiles = 0
     var heightInTiles = 0
-    var levelId = 0
+    var mapLeft = 0f
+    var mapRight = 0f
+    var mapTop = 0f
+    var mapBottom = 0f
 
     fun set(widthInTiles: Int, heightInTiles: Int, levelId: Int) {
         this.widthInTiles = widthInTiles
         this.heightInTiles = heightInTiles
         this.levelId = levelId
+    }
+
+    fun updateMapBounds(engine: PooledEngine = Injekt.get()) {
+        mapLeft = 0f
+        mapRight = 0f
+        mapTop = 0f
+        mapBottom = 0f
+        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java, ImageComponent::class.java).get()).forEach {
+            it.image.run {
+                mapLeft = Math.min(mapLeft, leftX)
+                mapRight = Math.max(mapRight, rightX)
+                mapBottom = Math.min(mapBottom, bottomY)
+                mapTop = Math.max(mapTop, topY)
+            }
+        }
     }
 
     fun saveMap() {
@@ -127,8 +146,7 @@ class MapComponent : Component, Poolable {
 
     fun loadMap(
         mapFactory: MapFactory,
-        playerEntity: Entity, finishEntity: Entity,
-        engine: PooledEngine = Injekt.get()
+        playerEntity: Entity, finishEntity: Entity
     ) {
         destroyAllBodies()
         removePlatforms()
@@ -220,6 +238,10 @@ class MapComponent : Component, Poolable {
         levelId = 0
         widthInTiles = 0
         heightInTiles = 0
+        mapLeft = 0f
+        mapRight = 0f
+        mapTop = 0f
+        mapBottom = 0f
     }
 
     fun destroyAllBodies(world: World = Injekt.get()) {
