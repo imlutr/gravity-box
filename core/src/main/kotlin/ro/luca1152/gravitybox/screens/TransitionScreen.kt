@@ -40,13 +40,13 @@ class TransitionScreen(
     private val engine: PooledEngine = Injekt.get()
 ) : KtxScreen {
     companion object {
-        private const val FADE_DURATION = .75f
+        private const val FADE_DURATION = .5f
     }
 
-    private var screenIsHidden = false
+    private var transitionScreenIsHidden = false
     private var currentScreen = game.shownScreen
     private val finishedFadingOut
-        get() = uiStage.actors.size == 0 && gameStage.actors.size == 0 && overlayStage.actors.size == 0
+        get() = uiStage.batch.color.a == 0f
 
     init {
         fadeOutEverything()
@@ -55,48 +55,30 @@ class TransitionScreen(
     private fun fadeOutEverything() {
         if (fadeOutCurrentScreen) {
             uiStage.addAction(Actions.sequence(
-                Actions.fadeOut(FADE_DURATION),
-                Actions.run {
-                    uiStage.clear()
-                }
+                Actions.fadeOut(FADE_DURATION)
             ))
             gameStage.addAction(Actions.sequence(
-                Actions.fadeOut(FADE_DURATION),
-                Actions.run {
-                    gameStage.clear()
-                }
+                Actions.fadeOut(FADE_DURATION)
             ))
             overlayStage.addAction(Actions.sequence(
-                Actions.fadeOut(FADE_DURATION),
-                Actions.run {
-                    overlayStage.clear()
-                }
+                Actions.fadeOut(FADE_DURATION)
             ))
-        } else {
-            uiStage.clear()
-            gameStage.clear()
-            overlayStage.clear()
-
-            // Fade everything out so the fade in will work
-            uiStage.addAction(Actions.fadeOut(0f))
-            gameStage.addAction(Actions.fadeOut(0f))
-            overlayStage.addAction(Actions.fadeOut(0f))
         }
     }
 
     override fun render(delta: Float) {
-        update(delta)
+        update()
         clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
-        if (!screenIsHidden) {
+        if (!transitionScreenIsHidden) {
             currentScreen.render(delta)
         }
     }
 
-    private fun update(delta: Float) {
-        uiStage.act(delta)
-        gameStage.act(delta)
-        overlayStage.act(delta)
-        if (finishedFadingOut) {
+    private fun update() {
+        if (finishedFadingOut || !fadeOutCurrentScreen) {
+            uiStage.clear()
+            gameStage.clear()
+            overlayStage.clear()
             engine.clear()
             game.setScreen(nextScreen)
             fadeInEverything()
@@ -104,12 +86,15 @@ class TransitionScreen(
     }
 
     private fun fadeInEverything() {
+        uiStage.addAction(Actions.fadeOut(0f))
+        gameStage.addAction(Actions.fadeOut(0f))
+        overlayStage.addAction(Actions.fadeOut(0f))
         uiStage.addAction(Actions.fadeIn(FADE_DURATION))
         gameStage.addAction(Actions.fadeIn(FADE_DURATION))
         overlayStage.addAction(Actions.fadeIn(FADE_DURATION))
     }
 
     override fun hide() {
-        screenIsHidden = true
+        transitionScreenIsHidden = true
     }
 }

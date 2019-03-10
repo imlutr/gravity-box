@@ -535,11 +535,5 @@ class LevelEditorScreen(
 
     override fun hide() {
         screenIsHidden = true
-        engine.removeAllSystems(arrayListOf(ImageRenderingSystem::class.java, GridRenderingSystem::class.java))
-    }
-
-    override fun dispose() {
-        uiStage.dispose()
-        gameStage.dispose()
     }
 }
