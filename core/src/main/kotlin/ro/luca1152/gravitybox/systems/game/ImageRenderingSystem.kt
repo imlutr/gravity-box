@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.systems.game
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.EntitySystem
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import uy.kohesive.injekt.Injekt
@@ -27,5 +28,9 @@ class ImageRenderingSystem(private val gameStage: GameStage = Injekt.get()) : En
     override fun update(deltaTime: Float) {
         gameStage.act()
         gameStage.draw()
+    }
+
+    override fun removedFromEngine(engine: Engine?) {
+        gameStage.clear()
     }
 }

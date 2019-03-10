@@ -34,6 +34,7 @@ import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.setScreen
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.HorizontalSlidingPane
@@ -44,7 +45,8 @@ import kotlin.math.roundToInt
 
 class LevelSelectorScreen(
     manager: AssetManager = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get()
+    private val uiStage: UIStage = Injekt.get(),
+    private val game: MyGame = Injekt.get()
 ) : KtxScreen {
     companion object {
         var chosenLevel = 0
@@ -83,12 +85,7 @@ class LevelSelectorScreen(
         iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addClickRunnable(Runnable {
-            uiStage.addAction(
-                sequence(
-                    fadeOut(.5f),
-                    run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
-                )
-            )
+            game.setScreen(TransitionScreen(MainMenuScreen::class.java))
         })
     }
     private val levelEditorButton = ClickButton(skin, "small-button").apply {
@@ -96,12 +93,7 @@ class LevelSelectorScreen(
         iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addClickRunnable(Runnable {
-            uiStage.addAction(
-                sequence(
-                    fadeOut(.5f),
-                    run(Runnable { Injekt.get<MyGame>().setScreen<LevelEditorScreen>() })
-                )
-            )
+            game.setScreen(TransitionScreen(LevelEditorScreen::class.java))
         })
     }
     private val topRow = Table().apply {
@@ -143,8 +135,8 @@ class LevelSelectorScreen(
         top().padTop(18f)
         val numberLabel =
             DistanceFieldLabel(level.toString(), skin, "extra-bold", 57f, ColorScheme.currentDarkColor).apply {
-            this@button.add(this).expand().center().row()
-        }
+                this@button.add(this).expand().center().row()
+            }
         val stars = createLevelButtonStars().apply {
             this@button.add(this).bottom().padBottom(23f)
         }
@@ -178,12 +170,7 @@ class LevelSelectorScreen(
                 setAllColors(ColorScheme.currentDarkColor)
                 if (!horizontalSlidingPane.isPanning && isOver(this@button, x, y)) {
                     chosenLevel = Math.min(level, MyGame.LEVELS_NUMBER)
-                    uiStage.addAction(
-                        sequence(
-                            fadeOut(.5f),
-                            run(Runnable { Injekt.get<MyGame>().setScreen<PlayScreen>() })
-                        )
-                    )
+                    game.setScreen(TransitionScreen(PlayScreen::class.java))
                 }
             }
         })
@@ -191,12 +178,7 @@ class LevelSelectorScreen(
 
     override fun show() {
         uiStage.addActor(rootTable)
-        fadeEverythingIn()
         overrideBackKey()
-    }
-
-    private fun fadeEverythingIn() {
-        uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
     }
 
     private fun overrideBackKey() {
@@ -205,12 +187,9 @@ class LevelSelectorScreen(
             inputProcessor = InputMultiplexer(uiStage, object : InputAdapter() {
                 override fun keyDown(keycode: Int): Boolean {
                     if (keycode == Input.Keys.BACK) {
-                        uiStage.addAction(
-                            sequence(
-                                fadeOut(.5f),
-                                run(Runnable { Injekt.get<MyGame>().setScreen<MainMenuScreen>() })
-                            )
-                        )
+                        run(Runnable {
+                            game.setScreen(TransitionScreen(MainMenuScreen::class.java))
+                        })
                     }
                     return false
                 }
@@ -238,9 +217,5 @@ class LevelSelectorScreen(
             horizontalSlidingPane.currentPage.roundToInt() == horizontalSlidingPane.pageCount -> false
             else -> true
         }
-    }
-
-    override fun hide() {
-        uiStage.clear()
     }
 }

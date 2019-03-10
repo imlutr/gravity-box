@@ -33,13 +33,16 @@ import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.assets.TextLoader
+import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.setScreen
 import ro.luca1152.gravitybox.utils.ui.ColorScheme.currentLightColor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class LoadingScreen(
     private val manager: AssetManager = Injekt.get(),
-    private val game: MyGame = Injekt.get()
+    private val game: MyGame = Injekt.get(),
+    private val uiStage: UIStage = Injekt.get()
 ) : KtxScreen {
     private var loadingAssetsTimer = 0f
     private val finishedLoadingAssets
@@ -101,11 +104,12 @@ class LoadingScreen(
 
     private fun update(delta: Float) {
         loadingAssetsTimer += delta
+        uiStage.act()
         if (finishedLoadingAssets) {
             logLoadingTime()
             smoothTextures()
             addScreens()
-            game.setScreen<MainMenuScreen>()
+            game.setScreen(TransitionScreen(MainMenuScreen::class.java, false))
         }
     }
 

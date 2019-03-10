@@ -31,7 +31,6 @@ import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
-import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.ui.ColorScheme.currentLightColor
 import uy.kohesive.injekt.Injekt
@@ -40,7 +39,6 @@ import uy.kohesive.injekt.api.get
 class PlayScreen(
     private val engine: PooledEngine = Injekt.get(),
     private val gameViewport: GameViewport = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get(),
     private val world: World = Injekt.get(),
     private val inputMultiplexer: InputMultiplexer = Injekt.get()
 ) : KtxScreen {
@@ -103,7 +101,8 @@ class PlayScreen(
         gameViewport.update(width, height, true)
     }
 
-    override fun dispose() {
-        gameStage.dispose()
+    override fun hide() {
+        world.setContactListener(null)
+        Gdx.input.inputProcessor = null
     }
 }

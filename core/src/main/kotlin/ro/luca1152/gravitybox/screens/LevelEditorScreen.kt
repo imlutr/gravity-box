@@ -24,7 +24,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -79,7 +78,8 @@ class LevelEditorScreen(
     private val gameViewport: GameViewport = Injekt.get(),
     private val gameCamera: GameCamera = Injekt.get(),
     private val uiStage: UIStage = Injekt.get(),
-    private val inputMultiplexer: InputMultiplexer = Injekt.get()
+    private val inputMultiplexer: InputMultiplexer = Injekt.get(),
+    private val game: MyGame = Injekt.get()
 ) : KtxScreen {
     private val skin = manager.get<Skin>("skins/uiskin.json")
     private val toggledButton = Reference<ToggleButton>()
@@ -121,12 +121,7 @@ class LevelEditorScreen(
         setToggledButtonReference(this@LevelEditorScreen.toggledButton)
         setToggleOffEveryOtherButton(true)
         addClickRunnable(Runnable {
-            uiStage.addAction(
-                sequence(
-                    fadeOut(.5f),
-                    run(Runnable { Injekt.get<MyGame>().setScreen<LevelSelectorScreen>() })
-                )
-            )
+            game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
         })
         setOpaque(true)
     }
@@ -262,9 +257,6 @@ class LevelEditorScreen(
         Injekt.run {
             addSingleton(gameEventSignal)
             addSingleton(skin)
-            addSingleton(OverlayCamera)
-            addSingleton(OverlayViewport)
-            addSingleton(OverlayStage)
         }
     }
 
@@ -469,13 +461,7 @@ class LevelEditorScreen(
     }
 
     private fun createUI() {
-        fadeEverythingIn()
         handleUIInput()
-    }
-
-    private fun fadeEverythingIn() {
-        uiStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
-        gameStage.addAction(sequence(fadeOut(0f), fadeIn(1f)))
     }
 
     private fun handleUIInput() {
@@ -489,11 +475,11 @@ class LevelEditorScreen(
 
     private fun update(delta: Float) {
         uiStage.act(delta)
-        if (screenIsHidden)
-            return
         engine.update(delta)
         gameStage.camera.update()
-        updateUndoRedoButtonsColor()
+        if (!screenIsHidden) {
+            updateUndoRedoButtonsColor()
+        }
         updatePopUps()
     }
 
@@ -549,15 +535,5 @@ class LevelEditorScreen(
 
     override fun hide() {
         screenIsHidden = true
-        engine.run {
-            removeAllSystems()
-            removeAllEntities()
-        }
-        uiStage.clear()
-    }
-
-    override fun dispose() {
-        uiStage.dispose()
-        gameStage.dispose()
     }
 }
