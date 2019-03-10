@@ -86,7 +86,7 @@ class PlayScreen(
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
-            addSystem(PhysicsDebugRenderingSystem())
+//            addSystem(PhysicsDebugRenderingSystem())
         }
     }
 

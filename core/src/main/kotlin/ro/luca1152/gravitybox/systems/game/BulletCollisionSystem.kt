@@ -37,10 +37,12 @@ import uy.kohesive.injekt.api.get
 class BulletCollisionSystem(private val world: World = Injekt.get()) :
     IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
     private lateinit var playerEntity: Entity
+    private lateinit var finishEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         super.addedToEngine(engine)
         playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
+        finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
     }
 
     override fun processEntity(bullet: Entity, deltaTime: Float) {
@@ -55,7 +57,7 @@ class BulletCollisionSystem(private val world: World = Injekt.get()) :
     private fun applyBlastImpulse(bullet: Body) {
         val playerBody = playerEntity.body.body
         val closestBody = getClosestBodyToExplosion(bullet.worldCenter, playerBody.worldCenter)
-        if (noObstacleFoundBetween(closestBody, playerBody))
+        if (noObstacleFoundBetween(closestBody))
             playerBody.applyBlastImpulse(bullet.worldCenter, playerBody.worldCenter, 150f)
     }
 
@@ -68,8 +70,8 @@ class BulletCollisionSystem(private val world: World = Injekt.get()) :
         return closestBody
     }
 
-    private fun noObstacleFoundBetween(closestBody: Body?, playerBody: Body) =
-        closestBody == playerBody || closestBody == null
+    private fun noObstacleFoundBetween(closestBody: Body?) =
+        closestBody == playerEntity.body.body || closestBody == finishEntity.body.body || closestBody == null
 
     private fun Body.applyBlastImpulse(blastCenter: Vector2, applyPoint: Vector2, blastPower: Float) {
         // Apply only on dynamic bodies so the impulse has an effect
