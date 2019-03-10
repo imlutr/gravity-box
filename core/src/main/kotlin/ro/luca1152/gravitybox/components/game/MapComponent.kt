@@ -154,6 +154,7 @@ class MapComponent : Component, Poolable {
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
         createPlatforms(mapFactory.objects)
+        updateMapBounds()
     }
 
     private fun removePlatforms(engine: PooledEngine = Injekt.get()) {
