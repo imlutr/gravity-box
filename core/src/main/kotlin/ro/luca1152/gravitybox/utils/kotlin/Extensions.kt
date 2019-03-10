@@ -100,10 +100,11 @@ fun Engine.getSingletonFor(family: Family): Entity {
     return entitiesFound.first()
 }
 
-fun Engine.removeAllSystems() {
+fun Engine.removeAllSystems(except: ArrayList<Class<out EntitySystem>> = ArrayList()) {
     val systemsToRemove = Array<EntitySystem>()
     systems.forEach {
-        systemsToRemove.add(it)
+        if (!except.contains(it.javaClass))
+            systemsToRemove.add(it)
     }
     systemsToRemove.forEach {
         it.engine.removeSystem(it)

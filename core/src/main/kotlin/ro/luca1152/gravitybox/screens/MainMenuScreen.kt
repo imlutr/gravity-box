@@ -27,13 +27,15 @@ import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.setScreen
 import ro.luca1152.gravitybox.utils.ui.ColorScheme
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class MainMenuScreen(
-    private val manager: AssetManager = Injekt.get(),
+    manager: AssetManager = Injekt.get(),
+    game: MyGame = Injekt.get(),
     private val uiStage: UIStage = Injekt.get()
 ) : KtxScreen {
     private val skin = manager.get<Skin>("skins/uiskin.json")
@@ -54,14 +56,7 @@ class MainMenuScreen(
         }
         setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
         addClickRunnable(Runnable {
-            uiStage.addAction(
-                sequence(
-                    fadeOut(.5f),
-                    run(Runnable {
-                        Injekt.get<MyGame>().setScreen<LevelSelectorScreen>()
-                    })
-                )
-            )
+            game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
         })
     }
     private val logo = Table().apply {
@@ -90,17 +85,7 @@ class MainMenuScreen(
 
     override fun show() {
         uiStage.addActor(rootTable)
-        fadeEverythingIn()
         handleInput()
-    }
-
-    private fun fadeEverythingIn() {
-        uiStage.addAction(
-            sequence(
-                fadeOut(0f),
-                fadeIn(.5f)
-            )
-        )
     }
 
     private fun handleInput() {
@@ -115,9 +100,5 @@ class MainMenuScreen(
 
     private fun update(delta: Float) {
         uiStage.act(delta)
-    }
-
-    override fun hide() {
-        uiStage.clear()
     }
 }
