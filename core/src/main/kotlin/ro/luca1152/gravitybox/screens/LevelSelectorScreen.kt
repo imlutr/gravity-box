@@ -31,11 +31,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.app.KtxScreen
-import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.clearScreen
 import ro.luca1152.gravitybox.utils.kotlin.setScreen
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.HorizontalSlidingPane
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
@@ -54,11 +54,11 @@ class LevelSelectorScreen(
 
     private val skin = manager.get<Skin>("skins/uiskin.json")
     private val bigEmptyStar = Image(skin, "big-empty-star").apply {
-        color = ColorScheme.currentDarkColor
+        color = Colors.gameColor
     }
-    private val starsCountLabel = DistanceFieldLabel("0/45", skin, "bold", 65f, ColorScheme.currentDarkColor)
+    private val starsCountLabel = DistanceFieldLabel("0/45", skin, "bold", 65f, Colors.gameColor)
     private val leftArrow = Image(skin.getDrawable("left-arrow-icon")).apply {
-        color = ColorScheme.currentDarkColor
+        color = Colors.gameColor
         isVisible = false
     }
     private val horizontalSlidingPane = HorizontalSlidingPane(uiStage.camera.viewportWidth, 1000f).apply {
@@ -78,12 +78,12 @@ class LevelSelectorScreen(
         }
     }
     private val rightArrow = Image(skin.getDrawable("right-arrow-icon")).apply {
-        color = ColorScheme.currentDarkColor
+        color = Colors.gameColor
     }
     private val backButton = ClickButton(skin, "small-button").apply {
         addIcon("back-icon")
         iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         addClickRunnable(Runnable {
             game.setScreen(TransitionScreen(MainMenuScreen::class.java))
         })
@@ -91,7 +91,7 @@ class LevelSelectorScreen(
     private val levelEditorButton = ClickButton(skin, "small-button").apply {
         addIcon("pencil-icon")
         iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         addClickRunnable(Runnable {
             game.setScreen(TransitionScreen(LevelEditorScreen::class.java))
         })
@@ -121,7 +121,7 @@ class LevelSelectorScreen(
     private fun createLevelButtonStars(): Table {
         val stars = Table()
         for (i in 0 until 3) {
-            val star = Image(skin, "empty-star").apply { color = ColorScheme.currentDarkColor }
+            val star = Image(skin, "empty-star").apply { color = Colors.gameColor }
             stars.add(star).spaceRight(3f)
         }
         return stars
@@ -131,10 +131,10 @@ class LevelSelectorScreen(
         level: Int,
         horizontalSlidingPane: HorizontalSlidingPane
     ) = Button(skin, "small-button").apply button@{
-        color = ColorScheme.currentDarkColor
+        color = Colors.gameColor
         top().padTop(18f)
         val numberLabel =
-            DistanceFieldLabel(level.toString(), skin, "extra-bold", 57f, ColorScheme.currentDarkColor).apply {
+            DistanceFieldLabel(level.toString(), skin, "extra-bold", 57f, Colors.gameColor).apply {
                 this@button.add(this).expand().center().row()
             }
         val stars = createLevelButtonStars().apply {
@@ -149,7 +149,7 @@ class LevelSelectorScreen(
 
         addAction(forever(run(Runnable {
             if (horizontalSlidingPane.isPanning)
-                setAllColors(ColorScheme.currentDarkColor)
+                setAllColors(Colors.gameColor)
         })))
 
         addListener(object : ClickListener() {
@@ -159,7 +159,7 @@ class LevelSelectorScreen(
                         delay(.05f),
                         run(Runnable {
                             if (!horizontalSlidingPane.isPanning)
-                                setAllColors(ColorScheme.darkerDarkColor)
+                                setAllColors(Colors.uiDownColor)
                         })
                     )
                 )
@@ -167,7 +167,7 @@ class LevelSelectorScreen(
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                setAllColors(ColorScheme.currentDarkColor)
+                setAllColors(Colors.gameColor)
                 if (!horizontalSlidingPane.isPanning && isOver(this@button, x, y)) {
                     chosenLevel = Math.min(level, MyGame.LEVELS_NUMBER)
                     game.setScreen(TransitionScreen(PlayScreen::class.java))
@@ -199,7 +199,7 @@ class LevelSelectorScreen(
 
     override fun render(delta: Float) {
         update(delta)
-        clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
+        clearScreen(Colors.bgColor)
         uiStage.draw()
     }
 

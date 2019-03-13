@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool
 import ktx.app.KtxGame
+import ktx.app.clearScreen
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -142,4 +143,8 @@ fun <Type : Screen> KtxGame<Type>.setScreen(screen: Type) {
     }
     addScreen(screen.javaClass, screen)
     setScreen(screen.javaClass)
+}
+
+fun clearScreen(color: Color) {
+    clearScreen(color.r, color.g, color.b, 1f)
 }

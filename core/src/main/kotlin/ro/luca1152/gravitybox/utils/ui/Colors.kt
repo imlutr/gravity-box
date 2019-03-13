@@ -21,31 +21,40 @@ import com.badlogic.gdx.graphics.Color
 
 /**
  * Contains every color used in the game. The color variable names follow the structure
- * [word]-[V], where the V value is the value of the color's HSV (hue, saturation, value) representation.
+ * ```[word]-[V value]```, where the V value is the value of the color's HSV (hue, saturation, value) representation.
  *
  * The higher the V is, the lighter the color is.
  */
-object Color {
+object Colors {
     /**
-     * The hue of the game's color scheme, as every color is based on this hue.
+     * The hue of the game's color scheme, as every color is generated based on this hue.
      * Has values in [0, 360]. Its default value is [180], which is the hue of cyan.
      */
     var hue = 180
         set(value) {
             field = value
-            updateAllColors()
+            resetAllColors()
         }
+    var useDarkTheme = false
 
-    private fun updateAllColors() {
-        LightTheme.run {
-            game91 = generateGame91Color(hue)
-            game57 = generateGame57Color(hue)
-            game29 = generateGame29Color(hue)
-        }
-        DarkTheme.run {
-            game20 = generateGame20Color(hue)
-            game95 = generateGame95Color(hue)
-        }
+    var bgColor = Color()
+    var gameColor = Color()
+    var uiDownColor = Color()
+
+    init {
+        resetAllColors()
+    }
+
+    fun resetAllColors() {
+        LightTheme.resetAllColors(hue)
+        DarkTheme.resetAllColors(hue)
+        updateNamedColors()
+    }
+
+    private fun updateNamedColors() {
+        bgColor = if (useDarkTheme) DarkTheme.game20.cpy() else LightTheme.game91.cpy()
+        gameColor = if (useDarkTheme) DarkTheme.game95.cpy() else LightTheme.game57.cpy()
+        uiDownColor = if (useDarkTheme) LightTheme.game29.cpy() else LightTheme.game29.cpy()
     }
 
     object LightTheme {
@@ -61,16 +70,28 @@ object Color {
 
         fun generateGame29Color(hue: Int) =
             Color().fromHsv(hue.toFloat(), 55f / 100f, 29f / 100f).apply { a = 1f }!!
+
+        fun resetAllColors(hue: Int) {
+            game91 = generateGame91Color(hue)
+            game57 = generateGame57Color(hue)
+            game29 = generateGame29Color(hue)
+        }
     }
 
     object DarkTheme {
         var game20 = generateGame20Color(hue)
         var game95 = generateGame95Color(hue)
+        // TODO: Add dark UI down color
 
         fun generateGame20Color(hue: Int) =
             Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f).apply { a = 1f }!!
 
         fun generateGame95Color(hue: Int) =
             Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f).apply { a = 1f }!!
+
+        fun resetAllColors(hue: Int) {
+            game20 = generateGame20Color(hue)
+            game95 = generateGame95Color(hue)
+        }
     }
 }

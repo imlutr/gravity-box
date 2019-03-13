@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.Color
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.player
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Gradually changes the color scheme when the player enters/leaves the finish point. */
 class FinishPointColorSystem : IntervalSystem(1 / 70f) {
@@ -34,10 +34,30 @@ class FinishPointColorSystem : IntervalSystem(1 / 70f) {
     }
 
     private lateinit var playerEntity: Entity
-    private val targetDarkColor: Color
-        get() = if (playerEntity.player.isInsideFinishPoint) ColorScheme.darkColor2 else ColorScheme.darkColor
-    private val targetLightColor: Color
-        get() = if (playerEntity.player.isInsideFinishPoint) ColorScheme.lightColor2 else ColorScheme.lightColor
+
+    private val targetGameColor: Color
+        get() = when (playerEntity.player.isInsideFinishPoint) {
+            true -> when (Colors.useDarkTheme) {
+                true -> Colors.LightTheme.game57
+                false -> Colors.DarkTheme.game95
+            }
+            false -> when (Colors.useDarkTheme) {
+                true -> Colors.DarkTheme.game95
+                false -> Colors.LightTheme.game57
+            }
+        }
+
+    private val targetBgColor: Color
+        get() = when (playerEntity.player.isInsideFinishPoint) {
+            true -> when (Colors.useDarkTheme) {
+                true -> Colors.LightTheme.game91
+                false -> Colors.DarkTheme.game20
+            }
+            false -> when (Colors.useDarkTheme) {
+                true -> Colors.DarkTheme.game20
+                false -> Colors.LightTheme.game91
+            }
+        }
 
     override fun addedToEngine(engine: Engine) {
         playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
@@ -48,7 +68,7 @@ class FinishPointColorSystem : IntervalSystem(1 / 70f) {
     }
 
     private fun lerpColors() {
-        ColorScheme.currentDarkColor.lerp(targetDarkColor, LERP_PROGRESS)
-        ColorScheme.currentLightColor.lerp(targetLightColor, LERP_PROGRESS)
+        Colors.bgColor.lerp(targetBgColor, LERP_PROGRESS)
+        Colors.gameColor.lerp(targetGameColor, LERP_PROGRESS)
     }
 }

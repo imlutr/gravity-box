@@ -24,11 +24,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.app.KtxScreen
-import ktx.app.clearScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.clearScreen
 import ro.luca1152.gravitybox.utils.kotlin.setScreen
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -40,7 +40,7 @@ class MainMenuScreen(
 ) : KtxScreen {
     private val skin = manager.get<Skin>("skins/uiskin.json")
     private val logoImage = Image(skin, "gravity-box").apply {
-        color = ColorScheme.currentDarkColor
+        color = Colors.gameColor
     }
     private val playButton = ClickButton(skin, "big-button").apply {
         addIcon("play-button-empty").run {
@@ -54,7 +54,7 @@ class MainMenuScreen(
                 )
             )
         }
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         addClickRunnable(Runnable {
             game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
         })
@@ -65,11 +65,11 @@ class MainMenuScreen(
     }
     private val rateButton = ClickButton(skin, "small-button").apply {
         addIcon("heart-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
     }
     private val settingsButton = ClickButton(skin, "small-button").apply {
         addIcon("settings-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
     }
     private val bottomRow = Table().apply {
         add(rateButton).expandX().left()
@@ -94,7 +94,7 @@ class MainMenuScreen(
 
     override fun render(delta: Float) {
         update(delta)
-        clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
+        clearScreen(Colors.bgColor)
         uiStage.draw()
     }
 

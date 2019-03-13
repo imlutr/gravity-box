@@ -22,7 +22,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxScreen
-import ktx.app.clearScreen
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
@@ -32,7 +31,8 @@ import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
-import ro.luca1152.gravitybox.utils.ui.ColorScheme.currentLightColor
+import ro.luca1152.gravitybox.utils.kotlin.clearScreen
+import ro.luca1152.gravitybox.utils.ui.Colors
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -93,7 +93,7 @@ class PlayScreen(
     }
 
     override fun render(delta: Float) {
-        clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
+        clearScreen(Colors.bgColor)
         engine.update(delta)
     }
 

@@ -36,7 +36,7 @@ import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -150,14 +150,14 @@ class PlayingSystem(
     private fun createBackButton() = ClickButton(skin, "small-button").apply {
         addIcon("back-icon")
         iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         addClickRunnable(Runnable {
             removeAllSystems(true)
         })
     }
 
     override fun removedFromEngine(engine: Engine) {
-        resetColorScheme()
+        Colors.resetAllColors()
         hidePlayUI()
         showLevelEditorUI()
         enableMoveTool()
@@ -211,11 +211,6 @@ class PlayingSystem(
         entitiesToRemove.forEach {
             engine.removeAndResetEntity(it)
         }
-    }
-
-    private fun resetColorScheme() {
-        ColorScheme.currentDarkColor.set(ColorScheme.darkColor)
-        ColorScheme.currentLightColor.set(ColorScheme.lightColor)
     }
 
     private fun showLevelEditorUI() {

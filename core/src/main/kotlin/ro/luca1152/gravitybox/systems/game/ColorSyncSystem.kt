@@ -23,16 +23,16 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.Color
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Syncs the [ImageComponent]'s color with the [ColorScheme]. */
 class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, ColorComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         entity.image.color.setWithoutAlpha(
             when (entity.color.colorType) {
-                ColorType.LIGHT -> ColorScheme.currentLightColor
-                ColorType.DARK -> ColorScheme.currentDarkColor
-                ColorType.DARKER_DARK -> ColorScheme.darkerDarkColor
+                ColorType.LIGHT -> Colors.bgColor
+                ColorType.DARK -> Colors.gameColor
+                ColorType.DARKER_DARK -> Colors.uiDownColor
                 else -> Color.RED
             }
         )

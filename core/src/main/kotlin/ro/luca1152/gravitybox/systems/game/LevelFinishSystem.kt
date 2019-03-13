@@ -27,7 +27,7 @@ import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.player
 import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Handles what happens when a level is finished. */
 class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) : EntitySystem() {
@@ -38,7 +38,8 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
     // is the same as the dark color scheme, then it means that the level was finished. I should change
     // this in the future.
     private val colorSchemeIsFullyTransitioned
-        get() = ColorScheme.currentDarkColor.approxEqualTo(ColorScheme.darkColor2)
+        get() = (Colors.useDarkTheme && Colors.gameColor.approxEqualTo(Colors.LightTheme.game57))
+                || (!Colors.useDarkTheme && Colors.gameColor.approxEqualTo(Colors.DarkTheme.game95))
     private val levelIsFinished
         get() = playerEntity.player.isInsideFinishPoint && colorSchemeIsFullyTransitioned
 

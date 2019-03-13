@@ -23,9 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ro.luca1152.gravitybox.utils.kotlin.Reference
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 
-/** Own extension of the [Button] class. */
+/** My own extension of the [Button] class. */
 abstract class Button(
     skin: Skin,
     private val styleName: String
@@ -38,13 +38,35 @@ abstract class Button(
     var type = ButtonType.DEFAULT_BUTTON_TYPE
     var upColor: Color = Color.WHITE
     var downColor: Color = Color.WHITE
+    var syncColorsWithColorScheme = true
 
     init {
         setOrigin(width / 2f, height / 2f)
     }
 
-    /** Set the colors for when the button is down (clicked) and up.     */
     abstract fun setColors(upColor: Color, downColor: Color)
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        if (syncColorsWithColorScheme)
+            syncColors()
+    }
+
+    private fun syncColors() {
+        // TODO: use downColor and upColor instead of referencing colors directly
+        when (isPressed) {
+            true -> {
+                color = Colors.uiDownColor
+                icon?.color = Colors.uiDownColor
+                opaqueImage?.color = Colors.bgColor
+            }
+            false -> {
+                color = Colors.gameColor
+                icon?.color = Colors.gameColor
+                opaqueImage?.color = Colors.bgColor
+            }
+        }
+    }
 
     /**
      * Adds an icon which is centered in the button.
@@ -87,7 +109,7 @@ abstract class Button(
                     this@Button.width / 2f - width / 2f,
                     this@Button.width / 2f - height / 2f
                 )
-                color = ColorScheme.currentLightColor
+                color = Colors.bgColor
             }
             addActor(opaqueImage)
 
