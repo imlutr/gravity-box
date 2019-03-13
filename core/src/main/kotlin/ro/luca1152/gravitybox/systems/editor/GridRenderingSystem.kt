@@ -30,7 +30,7 @@ import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -44,7 +44,7 @@ class GridRenderingSystem(
         private const val GRID_END_POSITION = 500
         private const val GRID_LENGTH = GRID_END_POSITION - GRID_START_POSITION
         private val LINE_THICKNESS = 2f.pixelsToMeters
-        private val LINE_COLOR = ColorScheme.currentDarkColor.copy(alpha = .2f)
+        private val LINE_COLOR = Colors.gameColor.copy(alpha = .2f)
     }
 
     private val gridGroup = Group()

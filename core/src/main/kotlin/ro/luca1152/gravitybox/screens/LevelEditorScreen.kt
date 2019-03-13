@@ -32,7 +32,6 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.app.KtxScreen
-import ktx.app.clearScreen
 import ktx.collections.contains
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.editor.undoRedo
@@ -55,7 +54,7 @@ import ro.luca1152.gravitybox.systems.game.UpdateGameCameraSystem
 import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.json.MapFactory
 import ro.luca1152.gravitybox.utils.kotlin.*
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
@@ -85,30 +84,32 @@ class LevelEditorScreen(
     private val toggledButton = Reference<ToggleButton>()
     private val undoButton = ClickButton(skin, "small-button").apply {
         addIcon("undo-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
+        syncColorsWithColorScheme = false
         addClickRunnable(Runnable {
             undoRedoEntity.undoRedo.undo()
         })
     }
     private val redoButton = ClickButton(skin, "small-button").apply {
         addIcon("redo-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
+        syncColorsWithColorScheme = false
         addClickRunnable(Runnable {
             undoRedoEntity.undoRedo.redo()
         })
     }
     private val placeToolButton = ToggleButton(skin, "small-button").apply {
         addIcon("platform-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setToggledButtonReference(this@LevelEditorScreen.toggledButton)
         type = ButtonType.PLACE_TOOL_BUTTON
         setOpaque(true)
     }
     val moveToolButton = ToggleButton(skin, "small-button").apply {
         addIcon("move-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setToggledButtonReference(this@LevelEditorScreen.toggledButton)
         type = ButtonType.MOVE_TOOL_BUTTON
         isToggled = true
@@ -117,7 +118,7 @@ class LevelEditorScreen(
     private val backButton = ClickButton(skin, "small-button").apply {
         addIcon("back-icon")
         iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setToggledButtonReference(this@LevelEditorScreen.toggledButton)
         setToggleOffEveryOtherButton(true)
         addClickRunnable(Runnable {
@@ -127,7 +128,7 @@ class LevelEditorScreen(
     }
     private val playButton = ClickButton(skin, "small-button").apply {
         addIcon("play-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setToggledButtonReference(this@LevelEditorScreen.toggledButton)
         setToggleOffEveryOtherButton(true)
         addClickRunnable(Runnable {
@@ -139,7 +140,7 @@ class LevelEditorScreen(
         520f, 400f,
         "Are you sure you want to save the level?",
         skin, "bold", 50f,
-        ColorScheme.currentDarkColor,
+        Colors.gameColor,
         yesIsHighlighted = true
     ).apply {
         yesClickRunnable = Runnable {
@@ -151,34 +152,34 @@ class LevelEditorScreen(
     private val levelSavedTextPopUp = TextPopUp(
         450f, 250f,
         "Level saved successfully.",
-        skin, "bold", 50f, ColorScheme.currentDarkColor
+        skin, "bold", 50f, Colors.gameColor
     )
     private val deleteConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to delete the level #[x]?",
         skin, "bold", 50f,
-        ColorScheme.currentDarkColor,
+        Colors.gameColor,
         yesIsHighlighted = true
     )
     private val loadConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to load the level #[x]?",
         skin, "bold", 50f,
-        ColorScheme.currentDarkColor,
+        Colors.gameColor,
         yesIsHighlighted = true
     )
     private var loadLevelPopUp = PopUp(0f, 0f, skin)
     private val settingsPopUp = PopUp(500f, 275f, skin).apply {
         val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 80f).apply {
-            upColor = ColorScheme.currentDarkColor
-            downColor = ColorScheme.darkerDarkColor
+            upColor = Colors.gameColor
+            downColor = Colors.uiDownColor
             clickRunnable = Runnable {
                 uiStage.addActor(saveConfirmationPopUp)
             }
         }
         val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 80f).apply {
-            upColor = ColorScheme.currentDarkColor
-            downColor = ColorScheme.darkerDarkColor
+            upColor = Colors.gameColor
+            downColor = Colors.uiDownColor
             clickRunnable = Runnable {
                 loadLevelPopUp = createLoadLevelPopUp()
                 uiStage.addActor(loadLevelPopUp)
@@ -194,7 +195,7 @@ class LevelEditorScreen(
     }
     private val settingsButton = ClickButton(skin, "small-button").apply {
         addIcon("settings-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         addClickRunnable(Runnable {
             uiStage.addActor(settingsPopUp)
         })
@@ -389,26 +390,26 @@ class LevelEditorScreen(
     private fun createLoadLevelRowLeft(mapFactory: MapFactory, lastEditedString: String) = Table(skin).apply {
         val levelIdLabel = DistanceFieldLabel(
             "Level #${mapFactory.id}", skin, "bold",
-            57f, ColorScheme.currentDarkColor
+            57f, Colors.gameColor
         )
         val lastEditedLabel = DistanceFieldLabel(
             lastEditedString, skin, "extra-bold",
-            37f, ColorScheme.currentDarkColor
+            37f, Colors.gameColor
         )
         add(levelIdLabel).grow().left().row()
         add(lastEditedLabel).grow().left().row()
         addListener(object : ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 super.touchDown(event, x, y, pointer, button)
-                levelIdLabel.color = ColorScheme.darkerDarkColor
-                lastEditedLabel.color = ColorScheme.darkerDarkColor
+                levelIdLabel.color = Colors.uiDownColor
+                lastEditedLabel.color = Colors.uiDownColor
                 return true
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
-                levelIdLabel.color = ColorScheme.currentDarkColor
-                lastEditedLabel.color = ColorScheme.currentDarkColor
+                levelIdLabel.color = Colors.gameColor
+                lastEditedLabel.color = Colors.gameColor
             }
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -430,7 +431,7 @@ class LevelEditorScreen(
     private fun createLoadLevelRowRight(levelFilePath: String, levelId: Int) = Table(skin).apply {
         add(ClickButton(skin, "simple-button").apply {
             addIcon("trash-can-icon")
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setColors(Colors.gameColor, Colors.uiDownColor)
             addClickRunnable(Runnable {
                 deleteConfirmationPopUp.run {
                     textLabel.setText("Are you sure you want to delete the level #$levelId?")
@@ -509,7 +510,7 @@ class LevelEditorScreen(
 
     private fun grayOutButton(button: ClickButton) {
         button.run {
-            setColors(ColorScheme.currentDarkColor, ColorScheme.currentDarkColor)
+            setColors(Colors.gameColor, Colors.gameColor)
             opaqueImage?.color?.a = 0f
             color.a = .3f
         }
@@ -517,14 +518,14 @@ class LevelEditorScreen(
 
     private fun resetButtonColor(button: ClickButton) {
         button.run {
-            setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+            setColors(Colors.gameColor, Colors.uiDownColor)
             opaqueImage?.color?.a = 1f
             color.a = 1f
         }
     }
 
     override fun render(delta: Float) {
-        clearScreen(ColorScheme.currentLightColor.r, ColorScheme.currentLightColor.g, ColorScheme.currentLightColor.b)
+        clearScreen(Colors.bgColor)
         update(delta)
         uiStage.draw()
     }

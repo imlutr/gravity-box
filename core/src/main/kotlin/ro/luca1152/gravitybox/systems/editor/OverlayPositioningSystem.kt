@@ -37,7 +37,7 @@ import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.*
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.Button
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
@@ -59,7 +59,7 @@ class OverlayPositioningSystem(
     ).apply {
         addIcon("small-left-arrow-icon")
         iconCell!!.padLeft(-4f) // The icon doesn't LOOK centered
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
         addListener(object : ClickListener() {
             private val image
@@ -104,7 +104,7 @@ class OverlayPositioningSystem(
     ).apply {
         addIcon("small-right-arrow-icon")
         iconCell!!.padRight(-4f) // The icon doesn't LOOK centered
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
         addListener(object : ClickListener() {
             private val image
@@ -148,7 +148,7 @@ class OverlayPositioningSystem(
         "small-round-button"
     ).apply {
         addIcon("small-x-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
         addClickRunnable(Runnable {
             val deleteCommand = DeleteCommand(selectedMapObject!!)
@@ -161,7 +161,7 @@ class OverlayPositioningSystem(
         "small-round-button"
     ).apply {
         addIcon("small-rotate-icon")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
         addListener(object : DragListener() {
             private val image
@@ -239,7 +239,7 @@ class OverlayPositioningSystem(
             }
         })
     }
-    private val rotationLabel = DistanceFieldLabel("", skin, "bold", 37f, ColorScheme.darkerDarkColor).apply {
+    private val rotationLabel = DistanceFieldLabel("", skin, "bold", 37f, Colors.uiDownColor).apply {
         isVisible = false
     }
     private val horizontalPositionButton = ClickButton(
@@ -247,7 +247,7 @@ class OverlayPositioningSystem(
         "small-round-button"
     ).apply {
         addIcon("small-horizontal-arrow")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
         addListener(object : DragListener() {
             private val image
@@ -288,7 +288,7 @@ class OverlayPositioningSystem(
     }
     private val verticalPositionButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-vertical-arrow")
-        setColors(ColorScheme.currentDarkColor, ColorScheme.darkerDarkColor)
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
         addListener(object : DragListener() {
             private val image

@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickTextButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -39,16 +39,16 @@ open class YesNoPopUp(
     private val bottomHeight = 106f
     private val topLine = Image(manager.get<Texture>("graphics/pixel.png")).apply {
         setSize(width, borderThickness)
-        color = ColorScheme.currentDarkColor
+        color = Colors.gameColor
     }
     private val noButtonHighlight = Image(manager.get<Texture>("graphics/pixel.png")).apply {
         setSize(width / 2f, bottomHeight + borderThickness)
         setPosition(-borderThickness, borderThickness / 2f)
-        color = ColorScheme.currentDarkColor
+        color = Colors.gameColor
     }
     private val noButton = ClickTextButton("simple-button", skin, "NO", "bold", 80f).apply {
-        upColor = ColorScheme.currentDarkColor
-        downColor = ColorScheme.darkerDarkColor
+        upColor = Colors.gameColor
+        downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             this@YesNoPopUp.remove()
             noClickRunnable?.run()
@@ -56,16 +56,16 @@ open class YesNoPopUp(
     }
     private val middleLine = Image(manager.get<Texture>("graphics/pixel.png")).apply {
         setSize(borderThickness, bottomHeight)
-        color = ColorScheme.currentDarkColor
+        color = Colors.gameColor
     }
     private val yesButtonHighlight = Image(manager.get<Texture>("graphics/pixel.png")).apply {
         setSize(width / 2f, bottomHeight + borderThickness)
         setPosition(width / 2f - borderThickness, borderThickness / 2f)
-        color = ColorScheme.currentDarkColor
+        color = Colors.gameColor
     }
     private val yesButton = ClickTextButton("simple-button", skin, "YES", "bold", 80f).apply {
-        upColor = ColorScheme.currentDarkColor
-        downColor = ColorScheme.darkerDarkColor
+        upColor = Colors.gameColor
+        downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             this@YesNoPopUp.remove()
             yesClickRunnable?.run()
@@ -76,13 +76,13 @@ open class YesNoPopUp(
         add(topLine).growX().height(borderThickness).top().colspan(3).padLeft(-5f).padRight(-5f).row()
         if (noIsHighlighted) {
             addActor(noButtonHighlight)
-            noButton.upColor = ColorScheme.currentLightColor
+            noButton.upColor = Colors.bgColor
         }
         add(noButton).expandX().width(width / 2f - borderThickness / 2f - borderThickness)
         add(middleLine).size(borderThickness, bottomHeight).padBottom(-5f)
         if (yesIsHighlighted) {
             addActor(yesButtonHighlight)
-            yesButton.upColor = ColorScheme.currentLightColor
+            yesButton.upColor = Colors.bgColor
         }
         add(yesButton).width(width / 2f - borderThickness / 2f - borderThickness).expandX()
     }

@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
-import ktx.app.clearScreen
 import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.log.info
@@ -34,8 +33,9 @@ import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.assets.TextLoader
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.clearScreen
 import ro.luca1152.gravitybox.utils.kotlin.setScreen
-import ro.luca1152.gravitybox.utils.ui.ColorScheme.currentLightColor
+import ro.luca1152.gravitybox.utils.ui.Colors
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -99,7 +99,7 @@ class LoadingScreen(
 
     override fun render(delta: Float) {
         update(delta)
-        clearScreen(currentLightColor.r, currentLightColor.g, currentLightColor.b)
+        clearScreen(Colors.bgColor)
     }
 
     private fun update(delta: Float) {

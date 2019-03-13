@@ -23,7 +23,6 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.utils.ImmutableArray
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
 
 class CollisionBoxListener : EntitySystem() {
     private lateinit var entities: ImmutableArray<Entity>
@@ -44,8 +43,8 @@ class CollisionBoxListener : EntitySystem() {
                 val pointEntity = findEntity(PointComponent, entities[i], entities[j])
 
                 // If the player collided with the finish point, change the color scheme
-                if (playerEntity != null && finishEntity != null)
-                    ColorScheme.useDarkColorScheme = overlaps
+//                if (playerEntity != null && finishEntity != null) TODO!!
+//                    ColorScheme.useDarkColorScheme = overlaps
 
                 // entity[i] overlaps entity[j]
                 if (overlaps) {

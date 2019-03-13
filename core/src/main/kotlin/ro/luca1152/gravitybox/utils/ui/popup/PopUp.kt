@@ -28,7 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.graphics.copy
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
-import ro.luca1152.gravitybox.utils.ui.ColorScheme
+import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -42,23 +42,20 @@ open class PopUp(
     val borderThickness = 14f
     private val screenTransparentBackground = Image(manager.get<Texture>("graphics/pixel.png")).apply {
         setSize(uiStage.viewport.worldWidth, uiStage.viewport.worldHeight)
-        color = ColorScheme.currentLightColor.copy(alpha = .4f)
+        color = Colors.bgColor.copy(alpha = .4f)
     }
     private val closeButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-x-icon")
-        setColors(
-            ColorScheme.currentDarkColor,
-            ColorScheme.darkerDarkColor
-        )
+        setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
     }
     private val widgetFrame = Image(skin.getDrawable("pop-up-frame")).apply {
         setSize(width, height)
-        color = ColorScheme.currentDarkColor
+        color = Colors.gameColor
     }
     private val widgetOpaqueBackground = Image(manager.get<Texture>("graphics/pixel.png")).apply {
         setSize(width - 2 * borderThickness, height - 2 * borderThickness)
-        color = ColorScheme.currentLightColor
+        color = Colors.bgColor
     }
     val widget = Table().apply {
         setSize(width, height)
