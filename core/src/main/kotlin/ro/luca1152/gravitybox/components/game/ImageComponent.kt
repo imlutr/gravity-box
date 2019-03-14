@@ -106,11 +106,23 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             img.color = value
         }
 
-    fun set(texture: Texture, x: Float, y: Float, width: Float = 0f, height: Float = 0f, rotationInDeg: Float = 0f) {
+    fun set(texture: Texture, x: Float, y: Float, width: Float = 0f, height: Float = 0f, rotationInDeg: Float = 0f) =
+        set(TextureRegion(texture), x, y, width, height, rotationInDeg)
+
+    fun set(texture: Texture, position: Vector2) = set(texture, position.x, position.y)
+
+    fun set(
+        textureRegion: TextureRegion,
+        x: Float,
+        y: Float,
+        width: Float = 0f,
+        height: Float = 0f,
+        rotationInDeg: Float = 0f
+    ) {
         img.run {
-            drawable = TextureRegionDrawable(TextureRegion(texture))
+            drawable = TextureRegionDrawable(textureRegion)
             when (width == 0f && height == 0f) {
-                true -> setSize(texture.width.pixelsToMeters, texture.height.pixelsToMeters)
+                true -> setSize(textureRegion.regionWidth.pixelsToMeters, textureRegion.regionHeight.pixelsToMeters)
                 false -> setSize(width, height)
             }
             setOrigin(this.width / 2f, this.height / 2f)
@@ -122,8 +134,6 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
 
         stage + img
     }
-
-    fun set(texture: Texture, position: Vector2) = set(texture, position.x, position.y)
 
     fun setPosition(x: Float, y: Float) {
         this.centerX = x
