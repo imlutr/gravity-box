@@ -21,7 +21,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.app.KtxScreen
 import ro.luca1152.gravitybox.MyGame
@@ -38,7 +37,7 @@ class MainMenuScreen(
     game: MyGame = Injekt.get(),
     private val uiStage: UIStage = Injekt.get()
 ) : KtxScreen {
-    private val skin = manager.get<Skin>("skins/uiskin.json")
+    private val skin = manager.get(Assets.uiSkin)
     private val logoImage = Image(skin, "gravity-box").apply {
         color = Colors.gameColor
     }

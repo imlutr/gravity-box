@@ -18,7 +18,6 @@
 package ro.luca1152.gravitybox.utils.ui.popup
 
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Touchable
@@ -27,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.graphics.copy
+import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
@@ -40,7 +40,7 @@ open class PopUp(
     private val uiStage: UIStage = Injekt.get()
 ) : Group() {
     val borderThickness = 14f
-    private val screenTransparentBackground = Image(manager.get<Texture>("graphics/pixel.png")).apply {
+    private val screenTransparentBackground = Image(manager.get(Assets.pixel)).apply {
         setSize(uiStage.viewport.worldWidth, uiStage.viewport.worldHeight)
         color = Colors.bgColor.copy(alpha = .4f)
     }
@@ -53,7 +53,7 @@ open class PopUp(
         setSize(width, height)
         color = Colors.gameColor
     }
-    private val widgetOpaqueBackground = Image(manager.get<Texture>("graphics/pixel.png")).apply {
+    private val widgetOpaqueBackground = Image(manager.get(Assets.pixel)).apply {
         setSize(width - 2 * borderThickness, height - 2 * borderThickness)
         color = Colors.bgColor
     }

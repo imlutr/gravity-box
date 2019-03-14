@@ -19,10 +19,10 @@ package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -45,7 +45,7 @@ object PlatformEntity {
         }
         add(engine.createComponent(PlatformComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(manager.get<Texture>("graphics/pixel.png"), x, y, width, height, rotationInDeg)
+            image.set(manager.get(Assets.pixel), x, y, width, height, rotationInDeg)
             image.img.userObject = this
         }
         add(engine.createComponent(BodyComponent::class.java)).run {

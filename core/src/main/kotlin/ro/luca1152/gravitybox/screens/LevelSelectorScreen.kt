@@ -27,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.app.KtxScreen
@@ -52,7 +51,7 @@ class LevelSelectorScreen(
         var chosenLevel = 0
     }
 
-    private val skin = manager.get<Skin>("skins/uiskin.json")
+    private val skin = manager.get(Assets.uiSkin)
     private val bigEmptyStar = Image(skin, "big-empty-star").apply {
         color = Colors.gameColor
     }

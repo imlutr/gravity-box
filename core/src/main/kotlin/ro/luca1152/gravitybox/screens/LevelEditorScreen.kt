@@ -25,7 +25,6 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
@@ -80,7 +79,7 @@ class LevelEditorScreen(
     private val inputMultiplexer: InputMultiplexer = Injekt.get(),
     private val game: MyGame = Injekt.get()
 ) : KtxScreen {
-    private val skin = manager.get<Skin>("skins/uiskin.json")
+    private val skin = manager.get(Assets.uiSkin)
     private val toggledButton = Reference<ToggleButton>()
     private val undoButton = ClickButton(skin, "small-button").apply {
         addIcon("undo-icon")

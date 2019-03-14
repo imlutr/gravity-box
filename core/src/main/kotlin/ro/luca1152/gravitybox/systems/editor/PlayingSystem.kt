@@ -31,6 +31,7 @@ import ro.luca1152.gravitybox.components.editor.SelectedObjectComponent
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.listeners.CollisionBoxListener
 import ro.luca1152.gravitybox.listeners.WorldContactListener
+import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
@@ -59,7 +60,7 @@ class PlayingSystem(
     private lateinit var finishEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
-        skin = manager.get<Skin>("skins/uiskin.json")
+        skin = manager.get(Assets.uiSkin)
         levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get()).apply {
             level.forceUpdateMap = true
         }
