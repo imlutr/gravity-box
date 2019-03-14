@@ -1,118 +1,118 @@
 
 tileset.png
-size: 286,286
+size: 262,74
 format: RGBA8888
-filter: Nearest,Nearest
+filter: Linear,Linear
 repeat: none
-double-joint-d
+platform-0
   rotate: false
-  xy: 6, 6
-  size: 64, 64
-  orig: 64, 64
+  xy: 2, 56
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-double-joint-l
+platform-1
   rotate: false
-  xy: 76, 6
-  size: 64, 64
-  orig: 64, 64
+  xy: 2, 38
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-double-joint-r
+platform-10
   rotate: false
-  xy: 146, 6
-  size: 64, 64
-  orig: 64, 64
+  xy: 67, 2
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-double-joint-u
+platform-11
   rotate: false
-  xy: 216, 6
-  size: 64, 64
-  orig: 64, 64
+  xy: 132, 20
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-h-both
+platform-12
   rotate: false
-  xy: 6, 76
-  size: 64, 64
-  orig: 64, 64
+  xy: 197, 38
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-h-left
+platform-13
   rotate: false
-  xy: 76, 76
-  size: 64, 64
-  orig: 64, 64
+  xy: 132, 2
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-h-none
+platform-14
   rotate: false
-  xy: 146, 76
-  size: 64, 64
-  orig: 64, 64
+  xy: 197, 20
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-h-right
+platform-15
   rotate: false
-  xy: 216, 76
-  size: 64, 64
-  orig: 64, 64
+  xy: 197, 2
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-joint-d-l
+platform-2
   rotate: false
-  xy: 6, 146
-  size: 64, 64
-  orig: 64, 64
+  xy: 67, 56
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-joint-d-r
+platform-3
   rotate: false
-  xy: 76, 146
-  size: 64, 64
-  orig: 64, 64
+  xy: 2, 20
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-joint-u-l
+platform-4
   rotate: false
-  xy: 146, 146
-  size: 64, 64
-  orig: 64, 64
+  xy: 67, 38
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-joint-u-r
+platform-5
   rotate: false
-  xy: 216, 146
-  size: 64, 64
-  orig: 64, 64
+  xy: 132, 56
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-v-both
+platform-6
   rotate: false
-  xy: 6, 216
-  size: 64, 64
-  orig: 64, 64
+  xy: 2, 2
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-v-down
+platform-7
   rotate: false
-  xy: 76, 216
-  size: 64, 64
-  orig: 64, 64
+  xy: 67, 20
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-v-none
+platform-8
   rotate: false
-  xy: 146, 216
-  size: 64, 64
-  orig: 64, 64
+  xy: 132, 38
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
-v-up
+platform-9
   rotate: false
-  xy: 216, 216
-  size: 64, 64
-  orig: 64, 64
+  xy: 197, 56
+  size: 63, 16
+  orig: 63, 16
   offset: 0, 0
   index: -1
