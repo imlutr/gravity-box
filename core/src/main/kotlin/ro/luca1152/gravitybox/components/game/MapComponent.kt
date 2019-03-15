@@ -175,6 +175,7 @@ class MapComponent : Component, Poolable {
             image.run {
                 centerX = player.position.x.pixelsToMeters
                 centerY = player.position.y.pixelsToMeters
+                img.rotation = player.rotation.toFloat()
             }
             mapObject.run {
                 id = player.id
@@ -187,6 +188,7 @@ class MapComponent : Component, Poolable {
             image.run {
                 centerX = finish.position.x.pixelsToMeters
                 centerY = finish.position.y.pixelsToMeters
+                img.rotation = finish.rotation.toFloat()
             }
             mapObject.run {
                 id = finish.id
@@ -201,7 +203,8 @@ class MapComponent : Component, Poolable {
                     it.id,
                     it.position.x.pixelsToMeters,
                     it.position.y.pixelsToMeters,
-                    it.width.pixelsToMeters
+                    it.width.pixelsToMeters,
+                    rotationInDeg = it.rotation.toFloat()
                 )
             }
         }

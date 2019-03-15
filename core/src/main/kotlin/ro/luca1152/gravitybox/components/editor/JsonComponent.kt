@@ -63,6 +63,7 @@ class JsonComponent : Component, Poolable {
                 if (tryGet(PlatformComponent) != null) json.run {
                     writeValue("width", image.width.metersToPixels)
                 }
+                writeValue("rotation", image.img.rotation.toInt())
             }
         }
         json.writeObjectEnd()
