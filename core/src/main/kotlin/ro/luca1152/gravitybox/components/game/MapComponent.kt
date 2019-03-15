@@ -59,6 +59,7 @@ class MapComponent : Component, Poolable {
     var mapRight = 0f
     var mapTop = 0f
     var mapBottom = 0f
+    var updateRoundedPlatforms = true
 
     fun set(levelId: Int) {
         this.levelId = levelId
@@ -236,6 +237,7 @@ class MapComponent : Component, Poolable {
         mapRight = 0f
         mapTop = 0f
         mapBottom = 0f
+        updateRoundedPlatforms = true
     }
 
     fun destroyAllBodies(world: World = Injekt.get()) {

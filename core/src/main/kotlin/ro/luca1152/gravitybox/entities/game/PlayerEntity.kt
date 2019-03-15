@@ -19,13 +19,13 @@ package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.editor.JsonComponent
 import ro.luca1152.gravitybox.components.editor.MapObjectOverlayComponent
 import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.components.editor.mapObjectOverlay
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -56,7 +56,7 @@ object PlayerEntity {
         }
         add(engine.createComponent(PlayerComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(manager.get<Texture>("graphics/player.png"), x, y, WIDTH, HEIGHT)
+            image.set(manager.get(Assets.tileset).findRegion("player"), x, y, WIDTH, HEIGHT)
             image.img.userObject = this
         }
         add(engine.createComponent(BodyComponent::class.java)).run {

@@ -21,15 +21,19 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.actors.minus
 import ktx.actors.plus
+import ro.luca1152.gravitybox.PPM
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
@@ -106,24 +110,57 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             img.color = value
         }
 
-    fun set(texture: Texture, x: Float, y: Float, width: Float = 0f, height: Float = 0f, rotationInDeg: Float = 0f) {
+    fun set(
+        textureRegion: TextureRegion,
+        x: Float, y: Float,
+        width: Float = 0f, height: Float = 0f,
+        rotationInDeg: Float = 0f
+    ) =
+        set(TextureRegionDrawable(textureRegion), x, y, width, height, rotationInDeg)
+
+    fun set(texture: Texture, x: Float, y: Float, width: Float = 0f, height: Float = 0f, rotationInDeg: Float = 0f) =
+        set(TextureRegion(texture), x, y, width, height, rotationInDeg)
+
+    fun set(texture: Texture, position: Vector2) = set(texture, position.x, position.y)
+
+    fun set(
+        ninePatch: NinePatch,
+        x: Float, y: Float,
+        width: Float = 0f, height: Float = 0f,
+        rotationInDeg: Float = 0f
+    ) {
+        ninePatch.scale(1 / PPM, 1 / PPM)
         img.run {
-            drawable = TextureRegionDrawable(TextureRegion(texture))
+            this.drawable = NinePatchDrawable(ninePatch)
             when (width == 0f && height == 0f) {
-                true -> setSize(texture.width.pixelsToMeters, texture.height.pixelsToMeters)
+                true -> setSize(drawable.minWidth, drawable.minHeight)
                 false -> setSize(width, height)
             }
             setOrigin(this.width / 2f, this.height / 2f)
             rotation = rotationInDeg
         }
-
-        // ImageComponent.centerX should be used, and not img.setPosition()
-        setPosition(x, y)
-
+        this.setPosition(x, y)
         stage + img
     }
 
-    fun set(texture: Texture, position: Vector2) = set(texture, position.x, position.y)
+    fun set(
+        drawable: Drawable,
+        x: Float, y: Float,
+        width: Float = 0f, height: Float = 0f,
+        rotationInDeg: Float = 0f
+    ) {
+        img.run {
+            this.drawable = drawable
+            when (width == 0f && height == 0f) {
+                true -> setSize(drawable.minWidth.pixelsToMeters, drawable.minHeight.pixelsToMeters)
+                false -> setSize(width, height)
+            }
+            setOrigin(this.width / 2f, this.height / 2f)
+            rotation = rotationInDeg
+        }
+        this.setPosition(x, y)
+        stage + img
+    }
 
     fun setPosition(x: Float, y: Float) {
         this.centerX = x

@@ -18,15 +18,14 @@
 package ro.luca1152.gravitybox.screens
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
-import com.badlogic.gdx.audio.Music
-import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
-import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
@@ -39,6 +38,11 @@ import ro.luca1152.gravitybox.utils.ui.Colors
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+object Assets {
+    val uiSkin = AssetDescriptor<Skin>("skins/uiskin.json", Skin::class.java)
+    val tileset = AssetDescriptor<TextureAtlas>("graphics/tileset.atlas", TextureAtlas::class.java)
+}
+
 class LoadingScreen(
     private val manager: AssetManager = Injekt.get(),
     private val game: MyGame = Injekt.get(),
@@ -50,27 +54,13 @@ class LoadingScreen(
 
     override fun show() {
         loadGraphics()
-        loadAudio()
         loadMaps()
     }
 
     private fun loadGraphics() {
         manager.run {
-            load<Skin>("skins/uiskin.json")
-            load<Texture>("graphics/player.png")
-            load<Texture>("graphics/bullet.png")
-            load<Texture>("graphics/bullet.png")
-            load<Texture>("graphics/circle.png")
-            load<Texture>("graphics/finish.png")
-            load<Texture>("graphics/pixel.png")
-        }
-    }
-
-    private fun loadAudio() {
-        manager.run {
-            load<Music>("audio/music.mp3")
-            load<Sound>("audio/level-finished.wav")
-            load<Sound>("audio/bullet-wall-collision.wav")
+            load(Assets.uiSkin)
+            load(Assets.tileset)
         }
     }
 
@@ -107,41 +97,20 @@ class LoadingScreen(
         uiStage.act()
         if (finishedLoadingAssets) {
             logLoadingTime()
-            smoothTextures()
             addScreens()
             game.setScreen(TransitionScreen(MainMenuScreen::class.java, false))
         }
     }
 
-    private fun smoothTextures() {
-        manager.run {
-            getAsset<Texture>("graphics/player.png").setFilter(
-                Texture.TextureFilter.Linear,
-                Texture.TextureFilter.Linear
-            )
-            getAsset<Texture>("graphics/bullet.png").setFilter(
-                Texture.TextureFilter.Linear,
-                Texture.TextureFilter.Linear
-            )
-            getAsset<Texture>("graphics/circle.png").setFilter(
-                Texture.TextureFilter.Linear,
-                Texture.TextureFilter.Linear
-            )
-            getAsset<Texture>("graphics/finish.png").setFilter(
-                Texture.TextureFilter.Linear,
-                Texture.TextureFilter.Linear
-            )
-        }
+    private fun logLoadingTime() {
+        info { "Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s." }
     }
 
     /**
      * Adds screens to the [KtxGame] so [KtxGame.setScreen] works.
      *
-     * They are added here and not in [MyGame] because adding a screen automatically initializes it, where assets
-     * could be referenced, such as [Skin]s or [Texture]s.
-     *
-     * If the screens where added in [MyGame], then every variable which referenced assets loading here should have been
-     * declared as lateinit var, and initialized in [KtxScreen.show].
+     * They are added here and not in [MyGame] because adding a screen automatically initializes it, initialization which
+     * may use assets, such as [Skin]s or [Texture]s.
      */
     private fun addScreens() {
         game.run {
@@ -150,9 +119,5 @@ class LoadingScreen(
             addScreen(LevelSelectorScreen())
             addScreen(PlayScreen())
         }
-    }
-
-    private fun logLoadingTime() {
-        info { "Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s." }
     }
 }

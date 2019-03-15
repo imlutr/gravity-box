@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ro.luca1152.gravitybox.utils.kotlin.Reference
+import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
 import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** My own extension of the [Button] class. */
@@ -54,16 +55,17 @@ abstract class Button(
 
     private fun syncColors() {
         // TODO: use downColor and upColor instead of referencing colors directly
-        when (isPressed) {
+        val isToggled = if (userObject == null) false else userObject as Boolean
+        when (isPressed || isToggled) {
             true -> {
-                color = Colors.uiDownColor
-                icon?.color = Colors.uiDownColor
-                opaqueImage?.color = Colors.bgColor
+                color.setWithoutAlpha(Colors.uiDownColor)
+                icon?.color?.setWithoutAlpha(Colors.uiDownColor)
+                opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
             }
             false -> {
-                color = Colors.gameColor
-                icon?.color = Colors.gameColor
-                opaqueImage?.color = Colors.bgColor
+                color.setWithoutAlpha(Colors.gameColor)
+                icon?.color?.setWithoutAlpha(Colors.gameColor)
+                opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
             }
         }
     }

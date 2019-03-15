@@ -15,27 +15,34 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object PlatformEntity {
-    private const val DEFAULT_ROTATION = 0f
-    const val DEFAULT_HEIGHT = .25f
+    const val PATCH_LEFT = 9
+    const val PATCH_RIGHT = 9
+    const val PATCH_TOP = 5
+    const val PATCH_BOTTOM = 5
+    const val DEFAULT_ROTATION = 0f
+    const val DEFAULT_THICKNESS = .25f
     val CATEGORY_BITS = EntityCategory.PLATFORM.bits
     val MASK_BITS = EntityCategory.OBSTACLE.bits
 
     fun createEntity(
         id: Int, x: Float, y: Float,
-        width: Float, height: Float = DEFAULT_HEIGHT,
+        width: Float, height: Float = DEFAULT_THICKNESS,
         rotationInDeg: Float = DEFAULT_ROTATION,
         engine: PooledEngine = Injekt.get(),
         manager: AssetManager = Injekt.get()
@@ -45,7 +52,14 @@ object PlatformEntity {
         }
         add(engine.createComponent(PlatformComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(manager.get<Texture>("graphics/pixel.png"), x, y, width, height, rotationInDeg)
+            image.set(
+                NinePatch(
+                    manager.get(Assets.tileset).findRegion("platform-0"),
+                    PATCH_LEFT, PATCH_RIGHT,
+                    PATCH_TOP, PATCH_BOTTOM
+                ),
+                x, y, width, height, rotationInDeg
+            )
             image.img.userObject = this
         }
         add(engine.createComponent(BodyComponent::class.java)).run {

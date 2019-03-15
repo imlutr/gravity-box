@@ -21,8 +21,8 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -36,7 +36,7 @@ object ExplosionImageEntity {
         add(engine.createComponent(ExplosionComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
             image.run {
-                set(manager.getAsset("graphics/circle.png"), x, y)
+                set(manager.get(Assets.tileset).findRegion("circle"), x, y)
                 img.addAction(
                     Actions.sequence(
                         Actions.parallel(

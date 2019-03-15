@@ -23,8 +23,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
-import ktx.assets.getAsset
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -63,7 +63,7 @@ object BulletEntity {
             this.body.set(body, this)
         }
         add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(manager.getAsset("graphics/bullet.png"), x, y)
+            image.set(manager.get(Assets.tileset).findRegion("bullet"), x, y)
         }
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.colorType = ColorType.DARK

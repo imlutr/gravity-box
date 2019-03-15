@@ -22,12 +22,12 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.graphics.copy
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.pixelsToMeters
+import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -62,7 +62,7 @@ class GridRenderingSystem(
 
     private fun createVerticalLines() = Group().apply {
         for (x in GRID_START_POSITION..GRID_END_POSITION) {
-            addActor(Image(manager.get<Texture>("graphics/pixel.png")).apply {
+            addActor(Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
                 color = LINE_COLOR
                 setSize(LINE_THICKNESS, GRID_LENGTH.toFloat())
                 setPosition(x.toFloat(), GRID_START_POSITION.toFloat())
@@ -72,7 +72,7 @@ class GridRenderingSystem(
 
     private fun createHorizontalLines() = Group().apply {
         for (y in GRID_START_POSITION..GRID_END_POSITION) {
-            addActor(Image(manager.get<Texture>("graphics/pixel.png")).apply {
+            addActor(Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
                 color = LINE_COLOR
                 setSize(GRID_LENGTH.toFloat(), LINE_THICKNESS)
                 setPosition(GRID_START_POSITION.toFloat(), y.toFloat())

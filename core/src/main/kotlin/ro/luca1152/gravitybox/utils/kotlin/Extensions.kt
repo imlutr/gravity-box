@@ -148,3 +148,21 @@ fun <Type : Screen> KtxGame<Type>.setScreen(screen: Type) {
 fun clearScreen(color: Color) {
     clearScreen(color.r, color.g, color.b, 1f)
 }
+
+/**
+ * Returns the [Actor] at the specified location in local coordinates.
+ */
+fun Actor.hitAll(localX: Float, localY: Float, touchable: Boolean = false): Array<Actor> {
+    val hitActors = Array<Actor>()
+    stage.actors.forEach { child ->
+        if (child != this) {
+            child.run {
+                val coords = this.parentToLocalCoordinates(this@hitAll.localToStageCoordinates(Vector2(localX, localY)))
+                hit(coords.x, coords.y, touchable)?.let {
+                    hitActors.add(it)
+                }
+            }
+        }
+    }
+    return hitActors
+}
