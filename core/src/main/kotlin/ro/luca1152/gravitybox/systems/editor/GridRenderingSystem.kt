@@ -62,7 +62,7 @@ class GridRenderingSystem(
 
     private fun createVerticalLines() = Group().apply {
         for (x in GRID_START_POSITION..GRID_END_POSITION) {
-            addActor(Image(manager.get(Assets.pixel)).apply {
+            addActor(Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
                 color = LINE_COLOR
                 setSize(LINE_THICKNESS, GRID_LENGTH.toFloat())
                 setPosition(x.toFloat(), GRID_START_POSITION.toFloat())
@@ -72,7 +72,7 @@ class GridRenderingSystem(
 
     private fun createHorizontalLines() = Group().apply {
         for (y in GRID_START_POSITION..GRID_END_POSITION) {
-            addActor(Image(manager.get(Assets.pixel)).apply {
+            addActor(Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
                 color = LINE_COLOR
                 setSize(GRID_LENGTH.toFloat(), LINE_THICKNESS)
                 setPosition(GRID_START_POSITION.toFloat(), y.toFloat())

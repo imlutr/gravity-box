@@ -40,7 +40,7 @@ open class PopUp(
     private val uiStage: UIStage = Injekt.get()
 ) : Group() {
     val borderThickness = 14f
-    private val screenTransparentBackground = Image(manager.get(Assets.pixel)).apply {
+    private val screenTransparentBackground = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         setSize(uiStage.viewport.worldWidth, uiStage.viewport.worldHeight)
         color = Colors.bgColor.copy(alpha = .4f)
     }
@@ -53,7 +53,7 @@ open class PopUp(
         setSize(width, height)
         color = Colors.gameColor
     }
-    private val widgetOpaqueBackground = Image(manager.get(Assets.pixel)).apply {
+    private val widgetOpaqueBackground = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         setSize(width - 2 * borderThickness, height - 2 * borderThickness)
         color = Colors.bgColor
     }

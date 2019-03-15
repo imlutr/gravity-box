@@ -37,11 +37,11 @@ open class YesNoPopUp(
     var yesClickRunnable: Runnable? = null
     var noClickRunnable: Runnable? = null
     private val bottomHeight = 106f
-    private val topLine = Image(manager.get(Assets.pixel)).apply {
+    private val topLine = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         setSize(width, borderThickness)
         color = Colors.gameColor
     }
-    private val noButtonHighlight = Image(manager.get(Assets.pixel)).apply {
+    private val noButtonHighlight = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         setSize(width / 2f, bottomHeight + borderThickness)
         setPosition(-borderThickness, borderThickness / 2f)
         color = Colors.gameColor
@@ -54,11 +54,11 @@ open class YesNoPopUp(
             noClickRunnable?.run()
         }
     }
-    private val middleLine = Image(manager.get(Assets.pixel)).apply {
+    private val middleLine = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         setSize(borderThickness, bottomHeight)
         color = Colors.gameColor
     }
-    private val yesButtonHighlight = Image(manager.get(Assets.pixel)).apply {
+    private val yesButtonHighlight = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         setSize(width / 2f, bottomHeight + borderThickness)
         setPosition(width / 2f - borderThickness, borderThickness / 2f)
         color = Colors.gameColor

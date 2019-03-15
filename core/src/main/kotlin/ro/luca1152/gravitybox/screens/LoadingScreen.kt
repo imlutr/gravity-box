@@ -41,7 +41,6 @@ import uy.kohesive.injekt.api.get
 object Assets {
     val uiSkin = AssetDescriptor<Skin>("skins/uiskin.json", Skin::class.java)
     val tileset = AssetDescriptor<TextureAtlas>("graphics/tileset.atlas", TextureAtlas::class.java)
-    val pixel = AssetDescriptor<Texture>("graphics/pixel.png", Texture::class.java)
 }
 
 class LoadingScreen(
@@ -62,7 +61,6 @@ class LoadingScreen(
         manager.run {
             load(Assets.uiSkin)
             load(Assets.tileset)
-            load(Assets.pixel)
         }
     }
 
@@ -99,6 +97,7 @@ class LoadingScreen(
         uiStage.act()
         if (finishedLoadingAssets) {
             logLoadingTime()
+            setFilters()
             addScreens()
             game.setScreen(TransitionScreen(MainMenuScreen::class.java, false))
         }
@@ -106,6 +105,14 @@ class LoadingScreen(
 
     private fun logLoadingTime() {
         info { "Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s." }
+    }
+
+    private fun setFilters() {
+        // The default filter would have been Linear, but it looked bad on the pixel texture
+        manager.get(Assets.tileset).findRegion("pixel").texture.setFilter(
+            Texture.TextureFilter.Nearest,
+            Texture.TextureFilter.Nearest
+        )
     }
 
     /**

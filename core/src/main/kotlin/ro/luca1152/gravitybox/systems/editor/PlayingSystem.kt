@@ -135,7 +135,7 @@ class PlayingSystem(
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
-//            addSystem(PhysicsDebugRenderingSystem())
+//            addSystem(PhysicsDebugRpienderingSystem())
         }
     }
 

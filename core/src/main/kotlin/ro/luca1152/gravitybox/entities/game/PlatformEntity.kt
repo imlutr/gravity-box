@@ -45,7 +45,7 @@ object PlatformEntity {
         }
         add(engine.createComponent(PlatformComponent::class.java))
         add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(manager.get(Assets.pixel), x, y, width, height, rotationInDeg)
+            image.set(manager.get(Assets.tileset).findRegion("pixel"), x, y, width, height, rotationInDeg)
             image.img.userObject = this
         }
         add(engine.createComponent(BodyComponent::class.java)).run {
