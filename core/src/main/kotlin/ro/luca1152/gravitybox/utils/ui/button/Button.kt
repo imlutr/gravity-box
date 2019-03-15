@@ -55,7 +55,8 @@ abstract class Button(
 
     private fun syncColors() {
         // TODO: use downColor and upColor instead of referencing colors directly
-        when (isPressed) {
+        val isToggled = if (userObject == null) false else userObject as Boolean
+        when (isPressed || isToggled) {
             true -> {
                 color.setWithoutAlpha(Colors.uiDownColor)
                 icon?.color?.setWithoutAlpha(Colors.uiDownColor)

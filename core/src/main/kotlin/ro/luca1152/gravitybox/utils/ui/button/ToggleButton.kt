@@ -28,6 +28,7 @@ class ToggleButton(skin: Skin, styleName: String) : Button(skin, styleName) {
 
     var isToggled = false
         set(value) {
+            userObject = value
             field = value
             when (value) {
                 true -> {

@@ -131,6 +131,7 @@ class PlayingSystem(
             addSystem(LevelRestartSystem())
             addSystem(FinishPointColorSystem())
             addSystem(SelectedObjectColorSystem())
+            addSystem(RoundedPlatformsSystem())
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())

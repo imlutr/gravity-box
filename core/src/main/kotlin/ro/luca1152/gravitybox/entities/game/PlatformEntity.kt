@@ -36,13 +36,13 @@ object PlatformEntity {
     const val PATCH_TOP = 5
     const val PATCH_BOTTOM = 5
     const val DEFAULT_ROTATION = 0f
-    const val DEFAULT_HEIGHT = .25f
+    const val DEFAULT_THICKNESS = .25f
     val CATEGORY_BITS = EntityCategory.PLATFORM.bits
     val MASK_BITS = EntityCategory.OBSTACLE.bits
 
     fun createEntity(
         id: Int, x: Float, y: Float,
-        width: Float, height: Float = DEFAULT_HEIGHT,
+        width: Float, height: Float = DEFAULT_THICKNESS,
         rotationInDeg: Float = DEFAULT_ROTATION,
         engine: PooledEngine = Injekt.get(),
         manager: AssetManager = Injekt.get()

@@ -46,10 +46,7 @@ import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.systems.editor.*
-import ro.luca1152.gravitybox.systems.game.ColorSyncSystem
-import ro.luca1152.gravitybox.systems.game.DebugRenderingSystem
-import ro.luca1152.gravitybox.systems.game.ImageRenderingSystem
-import ro.luca1152.gravitybox.systems.game.UpdateGameCameraSystem
+import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.json.MapFactory
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -267,7 +264,7 @@ class LevelEditorScreen(
         val platformEntity = PlatformEntity.createEntity(
             2,
             16f / 2f,
-            19f / 2f - .5f - PlatformEntity.DEFAULT_HEIGHT / 2f,
+            19f / 2f - .5f - PlatformEntity.DEFAULT_THICKNESS / 2f,
             4f
         )
         finishEntity = FinishEntity.createEntity(
@@ -333,6 +330,7 @@ class LevelEditorScreen(
             addSystem(OverlayCameraSyncSystem())
             addSystem(OverlayPositioningSystem())
             addSystem(TouchableBoundsSyncSystem())
+            addSystem(RoundedPlatformsSystem())
             addSystem(GridRenderingSystem())
             addSystem(ImageRenderingSystem())
             addSystem(OverlayRenderingSystem())

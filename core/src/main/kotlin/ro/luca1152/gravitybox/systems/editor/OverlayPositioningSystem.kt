@@ -316,7 +316,7 @@ class OverlayPositioningSystem(
                     // I doubt that this works for every case
                     image.centerY = image.centerY.roundToNearest(
                         1f, .15f,
-                        (if (image.width == 1f) 0f else image.width / 4f) - PlatformEntity.DEFAULT_HEIGHT / 2f
+                        (if (image.width == 1f) 0f else image.width / 4f) - PlatformEntity.DEFAULT_THICKNESS / 2f
                     )
                     image.centerY = image.centerY.roundToNearest(1f, .15f, image.height / 2f)
                 }

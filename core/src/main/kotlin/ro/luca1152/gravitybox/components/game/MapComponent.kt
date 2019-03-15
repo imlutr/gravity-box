@@ -59,6 +59,7 @@ class MapComponent : Component, Poolable {
     var mapRight = 0f
     var mapTop = 0f
     var mapBottom = 0f
+    var updateRoundPlatforms = true
 
     fun set(levelId: Int) {
         this.levelId = levelId
