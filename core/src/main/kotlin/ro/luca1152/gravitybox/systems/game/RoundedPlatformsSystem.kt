@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Array
+import ro.luca1152.gravitybox.components.editor.DeletedMapObjectComponent
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.pixelsToMeters
@@ -47,10 +48,10 @@ class RoundedPlatformsSystem(
     }
 
     override fun update(deltaTime: Float) {
-        if (!mapEntity.map.updateRoundPlatforms)
+        if (!mapEntity.map.updateRoundedPlatforms)
             return
         super.update(deltaTime)
-//        mapEntity.map.updateRoundPlatforms = false
+        mapEntity.map.updateRoundedPlatforms = false
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
@@ -135,7 +136,10 @@ class RoundedPlatformsSystem(
     private fun isPlatform(actor: Actor?): Boolean {
         return if (actor == null || actor.userObject == null || actor.userObject !is Entity) false
         else (actor.userObject as Entity).tryGet(PlatformComponent) != null && !isExtendedBounds(actor)
+                && !isDeleted(actor.userObject as Entity)
     }
 
     private fun isExtendedBounds(actor: Actor?) = actor?.color == Color.CLEAR
+
+    private fun isDeleted(entity: Entity) = entity.tryGet(DeletedMapObjectComponent) != null
 }

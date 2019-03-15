@@ -30,9 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ktx.actors.plus
 import ro.luca1152.gravitybox.components.editor.*
-import ro.luca1152.gravitybox.components.game.ImageComponent
-import ro.luca1152.gravitybox.components.game.PlatformComponent
-import ro.luca1152.gravitybox.components.game.image
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.pixelsToMeters
@@ -53,6 +51,7 @@ class OverlayPositioningSystem(
     private val overlayStage: OverlayStage = Injekt.get(),
     private val engine: PooledEngine = Injekt.get()
 ) : EntitySystem() {
+    private lateinit var mapEntity: Entity
     private val leftArrowButton: ClickButton = ClickButton(
         skin,
         "small-round-button"
@@ -82,6 +81,7 @@ class OverlayPositioningSystem(
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
+                mapEntity.map.updateRoundedPlatforms = true
                 scaleMapObject(x, y, this@apply, selectedMapObject!!, toLeft = true)
             }
 
@@ -127,6 +127,7 @@ class OverlayPositioningSystem(
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
+                mapEntity.map.updateRoundedPlatforms = true
                 scaleMapObject(x, y, this@apply, selectedMapObject!!, toRight = true)
             }
 
@@ -151,7 +152,7 @@ class OverlayPositioningSystem(
         setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
         addClickRunnable(Runnable {
-            val deleteCommand = DeleteCommand(selectedMapObject!!)
+            val deleteCommand = DeleteCommand(selectedMapObject!!, mapEntity)
             deleteCommand.execute()
             undoRedoEntity.undoRedo.addExecutedCommand(deleteCommand)
         })
@@ -178,6 +179,7 @@ class OverlayPositioningSystem(
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
+                mapEntity.map.updateRoundedPlatforms = true
 
                 val mouseCoords = screenToWorldCoordinates(Gdx.input.x, Gdx.input.y)
                 var newRotation = toPositiveAngle(
@@ -265,6 +267,7 @@ class OverlayPositioningSystem(
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 if (!isDragging) return // Make sure dragStart() is called first
+                mapEntity.map.updateRoundedPlatforms = true
 
                 val mouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
                 image.centerX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
@@ -306,6 +309,7 @@ class OverlayPositioningSystem(
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 if (!isDragging) return // Make sure dragStart() is called first
+                mapEntity.map.updateRoundedPlatforms = true
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
                 image.centerY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
@@ -349,7 +353,8 @@ class OverlayPositioningSystem(
     private val buttonsPaddingX = 20f
     private val buttonsPaddingY = 50f
 
-    override fun addedToEngine(engine: Engine?) {
+    override fun addedToEngine(engine: Engine) {
+        mapEntity = engine.getSingletonFor(Family.all(MapComponent::class.java).get())
         overlayStage.run {
             addActor(labels)
             addActor(overlayLevel1)

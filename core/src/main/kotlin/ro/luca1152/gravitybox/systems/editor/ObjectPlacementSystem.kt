@@ -25,18 +25,21 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.components.game.MapObjectComponent
+import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
+import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Places objects at touch when the place tool is used. */
-class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get()) :
-    EntitySystem() {
+class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
     private lateinit var undoRedoEntity: Entity
     private lateinit var inputEntity: Entity
+    private lateinit var mapEntity: Entity
 
     private val inputAdapter = object : InputAdapter() {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
@@ -63,14 +66,15 @@ class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Inj
                 MathUtils.floor(coords.y).toFloat() + .5f,
                 platformWidth
             )
-            undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(platform))
+            mapEntity.map.updateRoundedPlatforms = true
+            undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(platform, mapEntity))
         }
     }
 
     override fun addedToEngine(engine: Engine) {
-        undoRedoEntity =
-            engine.getEntitiesFor(Family.all(UndoRedoComponent::class.java).get()).first()
+        undoRedoEntity = engine.getEntitiesFor(Family.all(UndoRedoComponent::class.java).get()).first()
         inputEntity = engine.getEntitiesFor(Family.all(InputComponent::class.java).get()).first()
+        mapEntity = engine.getSingletonFor(Family.all(MapComponent::class.java).get())
         inputMultiplexer.addProcessor(inputAdapter)
     }
 

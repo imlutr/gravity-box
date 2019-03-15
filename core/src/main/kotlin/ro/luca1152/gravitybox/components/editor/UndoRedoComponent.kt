@@ -114,6 +114,7 @@ class RotateCommand(
 
 class AddCommand(
     override val affectedEntity: Entity,
+    private val mapEntity: Entity,
     private val engine: PooledEngine = Injekt.get()
 ) : Command() {
     override fun execute() {
@@ -140,6 +141,7 @@ class AddCommand(
                 }
         }
         affectedEntity.remove(DeletedMapObjectComponent::class.java)
+        mapEntity.map.updateRoundedPlatforms = true
     }
 
     override fun unexecute() {
@@ -163,11 +165,15 @@ class AddCommand(
         }
         affectedEntity.add(engine.createComponent(DeletedMapObjectComponent::class.java))
         affectedEntity.remove(SelectedObjectComponent::class.java)
+        mapEntity.map.updateRoundedPlatforms = true
     }
 }
 
-class DeleteCommand(override val affectedEntity: Entity) : Command() {
-    private val addCommand = AddCommand(affectedEntity)
+class DeleteCommand(
+    override val affectedEntity: Entity,
+    mapEntity: Entity
+) : Command() {
+    private val addCommand = AddCommand(affectedEntity, mapEntity)
 
     override fun execute() {
         addCommand.unexecute()
