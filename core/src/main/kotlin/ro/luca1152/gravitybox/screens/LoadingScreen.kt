@@ -97,7 +97,6 @@ class LoadingScreen(
         uiStage.act()
         if (finishedLoadingAssets) {
             logLoadingTime()
-            setFilters()
             addScreens()
             game.setScreen(TransitionScreen(MainMenuScreen::class.java, false))
         }
@@ -105,14 +104,6 @@ class LoadingScreen(
 
     private fun logLoadingTime() {
         info { "Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s." }
-    }
-
-    private fun setFilters() {
-        // The default filter would have been Linear, but it looked bad on the pixel texture
-        manager.get(Assets.tileset).findRegion("pixel").texture.setFilter(
-            Texture.TextureFilter.Nearest,
-            Texture.TextureFilter.Nearest
-        )
     }
 
     /**
