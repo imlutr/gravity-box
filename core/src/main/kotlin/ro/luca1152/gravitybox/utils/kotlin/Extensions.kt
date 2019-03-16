@@ -90,15 +90,23 @@ fun Polygon.getRectangleCenter(): Vector2 {
     return Vector2((vertices[0] + vertices[4]) / 2f, (vertices[1] + vertices[5]) / 2f)
 }
 
+fun Engine.getNullableSingletonFor(family: Family): Entity? {
+    val entitiesFound = getEntitiesFor(family)
+    check(entitiesFound.size() <= 1) { "A singleton can't be instantiated more than once." }
+    return when (entitiesFound.size()) {
+        1 -> entitiesFound.first()
+        else -> null
+    }
+}
+
 /**
  * Returns the first entity of [Engine.getEntitiesFor].
  * If there is more than one or no Entity found, [IllegalStateException] is thrown.
  */
 fun Engine.getSingletonFor(family: Family): Entity {
-    val entitiesFound = getEntitiesFor(family)
-    check(entitiesFound.size() <= 1) { "A singleton can't be instantiated more than once." }
-    check(entitiesFound.size() != 0) { "No singleton found for the given Family. " }
-    return entitiesFound.first()
+    val entity = getNullableSingletonFor(family)
+    check(entity != null) { "No singleton found for the given Family. " }
+    return entity
 }
 
 fun Engine.removeAllSystems(except: ArrayList<Class<out EntitySystem>> = ArrayList()) {

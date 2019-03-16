@@ -31,7 +31,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ktx.actors.plus
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -321,14 +320,6 @@ class OverlayPositioningSystem(
                 image.centerY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
                 if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null) {
                     image.centerY = image.centerY.roundToNearest(1f, .125f, .5f)
-                    image.centerY = image.centerY.roundToNearest(1f, .125f, image.height / 2f)
-                } else {
-                    // I doubt that this works for every case
-                    image.centerY = image.centerY.roundToNearest(
-                        1f, .15f,
-                        (if (image.width == 1f) 0f else image.width / 4f) - PlatformEntity.DEFAULT_THICKNESS / 2f
-                    )
-                    image.centerY = image.centerY.roundToNearest(1f, .15f, image.height / 2f)
                 }
 
                 repositionOverlay()

@@ -26,11 +26,11 @@ import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
 class PolygonComponent : Component, Poolable {
     private var linkedImage = Image()
-    private var polygon = Polygon()
-    var leftmostX = Float.MAX_VALUE
-    var rightmostX = Float.MIN_VALUE
-    var bottommostY = Float.MAX_VALUE
-    var topmostY = Float.MIN_VALUE
+    var polygon = Polygon()
+    var leftmostX = Float.POSITIVE_INFINITY
+    var rightmostX = Float.NEGATIVE_INFINITY
+    var bottommostY = Float.POSITIVE_INFINITY
+    var topmostY = Float.NEGATIVE_INFINITY
 
     fun set(linkedImage: Image) {
         this.linkedImage = linkedImage
@@ -73,10 +73,10 @@ class PolygonComponent : Component, Poolable {
     }
 
     private fun resetBounds() {
-        leftmostX = Float.MAX_VALUE
-        rightmostX = Float.MIN_VALUE
-        bottommostY = Float.MAX_VALUE
-        topmostY = Float.MIN_VALUE
+        leftmostX = Float.POSITIVE_INFINITY
+        rightmostX = Float.NEGATIVE_INFINITY
+        bottommostY = Float.POSITIVE_INFINITY
+        topmostY = Float.NEGATIVE_INFINITY
     }
 
     override fun reset() {
