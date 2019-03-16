@@ -82,11 +82,13 @@ class OverlayPositioningSystem(
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 mapEntity.map.updateRoundedPlatforms = true
+                selectedMapObject!!.editorObject.isResizing = true
                 scaleMapObject(x, y, this@apply, selectedMapObject!!, toLeft = true)
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
+                selectedMapObject!!.editorObject.isResizing = false
                 if (image.width != initialImageWidth || image.height != initialImageHeight)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         ResizeCommand(
@@ -128,11 +130,13 @@ class OverlayPositioningSystem(
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 mapEntity.map.updateRoundedPlatforms = true
+                selectedMapObject!!.editorObject.isResizing = true
                 scaleMapObject(x, y, this@apply, selectedMapObject!!, toRight = true)
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
+                selectedMapObject!!.editorObject.isResizing = false
                 if (image.width != initialImageWidth || image.height != initialImageHeight)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         ResizeCommand(
@@ -157,10 +161,7 @@ class OverlayPositioningSystem(
             undoRedoEntity.undoRedo.addExecutedCommand(deleteCommand)
         })
     }
-    private val rotateButton: ClickButton = ClickButton(
-        skin,
-        "small-round-button"
-    ).apply {
+    private val rotateButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-rotate-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
@@ -180,6 +181,7 @@ class OverlayPositioningSystem(
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 mapEntity.map.updateRoundedPlatforms = true
+                selectedMapObject!!.editorObject.isRotating = true
 
                 val mouseCoords = screenToWorldCoordinates(Gdx.input.x, Gdx.input.y)
                 var newRotation = toPositiveAngle(
@@ -206,6 +208,7 @@ class OverlayPositioningSystem(
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
+                selectedMapObject!!.editorObject.isRotating = false
                 rotationLabel.isVisible = false
                 if (image.img.rotation != initialImageRotation)
                     undoRedoEntity.undoRedo.addExecutedCommand(
@@ -268,6 +271,7 @@ class OverlayPositioningSystem(
                 super.touchDragged(event, x, y, pointer)
                 if (!isDragging) return // Make sure dragStart() is called first
                 mapEntity.map.updateRoundedPlatforms = true
+                selectedMapObject!!.editorObject.isDraggingHorizontally = true
 
                 val mouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
                 image.centerX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
@@ -278,6 +282,7 @@ class OverlayPositioningSystem(
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
+                selectedMapObject!!.editorObject.isDraggingHorizontally = false
                 if (image.centerX != initialImageX)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         MoveCommand(
@@ -310,6 +315,7 @@ class OverlayPositioningSystem(
                 super.touchDragged(event, x, y, pointer)
                 if (!isDragging) return // Make sure dragStart() is called first
                 mapEntity.map.updateRoundedPlatforms = true
+                selectedMapObject!!.editorObject.isDraggingVertically = true
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
                 image.centerY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
@@ -330,6 +336,7 @@ class OverlayPositioningSystem(
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
+                selectedMapObject!!.editorObject.isDraggingVertically = false
                 if (image.centerY != initialImageY)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         MoveCommand(
