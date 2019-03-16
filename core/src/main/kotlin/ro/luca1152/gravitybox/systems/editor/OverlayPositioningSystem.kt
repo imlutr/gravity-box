@@ -81,13 +81,13 @@ class OverlayPositioningSystem(
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 mapEntity.map.updateRoundedPlatforms = true
-                selectedMapObject!!.editorObject.isResizing = true
                 scaleMapObject(x, y, this@apply, selectedMapObject!!, toLeft = true)
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
-                selectedMapObject!!.editorObject.isResizing = false
+                selectedMapObject!!.editorObject.resetResizingBooleans()
+                selectedMapObject!!.snap.resetSnappedSize()
                 if (image.width != initialImageWidth || image.height != initialImageHeight)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         ResizeCommand(
@@ -99,10 +99,7 @@ class OverlayPositioningSystem(
             }
         })
     }
-    private val rightArrowButton: ClickButton = ClickButton(
-        skin,
-        "small-round-button"
-    ).apply {
+    private val rightArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-right-arrow-icon")
         iconCell!!.padRight(-4f) // The icon doesn't LOOK centered
         setColors(Colors.gameColor, Colors.uiDownColor)
@@ -129,13 +126,13 @@ class OverlayPositioningSystem(
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 mapEntity.map.updateRoundedPlatforms = true
-                selectedMapObject!!.editorObject.isResizing = true
                 scaleMapObject(x, y, this@apply, selectedMapObject!!, toRight = true)
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
-                selectedMapObject!!.editorObject.isResizing = false
+                selectedMapObject!!.editorObject.resetResizingBooleans()
+                selectedMapObject!!.snap.resetSnappedSize()
                 if (image.width != initialImageWidth || image.height != initialImageHeight)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         ResizeCommand(
@@ -412,23 +409,30 @@ class OverlayPositioningSystem(
 
         val image = linkedMapObject.image
         var newWidth = Math.max(.5f, image.width - deltaX)
-        newWidth = newWidth.roundToNearest(.5f, .15f)
 
         // Scale the platform correctly, taking in consideration its rotation and the scaling direction
         val localLeft = if (toLeft) -(newWidth - image.width) else 0f
         val localRight = if (toRight) (newWidth - image.width) else 0f
         updateObjectPolygon(
-            image.leftX,
-            image.bottomY,
-            image.width,
-            image.height,
+            image.leftX, image.bottomY,
+            image.width, image.height,
             image.img.rotation,
-            localLeft,
-            localRight
+            localLeft, localRight
         )
+        selectedMapObject!!.snap.run {
+            if (Math.abs(selectedMapObjectPolygon.leftmostX - snapLeft) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
+                Math.abs(selectedMapObjectPolygon.rightmostX - snapRight) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
+                Math.abs(selectedMapObjectPolygon.bottommostY - snapBottom) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
+                Math.abs(selectedMapObjectPolygon.topmostY - snapTop) <= SnapComponent.RESIZE_SNAP_THRESHOLD
+            ) {
+                return
+            }
+        }
         val position = selectedMapObjectPolygon.getRectangleCenter()
         image.width = newWidth
         image.setPosition(position.x, position.y)
+
+        updateEditorObject()
 
         // In case a listener's touchDragged calls this function after this system is done updating, then these functions
         // wouldn't get called, which would result in a slight jitter movement
@@ -437,14 +441,31 @@ class OverlayPositioningSystem(
         repositionOverlay()
     }
 
+    private fun updateEditorObject() {
+        val polygon = selectedMapObject!!.polygon
+        selectedMapObject!!.editorObject.run {
+            when {
+                !selectedMapObjectPolygon.leftmostX.approximatelyEqualTo(polygon.leftmostX) -> {
+                    isResizingLeftwards = true
+                }
+                !selectedMapObjectPolygon.rightmostX.approximatelyEqualTo(polygon.rightmostX) -> {
+                    isResizingRightwards = true
+                }
+                !selectedMapObjectPolygon.bottommostY.approximatelyEqualTo(polygon.bottommostY) -> {
+                    isResizingDownwards = true
+                }
+                !selectedMapObjectPolygon.topmostY.approximatelyEqualTo(polygon.topmostY) -> {
+                    isResizingUpwards = true
+                }
+            }
+        }
+    }
+
     private fun updateObjectPolygon(
-        x: Float,
-        y: Float,
-        width: Float,
-        height: Float,
+        x: Float, y: Float,
+        width: Float, height: Float,
         rotationInDegrees: Float = 0f,
-        localLeft: Float = 0f,
-        localRight: Float = 0f
+        localLeft: Float = 0f, localRight: Float = 0f
     ) {
         selectedMapObjectPolygon.run {
             rotation = 0f

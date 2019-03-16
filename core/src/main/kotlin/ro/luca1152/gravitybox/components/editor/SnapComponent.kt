@@ -27,18 +27,48 @@ class SnapComponent : Component, Poolable {
     companion object : ComponentResolver<SnapComponent>(SnapComponent::class.java) {
         const val ROTATION_SNAP_THRESHOLD = 7f
         val DRAG_SNAP_THRESHOLD = 10.pixelsToMeters
+        val RESIZE_SNAP_THRESHOLD = 15.pixelsToMeters
     }
 
     var snapRotationAngle = Float.POSITIVE_INFINITY
     val rotationIsSnapped
         get() = snapRotationAngle != Float.POSITIVE_INFINITY
 
+    var snapLeft = Float.POSITIVE_INFINITY
+    var snapRight = Float.POSITIVE_INFINITY
+    var snapBottom = Float.POSITIVE_INFINITY
+    var snapTop = Float.POSITIVE_INFINITY
+
     fun resetSnappedRotation() {
         snapRotationAngle = Float.POSITIVE_INFINITY
     }
 
+    fun resetSnappedLeft() {
+        snapLeft = Float.POSITIVE_INFINITY
+    }
+
+    fun resetSnappedRight() {
+        snapRight = Float.POSITIVE_INFINITY
+    }
+
+    fun resetSnappedBottom() {
+        snapBottom = Float.POSITIVE_INFINITY
+    }
+
+    fun resetSnappedTop() {
+        snapTop = Float.POSITIVE_INFINITY
+    }
+
+    fun resetSnappedSize() {
+        resetSnappedLeft()
+        resetSnappedRight()
+        resetSnappedBottom()
+        resetSnappedTop()
+    }
+
     override fun reset() {
         resetSnappedRotation()
+        resetSnappedSize()
     }
 }
 

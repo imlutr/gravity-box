@@ -19,10 +19,15 @@ package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.bottommostY
+import ro.luca1152.gravitybox.utils.kotlin.leftmostX
+import ro.luca1152.gravitybox.utils.kotlin.rightmostX
+import ro.luca1152.gravitybox.utils.kotlin.topmostY
 
 class PolygonComponent : Component, Poolable {
     private var linkedImage = Image()
@@ -61,15 +66,10 @@ class PolygonComponent : Component, Poolable {
 
     private fun updateBounds() {
         resetBounds()
-        val vertices = polygon.transformedVertices
-        for (i in 0 until vertices.size step 2) {
-            leftmostX = Math.min(leftmostX, vertices[i])
-            rightmostX = Math.max(rightmostX, vertices[i])
-        }
-        for (i in 1 until vertices.size step 2) {
-            bottommostY = Math.min(bottommostY, vertices[i])
-            topmostY = Math.max(topmostY, vertices[i])
-        }
+        leftmostX = polygon.leftmostX
+        rightmostX = polygon.rightmostX
+        bottommostY = polygon.bottommostY
+        topmostY = polygon.topmostY
     }
 
     private fun resetBounds() {
@@ -77,6 +77,44 @@ class PolygonComponent : Component, Poolable {
         rightmostX = Float.NEGATIVE_INFINITY
         bottommostY = Float.POSITIVE_INFINITY
         topmostY = Float.NEGATIVE_INFINITY
+    }
+
+    fun expandPolygonWith(left: Float = 0f, right: Float = 0f, top: Float = 0f, bottom: Float = 0f) {
+        val transformedVertices = polygon.transformedVertices
+        val arrayX = transformedVertices.filterIndexed { index, _ -> index % 2 == 0 }
+        val arrayY = transformedVertices.filterIndexed { index, _ -> index % 2 == 1 }
+        val sortedX = arrayX.sortedBy { it }
+        val sortedY = arrayY.sortedBy { it }
+
+        val leftmostIndex = arrayX.indexOf(sortedX.first()) * 2
+        val secondLeftmostIndex = arrayX.lastIndexOf(sortedX[1]) * 2
+
+        val rightmostIndex = arrayX.indexOf(sortedX.last()) * 2
+        val secondRightmostIndex = arrayX.lastIndexOf(sortedX[2]) * 2
+
+        val bottommostIndex = arrayY.indexOf(sortedY.first()) * 2
+        val secondBottommostIndex = arrayY.lastIndexOf(sortedY[1]) * 2
+
+        val topmostIndex = arrayY.indexOf(sortedY.last()) * 2
+        val secondTopmostIndex = arrayY.lastIndexOf(sortedY[2]) * 2
+
+        if (left != 0f) {
+            polygon.vertices[leftmostIndex] += left * Math.signum(MathUtils.cosDeg(polygon.rotation))
+            polygon.vertices[secondLeftmostIndex] += left * Math.signum(MathUtils.cosDeg(polygon.rotation))
+        }
+        if (right != 0f) {
+            polygon.vertices[rightmostIndex] += right * Math.signum(MathUtils.cosDeg(polygon.rotation))
+            polygon.vertices[secondRightmostIndex] += right * Math.signum(MathUtils.cosDeg(polygon.rotation))
+        }
+        if (top != 0f) {
+            polygon.vertices[topmostIndex] += top * Math.signum(MathUtils.sinDeg(polygon.rotation))
+            polygon.vertices[secondTopmostIndex] += top * Math.signum(MathUtils.sinDeg(polygon.rotation))
+        }
+        if (bottom != 0f) {
+            polygon.vertices[bottommostIndex] += bottom * Math.signum(MathUtils.sinDeg(polygon.rotation))
+            polygon.vertices[secondBottommostIndex] += bottom * Math.signum(MathUtils.sinDeg(polygon.rotation))
+        }
+        polygon.dirty()
     }
 
     override fun reset() {

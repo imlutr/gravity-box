@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -38,6 +39,7 @@ import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.getRectangleCenter
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -203,6 +205,22 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             polygonShape.dispose()
             setTransform(centerX, centerY, img.rotation * MathUtils.degreesToRadians)
         }
+    }
+
+    fun updateFromPolygon(polygon: Polygon) {
+        val vertices = polygon.vertices
+        val xCoords = vertices.filterIndexed { index, _ -> index % 2 == 0 }.sortedBy { it }
+        val yCoords = vertices.filterIndexed { index, _ -> index % 2 == 1 }.sortedBy { it }
+
+        val width = xCoords.last() - xCoords.first()
+        val height = yCoords.last() - yCoords.first()
+        val center = polygon.getRectangleCenter()
+
+        this.width = width
+        this.height = height
+        this.centerX = center.x
+        this.centerY = center.y
+
     }
 
     override fun reset() {

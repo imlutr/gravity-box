@@ -174,3 +174,17 @@ fun Actor.hitAll(localX: Float, localY: Float, touchable: Boolean = false): Arra
     }
     return hitActors
 }
+
+val Polygon.leftmostX: Float
+    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 0 }.sorted().first()
+
+val Polygon.rightmostX: Float
+    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 0 }.sorted().last()
+
+val Polygon.bottommostY: Float
+    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 1 }.sorted().first()
+
+val Polygon.topmostY: Float
+    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 1 }.sorted().last()
+
+fun Float.approximatelyEqualTo(fl: Float) = Math.abs(this - fl) <= 1e-5f

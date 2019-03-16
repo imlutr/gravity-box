@@ -24,19 +24,34 @@ import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
 class EditorObjectComponent : Component, Poolable {
     var isSelected = false
-    var isResizing = false
+
     var isRotating = false
+
     var isDraggingHorizontally = false
     var isDraggingVertically = false
     val isDragging
         get() = isDraggingHorizontally || isDraggingVertically
 
+    var isResizingLeftwards = false
+    var isResizingRightwards = false
+    var isResizingDownwards = false
+    var isResizingUpwards = false
+    val isResizing
+        get() = isResizingLeftwards || isResizingRightwards || isResizingDownwards || isResizingUpwards
+
+    fun resetResizingBooleans() {
+        isResizingLeftwards = false
+        isResizingRightwards = false
+        isResizingDownwards = false
+        isResizingUpwards = false
+    }
+
     override fun reset() {
         isSelected = false
+        isRotating = false
         isDraggingHorizontally = false
         isDraggingVertically = false
-        isRotating = false
-        isResizing = false
+        resetResizingBooleans()
     }
 
     companion object : ComponentResolver<EditorObjectComponent>(EditorObjectComponent::class.java)

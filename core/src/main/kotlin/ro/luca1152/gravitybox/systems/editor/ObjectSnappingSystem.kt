@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.editor.SelectedObjectComponent
 import ro.luca1152.gravitybox.components.editor.SnapComponent
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
+import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.RESIZE_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.ROTATION_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.snap
@@ -71,6 +72,7 @@ class ObjectSnappingSystem : EntitySystem() {
         }
         snapObjectPosition()
         snapObjectRotation()
+        snapObjectSize()
     }
 
     private fun snapObjectPosition() {
@@ -160,5 +162,140 @@ class ObjectSnappingSystem : EntitySystem() {
             }
         }
         selectedObject!!.snap.resetSnappedRotation()
+    }
+
+    private fun snapObjectSize() {
+        selectedObject!!.polygon.expandPolygonWith()
+        if (!selectedObject!!.editorObject.isResizing) {
+            return
+        }
+        snapObjectLeft()
+        snapObjectRight()
+        snapObjectTop()
+        snapObjectBottom()
+    }
+
+    private fun snapObjectLeft() {
+        if (!selectedObject!!.editorObject.isResizingLeftwards) {
+            return
+        }
+        onScreenObjects.forEach {
+            if (it != selectedObject) {
+                val diffLeftLeft = it.polygon.leftmostX - selectedObject!!.polygon.leftmostX
+                val diffRightLeft = it.polygon.rightmostX - selectedObject!!.polygon.leftmostX
+                when {
+                    Math.abs(diffLeftLeft) <= RESIZE_SNAP_THRESHOLD -> {
+                        selectedObject!!.run {
+                            polygon.expandPolygonWith(left = diffLeftLeft)
+                            image.updateFromPolygon(polygon.polygon)
+                            snap.snapLeft = selectedObject!!.polygon.leftmostX
+                        }
+                        return
+                    }
+                    Math.abs(diffRightLeft) <= RESIZE_SNAP_THRESHOLD -> {
+                        selectedObject!!.run {
+                            polygon.expandPolygonWith(left = diffRightLeft)
+                            image.updateFromPolygon(polygon.polygon)
+                            snap.snapLeft = selectedObject!!.polygon.leftmostX
+                        }
+                        return
+                    }
+                }
+            }
+        }
+        selectedObject!!.snap.resetSnappedLeft()
+    }
+
+    private fun snapObjectRight() {
+        if (!selectedObject!!.editorObject.isResizingRightwards) {
+            return
+        }
+        onScreenObjects.forEach {
+            if (it != selectedObject) {
+                val diffLeftRight = it.polygon.leftmostX - selectedObject!!.polygon.rightmostX
+                val diffRightRight = it.polygon.rightmostX - selectedObject!!.polygon.rightmostX
+                when {
+                    Math.abs(diffLeftRight) <= RESIZE_SNAP_THRESHOLD -> {
+                        selectedObject!!.run {
+                            polygon.expandPolygonWith(right = diffLeftRight)
+                            image.updateFromPolygon(polygon.polygon)
+                            snap.snapRight = selectedObject!!.polygon.rightmostX
+                        }
+                        return
+                    }
+                    Math.abs(diffRightRight) <= RESIZE_SNAP_THRESHOLD -> {
+                        selectedObject!!.run {
+                            polygon.expandPolygonWith(right = diffRightRight)
+                            image.updateFromPolygon(polygon.polygon)
+                            snap.snapRight = selectedObject!!.polygon.rightmostX
+                        }
+                        return
+                    }
+                }
+            }
+        }
+        selectedObject!!.snap.resetSnappedRight()
+    }
+
+    private fun snapObjectTop() {
+        if (!selectedObject!!.editorObject.isResizingUpwards) {
+            return
+        }
+        onScreenObjects.forEach {
+            if (it != selectedObject) {
+                val diffBottomTop = it.polygon.bottommostY - selectedObject!!.polygon.topmostY
+                val diffTopTop = it.polygon.topmostY - selectedObject!!.polygon.topmostY
+                when {
+                    Math.abs(diffBottomTop) <= RESIZE_SNAP_THRESHOLD -> {
+                        selectedObject!!.run {
+                            polygon.expandPolygonWith(top = diffBottomTop)
+                            image.updateFromPolygon(polygon.polygon)
+                            snap.snapTop = selectedObject!!.polygon.topmostY
+                        }
+                        return
+                    }
+                    Math.abs(diffTopTop) <= RESIZE_SNAP_THRESHOLD -> {
+                        selectedObject!!.run {
+                            polygon.expandPolygonWith(top = diffTopTop)
+                            image.updateFromPolygon(polygon.polygon)
+                            snap.snapTop = selectedObject!!.polygon.topmostY
+                        }
+                        return
+                    }
+                }
+            }
+        }
+        selectedObject!!.snap.resetSnappedTop()
+    }
+
+    private fun snapObjectBottom() {
+        if (!selectedObject!!.editorObject.isResizingDownwards) {
+            return
+        }
+        onScreenObjects.forEach {
+            if (it != selectedObject) {
+                val diffBottomBottom = it.polygon.bottommostY - selectedObject!!.polygon.bottommostY
+                val diffTopBottom = it.polygon.topmostY - selectedObject!!.polygon.bottommostY
+                when {
+                    Math.abs(diffTopBottom) <= RESIZE_SNAP_THRESHOLD -> {
+                        selectedObject!!.run {
+                            polygon.expandPolygonWith(bottom = diffTopBottom)
+                            image.updateFromPolygon(polygon.polygon)
+                            snap.snapBottom = selectedObject!!.polygon.bottommostY
+                        }
+                        return
+                    }
+                    Math.abs(diffBottomBottom) <= RESIZE_SNAP_THRESHOLD -> {
+                        selectedObject!!.run {
+                            polygon.expandPolygonWith(bottom = diffBottomBottom)
+                            image.updateFromPolygon(polygon.polygon)
+                            snap.snapBottom = selectedObject!!.polygon.bottommostY
+                        }
+                        return
+                    }
+                }
+            }
+        }
+        selectedObject!!.snap.resetSnappedBottom()
     }
 }
