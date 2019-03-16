@@ -62,6 +62,9 @@ object PlatformEntity {
             )
             image.img.userObject = this
         }
+        add(engine.createComponent(PolygonComponent::class.java)).run {
+            polygon.set(image.img)
+        }
         add(engine.createComponent(BodyComponent::class.java)).run {
             body.set(image.imageToBox2DBody(BodyDef.BodyType.StaticBody), this, CATEGORY_BITS, MASK_BITS)
         }

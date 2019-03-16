@@ -263,8 +263,7 @@ class LevelEditorScreen(
         levelEntity = LevelEntity.createEntity(getFirstUnusedLevelId())
         val platformEntity = PlatformEntity.createEntity(
             2,
-            16f / 2f,
-            19f / 2f - .5f - PlatformEntity.DEFAULT_THICKNESS / 2f,
+            0f, .5f,
             4f
         )
         finishEntity = FinishEntity.createEntity(
@@ -330,6 +329,7 @@ class LevelEditorScreen(
             addSystem(OverlayCameraSyncSystem())
             addSystem(OverlayPositioningSystem())
             addSystem(TouchableBoundsSyncSystem())
+            addSystem(PolygonSyncSystem())
             addSystem(RoundedPlatformsSystem())
             addSystem(GridRenderingSystem())
             addSystem(ImageRenderingSystem())
