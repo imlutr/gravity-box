@@ -1,0 +1,41 @@
+{
+  "id": 2,
+  "player": {
+    "id": 0,
+    "position": {
+      "x": -96,
+      "y": 72
+    },
+    "rotation": 0
+  },
+  "finish": {
+    "id": 1,
+    "position": {
+      "x": 352,
+      "y": 360
+    },
+    "rotation": 0
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "id": 2,
+      "position": {
+        "x": -96,
+        "y": 32
+      },
+      "width": 448,
+      "rotation": 0
+    },
+    {
+      "type": "platform",
+      "id": 3,
+      "position": {
+        "x": 352,
+        "y": 288
+      },
+      "width": 448,
+      "rotation": 0
+    }
+  ]
+}
