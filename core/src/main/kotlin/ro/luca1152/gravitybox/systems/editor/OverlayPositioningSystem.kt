@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ktx.actors.plus
 import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.pixelsToMeters
@@ -276,8 +277,14 @@ class OverlayPositioningSystem(
                 selectedMapObject!!.editorObject.isDraggingHorizontally = true
 
                 val mouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
-                image.centerX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
-                image.centerX = image.centerX.roundToNearest(.5f, .15f)
+                var newCenterX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
+                newCenterX = newCenterX.roundToNearest(1f, .15f, if (image.width % 2 == 1f) .5f else 0f)
+
+                if (Math.abs(newCenterX - selectedMapObject!!.snap.snapCenterX) <= DRAG_SNAP_THRESHOLD) {
+                    return
+                } else {
+                    image.centerX = newCenterX
+                }
 
                 repositionOverlay()
             }
@@ -285,6 +292,7 @@ class OverlayPositioningSystem(
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 selectedMapObject!!.editorObject.isDraggingHorizontally = false
+                selectedMapObject!!.snap.resetSnappedPosition()
                 if (image.centerX != initialImageX)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         MoveCommand(
@@ -320,9 +328,15 @@ class OverlayPositioningSystem(
                 selectedMapObject!!.editorObject.isDraggingVertically = true
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
-                image.centerY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
+                var newCenterY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
                 if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null) {
-                    image.centerY = image.centerY.roundToNearest(1f, .125f, .5f)
+                    newCenterY = newCenterY.roundToNearest(1f, .125f, .5f)
+                }
+
+                if (Math.abs(selectedMapObject!!.snap.snapCenterY - newCenterY) <= DRAG_SNAP_THRESHOLD) {
+                    return
+                } else {
+                    image.centerY = newCenterY
                 }
 
                 repositionOverlay()
@@ -331,6 +345,7 @@ class OverlayPositioningSystem(
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 selectedMapObject!!.editorObject.isDraggingVertically = false
+                selectedMapObject!!.snap.resetSnappedPosition()
                 if (image.centerY != initialImageY)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         MoveCommand(
@@ -409,6 +424,7 @@ class OverlayPositioningSystem(
 
         val image = linkedMapObject.image
         var newWidth = Math.max(.5f, image.width - deltaX)
+        newWidth = newWidth.roundToNearest(1f, .15f)
 
         // Scale the platform correctly, taking in consideration its rotation and the scaling direction
         val localLeft = if (toLeft) -(newWidth - image.width) else 0f

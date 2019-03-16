@@ -39,6 +39,9 @@ class SnapComponent : Component, Poolable {
     var snapBottom = Float.POSITIVE_INFINITY
     var snapTop = Float.POSITIVE_INFINITY
 
+    var snapCenterX = Float.POSITIVE_INFINITY
+    var snapCenterY = Float.POSITIVE_INFINITY
+
     fun resetSnappedRotation() {
         snapRotationAngle = Float.POSITIVE_INFINITY
     }
@@ -59,6 +62,19 @@ class SnapComponent : Component, Poolable {
         snapTop = Float.POSITIVE_INFINITY
     }
 
+    fun resetSnappedX() {
+        snapCenterX = Float.POSITIVE_INFINITY
+    }
+
+    fun resetSnappedY() {
+        snapCenterY = Float.POSITIVE_INFINITY
+    }
+
+    fun resetSnappedPosition() {
+        resetSnappedX()
+        resetSnappedY()
+    }
+
     fun resetSnappedSize() {
         resetSnappedLeft()
         resetSnappedRight()
@@ -67,8 +83,9 @@ class SnapComponent : Component, Poolable {
     }
 
     override fun reset() {
-        resetSnappedRotation()
         resetSnappedSize()
+        resetSnappedPosition()
+        resetSnappedRotation()
     }
 }
 
