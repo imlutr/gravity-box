@@ -278,7 +278,7 @@ class OverlayPositioningSystem(
 
                 val mouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
                 var newCenterX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
-                newCenterX = newCenterX.roundToNearest(1f, .15f, if (image.width % 2 == 1f) .5f else 0f)
+                newCenterX = newCenterX.roundToNearest(.5f, .15f)
 
                 if (Math.abs(newCenterX - selectedMapObject!!.snap.snapCenterX) <= DRAG_SNAP_THRESHOLD) {
                     return
