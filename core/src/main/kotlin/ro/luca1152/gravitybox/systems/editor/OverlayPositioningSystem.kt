@@ -30,8 +30,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ktx.actors.plus
 import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -87,6 +87,8 @@ class OverlayPositioningSystem(
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
+                selectedMapObject!!.editorObject.resetResizingBooleans()
+                selectedMapObject!!.snap.resetSnappedSize()
                 if (image.width != initialImageWidth || image.height != initialImageHeight)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         ResizeCommand(
@@ -98,10 +100,7 @@ class OverlayPositioningSystem(
             }
         })
     }
-    private val rightArrowButton: ClickButton = ClickButton(
-        skin,
-        "small-round-button"
-    ).apply {
+    private val rightArrowButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-right-arrow-icon")
         iconCell!!.padRight(-4f) // The icon doesn't LOOK centered
         setColors(Colors.gameColor, Colors.uiDownColor)
@@ -133,6 +132,8 @@ class OverlayPositioningSystem(
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
+                selectedMapObject!!.editorObject.resetResizingBooleans()
+                selectedMapObject!!.snap.resetSnappedSize()
                 if (image.width != initialImageWidth || image.height != initialImageHeight)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         ResizeCommand(
@@ -157,10 +158,7 @@ class OverlayPositioningSystem(
             undoRedoEntity.undoRedo.addExecutedCommand(deleteCommand)
         })
     }
-    private val rotateButton: ClickButton = ClickButton(
-        skin,
-        "small-round-button"
-    ).apply {
+    private val rotateButton: ClickButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-rotate-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
@@ -180,6 +178,7 @@ class OverlayPositioningSystem(
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 mapEntity.map.updateRoundedPlatforms = true
+                selectedMapObject!!.editorObject.isRotating = true
 
                 val mouseCoords = screenToWorldCoordinates(Gdx.input.x, Gdx.input.y)
                 var newRotation = toPositiveAngle(
@@ -194,7 +193,13 @@ class OverlayPositioningSystem(
 
                 newRotation -= deltaAngle
                 newRotation = MathUtils.round(newRotation).toFloat()
-                newRotation = newRotation.roundToNearest(45f, 5f)
+                newRotation = toPositiveAngle(newRotation)
+                newRotation =
+                    if (selectedMapObject!!.snap.rotationIsSnapped && Math.abs(newRotation - selectedMapObject!!.snap.snapRotationAngle) <= SnapComponent.ROTATION_SNAP_THRESHOLD) {
+                        selectedMapObject!!.snap.snapRotationAngle
+                    } else {
+                        newRotation.roundToNearest(45f, 7f)
+                    }
                 newRotation = toPositiveAngle(newRotation)
 
                 image.img.rotation = newRotation
@@ -206,6 +211,7 @@ class OverlayPositioningSystem(
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
+                selectedMapObject!!.editorObject.isRotating = false
                 rotationLabel.isVisible = false
                 if (image.img.rotation != initialImageRotation)
                     undoRedoEntity.undoRedo.addExecutedCommand(
@@ -268,16 +274,25 @@ class OverlayPositioningSystem(
                 super.touchDragged(event, x, y, pointer)
                 if (!isDragging) return // Make sure dragStart() is called first
                 mapEntity.map.updateRoundedPlatforms = true
+                selectedMapObject!!.editorObject.isDraggingHorizontally = true
 
                 val mouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
-                image.centerX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
-                image.centerX = image.centerX.roundToNearest(.5f, .15f)
+                var newCenterX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
+                newCenterX = newCenterX.roundToNearest(.5f, .15f)
+
+                if (Math.abs(newCenterX - selectedMapObject!!.snap.snapCenterX) <= DRAG_SNAP_THRESHOLD) {
+                    return
+                } else {
+                    image.centerX = newCenterX
+                }
 
                 repositionOverlay()
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
+                selectedMapObject!!.editorObject.isDraggingHorizontally = false
+                selectedMapObject!!.snap.resetSnappedPosition()
                 if (image.centerX != initialImageX)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         MoveCommand(
@@ -310,19 +325,18 @@ class OverlayPositioningSystem(
                 super.touchDragged(event, x, y, pointer)
                 if (!isDragging) return // Make sure dragStart() is called first
                 mapEntity.map.updateRoundedPlatforms = true
+                selectedMapObject!!.editorObject.isDraggingVertically = true
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
-                image.centerY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
+                var newCenterY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
                 if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null) {
-                    image.centerY = image.centerY.roundToNearest(1f, .125f, .5f)
-                    image.centerY = image.centerY.roundToNearest(1f, .125f, image.height / 2f)
+                    newCenterY = newCenterY.roundToNearest(1f, .125f, .5f)
+                }
+
+                if (Math.abs(selectedMapObject!!.snap.snapCenterY - newCenterY) <= DRAG_SNAP_THRESHOLD) {
+                    return
                 } else {
-                    // I doubt that this works for every case
-                    image.centerY = image.centerY.roundToNearest(
-                        1f, .15f,
-                        (if (image.width == 1f) 0f else image.width / 4f) - PlatformEntity.DEFAULT_THICKNESS / 2f
-                    )
-                    image.centerY = image.centerY.roundToNearest(1f, .15f, image.height / 2f)
+                    image.centerY = newCenterY
                 }
 
                 repositionOverlay()
@@ -330,6 +344,8 @@ class OverlayPositioningSystem(
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
+                selectedMapObject!!.editorObject.isDraggingVertically = false
+                selectedMapObject!!.snap.resetSnappedPosition()
                 if (image.centerY != initialImageY)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         MoveCommand(
@@ -408,23 +424,31 @@ class OverlayPositioningSystem(
 
         val image = linkedMapObject.image
         var newWidth = Math.max(.5f, image.width - deltaX)
-        newWidth = newWidth.roundToNearest(.5f, .15f)
+        newWidth = newWidth.roundToNearest(1f, .15f)
 
         // Scale the platform correctly, taking in consideration its rotation and the scaling direction
         val localLeft = if (toLeft) -(newWidth - image.width) else 0f
         val localRight = if (toRight) (newWidth - image.width) else 0f
         updateObjectPolygon(
-            image.leftX,
-            image.bottomY,
-            image.width,
-            image.height,
+            image.leftX, image.bottomY,
+            image.width, image.height,
             image.img.rotation,
-            localLeft,
-            localRight
+            localLeft, localRight
         )
+        selectedMapObject!!.snap.run {
+            if (Math.abs(selectedMapObjectPolygon.leftmostX - snapLeft) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
+                Math.abs(selectedMapObjectPolygon.rightmostX - snapRight) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
+                Math.abs(selectedMapObjectPolygon.bottommostY - snapBottom) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
+                Math.abs(selectedMapObjectPolygon.topmostY - snapTop) <= SnapComponent.RESIZE_SNAP_THRESHOLD
+            ) {
+                return
+            }
+        }
         val position = selectedMapObjectPolygon.getRectangleCenter()
         image.width = newWidth
         image.setPosition(position.x, position.y)
+
+        updateEditorObject()
 
         // In case a listener's touchDragged calls this function after this system is done updating, then these functions
         // wouldn't get called, which would result in a slight jitter movement
@@ -433,14 +457,31 @@ class OverlayPositioningSystem(
         repositionOverlay()
     }
 
+    private fun updateEditorObject() {
+        val polygon = selectedMapObject!!.polygon
+        selectedMapObject!!.editorObject.run {
+            when {
+                !selectedMapObjectPolygon.leftmostX.approximatelyEqualTo(polygon.leftmostX) -> {
+                    isResizingLeftwards = true
+                }
+                !selectedMapObjectPolygon.rightmostX.approximatelyEqualTo(polygon.rightmostX) -> {
+                    isResizingRightwards = true
+                }
+                !selectedMapObjectPolygon.bottommostY.approximatelyEqualTo(polygon.bottommostY) -> {
+                    isResizingDownwards = true
+                }
+                !selectedMapObjectPolygon.topmostY.approximatelyEqualTo(polygon.topmostY) -> {
+                    isResizingUpwards = true
+                }
+            }
+        }
+    }
+
     private fun updateObjectPolygon(
-        x: Float,
-        y: Float,
-        width: Float,
-        height: Float,
+        x: Float, y: Float,
+        width: Float, height: Float,
         rotationInDegrees: Float = 0f,
-        localLeft: Float = 0f,
-        localRight: Float = 0f
+        localLeft: Float = 0f, localRight: Float = 0f
     ) {
         selectedMapObjectPolygon.run {
             rotation = 0f

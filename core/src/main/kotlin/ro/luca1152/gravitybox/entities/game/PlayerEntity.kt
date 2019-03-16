@@ -20,10 +20,7 @@ package ro.luca1152.gravitybox.entities.game
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.physics.box2d.BodyDef
-import ro.luca1152.gravitybox.components.editor.JsonComponent
-import ro.luca1152.gravitybox.components.editor.MapObjectOverlayComponent
-import ro.luca1152.gravitybox.components.editor.json
-import ro.luca1152.gravitybox.components.editor.mapObjectOverlay
+import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
@@ -59,6 +56,11 @@ object PlayerEntity {
             image.set(manager.get(Assets.tileset).findRegion("player"), x, y, WIDTH, HEIGHT)
             image.img.userObject = this
         }
+        add(engine.createComponent(PolygonComponent::class.java)).run {
+            polygon.set(image.img)
+        }
+        add(engine.createComponent(EditorObjectComponent::class.java))
+        add(engine.createComponent(SnapComponent::class.java))
         add(engine.createComponent(BodyComponent::class.java)).run {
             body.set(
                 image.imageToBox2DBody(BodyDef.BodyType.DynamicBody, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION),

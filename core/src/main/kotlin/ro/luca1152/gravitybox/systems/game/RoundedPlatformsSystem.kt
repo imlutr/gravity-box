@@ -51,7 +51,7 @@ class RoundedPlatformsSystem(
         if (!mapEntity.map.updateRoundedPlatforms)
             return
         super.update(deltaTime)
-        mapEntity.map.updateRoundedPlatforms = false
+//        mapEntity.map.updateRoundedPlatforms = false
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
@@ -107,22 +107,22 @@ class RoundedPlatformsSystem(
     }
 
     private fun isPlatformInBottomRightOf(actor: Actor) =
-        isPlatform(actor.hitAll(actor.width - PlatformEntity.DEFAULT_THICKNESS / 2f, (-1).pixelsToMeters))
+        isPlatform(actor.hitAll(actor.width - PlatformEntity.DEFAULT_THICKNESS / 2f, (-5).pixelsToMeters))
 
     private fun isPlatformAtRightOf(actor: Actor) =
-        isPlatform(actor.hitAll(actor.width + 1.pixelsToMeters, actor.height / 2f))
+        isPlatform(actor.hitAll(actor.width + 5.pixelsToMeters, actor.height / 2f))
 
     private fun isPlatformInTopRightOf(actor: Actor) =
-        isPlatform(actor.hitAll(actor.width - PlatformEntity.DEFAULT_THICKNESS / 2f, actor.height + 1.pixelsToMeters))
+        isPlatform(actor.hitAll(actor.width - PlatformEntity.DEFAULT_THICKNESS / 2f, actor.height + 5.pixelsToMeters))
 
     private fun isPlatformInTopLeftOf(actor: Actor) =
-        isPlatform(actor.hitAll(PlatformEntity.DEFAULT_THICKNESS / 2f, actor.height + 1.pixelsToMeters))
+        isPlatform(actor.hitAll(PlatformEntity.DEFAULT_THICKNESS / 2f, actor.height + 5.pixelsToMeters))
 
     private fun isPlatformAtLeftOf(actor: Actor) =
-        isPlatform(actor.hitAll((-1).pixelsToMeters, actor.height / 2f))
+        isPlatform(actor.hitAll((-5).pixelsToMeters, actor.height / 2f))
 
     private fun isPlatformInBottomLeftOf(actor: Actor) =
-        isPlatform(actor.hitAll(PlatformEntity.DEFAULT_THICKNESS / 2f, (-1).pixelsToMeters))
+        isPlatform(actor.hitAll(PlatformEntity.DEFAULT_THICKNESS / 2f, (-5).pixelsToMeters))
 
     private fun isPlatform(actors: Array<Actor>): Boolean {
         actors.forEach {
