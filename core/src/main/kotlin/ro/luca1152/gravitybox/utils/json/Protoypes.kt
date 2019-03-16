@@ -18,8 +18,8 @@
 package ro.luca1152.gravitybox.utils.json
 
 class PositionPrototype {
-    var x = 0
-    var y = 0
+    var x = 0f
+    var y = 0f
 }
 
 class PlayerPrototype {
@@ -38,6 +38,6 @@ class ObjectPrototype {
     var type = ""
     var id = 0
     var position = PositionPrototype()
-    var width = 0
+    var width = 0f
     var rotation = 0
 }
