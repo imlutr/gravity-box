@@ -50,6 +50,7 @@ object FinishEntity {
             polygon.set(image.img)
         }
         add(engine.createComponent(EditorObjectComponent::class.java))
+        add(engine.createComponent(SnapComponent::class.java))
         add(engine.createComponent(FinishComponent::class.java)).run {
             finish.set(blinkEndlessly, image)
         }

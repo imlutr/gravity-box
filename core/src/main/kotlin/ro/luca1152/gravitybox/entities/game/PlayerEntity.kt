@@ -60,6 +60,7 @@ object PlayerEntity {
             polygon.set(image.img)
         }
         add(engine.createComponent(EditorObjectComponent::class.java))
+        add(engine.createComponent(SnapComponent::class.java))
         add(engine.createComponent(BodyComponent::class.java)).run {
             body.set(
                 image.imageToBox2DBody(BodyDef.BodyType.DynamicBody, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION),

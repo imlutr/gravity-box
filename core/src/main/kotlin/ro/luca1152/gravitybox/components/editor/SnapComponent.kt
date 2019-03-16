@@ -18,16 +18,29 @@
 package ro.luca1152.gravitybox.components.editor
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.pixelsToMeters
+import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-class SnapObjectComponent : Component, Poolable {
-    var snapRotationTo = Float.POSITIVE_INFINITY
+class SnapComponent : Component, Poolable {
+    companion object : ComponentResolver<SnapComponent>(SnapComponent::class.java) {
+        const val ROTATION_SNAP_THRESHOLD = 7f
+        val DRAG_SNAP_THRESHOLD = 10.pixelsToMeters
+    }
 
-    private fun resetSnappedRotation() {
-        snapRotationTo = Float.POSITIVE_INFINITY
+    var snapRotationAngle = Float.POSITIVE_INFINITY
+    val rotationIsSnapped
+        get() = snapRotationAngle != Float.POSITIVE_INFINITY
+
+    fun resetSnappedRotation() {
+        snapRotationAngle = Float.POSITIVE_INFINITY
     }
 
     override fun reset() {
         resetSnappedRotation()
     }
 }
+
+val Entity.snap: SnapComponent
+    get() = SnapComponent[this]

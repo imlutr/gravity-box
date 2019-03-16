@@ -25,19 +25,17 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.editor.SelectedObjectComponent
+import ro.luca1152.gravitybox.components.editor.SnapComponent
+import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
+import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.ROTATION_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.editor.snap
 import ro.luca1152.gravitybox.components.game.ImageComponent
 import ro.luca1152.gravitybox.components.game.image
 import ro.luca1152.gravitybox.components.game.polygon
-import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.getNullableSingletonFor
 
 class ObjectSnappingSystem : EntitySystem() {
-    companion object {
-        private val DRAG_SNAP_THRESHOLD = 10.pixelsToMeters
-        private val ROTATION_SNAP_THRESHOLD = 10
-    }
-
     private val selectedObject: Entity?
         get() = engine.getNullableSingletonFor(Family.all(SelectedObjectComponent::class.java).get())
     private val onScreenObjects = Array<Entity>()
@@ -50,7 +48,7 @@ class ObjectSnappingSystem : EntitySystem() {
 
     private fun updateOnScreenObjects() {
         onScreenObjects.clear()
-        engine.getEntitiesFor(Family.all(ImageComponent::class.java).get()).forEach {
+        engine.getEntitiesFor(Family.all(ImageComponent::class.java, SnapComponent::class.java).get()).forEach {
             if (it.image.img.isOnScreen()) {
                 onScreenObjects.add(it)
             }
@@ -152,11 +150,15 @@ class ObjectSnappingSystem : EntitySystem() {
             return
         }
         onScreenObjects.forEach {
-            val rotationDiff = it.polygon.polygon.rotation - selectedObject!!.polygon.polygon.rotation
-            if (Math.abs(rotationDiff) < ROTATION_SNAP_THRESHOLD) {
-                selectedObject!!.image.img.rotation += rotationDiff
-                return
+            if (it != selectedObject) {
+                val rotationDiff = it.polygon.polygon.rotation - selectedObject!!.polygon.polygon.rotation
+                if (Math.abs(rotationDiff) < ROTATION_SNAP_THRESHOLD) {
+                    selectedObject!!.image.img.rotation += rotationDiff
+                    selectedObject!!.snap.snapRotationAngle = it.polygon.polygon.rotation
+                    return
+                }
             }
         }
+        selectedObject!!.snap.resetSnappedRotation()
     }
 }

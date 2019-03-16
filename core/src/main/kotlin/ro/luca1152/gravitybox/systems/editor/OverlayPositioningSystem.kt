@@ -195,7 +195,13 @@ class OverlayPositioningSystem(
 
                 newRotation -= deltaAngle
                 newRotation = MathUtils.round(newRotation).toFloat()
-                newRotation = newRotation.roundToNearest(45f, 5f)
+                newRotation = toPositiveAngle(newRotation)
+                newRotation =
+                    if (selectedMapObject!!.snap.rotationIsSnapped && Math.abs(newRotation - selectedMapObject!!.snap.snapRotationAngle) <= SnapComponent.ROTATION_SNAP_THRESHOLD) {
+                        selectedMapObject!!.snap.snapRotationAngle
+                    } else {
+                        newRotation.roundToNearest(45f, 7f)
+                    }
                 newRotation = toPositiveAngle(newRotation)
 
                 image.img.rotation = newRotation
