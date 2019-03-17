@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
@@ -228,10 +229,10 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
         img.run {
             color = Color.WHITE
             rotation = 0f
-            scaleX = 1f; img.scaleY = 1f
-            actions.forEach {
-                removeAction(it)
-            }
+            scaleX = 1f; scaleY = 1f
+            isVisible = true
+            touchable = Touchable.enabled
+            clear()
         }
     }
 
