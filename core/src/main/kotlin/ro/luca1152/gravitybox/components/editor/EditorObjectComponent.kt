@@ -22,10 +22,11 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
+/** Contains information about level editor objects. */
 class EditorObjectComponent : Component, Poolable {
-    var isSelected = false
-
+    var isDeleted = false
     var isRotating = false
+    var isSelected = false
 
     var isDraggingHorizontally = false
     var isDraggingVertically = false
@@ -48,6 +49,7 @@ class EditorObjectComponent : Component, Poolable {
 
     override fun reset() {
         isSelected = false
+        isDeleted = false
         isRotating = false
         isDraggingHorizontally = false
         isDraggingVertically = false

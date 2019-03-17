@@ -18,13 +18,14 @@
 package ro.luca1152.gravitybox.entities.editor
 
 import com.badlogic.ashley.core.PooledEngine
-import ro.luca1152.gravitybox.components.editor.DebugComponent
+import ro.luca1152.gravitybox.components.editor.DebugShapeComponent
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+@Suppress("unused")
 object DebugEntity {
     fun createEntity(engine: PooledEngine = Injekt.get()) = engine.createEntity().apply {
-        add(engine.createComponent(DebugComponent::class.java))
+        add(engine.createComponent(DebugShapeComponent::class.java))
         engine.addEntity(this)
     }!!
 }

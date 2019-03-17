@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.utils.assets
 
 import com.badlogic.gdx.files.FileHandle
 
+/** Wrapper object for a string. */
 class Text {
     var string: String = ""
 

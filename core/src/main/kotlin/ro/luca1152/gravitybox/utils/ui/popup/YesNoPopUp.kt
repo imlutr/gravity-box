@@ -15,6 +15,8 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package ro.luca1152.gravitybox.utils.ui.popup
 
 import com.badlogic.gdx.assets.AssetManager

@@ -68,8 +68,8 @@ object FinishEntity {
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)
         }
-        add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
-            mapObjectOverlay.set(
+        add(engine.createComponent(OverlayComponent::class.java)).run {
+            overlay.set(
                 showMovementButtons = true,
                 showRotationButton = true,
                 showResizingButtons = false,

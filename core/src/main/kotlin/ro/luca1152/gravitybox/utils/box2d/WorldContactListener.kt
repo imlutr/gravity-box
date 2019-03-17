@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.listeners
+package ro.luca1152.gravitybox.utils.box2d
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
@@ -30,7 +30,7 @@ import ro.luca1152.gravitybox.components.game.platform
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
-/** Dispatches the appropriate events for every Box2D collisions. */
+/** Reacts accordingly to every Box2D collision. */
 class WorldContactListener : ContactListener {
     override fun beginContact(contact: Contact) {
         val bodyA = contact.fixtureA.body

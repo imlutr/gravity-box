@@ -24,6 +24,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 
+/** Components with an companion object which extends this can be referenced in an OOP-like style.*/
 open class ComponentResolver<T : Component>(componentClass: Class<T>) {
     private val MAPPER = ComponentMapper.getFor(componentClass)!!
     operator fun get(entity: Entity) = MAPPER[entity]

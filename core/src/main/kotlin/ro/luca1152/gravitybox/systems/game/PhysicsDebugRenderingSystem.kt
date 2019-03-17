@@ -34,7 +34,8 @@ import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-@Suppress("LibGDXFlushInsideLoop")
+@Suppress("LibGDXFlushInsideLoop", "unused")
+/** Renders Box2D debug shapes. */
 class PhysicsDebugRenderingSystem(
     private val world: World = Injekt.get(),
     private val shapeRenderer: ShapeRenderer = Injekt.get(),
@@ -69,7 +70,6 @@ class PhysicsDebugRenderingSystem(
                 (body.userData as Entity).run {
                     when {
                         this.tryGet(FinishComponent) != null -> shapeRenderer.color = Color.LIME
-                        this.tryGet(PointComponent) != null -> shapeRenderer.color = Color.BLUE
                         this.tryGet(PlayerComponent) != null -> shapeRenderer.color = Color.RED
                         this.tryGet(BulletComponent) != null -> shapeRenderer.color = Color.YELLOW
                     }

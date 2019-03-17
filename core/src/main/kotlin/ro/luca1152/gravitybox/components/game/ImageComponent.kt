@@ -35,8 +35,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.actors.minus
 import ktx.actors.plus
-import ro.luca1152.gravitybox.PPM
-import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
@@ -44,10 +42,7 @@ import ro.luca1152.gravitybox.utils.kotlin.getRectangleCenter
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/**
- * Contains the rendering data for an entity, such as the position or texture.
- * Is an Image (from Scene2D) in order to be able to use Actions.
- */
+/** Contains an [Image]. */
 class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, Poolable {
     var img: Image = Image()
 

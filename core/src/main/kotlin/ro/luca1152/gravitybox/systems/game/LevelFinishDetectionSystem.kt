@@ -24,7 +24,7 @@ import com.badlogic.ashley.core.Family
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 
-/** Detects when the player is inside the finish point, and updates variables accordingly. */
+/** Detects when the player is inside the finish point. */
 class LevelFinishDetectionSystem : EntitySystem() {
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity

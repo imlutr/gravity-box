@@ -26,10 +26,9 @@ import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
-import ro.luca1152.gravitybox.listeners.CollisionBoxListener
-import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
+import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.kotlin.clearScreen
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -70,7 +69,6 @@ class PlayScreen(
             addSystem(PhysicsSyncSystem())
             addSystem(ShootingSystem())
             addSystem(BulletCollisionSystem())
-            addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
 //            addSystem(PointSystem(mapEntity.map)) TODO
             addSystem(OffScreenLevelRestartSystem())

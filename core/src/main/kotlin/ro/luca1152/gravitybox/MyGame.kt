@@ -70,10 +70,11 @@ class MyGame : KtxGame<Screen>() {
     }
 
     override fun dispose() {
-        // Dispose EVERY screen
-        super.dispose()
+        super.dispose() // Disposes every screen
+        disposeHeavyInjectedObjects()
+    }
 
-        // Dispose heavy injected objects
+    private fun disposeHeavyInjectedObjects() {
         Injekt.run {
             get<Batch>().dispose()
             get<AssetManager>().dispose()
@@ -82,18 +83,3 @@ class MyGame : KtxGame<Screen>() {
         }
     }
 }
-
-/** Pixels per meter. */
-const val PPM = 64f
-
-val Int.pixelsToMeters: Float
-    get() = this / PPM
-
-val Int.metersToPixels: Float
-    get() = this * PPM
-
-val Float.pixelsToMeters: Float
-    get() = this / PPM
-
-val Float.metersToPixels: Float
-    get() = this * PPM

@@ -27,14 +27,15 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Array
-import ro.luca1152.gravitybox.components.editor.SelectedObjectComponent
+import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
+import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.listeners.CollisionBoxListener
-import ro.luca1152.gravitybox.listeners.WorldContactListener
 import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
+import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -42,6 +43,7 @@ import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/** Makes edited levels playable. */
 class PlayingSystem(
     private val levelEditorScreen: LevelEditorScreen,
     private val uiStage: UIStage = Injekt.get(),
@@ -91,14 +93,11 @@ class PlayingSystem(
     }
 
     private fun deselectMapObject() {
-        val selectedMapObjects = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())
-        when {
-            selectedMapObjects.size() == 1 -> previouslySelectedMapObject = selectedMapObjects.first()
-            else -> previouslySelectedMapObject = null
-        }
-        previouslySelectedMapObject?.run {
-            remove(SelectedObjectComponent::class.java)
-        }
+        engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get())
+            .filterNullableSingleton { it.editorObject.isSelected }?.let {
+                it.editorObject.isSelected = false
+                previouslySelectedMapObject = it
+            }
     }
 
     private fun removeAllSystems(includingThisSystem: Boolean) {
@@ -121,7 +120,6 @@ class PlayingSystem(
             addSystem(PhysicsSyncSystem())
             addSystem(ShootingSystem())
             addSystem(BulletCollisionSystem())
-            addSystem(CollisionBoxListener())
             addSystem(PlatformRemovalSystem())
 //            addSystem(PointSystem(mapEntity.map)) TODO
             addSystem(OffScreenLevelRestartSystem())
@@ -166,7 +164,7 @@ class PlayingSystem(
         removePlayEntities(engine)
         resetEntitiesPosition(engine)
         removeFinishPointEndlessBlink()
-        reselectMapObject(engine)
+        reselectMapObject()
         levelEditorScreen.addGameSystems()
     }
 
@@ -199,10 +197,8 @@ class PlayingSystem(
         }
     }
 
-    private fun reselectMapObject(engine: Engine) {
-        previouslySelectedMapObject?.run {
-            add(engine.createComponent(SelectedObjectComponent::class.java))
-        }
+    private fun reselectMapObject() {
+        previouslySelectedMapObject?.editorObject?.isSelected = true
     }
 
     private fun removeEveryBullet(engine: Engine) {

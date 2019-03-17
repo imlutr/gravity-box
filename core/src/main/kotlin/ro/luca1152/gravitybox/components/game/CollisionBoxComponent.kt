@@ -23,10 +23,7 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/**
- * Used to detect when the player is in the finish point.
- * Box2D collisions can't be used because the player doesn't collide with the finish point.
- */
+/** Contains a [Rectangle]. */
 class CollisionBoxComponent : Component, Poolable {
     val box = Rectangle()
     var width = 0f

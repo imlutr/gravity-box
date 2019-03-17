@@ -25,6 +25,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.Array
 
+/** Asset loader for [Text] instances. */
 class TextLoader(resolver: FileHandleResolver) : AsynchronousAssetLoader<Text, TextLoader.TextParameter>(resolver) {
     private var text: Text? = null
 

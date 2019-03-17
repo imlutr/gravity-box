@@ -32,8 +32,6 @@ import ktx.actors.plus
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.metersToPixels
-import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
@@ -42,7 +40,7 @@ import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/** Positions the overlay over the selected platform. */
+/** Positions the overlay. */
 class OverlayPositioningSystem(
     skin: Skin = Injekt.get(),
     private val gameStage: GameStage = Injekt.get(),
@@ -82,7 +80,7 @@ class OverlayPositioningSystem(
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 mapEntity.map.updateRoundedPlatforms = true
-                scaleMapObject(x, y, this@apply, selectedMapObject!!, toLeft = true)
+                scaleMapObject(x, this@apply, selectedMapObject!!, toLeft = true)
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -127,7 +125,7 @@ class OverlayPositioningSystem(
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 mapEntity.map.updateRoundedPlatforms = true
-                scaleMapObject(x, y, this@apply, selectedMapObject!!, toRight = true)
+                scaleMapObject(x, this@apply, selectedMapObject!!, toRight = true)
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -292,7 +290,7 @@ class OverlayPositioningSystem(
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 selectedMapObject!!.editorObject.isDraggingHorizontally = false
-                selectedMapObject!!.snap.resetSnappedPosition()
+                selectedMapObject!!.snap.resetSnappedX()
                 if (image.centerX != initialImageX)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         MoveCommand(
@@ -345,7 +343,7 @@ class OverlayPositioningSystem(
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 selectedMapObject!!.editorObject.isDraggingVertically = false
-                selectedMapObject!!.snap.resetSnappedPosition()
+                selectedMapObject!!.snap.resetSnappedY()
                 if (image.centerY != initialImageY)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         MoveCommand(
@@ -359,7 +357,7 @@ class OverlayPositioningSystem(
     }
 
     private val selectedMapObject: Entity?
-        get() = getSelectedObject()
+        get() = engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).filterNullableSingleton { it.editorObject.isSelected }
     private val undoRedoEntity: Entity = engine.getEntitiesFor(Family.all(UndoRedoComponent::class.java).get()).first()
     private val selectedMapObjectPolygon = Polygon().apply { vertices = FloatArray(8) }
     private val labels = Group().apply { this + rotationLabel }
@@ -410,8 +408,11 @@ class OverlayPositioningSystem(
     }
 
     private fun scaleMapObject(
-        xDragged: Float, yDragged: Float, buttonDragged: Button, linkedMapObject: Entity,
-        toLeft: Boolean = false, toRight: Boolean = false
+        xDragged: Float,
+        buttonDragged: Button,
+        linkedMapObject: Entity,
+        toLeft: Boolean = false,
+        toRight: Boolean = false
     ) {
         if (!toLeft && !toRight)
             error { "No scale direction given." }
@@ -497,17 +498,6 @@ class OverlayPositioningSystem(
         }
     }
 
-
-    private fun getSelectedObject(): Entity? {
-        val selectedObjects = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())
-        check(selectedObjects.size() <= 1) { "There can't be more than one selected object." }
-
-        return when {
-            selectedObjects.size() == 0 -> null
-            else -> selectedObjects.first()
-        }
-    }
-
     private fun repositionButtons() {
         val image = selectedMapObject!!.image
         leftArrowButton.setPosition(0f, 0f)
@@ -560,7 +550,7 @@ class OverlayPositioningSystem(
     }
 
     private fun updateButtonsVisibility() {
-        selectedMapObject!!.mapObjectOverlay.run {
+        selectedMapObject!!.overlay.run {
             verticalPositionButton.isVisible = showMovementButtons
             horizontalPositionButton.isVisible = showMovementButtons
             rotateButton.isVisible = showRotationButton
@@ -571,11 +561,11 @@ class OverlayPositioningSystem(
     }
 
     private fun updateOverlayShown() {
-        val level = (selectedMapObject as Entity).selectedObject.level
+        val overlayLevel = (selectedMapObject as Entity).overlay.overlayLevel
         val showLevel2Overlay =
-            selectedMapObject!!.mapObjectOverlay.showResizingButtons || selectedMapObject!!.mapObjectOverlay.showDeletionButton
-        overlayLevel1.isVisible = if (showLevel2Overlay) (level == 1) else true
-        overlayLevel2.isVisible = if (showLevel2Overlay) (level == 2) else false
+            selectedMapObject!!.overlay.showResizingButtons || selectedMapObject!!.overlay.showDeletionButton
+        overlayLevel1.isVisible = if (showLevel2Overlay) (overlayLevel == 1) else true
+        overlayLevel2.isVisible = if (showLevel2Overlay) (overlayLevel == 2) else false
     }
 
     private fun worldToOverlayCameraCoordinates(x: Float, y: Float): Vector3 {

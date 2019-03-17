@@ -23,6 +23,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import ro.luca1152.gravitybox.components.game.PolygonComponent
 import ro.luca1152.gravitybox.components.game.polygon
 
+/** Syncs the [PolygonComponent] with its linked image. */
 class PolygonSyncSystem : IteratingSystem(Family.all(PolygonComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         entity.polygon.update()

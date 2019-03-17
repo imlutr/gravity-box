@@ -22,8 +22,13 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Contains the elements that will be shown in the overlay when the object is selected. */
-class MapObjectOverlayComponent : Component, Poolable {
+/** Contains information regarding one entity's overlay. */
+class OverlayComponent : Component, Poolable {
+    /**
+     * First level: move, rotate
+     * Second level: resize, delete
+     */
+    var overlayLevel = 1
     var showMovementButtons = true
     var showRotationButton = true
     var showResizingButtons = true
@@ -44,10 +49,11 @@ class MapObjectOverlayComponent : Component, Poolable {
         showRotationButton = true
         showResizingButtons = true
         showDeletionButton = true
+        overlayLevel = 1
     }
 
-    companion object : ComponentResolver<MapObjectOverlayComponent>(MapObjectOverlayComponent::class.java)
+    companion object : ComponentResolver<OverlayComponent>(OverlayComponent::class.java)
 }
 
-val Entity.mapObjectOverlay: MapObjectOverlayComponent
-    get() = MapObjectOverlayComponent[this]
+val Entity.overlay: OverlayComponent
+    get() = OverlayComponent[this]

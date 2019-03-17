@@ -20,12 +20,13 @@ package ro.luca1152.gravitybox.utils.kotlin
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import ro.luca1152.gravitybox.pixelsToMeters
+import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/* Used in dependency injection so I can inject more variables of the same type,
- * such as an UICamera and a GameCamera, both being OrthographicCamera's.
+/*
+ * Used in dependency injection so I can inject more variables of the same type,
+ * such as an UICamera and a GameCamera, both being OrthographicCameras.
  */
 
 object GameCamera : OrthographicCamera(720.pixelsToMeters, 1280.pixelsToMeters)

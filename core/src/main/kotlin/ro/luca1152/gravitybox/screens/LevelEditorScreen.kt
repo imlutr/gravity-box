@@ -19,7 +19,6 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
-import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
@@ -44,7 +43,6 @@ import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
-import ro.luca1152.gravitybox.events.GameEvent
 import ro.luca1152.gravitybox.systems.editor.*
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Text
@@ -219,7 +217,6 @@ class LevelEditorScreen(
         add(rightColumn).growY().expandX().right()
     }
     private var screenIsHidden = false
-    private val gameEventSignal = Signal<GameEvent>()
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
     private lateinit var levelEntity: Entity
@@ -252,7 +249,6 @@ class LevelEditorScreen(
 
     private fun addDependencies() {
         Injekt.run {
-            addSingleton(gameEventSignal)
             addSingleton(skin)
         }
     }
@@ -317,7 +313,6 @@ class LevelEditorScreen(
 
     fun addGameSystems() {
         engine.run {
-            addSystem(LevelSavingSystem())
             addSystem(UndoRedoSystem())
             addSystem(SelectedObjectColorSystem())
             addSystem(ColorSyncSystem())
@@ -327,7 +322,7 @@ class LevelEditorScreen(
             addSystem(ObjectSelectionSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(OverlayCameraSyncSystem())
-            addSystem(TouchableBoundsSyncSystem())
+            addSystem(ExtendedTouchSyncSystem())
             addSystem(PolygonSyncSystem())
             addSystem(GridRenderingSystem())
             addSystem(ObjectSnappingSystem())

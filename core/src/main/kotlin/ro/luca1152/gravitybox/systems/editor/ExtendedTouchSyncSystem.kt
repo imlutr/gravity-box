@@ -20,16 +20,16 @@ package ro.luca1152.gravitybox.systems.editor
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import ro.luca1152.gravitybox.components.editor.TouchableBoundsComponent
-import ro.luca1152.gravitybox.components.editor.touchableBounds
+import ro.luca1152.gravitybox.components.editor.ExtendedTouchComponent
+import ro.luca1152.gravitybox.components.editor.extendedTouch
 import ro.luca1152.gravitybox.components.game.ImageComponent
 import ro.luca1152.gravitybox.components.game.image
 
-/** Syncs the [TouchableBoundsComponent]'s position and size with [ImageComponent]'s.*/
-class TouchableBoundsSyncSystem :
-    IteratingSystem(Family.all(ImageComponent::class.java, TouchableBoundsComponent::class.java).get()) {
+/** Syncs the [ExtendedTouchComponent]'s position and size with [ImageComponent]'s.*/
+class ExtendedTouchSyncSystem :
+    IteratingSystem(Family.all(ImageComponent::class.java, ExtendedTouchComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        entity.touchableBounds.run {
+        entity.extendedTouch.run {
             setPosition(entity.image.centerX, entity.image.centerY)
             setSize(entity.image.width, entity.image.height)
             boundsImage.rotation = entity.image.img.rotation

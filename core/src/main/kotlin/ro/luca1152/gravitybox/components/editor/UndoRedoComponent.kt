@@ -30,6 +30,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.*
 
+/** Contains undo and redo commands. */
 class UndoRedoComponent : Component, Poolable {
     val commandsToUndo = Stack<Command>()
     val commandsToRedo = Stack<Command>()
@@ -118,6 +119,9 @@ class AddCommand(
     private val engine: PooledEngine = Injekt.get()
 ) : Command() {
     override fun execute() {
+        affectedEntity.editorObject.run {
+            isDeleted = false
+        }
         affectedEntity.tryGet(ImageComponent)?.run {
             img.isVisible = true
             img.touchable = Touchable.enabled
@@ -126,7 +130,7 @@ class AddCommand(
                 body = imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction)
             }
         }
-        affectedEntity.tryGet(TouchableBoundsComponent)?.run {
+        affectedEntity.tryGet(ExtendedTouchComponent)?.run {
             boundsImage.touchable = Touchable.enabled
         }
         affectedEntity.tryGet(ColorComponent)?.run {
@@ -134,22 +138,24 @@ class AddCommand(
         }
         affectedEntity.tryGet(MapObjectComponent).run {
             val newId = affectedEntity.mapObject.id
-            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
-                .forEach {
-                    if (it != affectedEntity && it.mapObject.id >= newId)
-                        it.mapObject.id++
-                }
+            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
+                if (!it.editorObject.isDeleted && it != affectedEntity && it.mapObject.id >= newId)
+                    it.mapObject.id++
+            }
         }
-        affectedEntity.remove(DeletedMapObjectComponent::class.java)
         mapEntity.map.updateRoundedPlatforms = true
     }
 
     override fun unexecute() {
+        affectedEntity.editorObject.run {
+            isSelected = false
+            isDeleted = true
+        }
         affectedEntity.tryGet(ImageComponent)?.run {
             img.isVisible = false
             img.touchable = Touchable.disabled
         }
-        affectedEntity.tryGet(TouchableBoundsComponent)?.run {
+        affectedEntity.tryGet(ExtendedTouchComponent)?.run {
             boundsImage.touchable = Touchable.disabled
         }
         affectedEntity.tryGet(BodyComponent)?.run {
@@ -157,14 +163,11 @@ class AddCommand(
         }
         affectedEntity.tryGet(MapObjectComponent).run {
             val deletedId = affectedEntity.mapObject.id
-            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
-                .forEach {
-                    if (it.mapObject.id > deletedId)
-                        it.mapObject.id--
-                }
+            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
+                if (!it.editorObject.isDeleted && it.mapObject.id > deletedId)
+                    it.mapObject.id--
+            }
         }
-        affectedEntity.add(engine.createComponent(DeletedMapObjectComponent::class.java))
-        affectedEntity.remove(SelectedObjectComponent::class.java)
         mapEntity.map.updateRoundedPlatforms = true
     }
 }

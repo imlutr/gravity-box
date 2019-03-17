@@ -29,6 +29,7 @@ import ro.luca1152.gravitybox.utils.kotlin.leftmostX
 import ro.luca1152.gravitybox.utils.kotlin.rightmostX
 import ro.luca1152.gravitybox.utils.kotlin.topmostY
 
+/** Contains a [Polygon]. */
 class PolygonComponent : Component, Poolable {
     private var linkedImage = Image()
     var polygon = Polygon()

@@ -20,22 +20,21 @@ package ro.luca1152.gravitybox.systems.editor
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import ro.luca1152.gravitybox.components.editor.SelectedObjectComponent
+import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
+import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.ColorComponent
 import ro.luca1152.gravitybox.components.game.ColorType
-import ro.luca1152.gravitybox.components.game.ImageComponent
 import ro.luca1152.gravitybox.components.game.color
-import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Colors the selected map object accordingly. */
 class SelectedObjectColorSystem :
-    IteratingSystem(Family.all(ColorComponent::class.java, ImageComponent::class.java).get()) {
+    IteratingSystem(Family.all(ColorComponent::class.java, EditorObjectComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         updateColor(entity)
     }
 
     private fun updateColor(entity: Entity) {
-        if (entity.tryGet(SelectedObjectComponent) != null)
+        if (entity.editorObject.isSelected)
             entity.color.colorType = ColorType.DARKER_DARK
         else
             entity.color.colorType = ColorType.DARK

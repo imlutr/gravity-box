@@ -73,16 +73,16 @@ object PlatformEntity {
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)
         }
-        add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
-            mapObjectOverlay.set(
+        add(engine.createComponent(OverlayComponent::class.java)).run {
+            overlay.set(
                 showMovementButtons = true,
                 showRotationButton = true,
                 showResizingButtons = true,
                 showDeletionButton = true
             )
         }
-        add(engine.createComponent(TouchableBoundsComponent::class.java)).run {
-            touchableBounds.set(this, 0f, 1f - height)
+        add(engine.createComponent(ExtendedTouchComponent::class.java)).run {
+            extendedTouch.set(this, 0f, 1f - height)
         }
         add(engine.createComponent(JsonComponent::class.java)).run {
             json.setArrayObject(this)

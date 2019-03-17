@@ -22,7 +22,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Contains an [id] variable. */
+/** Indicates that the entity is an object from a game map. */
 class MapObjectComponent : Component, Poolable {
     var id = -1
 

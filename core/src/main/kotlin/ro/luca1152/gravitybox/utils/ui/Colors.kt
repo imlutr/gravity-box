@@ -62,13 +62,13 @@ object Colors {
         var game57 = generateGame57Color(hue)
         var game29 = generateGame29Color(hue)
 
-        fun generateGame91Color(hue: Int) =
+        private fun generateGame91Color(hue: Int) =
             Color().fromHsv(hue.toFloat(), 10f / 100f, 91f / 100f).apply { a = 1f }!!
 
-        fun generateGame57Color(hue: Int) =
+        private fun generateGame57Color(hue: Int) =
             Color().fromHsv(hue.toFloat(), 42f / 100f, 57f / 100f).apply { a = 1f }!!
 
-        fun generateGame29Color(hue: Int) =
+        private fun generateGame29Color(hue: Int) =
             Color().fromHsv(hue.toFloat(), 55f / 100f, 29f / 100f).apply { a = 1f }!!
 
         fun resetAllColors(hue: Int) {
@@ -83,10 +83,10 @@ object Colors {
         var game95 = generateGame95Color(hue)
         // TODO: Add dark UI down color
 
-        fun generateGame20Color(hue: Int) =
+        private fun generateGame20Color(hue: Int) =
             Color().fromHsv(hue.toFloat(), 94f / 100f, 20f / 100f).apply { a = 1f }!!
 
-        fun generateGame95Color(hue: Int) =
+        private fun generateGame95Color(hue: Int) =
             Color().fromHsv(hue.toFloat(), 85f / 100f, 95f / 100f).apply { a = 1f }!!
 
         fun resetAllColors(hue: Int) {

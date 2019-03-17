@@ -34,7 +34,7 @@ import ro.luca1152.gravitybox.utils.ui.button.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/** Adds a detector which handles zoom gestures. */
+/** Handles zoom gestures. */
 class ZoomingSystem(
     private val gameCamera: GameCamera = Injekt.get(),
     private val inputMultiplexer: InputMultiplexer = Injekt.get()

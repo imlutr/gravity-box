@@ -42,7 +42,7 @@ abstract class Button(
     var syncColorsWithColorScheme = true
 
     init {
-        setOrigin(width / 2f, height / 2f)
+        super.setOrigin(width / 2f, height / 2f)
     }
 
     abstract fun setColors(upColor: Color, downColor: Color)

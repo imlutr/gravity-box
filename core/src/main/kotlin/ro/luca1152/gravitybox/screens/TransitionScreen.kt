@@ -26,6 +26,7 @@ import ro.luca1152.gravitybox.utils.ui.Colors
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/** Transitions to the [nextScreen] with a fade animation.. */
 class TransitionScreen(
     private val nextScreen: Class<out KtxScreen>,
     private val fadeOutCurrentScreen: Boolean = true,

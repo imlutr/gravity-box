@@ -22,7 +22,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.physics.box2d.BodyDef
-import ro.luca1152.gravitybox.components.editor.DeletedMapObjectComponent
+import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
+import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
@@ -31,7 +32,7 @@ import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
-/** Adds Box2D bodies to every map. It is called every time the level changes. */
+/** Creates Box2D bodies from entities. */
 class MapBodiesCreationSystem : EntitySystem() {
     private lateinit var levelEntity: Entity
     private val shouldUpdateMap
@@ -60,37 +61,37 @@ class MapBodiesCreationSystem : EntitySystem() {
     }
 
     private fun createBox2DBodies() {
-        val mapObjects =
-            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
-        mapObjects.forEach {
-            var bodyType = BodyDef.BodyType.StaticBody
-            var categoryBits = EntityCategory.NONE.bits
-            var maskBits = EntityCategory.NONE.bits
-            var density = 1f
-            var friction = .2f
-            when {
-                it.tryGet(PlatformComponent) != null -> {
-                    bodyType = BodyDef.BodyType.StaticBody
-                    categoryBits = PlatformEntity.CATEGORY_BITS
-                    maskBits = PlatformEntity.MASK_BITS
+        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                var bodyType = BodyDef.BodyType.StaticBody
+                var categoryBits = EntityCategory.NONE.bits
+                var maskBits = EntityCategory.NONE.bits
+                var density = 1f
+                var friction = .2f
+                when {
+                    it.tryGet(PlatformComponent) != null -> {
+                        bodyType = BodyDef.BodyType.StaticBody
+                        categoryBits = PlatformEntity.CATEGORY_BITS
+                        maskBits = PlatformEntity.MASK_BITS
+                    }
+                    it.tryGet(PlayerComponent) != null -> {
+                        bodyType = BodyDef.BodyType.DynamicBody
+                        categoryBits = PlayerEntity.CATEGORY_BITS
+                        maskBits = PlayerEntity.MASK_BITS
+                        friction = PlayerEntity.FRICTION
+                        density = PlayerEntity.DENSITY
+                    }
+                    it.tryGet(FinishComponent) != null -> {
+                        bodyType = BodyDef.BodyType.StaticBody
+                        categoryBits = FinishEntity.CATEGORY_BITS
+                        maskBits = FinishEntity.MASK_BITS
+                    }
                 }
-                it.tryGet(PlayerComponent) != null -> {
-                    bodyType = BodyDef.BodyType.DynamicBody
-                    categoryBits = PlayerEntity.CATEGORY_BITS
-                    maskBits = PlayerEntity.MASK_BITS
-                    friction = PlayerEntity.FRICTION
-                    density = PlayerEntity.DENSITY
-                }
-                it.tryGet(FinishComponent) != null -> {
-                    bodyType = BodyDef.BodyType.StaticBody
-                    categoryBits = FinishEntity.CATEGORY_BITS
-                    maskBits = FinishEntity.MASK_BITS
-                }
+                it.body.set(
+                    it.image.imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction),
+                    it, categoryBits, maskBits, density, friction
+                )
             }
-            it.body.set(
-                it.image.imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction),
-                it, categoryBits, maskBits, density, friction
-            )
         }
     }
 }

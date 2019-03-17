@@ -24,7 +24,7 @@ import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.Reference
 import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
 
-/** Keeps track of which UI button is currently toggled. */
+/** Keeps track of UI events. */
 class InputComponent : Component, Poolable {
     var toggledButton = Reference<ToggleButton>()
     var isPanning = false

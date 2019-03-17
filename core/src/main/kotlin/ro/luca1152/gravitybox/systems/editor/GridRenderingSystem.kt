@@ -26,7 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.graphics.copy
 import ro.luca1152.gravitybox.components.game.LevelComponent
-import ro.luca1152.gravitybox.pixelsToMeters
+import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
@@ -35,6 +35,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 @Suppress("PrivatePropertyName")
+/** Creates and renders an infinite grid. */
 class GridRenderingSystem(
     private val gameStage: GameStage = Injekt.get(),
     private val manager: AssetManager = Injekt.get()

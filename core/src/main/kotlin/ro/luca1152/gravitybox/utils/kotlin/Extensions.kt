@@ -188,3 +188,19 @@ val Polygon.topmostY: Float
     get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 1 }.sorted().last()
 
 fun Float.approximatelyEqualTo(fl: Float) = Math.abs(this - fl) <= 1e-5f
+
+inline fun <T> Iterable<T>.filterNullableSingleton(predicate: (T) -> Boolean): T? {
+    val filteredList = filterTo(ArrayList<T>(), predicate)
+    check(filteredList.size <= 1) { "A singleton can't be instantiated more than once" }
+    return when {
+        filteredList.size == 1 -> filteredList.first()
+        else -> null
+    }
+}
+
+inline fun <T> Iterable<T>.filterSingleton(predicate: (T) -> Boolean): T {
+    val filteredElement = filterNullableSingleton(predicate)
+    check(filteredElement != null) { "A singleton can't be instantiated more than once" }
+    return filteredElement
+}
+

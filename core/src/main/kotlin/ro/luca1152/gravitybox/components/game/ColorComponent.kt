@@ -22,7 +22,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Every entity that has this component will have its color in sync with the color scheme. */
+/** Contains a color type (light/dark/darker). */
 class ColorComponent : Component, Poolable {
     var colorType = ColorType.NULL
 

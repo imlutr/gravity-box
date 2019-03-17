@@ -11,7 +11,7 @@ android {
         }
     }
     buildToolsVersion '28.0.3'
-    compileSdkVersion 23
+    compileSdkVersion 28
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -43,7 +43,7 @@ android {
     defaultConfig {
         applicationId 'ro.luca1152.gravitybox'
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 28
     }
     buildTypes {
         debug {

@@ -32,6 +32,7 @@ import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/** Shoots bullet when the screen is touched. */
 class ShootingSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
     private lateinit var playerEntity: Entity
     private val inputAdapter = object : KtxInputAdapter {

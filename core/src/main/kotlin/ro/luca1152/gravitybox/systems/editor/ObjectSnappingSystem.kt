@@ -24,7 +24,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Array
-import ro.luca1152.gravitybox.components.editor.SelectedObjectComponent
+import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.SnapComponent
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.RESIZE_SNAP_THRESHOLD
@@ -34,11 +34,12 @@ import ro.luca1152.gravitybox.components.editor.snap
 import ro.luca1152.gravitybox.components.game.ImageComponent
 import ro.luca1152.gravitybox.components.game.image
 import ro.luca1152.gravitybox.components.game.polygon
-import ro.luca1152.gravitybox.utils.kotlin.getNullableSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
 
+/** Snaps nearby map objects together when moved. */
 class ObjectSnappingSystem : EntitySystem() {
     private val selectedObject: Entity?
-        get() = engine.getNullableSingletonFor(Family.all(SelectedObjectComponent::class.java).get())
+        get() = engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).filterNullableSingleton { it.editorObject.isSelected }
     private val onScreenObjects = Array<Entity>()
 
     override fun update(deltaTime: Float) {

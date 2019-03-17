@@ -24,18 +24,15 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.scenes.scene2d.Actor
-import ro.luca1152.gravitybox.components.editor.InputComponent
-import ro.luca1152.gravitybox.components.editor.SelectedObjectComponent
-import ro.luca1152.gravitybox.components.editor.input
-import ro.luca1152.gravitybox.components.editor.selectedObject
+import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
 import ro.luca1152.gravitybox.utils.kotlin.hitScreen
-import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/** Updates the selected object (the entity that has a [SelectedObjectComponent]) when a platform is touched. */
+/** Selects touched map objects. */
 class ObjectSelectionSystem(
     private val inputMultiplexer: InputMultiplexer = Injekt.get(),
     private val gameStage: GameStage = Injekt.get()
@@ -63,19 +60,22 @@ class ObjectSelectionSystem(
                 return true
 
             if (!isMapObject(touchedActor)) {
-                if (selectedObject != null) deselectObject(selectedObject!!)
+                selectedObject?.editorObject?.isSelected = false
                 return true
             }
 
             val touchedObject = (touchedActor!!.userObject) as Entity
-            if (selectedObject != null && touchedObject != selectedObject)
-                deselectObject(selectedObject!!)
+            if (selectedObject != null && touchedObject != selectedObject) {
+                selectedObject!!.editorObject.isSelected = false
+            }
 
-            when (touchedObject.tryGet(SelectedObjectComponent)) {
-                null -> selectObject(touchedObject)
-                else -> {
-                    if (selectedObject!!.selectedObject.level == 1) selectedObject!!.selectedObject.level = 2
-                    else selectedObject!!.selectedObject.level = 1
+            if (touchedObject.editorObject.isSelected) {
+                if (selectedObject!!.overlay.overlayLevel == 1) selectedObject!!.overlay.overlayLevel = 2
+                else selectedObject!!.overlay.overlayLevel = 1
+            } else {
+                touchedObject.run {
+                    editorObject.isSelected = true
+                    overlay.overlayLevel = 1
                 }
             }
 
@@ -93,27 +93,13 @@ class ObjectSelectionSystem(
         inputMultiplexer.addProcessor(inputAdapter)
     }
 
-    private fun selectObject(selectedObject: Entity) {
-        selectedObject.run {
-            add(engine.createComponent(SelectedObjectComponent::class.java))
-        }
-    }
-
-    private fun deselectObject(selectedObject: Entity) {
-        selectedObject.run {
-            remove(SelectedObjectComponent::class.java)
-        }
-    }
-
     override fun update(deltaTime: Float) {
-        selectedObject = findSelectedObject()
+        updateSelectedObject()
     }
 
-    private fun findSelectedObject(): Entity? {
-        val entities = engine.getEntitiesFor(Family.all(SelectedObjectComponent::class.java).get())
-        check(entities.size() <= 1) { "There can't be more than one selected object." }
-
-        return if (entities.size() == 1) entities.first() else null
+    private fun updateSelectedObject() {
+        selectedObject = engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get())
+            .filterNullableSingleton { it.editorObject.isSelected }
     }
 
     override fun removedFromEngine(engine: Engine?) {

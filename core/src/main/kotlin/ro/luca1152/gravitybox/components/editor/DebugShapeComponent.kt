@@ -15,23 +15,41 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components.game
+package ro.luca1152.gravitybox.components.editor
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.utils.Pool
+import com.badlogic.gdx.math.Polygon
+import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** Indicates that the entity is a point. */
-class PointComponent : Component, Pool.Poolable {
-    var isCollected = false
+/** Contains a shape which is drawn in the DebugRenderingSystem. */
+class DebugShapeComponent : Component, Poolable {
+    var polygon: Polygon? = null
+    var rectangle: Rectangle? = null
+    var point: Vector2? = null
 
-    override fun reset() {
-        isCollected = false
+    fun set(polygon: Polygon) {
+        this.polygon = polygon
     }
 
-    companion object : ComponentResolver<PointComponent>(PointComponent::class.java)
+    fun set(rectangle: Rectangle) {
+        this.rectangle = rectangle
+    }
+
+    fun set(point: Vector2) {
+        this.point = point
+    }
+
+    override fun reset() {
+        polygon = null
+        rectangle = null
+    }
+
+    companion object : ComponentResolver<DebugShapeComponent>(DebugShapeComponent::class.java)
 }
 
-val Entity.point: PointComponent
-    get() = PointComponent[this]
+val Entity.debugShape: DebugShapeComponent
+    get() = DebugShapeComponent[this]

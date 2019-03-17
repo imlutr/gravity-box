@@ -26,18 +26,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import ro.luca1152.gravitybox.components.editor.DebugComponent
-import ro.luca1152.gravitybox.components.editor.debug
+import ro.luca1152.gravitybox.components.editor.DebugShapeComponent
+import ro.luca1152.gravitybox.components.editor.debugShape
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/** Renders debug shapes. */
 class DebugRenderingSystem(
     private val shapeRenderer: ShapeRenderer = Injekt.get(),
     private val gameViewport: GameViewport = Injekt.get(),
     private val gameCamera: GameCamera = Injekt.get()
-) : IteratingSystem(Family.all(DebugComponent::class.java).get()) {
+) : IteratingSystem(Family.all(DebugShapeComponent::class.java).get()) {
     init {
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl20.glLineWidth(3f)
@@ -58,9 +59,9 @@ class DebugRenderingSystem(
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         when {
-            entity.debug.polygon != null -> drawPolygon(entity.debug.polygon as Polygon)
-            entity.debug.rectangle != null -> drawRectangle(entity.debug.rectangle as Rectangle)
-            entity.debug.point != null -> drawPoint(entity.debug.point as Vector2)
+            entity.debugShape.polygon != null -> drawPolygon(entity.debugShape.polygon as Polygon)
+            entity.debugShape.rectangle != null -> drawRectangle(entity.debugShape.rectangle as Rectangle)
+            entity.debugShape.point != null -> drawPoint(entity.debugShape.point as Vector2)
         }
     }
 

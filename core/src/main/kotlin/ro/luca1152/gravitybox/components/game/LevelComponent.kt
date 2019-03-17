@@ -22,7 +22,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
-/** A component which contains the [levelId] of the level intended to be played. */
+/** Contains level information. */
 class LevelComponent : Component, Poolable {
     var loadMap = false
     var forceUpdateMap = false

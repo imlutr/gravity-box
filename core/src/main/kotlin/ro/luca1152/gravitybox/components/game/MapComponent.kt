@@ -31,10 +31,10 @@ import com.badlogic.gdx.utils.JsonWriter
 import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.collections.sortBy
-import ro.luca1152.gravitybox.components.editor.DeletedMapObjectComponent
+import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
+import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
-import ro.luca1152.gravitybox.pixelsToMeters
 import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.json.FinishPrototype
@@ -48,7 +48,20 @@ import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.*
 
+/** Pixels per meter. */
+const val PPM = 64f
+
+val Int.pixelsToMeters: Float
+    get() = this / PPM
+
+val Float.pixelsToMeters: Float
+    get() = this / PPM
+
+val Float.metersToPixels: Float
+    get() = this * PPM
+
 @Suppress("PrivatePropertyName")
+/** Contains map information. */
 class MapComponent : Component, Poolable {
     companion object : ComponentResolver<MapComponent>(MapComponent::class.java) {
         const val GRAVITY = -25f
@@ -70,16 +83,14 @@ class MapComponent : Component, Poolable {
         mapRight = Float.MIN_VALUE
         mapTop = Float.MIN_VALUE
         mapBottom = Float.MAX_VALUE
-        engine.getEntitiesFor(
-            Family.all(MapObjectComponent::class.java, ImageComponent::class.java).exclude(
-                DeletedMapObjectComponent::class.java
-            ).get()
-        ).forEach {
-            it.image.run {
-                mapLeft = Math.min(mapLeft, leftX)
-                mapRight = Math.max(mapRight, rightX)
-                mapBottom = Math.min(mapBottom, bottomY)
-                mapTop = Math.max(mapTop, topY)
+        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java, ImageComponent::class.java).get()).forEach {
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                it.image.run {
+                    mapLeft = Math.min(mapLeft, leftX)
+                    mapRight = Math.max(mapRight, rightX)
+                    mapBottom = Math.min(mapBottom, bottomY)
+                    mapTop = Math.max(mapTop, topY)
+                }
             }
         }
     }
@@ -93,8 +104,8 @@ class MapComponent : Component, Poolable {
         var player: Entity? = null
         var finishPoint: Entity? = null
         val platforms = Array<Entity>()
-        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).exclude(DeletedMapObjectComponent::class.java).get())
-            .forEach {
+        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
                 when {
                     it.tryGet(PlayerComponent) != null -> {
                         check(player == null) { "A map can't have more than one player." }
@@ -107,6 +118,7 @@ class MapComponent : Component, Poolable {
                     it.tryGet(PlatformComponent) != null -> platforms.add(it)
                 }
             }
+        }
         check(player != null) { "A map must have a player." }
         check(finishPoint != null) { "A map must have a finish point." }
 

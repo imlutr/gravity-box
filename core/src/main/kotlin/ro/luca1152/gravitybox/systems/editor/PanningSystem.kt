@@ -26,13 +26,13 @@ import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter
 import ro.luca1152.gravitybox.components.editor.InputComponent
 import ro.luca1152.gravitybox.components.editor.input
-import ro.luca1152.gravitybox.pixelsToMeters
+import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/** Adds a detector which handles pan gestures. */
+/** Handles pan gestures. */
 class PanningSystem(
     private val gameCamera: GameCamera = Injekt.get(),
     private val inputMultiplexer: InputMultiplexer = Injekt.get()

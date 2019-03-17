@@ -30,11 +30,8 @@ import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/**
- * Used to expand the touchable bounds of an image, so even if you touch outside the image, a click
- * will still register. If an entity doesn't have this component, its bounds will be the default size.
- */
-class TouchableBoundsComponent(private val gameStage: GameStage = Injekt.get()) : Component, Poolable {
+/** Expands the touchable area of an entity. */
+class ExtendedTouchComponent(private val gameStage: GameStage = Injekt.get()) : Component, Poolable {
     private var extraWidth = 0f
     private var extraHeight = 0f
     var boundsImage = Image()
@@ -91,8 +88,8 @@ class TouchableBoundsComponent(private val gameStage: GameStage = Injekt.get()) 
         }
     }
 
-    companion object : ComponentResolver<TouchableBoundsComponent>(TouchableBoundsComponent::class.java)
+    companion object : ComponentResolver<ExtendedTouchComponent>(ExtendedTouchComponent::class.java)
 }
 
-val Entity.touchableBounds: TouchableBoundsComponent
-    get() = TouchableBoundsComponent[this]
+val Entity.extendedTouch: ExtendedTouchComponent
+    get() = ExtendedTouchComponent[this]

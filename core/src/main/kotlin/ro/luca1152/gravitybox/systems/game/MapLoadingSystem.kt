@@ -30,6 +30,7 @@ import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/** Loads game maps from files. */
 class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : EntitySystem() {
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity

@@ -43,8 +43,8 @@ object PlayerEntity {
         add(engine.createComponent(MapObjectComponent::class.java)).run {
             this.mapObject.set(id)
         }
-        add(engine.createComponent(MapObjectOverlayComponent::class.java)).run {
-            mapObjectOverlay.set(
+        add(engine.createComponent(OverlayComponent::class.java)).run {
+            overlay.set(
                 showMovementButtons = true,
                 showRotationButton = true,
                 showResizingButtons = false,

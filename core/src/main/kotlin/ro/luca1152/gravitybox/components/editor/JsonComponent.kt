@@ -22,10 +22,10 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.metersToPixels
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
+/** Translates the entity's information to JSON. */
 class JsonComponent : Component, Poolable {
     private var parentEntity = Entity()
     private var jsonObjectName = ""

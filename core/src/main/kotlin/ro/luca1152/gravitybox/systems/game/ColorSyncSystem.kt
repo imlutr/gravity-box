@@ -25,7 +25,7 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
 import ro.luca1152.gravitybox.utils.ui.Colors
 
-/** Syncs the [ImageComponent]'s color with the [ColorScheme]. */
+/** Syncs the [ImageComponent]'s color with the color scheme. */
 class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, ColorComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         entity.image.color.setWithoutAlpha(

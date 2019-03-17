@@ -20,9 +20,10 @@ package ro.luca1152.gravitybox.components.editor
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.pixelsToMeters
+import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
+/** Entities with this component will be snapped together when nearby. */
 class SnapComponent : Component, Poolable {
     companion object : ComponentResolver<SnapComponent>(SnapComponent::class.java) {
         const val ROTATION_SNAP_THRESHOLD = 7f
@@ -41,10 +42,6 @@ class SnapComponent : Component, Poolable {
 
     var snapCenterX = Float.POSITIVE_INFINITY
     var snapCenterY = Float.POSITIVE_INFINITY
-
-    fun resetSnappedRotation() {
-        snapRotationAngle = Float.POSITIVE_INFINITY
-    }
 
     fun resetSnappedLeft() {
         snapLeft = Float.POSITIVE_INFINITY
@@ -70,9 +67,8 @@ class SnapComponent : Component, Poolable {
         snapCenterY = Float.POSITIVE_INFINITY
     }
 
-    fun resetSnappedPosition() {
-        resetSnappedX()
-        resetSnappedY()
+    fun resetSnappedRotation() {
+        snapRotationAngle = Float.POSITIVE_INFINITY
     }
 
     fun resetSnappedSize() {
@@ -80,6 +76,11 @@ class SnapComponent : Component, Poolable {
         resetSnappedRight()
         resetSnappedBottom()
         resetSnappedTop()
+    }
+
+    private fun resetSnappedPosition() {
+        resetSnappedX()
+        resetSnappedY()
     }
 
     override fun reset() {
