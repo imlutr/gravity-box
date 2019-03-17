@@ -21,10 +21,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
-import ro.luca1152.gravitybox.components.game.LevelComponent
-import ro.luca1152.gravitybox.components.game.PlayerComponent
-import ro.luca1152.gravitybox.components.game.level
-import ro.luca1152.gravitybox.components.game.player
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -58,6 +55,7 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
         if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
         else {
+            deleteEntities()
             levelEntity.level.run {
                 levelId++
                 loadMap = true
@@ -66,6 +64,15 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
         }
     }
 
-    override fun removedFromEngine(engine: Engine?) {
+    private fun deleteEntities() {
+        engine.getEntitiesFor(
+            Family.all(BodyComponent::class.java).exclude(
+                PlayerComponent::class.java,
+                FinishComponent::class.java,
+                LevelComponent::class.java
+            ).get()
+        ).forEach {
+            engine.removeEntity(it)
+        }
     }
 }
