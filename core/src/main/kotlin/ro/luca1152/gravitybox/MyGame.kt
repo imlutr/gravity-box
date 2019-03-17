@@ -38,7 +38,7 @@ import uy.kohesive.injekt.api.get
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
     companion object {
-        const val LEVELS_NUMBER = 2
+        const val LEVELS_NUMBER = 9
     }
 
     override fun create() {

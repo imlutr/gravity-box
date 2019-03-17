@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
@@ -70,9 +71,9 @@ class LoadingScreen(
     }
 
     private fun loadGameMaps() {
-        Gdx.files.local("maps/game").list().forEach {
+        Gdx.files.internal("maps/game").list().forEach {
             manager.run {
-                setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
+                setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
                 load<Text>(it.path())
             }
         }
