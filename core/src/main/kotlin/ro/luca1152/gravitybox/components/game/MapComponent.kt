@@ -68,10 +68,10 @@ class MapComponent : Component, Poolable {
     }
 
     var levelId = 0
-    var mapLeft = 0f
-    var mapRight = 0f
-    var mapTop = 0f
-    var mapBottom = 0f
+    var mapLeft = Float.POSITIVE_INFINITY
+    var mapRight = Float.NEGATIVE_INFINITY
+    var mapBottom = Float.POSITIVE_INFINITY
+    var mapTop = Float.NEGATIVE_INFINITY
     var updateRoundedPlatforms = true
 
     fun set(levelId: Int) {
@@ -79,17 +79,17 @@ class MapComponent : Component, Poolable {
     }
 
     fun updateMapBounds(engine: PooledEngine = Injekt.get()) {
-        mapLeft = Float.MAX_VALUE
-        mapRight = Float.MIN_VALUE
-        mapTop = Float.MIN_VALUE
-        mapBottom = Float.MAX_VALUE
+        mapLeft = Float.POSITIVE_INFINITY
+        mapRight = Float.NEGATIVE_INFINITY
+        mapBottom = Float.POSITIVE_INFINITY
+        mapTop = Float.NEGATIVE_INFINITY
         engine.getEntitiesFor(Family.all(MapObjectComponent::class.java, ImageComponent::class.java).get()).forEach {
             if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
-                it.image.run {
-                    mapLeft = Math.min(mapLeft, leftX)
-                    mapRight = Math.max(mapRight, rightX)
-                    mapBottom = Math.min(mapBottom, bottomY)
-                    mapTop = Math.max(mapTop, topY)
+                it.polygon.run {
+                    mapLeft = Math.min(mapLeft, leftmostX)
+                    mapRight = Math.max(mapRight, rightmostX)
+                    mapBottom = Math.min(mapBottom, bottommostY)
+                    mapTop = Math.max(mapTop, topmostY)
                 }
             }
         }
@@ -248,10 +248,10 @@ class MapComponent : Component, Poolable {
     override fun reset() {
         destroyAllBodies()
         levelId = 0
-        mapLeft = 0f
-        mapRight = 0f
-        mapTop = 0f
-        mapBottom = 0f
+        mapLeft = Float.POSITIVE_INFINITY
+        mapRight = Float.NEGATIVE_INFINITY
+        mapBottom = Float.POSITIVE_INFINITY
+        mapTop = Float.NEGATIVE_INFINITY
         updateRoundedPlatforms = true
     }
 
