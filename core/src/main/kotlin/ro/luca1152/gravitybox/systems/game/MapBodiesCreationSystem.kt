@@ -57,6 +57,7 @@ class MapBodiesCreationSystem : EntitySystem() {
             destroyAllBodies()
             levelId = levelEntity.level.levelId
             createBox2DBodies()
+            updateMapBounds()
         }
     }
 

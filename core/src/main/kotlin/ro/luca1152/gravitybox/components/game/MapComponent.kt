@@ -83,7 +83,7 @@ class MapComponent : Component, Poolable {
         mapRight = Float.NEGATIVE_INFINITY
         mapBottom = Float.POSITIVE_INFINITY
         mapTop = Float.NEGATIVE_INFINITY
-        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java, ImageComponent::class.java).get()).forEach {
+        engine.getEntitiesFor(Family.all(PolygonComponent::class.java).get()).forEach {
             if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
                 it.polygon.run {
                     mapLeft = Math.min(mapLeft, leftmostX)

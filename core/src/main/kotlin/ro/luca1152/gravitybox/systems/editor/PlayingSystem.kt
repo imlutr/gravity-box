@@ -121,7 +121,6 @@ class PlayingSystem(
             addSystem(ShootingSystem())
             addSystem(BulletCollisionSystem())
             addSystem(PlatformRemovalSystem())
-//            addSystem(PointSystem(mapEntity.map)) TODO
             addSystem(OffScreenLevelRestartSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())
