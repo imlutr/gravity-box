@@ -116,7 +116,7 @@ class LevelEditorScreen(
         Colors.gameColor, yesIsHighlighted = true
     )
     private val saveBeforeLeavingPopUp = YesNoTextPopUp(
-        520f, 400f,
+        550f, 350f,
         "Do you want to save the current level?",
         skin, "bold", 50f,
         Colors.gameColor, yesIsHighlighted = true
@@ -193,24 +193,29 @@ class LevelEditorScreen(
         yesIsHighlighted = true
     )
     private var loadLevelPopUp = PopUp(0f, 0f, skin)
-    private val settingsPopUp = PopUp(500f, 275f, skin).apply {
-        val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 80f).apply {
-            upColor = Colors.gameColor
-            downColor = Colors.uiDownColor
-            clickRunnable = Runnable {
-                uiStage.addActor(saveConfirmationPopUp)
-            }
+    private val newButton = ClickTextButton("simple-button", skin, "New", "bold", 80f).apply {
+        upColor = Colors.gameColor
+        downColor = Colors.uiDownColor
+    }
+    private val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 80f).apply {
+        upColor = Colors.gameColor
+        downColor = Colors.uiDownColor
+        clickRunnable = Runnable {
+            uiStage.addActor(saveConfirmationPopUp)
         }
-        val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 80f).apply {
-            upColor = Colors.gameColor
-            downColor = Colors.uiDownColor
-            clickRunnable = Runnable {
-                loadLevelPopUp = createLoadLevelPopUp()
-                uiStage.addActor(loadLevelPopUp)
-            }
+    }
+    private val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 80f).apply {
+        upColor = Colors.gameColor
+        downColor = Colors.uiDownColor
+        clickRunnable = Runnable {
+            loadLevelPopUp = createLoadLevelPopUp()
+            uiStage.addActor(loadLevelPopUp)
         }
+    }
+    private val settingsPopUp = PopUp(500f, 355f, skin).apply {
         widget.run {
             val buttonsTable = Table(skin).apply {
+                add(newButton).growX().expandY().top().row()
                 add(saveButton).growX().expandY().top().row()
                 add(loadButton).growX().expandY().top().row()
             }
