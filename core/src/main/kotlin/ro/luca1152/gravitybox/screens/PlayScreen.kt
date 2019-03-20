@@ -43,12 +43,12 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(
+    manager: AssetManager = Injekt.get(),
     private val game: MyGame = Injekt.get(),
     private val engine: PooledEngine = Injekt.get(),
     private val gameViewport: GameViewport = Injekt.get(),
     private val world: World = Injekt.get(),
     private val inputMultiplexer: InputMultiplexer = Injekt.get(),
-    private val manager: AssetManager = Injekt.get(),
     private val uiStage: UIStage = Injekt.get()
 ) : KtxScreen {
     private lateinit var levelEntity: Entity
