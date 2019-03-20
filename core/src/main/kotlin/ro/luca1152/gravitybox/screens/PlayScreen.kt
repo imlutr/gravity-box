@@ -20,8 +20,11 @@ package ro.luca1152.gravitybox.screens
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.app.KtxScreen
+import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
@@ -30,18 +33,45 @@ import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
+import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.clearScreen
+import ro.luca1152.gravitybox.utils.kotlin.setScreen
 import ro.luca1152.gravitybox.utils.ui.Colors
+import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(
+    private val game: MyGame = Injekt.get(),
     private val engine: PooledEngine = Injekt.get(),
     private val gameViewport: GameViewport = Injekt.get(),
     private val world: World = Injekt.get(),
-    private val inputMultiplexer: InputMultiplexer = Injekt.get()
+    private val inputMultiplexer: InputMultiplexer = Injekt.get(),
+    private val manager: AssetManager = Injekt.get(),
+    private val uiStage: UIStage = Injekt.get()
 ) : KtxScreen {
+    private val skin = manager.get(Assets.uiSkin)
+    private val backButton = ClickButton(skin, "small-button").apply {
+        addIcon("back-icon")
+        setColors(Colors.gameColor, Colors.uiDownColor)
+        addClickRunnable(Runnable {
+            game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
+        })
+    }
+
+    private val rootTable = Table().apply {
+        setFillParent(true)
+        padLeft(62f).padRight(62f)
+        padBottom(110f).padTop(110f)
+        add(backButton).expand().bottom().left()
+    }
+
     override fun show() {
+        createUI()
+        createGame()
+    }
+
+    private fun createGame() {
         setOwnBox2DContactListener()
         createGameEntities()
         addGameSystems()
@@ -71,7 +101,6 @@ class PlayScreen(
             addSystem(ShootingSystem())
             addSystem(BulletCollisionSystem())
             addSystem(PlatformRemovalSystem())
-//            addSystem(PointSystem(mapEntity.map)) TODO
             addSystem(OffScreenLevelRestartSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())
@@ -92,9 +121,17 @@ class PlayScreen(
         Gdx.input.inputProcessor = inputMultiplexer
     }
 
+    private fun createUI() {
+        uiStage.clear()
+        uiStage.addActor(rootTable)
+        inputMultiplexer.addProcessor(uiStage)
+    }
+
     override fun render(delta: Float) {
+        uiStage.act(delta)
         clearScreen(Colors.bgColor)
         engine.update(delta)
+        uiStage.draw()
     }
 
     override fun resize(width: Int, height: Int) {
