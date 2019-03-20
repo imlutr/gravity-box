@@ -224,7 +224,6 @@ class LevelEditorScreen(
     private lateinit var finishEntity: Entity
 
     override fun show() {
-        uiStage.addActor(rootTable)
         addDependencies()
         resetVariables()
         createGame()
@@ -456,6 +455,7 @@ class LevelEditorScreen(
     }
 
     private fun createUI() {
+        uiStage.addActor(rootTable)
         handleUIInput()
     }
 
