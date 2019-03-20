@@ -109,6 +109,26 @@ class LevelEditorScreen(
         isToggled = true
         setOpaque(true)
     }
+    private val leaveConfirmationPopUp = YesNoTextPopUp(
+        520f, 400f,
+        "Are you sure you want to go back to the main menu?",
+        skin, "bold", 50f,
+        Colors.gameColor, yesIsHighlighted = true
+    )
+    private val saveBeforeLeavingPopUp = YesNoTextPopUp(
+        520f, 400f,
+        "Do you want to save the current level?",
+        skin, "bold", 50f,
+        Colors.gameColor, yesIsHighlighted = true
+    ).apply {
+        yesClickRunnable = Runnable {
+            levelEntity.map.saveMap()
+            game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
+        }
+        noClickRunnable = Runnable {
+            game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
+        }
+    }
     private val backButton = ClickButton(skin, "small-button").apply {
         addIcon("back-icon")
         iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
@@ -116,7 +136,17 @@ class LevelEditorScreen(
         setToggledButtonReference(this@LevelEditorScreen.toggledButton)
         setToggleOffEveryOtherButton(true)
         addClickRunnable(Runnable {
-            game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
+            uiStage.addActor(leaveConfirmationPopUp)
+            leaveConfirmationPopUp.yesClickRunnable = if (isEditingNewLevel) {
+                Runnable {
+                    uiStage.addActor(saveBeforeLeavingPopUp)
+                }
+            } else {
+                Runnable {
+                    levelEntity.map.saveMap()
+                    game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
+                }
+            }
         })
         setOpaque(true)
     }
@@ -217,6 +247,7 @@ class LevelEditorScreen(
         add(rightColumn).growY().expandX().right()
     }
     private var screenIsHidden = false
+    private var isEditingNewLevel = true
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
     private lateinit var levelEntity: Entity
@@ -414,6 +445,7 @@ class LevelEditorScreen(
                         levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity)
                         centerCameraOnPlayer()
                         removeSettingsPopUp = true
+                        isEditingNewLevel = false
                         loadLevelPopUp.remove()
                     }
                 }
