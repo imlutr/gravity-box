@@ -169,7 +169,7 @@ class LevelEditorScreen(
         yesClickRunnable = Runnable {
             isEditingNewLevel = false
             uiStage.addActor(levelSavedTextPopUp)
-            levelEntity.map.saveMap()
+            levelEntity.map.saveMap(forceSave = true)
             remove()
         }
     }

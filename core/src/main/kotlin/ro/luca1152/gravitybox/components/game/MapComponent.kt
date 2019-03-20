@@ -95,9 +95,10 @@ class MapComponent : Component, Poolable {
         }
     }
 
-    fun saveMap() {
+    /** @param forceSave If true, it will override any previous map, even if the new file's content is the same. */
+    fun saveMap(forceSave: Boolean = false) {
         val json = getJsonFromMap()
-        writeJsonToFile(json)
+        writeJsonToFile(json, forceSave)
     }
 
     private fun getJsonFromMap(engine: PooledEngine = Injekt.get()): Json {
@@ -144,12 +145,12 @@ class MapComponent : Component, Poolable {
         }
     }
 
-    private fun writeJsonToFile(json: Json) {
+    private fun writeJsonToFile(json: Json, forceSave: Boolean) {
         val fileFolder = "maps/editor"
         val existentFileName = getMapFileNameForId(levelId)
         if (existentFileName != "") {
             val oldJson = Gdx.files.local("$fileFolder/$existentFileName").readString()
-            if (oldJson == json.prettyPrint(json.writer.writer.toString())) {
+            if (!forceSave && oldJson == json.prettyPrint(json.writer.writer.toString())) {
                 return
             } else {
                 Gdx.files.local("$fileFolder/$existentFileName").delete()
