@@ -148,7 +148,12 @@ class MapComponent : Component, Poolable {
         val fileFolder = "maps/editor"
         val existentFileName = getMapFileNameForId(levelId)
         if (existentFileName != "") {
-            Gdx.files.local("$fileFolder/$existentFileName").delete()
+            val oldJson = Gdx.files.local("$fileFolder/$existentFileName").readString()
+            if (oldJson == json.prettyPrint(json.writer.writer.toString())) {
+                return
+            } else {
+                Gdx.files.local("$fileFolder/$existentFileName").delete()
+            }
         }
         val fileHandle = Gdx.files.local("$fileFolder/${getNewFileName()}")
         fileHandle.writeString(json.prettyPrint(json.writer.writer.toString()), false)
