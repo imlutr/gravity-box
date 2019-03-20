@@ -24,7 +24,6 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
@@ -46,23 +45,46 @@ import uy.kohesive.injekt.api.get
 /** Makes edited levels playable. */
 class PlayingSystem(
     private val levelEditorScreen: LevelEditorScreen,
+    manager: AssetManager = Injekt.get(),
     private val uiStage: UIStage = Injekt.get(),
-    private val manager: AssetManager = Injekt.get(),
     private val world: World = Injekt.get()
 ) : EntitySystem() {
+    private val skin = manager.get(Assets.uiSkin)
+    private val backButton = ClickButton(skin, "small-button").apply {
+        addIcon("back-icon")
+        iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
+        setColors(Colors.gameColor, Colors.uiDownColor)
+        addClickRunnable(Runnable {
+            removeAllSystems(true)
+        })
+    }
+
+    private val restartButton = ClickButton(skin, "small-button").apply {
+        addIcon("redo-icon")
+        setColors(Colors.gameColor, Colors.uiDownColor)
+        addClickRunnable(Runnable {
+            levelEntity.level.restartLevel = true
+        })
+    }
+
+    private val bottomRow = Table().apply {
+        add(backButton).expand().left()
+        add(restartButton).expand().right()
+    }
+
     private val rootTable = Table().apply {
         setFillParent(true)
         padLeft(62f).padRight(62f)
         padBottom(110f).padTop(110f)
+        add(bottomRow).expand().fillX().bottom()
     }
+
     private var previouslySelectedMapObject: Entity? = null
-    private lateinit var skin: Skin
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
     private lateinit var finishEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
-        skin = manager.get(Assets.uiSkin)
         levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get()).apply {
             level.forceUpdateMap = true
         }
@@ -138,21 +160,11 @@ class PlayingSystem(
     }
 
     private fun showPlayUI() {
-        rootTable.add(createBackButton()).expand().bottom().left()
         uiStage.addActor(rootTable)
     }
 
     private fun updateMapBounds() {
         levelEntity.map.updateMapBounds()
-    }
-
-    private fun createBackButton() = ClickButton(skin, "small-button").apply {
-        addIcon("back-icon")
-        iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
-        setColors(Colors.gameColor, Colors.uiDownColor)
-        addClickRunnable(Runnable {
-            removeAllSystems(true)
-        })
     }
 
     override fun removedFromEngine(engine: Engine) {

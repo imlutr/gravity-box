@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.screens
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
@@ -42,14 +43,15 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(
+    manager: AssetManager = Injekt.get(),
     private val game: MyGame = Injekt.get(),
     private val engine: PooledEngine = Injekt.get(),
     private val gameViewport: GameViewport = Injekt.get(),
     private val world: World = Injekt.get(),
     private val inputMultiplexer: InputMultiplexer = Injekt.get(),
-    private val manager: AssetManager = Injekt.get(),
     private val uiStage: UIStage = Injekt.get()
 ) : KtxScreen {
+    private lateinit var levelEntity: Entity
     private val skin = manager.get(Assets.uiSkin)
     private val backButton = ClickButton(skin, "small-button").apply {
         addIcon("back-icon")
@@ -59,11 +61,24 @@ class PlayScreen(
         })
     }
 
+    private val restartButton = ClickButton(skin, "small-button").apply {
+        addIcon("redo-icon")
+        setColors(Colors.gameColor, Colors.uiDownColor)
+        addClickRunnable(Runnable {
+            levelEntity.level.restartLevel = true
+        })
+    }
+
+    private val bottomRow = Table().apply {
+        add(backButton).expand().left()
+        add(restartButton).expand().right()
+    }
+
     private val rootTable = Table().apply {
         setFillParent(true)
         padLeft(62f).padRight(62f)
         padBottom(110f).padTop(110f)
-        add(backButton).expand().bottom().left()
+        add(bottomRow).expand().fillX().bottom()
     }
 
     override fun show() {
@@ -83,7 +98,7 @@ class PlayScreen(
     }
 
     private fun createGameEntities() {
-        LevelEntity.createEntity(LevelSelectorScreen.chosenLevel).run {
+        levelEntity = LevelEntity.createEntity(LevelSelectorScreen.chosenLevel).apply {
             level.loadMap = true
             level.forceUpdateMap = true
         }
