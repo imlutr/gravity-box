@@ -18,6 +18,7 @@
 package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
@@ -32,11 +33,9 @@ import com.badlogic.gdx.utils.TimeUtils
 import ktx.app.KtxScreen
 import ktx.collections.contains
 import ro.luca1152.gravitybox.MyGame
+import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.undoRedo
-import ro.luca1152.gravitybox.components.game.body
-import ro.luca1152.gravitybox.components.game.image
-import ro.luca1152.gravitybox.components.game.level
-import ro.luca1152.gravitybox.components.game.map
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.InputEntity
 import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
 import ro.luca1152.gravitybox.entities.game.FinishEntity
@@ -116,7 +115,7 @@ class LevelEditorScreen(
         Colors.gameColor, yesIsHighlighted = true
     )
     private val saveBeforeLeavingPopUp = YesNoTextPopUp(
-        520f, 400f,
+        550f, 350f,
         "Do you want to save the current level?",
         skin, "bold", 50f,
         Colors.gameColor, yesIsHighlighted = true
@@ -168,8 +167,9 @@ class LevelEditorScreen(
         yesIsHighlighted = true
     ).apply {
         yesClickRunnable = Runnable {
+            isEditingNewLevel = false
             uiStage.addActor(levelSavedTextPopUp)
-            levelEntity.map.saveMap()
+            levelEntity.map.saveMap(forceSave = true)
             remove()
         }
     }
@@ -182,35 +182,73 @@ class LevelEditorScreen(
         520f, 400f,
         "Are you sure you want to delete the level #[x]?",
         skin, "bold", 50f,
-        Colors.gameColor,
-        yesIsHighlighted = true
+        Colors.gameColor, yesIsHighlighted = true
     )
     private val loadConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to load the level #[x]?",
         skin, "bold", 50f,
-        Colors.gameColor,
-        yesIsHighlighted = true
+        Colors.gameColor, yesIsHighlighted = true
     )
     private var loadLevelPopUp = PopUp(0f, 0f, skin)
-    private val settingsPopUp = PopUp(500f, 275f, skin).apply {
-        val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 80f).apply {
-            upColor = Colors.gameColor
-            downColor = Colors.uiDownColor
-            clickRunnable = Runnable {
-                uiStage.addActor(saveConfirmationPopUp)
+    private val newLevelConfirmationPopUp = YesNoTextPopUp(
+        520f, 400f,
+        "Are you sure you want to create a new level?",
+        skin, "bold", 50f,
+        Colors.gameColor, yesIsHighlighted = true
+    ).apply {
+        yesClickRunnable = Runnable {
+            if (isEditingNewLevel) {
+                uiStage.addActor(saveLevelBeforeCreationConfirmationPopUp)
+            } else {
+                isEditingNewLevel = true
+                levelEntity.map.saveMap()
+                resetMapToInitialState()
             }
         }
-        val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 80f).apply {
-            upColor = Colors.gameColor
-            downColor = Colors.uiDownColor
-            clickRunnable = Runnable {
-                loadLevelPopUp = createLoadLevelPopUp()
-                uiStage.addActor(loadLevelPopUp)
-            }
+    }
+    private val saveLevelBeforeCreationConfirmationPopUp = YesNoTextPopUp(
+        550f, 350f,
+        "Do you want to save the current level?",
+        skin, "bold", 50f,
+        Colors.gameColor, yesIsHighlighted = true
+    ).apply {
+        yesClickRunnable = Runnable {
+            isEditingNewLevel = true
+            levelEntity.map.saveMap()
+            resetMapToInitialState()
         }
+        noClickRunnable = Runnable {
+            isEditingNewLevel = true
+            resetMapToInitialState()
+        }
+    }
+    private val newButton = ClickTextButton("simple-button", skin, "New", "bold", 80f).apply {
+        upColor = Colors.gameColor
+        downColor = Colors.uiDownColor
+        clickRunnable = Runnable {
+            uiStage.addActor(newLevelConfirmationPopUp)
+        }
+    }
+    private val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 80f).apply {
+        upColor = Colors.gameColor
+        downColor = Colors.uiDownColor
+        clickRunnable = Runnable {
+            uiStage.addActor(saveConfirmationPopUp)
+        }
+    }
+    private val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 80f).apply {
+        upColor = Colors.gameColor
+        downColor = Colors.uiDownColor
+        clickRunnable = Runnable {
+            loadLevelPopUp = createLoadLevelPopUp()
+            uiStage.addActor(loadLevelPopUp)
+        }
+    }
+    private val settingsPopUp = PopUp(500f, 355f, skin).apply {
         widget.run {
             val buttonsTable = Table(skin).apply {
+                add(newButton).growX().expandY().top().row()
                 add(saveButton).growX().expandY().top().row()
                 add(loadButton).growX().expandY().top().row()
             }
@@ -273,6 +311,7 @@ class LevelEditorScreen(
 
     private fun createGame() {
         createGameEntities()
+        resetMapToInitialState()
         handleGameInput()
         addGameSystems()
     }
@@ -287,23 +326,58 @@ class LevelEditorScreen(
         inputEntity = InputEntity.createEntity(toggledButton)
         undoRedoEntity = UndoRedoEntity.createEntity()
         levelEntity = LevelEntity.createEntity(getFirstUnusedLevelId())
-        val platformEntity = PlatformEntity.createEntity(
-            2,
-            0f, .5f,
-            4f
-        )
-        finishEntity = FinishEntity.createEntity(
-            1,
-            platformEntity.image.rightX - FinishEntity.WIDTH / 2f,
-            platformEntity.image.topY + FinishEntity.HEIGHT / 2f,
-            blinkEndlessly = false
-        )
-        playerEntity = PlayerEntity.createEntity(
-            0,
-            platformEntity.image.leftX + PlayerEntity.WIDTH / 2f,
-            platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
-        )
+        finishEntity = FinishEntity.createEntity(1, blinkEndlessly = false)
+        playerEntity = PlayerEntity.createEntity(0)
+    }
+
+    private fun resetMapToInitialState() {
+        removeAdditionalEntities()
+        resetUndoRedo()
+        val platformEntity = PlatformEntity.createEntity(2, 0f, .5f, 4f)
+        repositionDefaultEntities(platformEntity)
         centerCameraOnPlatform(platformEntity)
+        settingsPopUp.remove()
+    }
+
+    private fun removeAdditionalEntities() {
+        engine.getEntitiesFor(
+            Family.all(MapObjectComponent::class.java).exclude(
+                PlayerComponent::class.java,
+                FinishComponent::class.java
+            ).get()
+        ).forEach {
+            engine.removeEntity(it)
+        }
+    }
+
+    private fun resetUndoRedo() {
+        undoRedoEntity.undoRedo.reset()
+    }
+
+    private fun repositionDefaultEntities(platformEntity: Entity) {
+        finishEntity.run {
+            image.run {
+                centerX = platformEntity.image.rightX - FinishEntity.WIDTH / 2f
+                centerY = platformEntity.image.topY + FinishEntity.HEIGHT / 2f
+            }
+            editorObject.isSelected = false
+        }
+        playerEntity.run {
+            image.run {
+                centerX = platformEntity.image.leftX + PlayerEntity.WIDTH / 2f
+                centerY = platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
+            }
+            editorObject.isSelected = false
+        }
+        levelEntity.run {
+            map.run {
+                reset()
+                updateMapBounds()
+            }
+            level.run {
+                forceUpdateMap = true
+            }
+        }
     }
 
     private fun getFirstUnusedLevelId(): Int {
