@@ -248,6 +248,10 @@ class LevelEditorScreen(
     private val cameraButton = ClickTextButton("simple-button", skin, "Camera", "bold", 80f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
+        clickRunnable = Runnable {
+            gameCamera.position.set(playerEntity.image.centerX, playerEntity.image.centerY, 0f)
+            hideSettingsPopUp = true
+        }
     }
     private val settingsPopUp = PopUp(500f, 400f, skin).apply {
         widget.run {
@@ -523,7 +527,7 @@ class LevelEditorScreen(
                     yesClickRunnable = Runnable {
                         levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity)
                         centerCameraOnPlayer()
-                        removeSettingsPopUp = true
+                        hideSettingsPopUp = true
                         isEditingNewLevel = false
                         loadLevelPopUp.remove()
                     }
@@ -556,7 +560,7 @@ class LevelEditorScreen(
     }
 
     private var updateLoadLevelPopUp = false
-    private var removeSettingsPopUp = false
+    private var hideSettingsPopUp = false
 
     private fun createLoadLevelPopUp() = PopUp(520f, 500f, skin).apply {
         val scrollPane = ScrollPane(createLoadLevelTable(430f)).apply {
@@ -596,8 +600,8 @@ class LevelEditorScreen(
             loadLevelPopUp = createLoadLevelPopUp()
             uiStage.addActor(loadLevelPopUp)
         }
-        if (removeSettingsPopUp) {
-            removeSettingsPopUp = false
+        if (hideSettingsPopUp) {
+            hideSettingsPopUp = false
             settingsPopUp.remove()
         }
     }
