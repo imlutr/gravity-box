@@ -197,13 +197,13 @@ class LevelSelectorScreen(
     }
 
     override fun render(delta: Float) {
-        update(delta)
+        update()
         clearScreen(Colors.bgColor)
         uiStage.draw()
     }
 
-    private fun update(delta: Float) {
-        uiStage.act(delta)
+    private fun update() {
+        uiStage.act()
         updatePageArrowsVisibility()
     }
 

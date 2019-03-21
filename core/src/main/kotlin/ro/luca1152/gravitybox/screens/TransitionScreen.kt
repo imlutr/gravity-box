@@ -56,15 +56,9 @@ class TransitionScreen(
 
     private fun fadeOutEverything() {
         if (fadeOutCurrentScreen) {
-            uiStage.addAction(Actions.sequence(
-                Actions.fadeOut(FADE_DURATION)
-            ))
-            gameStage.addAction(Actions.sequence(
-                Actions.fadeOut(FADE_DURATION)
-            ))
-            overlayStage.addAction(Actions.sequence(
-                Actions.fadeOut(FADE_DURATION)
-            ))
+            uiStage.addAction(Actions.fadeOut(FADE_DURATION))
+            gameStage.addAction(Actions.fadeOut(FADE_DURATION))
+            overlayStage.addAction(Actions.fadeOut(FADE_DURATION))
         }
     }
 
