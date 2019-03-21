@@ -623,7 +623,7 @@ class LevelEditorScreen(
     }
 
     private fun update(delta: Float) {
-        uiStage.act(delta)
+        uiStage.act()
         engine.update(delta)
         gameStage.camera.update()
         if (!screenIsHidden) {

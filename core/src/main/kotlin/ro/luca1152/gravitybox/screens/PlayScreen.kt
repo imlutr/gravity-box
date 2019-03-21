@@ -143,7 +143,7 @@ class PlayScreen(
     }
 
     override fun render(delta: Float) {
-        uiStage.act(delta)
+        uiStage.act()
         clearScreen(Colors.bgColor)
         engine.update(delta)
         uiStage.draw()

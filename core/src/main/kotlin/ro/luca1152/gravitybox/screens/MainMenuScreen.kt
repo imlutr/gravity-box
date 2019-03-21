@@ -92,12 +92,8 @@ class MainMenuScreen(
     }
 
     override fun render(delta: Float) {
-        update(delta)
+        uiStage.act()
         clearScreen(Colors.bgColor)
         uiStage.draw()
-    }
-
-    private fun update(delta: Float) {
-        uiStage.act(delta)
     }
 }
