@@ -400,7 +400,7 @@ class LevelEditorScreen(
             val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
             usedIds.add(mapFactory.id)
         }
-        var id = 0
+        var id = 1
         while (usedIds.contains(id))
             id++
         return id
