@@ -41,6 +41,8 @@ class MyGame : KtxGame<Screen>() {
         const val LEVELS_NUMBER = 9
     }
 
+    var transitionOldScreen: Screen? = null
+
     override fun create() {
         Box2D.init()
         initializeDependencyInjection()

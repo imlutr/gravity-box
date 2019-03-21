@@ -203,4 +203,3 @@ inline fun <T> Iterable<T>.filterSingleton(predicate: (T) -> Boolean): T {
     check(filteredElement != null) { "A singleton can't be instantiated more than once" }
     return filteredElement
 }
-
