@@ -28,7 +28,7 @@ class LevelComponent : Component, Poolable {
     var createCombinedBodies = false
     var forceUpdateMap = false
     var restartLevel = false
-    var levelId = 0
+    var levelId = 1
 
     fun set(levelNumber: Int) {
         this.levelId = levelNumber
@@ -39,7 +39,7 @@ class LevelComponent : Component, Poolable {
         createCombinedBodies = false
         forceUpdateMap = false
         restartLevel = false
-        levelId = 0
+        levelId = 1
     }
 
     companion object : ComponentResolver<LevelComponent>(LevelComponent::class.java)

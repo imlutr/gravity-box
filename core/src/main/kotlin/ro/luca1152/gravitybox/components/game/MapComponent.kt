@@ -67,7 +67,7 @@ class MapComponent : Component, Poolable {
         const val GRAVITY = -25f
     }
 
-    var levelId = 0
+    var levelId = 1
     var mapLeft = Float.POSITIVE_INFINITY
     var mapRight = Float.NEGATIVE_INFINITY
     var mapBottom = Float.POSITIVE_INFINITY
@@ -253,7 +253,7 @@ class MapComponent : Component, Poolable {
 
     override fun reset() {
         destroyAllBodies()
-        levelId = 0
+        levelId = 1
         mapLeft = Float.POSITIVE_INFINITY
         mapRight = Float.NEGATIVE_INFINITY
         mapBottom = Float.POSITIVE_INFINITY
