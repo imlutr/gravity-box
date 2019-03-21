@@ -127,7 +127,11 @@ class AddCommand(
             img.touchable = Touchable.enabled
 
             affectedEntity.tryGet(BodyComponent)?.run {
-                body = imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction)
+                if (affectedEntity.tryGet(PlayerComponent) != null) {
+                    body = imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction, 0.02f)
+                } else {
+                    body = imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction)
+                }
             }
         }
         affectedEntity.tryGet(ExtendedTouchComponent)?.run {

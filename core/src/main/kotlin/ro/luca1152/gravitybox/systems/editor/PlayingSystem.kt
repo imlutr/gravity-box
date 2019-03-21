@@ -137,7 +137,9 @@ class PlayingSystem(
 
     private fun addPlaySystems() {
         engine.run {
+            addSystem(PolygonSyncSystem())
             addSystem(MapBodiesCreationSystem())
+            addSystem(CombinedBodiesCreationSystem())
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(ShootingSystem())
@@ -155,7 +157,7 @@ class PlayingSystem(
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
-//            addSystem(PhysicsDebugRenderingSystem())
+            addSystem(PhysicsDebugRenderingSystem())
         }
     }
 
@@ -176,6 +178,7 @@ class PlayingSystem(
         resetEntitiesPosition(engine)
         removeFinishPointEndlessBlink()
         reselectMapObject()
+        destroyAllBodies()
         levelEditorScreen.addGameSystems()
     }
 
@@ -192,7 +195,10 @@ class PlayingSystem(
     }
 
     private fun resetEntitiesPosition(engine: Engine) {
-        engine.getEntitiesFor(Family.all(ImageComponent::class.java, BodyComponent::class.java).get()).forEach {
+        engine.getEntitiesFor(
+            Family.all(ImageComponent::class.java, BodyComponent::class.java)
+                .exclude(CombinedBodyComponent::class.java).get()
+        ).forEach {
             it.image.run {
                 this.centerX = it.body.initialX
                 this.centerY = it.body.initialY
@@ -220,6 +226,10 @@ class PlayingSystem(
         entitiesToRemove.forEach {
             engine.removeAndResetEntity(it)
         }
+    }
+
+    private fun destroyAllBodies() {
+        levelEntity.map.destroyAllBodies()
     }
 
     private fun showLevelEditorUI() {

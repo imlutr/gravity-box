@@ -24,6 +24,7 @@ import com.badlogic.ashley.core.Family
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Handles what happens when a level is marked as to be restarted. */
 class LevelRestartSystem : EntitySystem() {
@@ -40,11 +41,14 @@ class LevelRestartSystem : EntitySystem() {
     }
 
     private fun restartTheLevel() {
-        engine.getEntitiesFor(Family.all(BodyComponent::class.java).get()).forEach {
-            it.body.resetToInitialState()
-        }
         engine.getEntitiesFor(Family.all(BulletComponent::class.java).get()).forEach {
             engine.removeAndResetEntity(it)
+        }
+        engine.getEntitiesFor(Family.all(BodyComponent::class.java).exclude(CombinedBodyComponent::class.java).get())
+            .forEach {
+                if (it.tryGet(BodyComponent) != null) {
+                    it.body.resetToInitialState()
+                }
         }
         levelEntity.level.restartLevel = false
     }

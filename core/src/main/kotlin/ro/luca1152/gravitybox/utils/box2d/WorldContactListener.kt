@@ -23,10 +23,7 @@ import com.badlogic.gdx.physics.box2d.Contact
 import com.badlogic.gdx.physics.box2d.ContactImpulse
 import com.badlogic.gdx.physics.box2d.ContactListener
 import com.badlogic.gdx.physics.box2d.Manifold
-import ro.luca1152.gravitybox.components.game.BulletComponent
-import ro.luca1152.gravitybox.components.game.PlatformComponent
-import ro.luca1152.gravitybox.components.game.bullet
-import ro.luca1152.gravitybox.components.game.platform
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
@@ -46,6 +43,7 @@ class WorldContactListener : ContactListener {
         // Find the specific entities
         val bulletEntity = findEntity(BulletComponent, entityA, entityB)
         val platformEntity = findEntity(PlatformComponent, entityA, entityB)
+        val combinedPlatformEntity = findEntity(CombinedBodyComponent, entityA, entityB)
 
         // A bullet and a platform collided
         if (bulletEntity != null && platformEntity != null) {
@@ -56,6 +54,11 @@ class WorldContactListener : ContactListener {
             // Remove the platform if it's dynamic
             if (platformEntity.platform.isDynamic)
                 platformEntity.platform.remove = true
+        }
+
+        if (bulletEntity != null && combinedPlatformEntity != null) {
+            bulletEntity.bullet.collidedWithPlatform = true
+            bulletEntity.bullet.collidedWith = combinedPlatformEntity
         }
     }
 
