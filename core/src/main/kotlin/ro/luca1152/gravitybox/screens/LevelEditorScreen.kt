@@ -245,12 +245,17 @@ class LevelEditorScreen(
             uiStage.addActor(loadLevelPopUp)
         }
     }
-    private val settingsPopUp = PopUp(500f, 355f, skin).apply {
+    private val cameraButton = ClickTextButton("simple-button", skin, "Camera", "bold", 80f).apply {
+        upColor = Colors.gameColor
+        downColor = Colors.uiDownColor
+    }
+    private val settingsPopUp = PopUp(500f, 400f, skin).apply {
         widget.run {
             val buttonsTable = Table(skin).apply {
                 add(newButton).growX().expandY().top().row()
                 add(saveButton).growX().expandY().top().row()
                 add(loadButton).growX().expandY().top().row()
+                add(cameraButton).growX().expandY().row()
             }
             add(buttonsTable).grow()
         }
