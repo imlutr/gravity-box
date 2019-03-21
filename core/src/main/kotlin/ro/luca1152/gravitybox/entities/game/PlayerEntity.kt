@@ -63,7 +63,12 @@ object PlayerEntity {
         add(engine.createComponent(SnapComponent::class.java))
         add(engine.createComponent(BodyComponent::class.java)).run {
             body.set(
-                image.imageToBox2DBody(BodyDef.BodyType.DynamicBody, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION),
+                image.imageToBox2DBody(
+                    BodyDef.BodyType.DynamicBody,
+                    CATEGORY_BITS, MASK_BITS,
+                    DENSITY, FRICTION,
+                    0.02f
+                ),
                 this, CATEGORY_BITS, MASK_BITS, DENSITY, FRICTION
             )
         }

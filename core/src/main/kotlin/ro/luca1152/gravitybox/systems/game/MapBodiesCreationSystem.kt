@@ -69,6 +69,7 @@ class MapBodiesCreationSystem : EntitySystem() {
                 var maskBits = EntityCategory.NONE.bits
                 var density = 1f
                 var friction = .2f
+                var trimSize = 0f
                 when {
                     it.tryGet(PlatformComponent) != null -> {
                         bodyType = BodyDef.BodyType.StaticBody
@@ -81,6 +82,7 @@ class MapBodiesCreationSystem : EntitySystem() {
                         maskBits = PlayerEntity.MASK_BITS
                         friction = PlayerEntity.FRICTION
                         density = PlayerEntity.DENSITY
+                        trimSize = 0.02f
                     }
                     it.tryGet(FinishComponent) != null -> {
                         bodyType = BodyDef.BodyType.StaticBody
@@ -89,7 +91,7 @@ class MapBodiesCreationSystem : EntitySystem() {
                     }
                 }
                 it.body.set(
-                    it.image.imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction),
+                    it.image.imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction, trimSize),
                     it, categoryBits, maskBits, density, friction
                 )
             }

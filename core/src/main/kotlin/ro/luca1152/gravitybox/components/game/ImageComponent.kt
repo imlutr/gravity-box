@@ -180,6 +180,7 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
         bodyType: BodyDef.BodyType,
         categoryBits: Short = EntityCategory.OBSTACLE.bits, maskBits: Short = EntityCategory.OBSTACLE.bits,
         density: Float = 1f, friction: Float = 0.2f,
+        trimSize: Float = 0f,
         world: World = Injekt.get()
     ): Body {
         val bodyDef = BodyDef().apply {
@@ -187,7 +188,7 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             fixedRotation = false
         }
         val polygonShape = PolygonShape().apply {
-            setAsBox(width / 2f - .01f, height / 2f - .01f)
+            setAsBox(width / 2f - trimSize, height / 2f - trimSize)
         }
         val fixtureDef = FixtureDef().apply {
             shape = polygonShape

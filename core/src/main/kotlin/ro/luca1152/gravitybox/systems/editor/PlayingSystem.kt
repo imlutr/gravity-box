@@ -154,8 +154,8 @@ class PlayingSystem(
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
-            addSystem(ImageRenderingSystem())
-//            addSystem(PhysicsDebugRenderingSystem())
+//            addSystem(ImageRenderingSystem())
+            addSystem(PhysicsDebugRenderingSystem())
         }
     }
 

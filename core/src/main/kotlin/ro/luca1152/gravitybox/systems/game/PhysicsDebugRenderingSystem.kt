@@ -46,7 +46,7 @@ class PhysicsDebugRenderingSystem(
 
     override fun addedToEngine(engine: Engine?) {
         shapeRenderer.setAutoShapeType(true)
-        Gdx.gl20.glLineWidth(10f)
+        Gdx.gl20.glLineWidth(3f)
     }
 
     override fun update(deltaTime: Float) {
@@ -74,7 +74,7 @@ class PhysicsDebugRenderingSystem(
                         this.tryGet(BulletComponent) != null -> shapeRenderer.color = Color.YELLOW
                     }
                     if (this.tryGet(PlayerComponent) != null)
-                        shapeRenderer.x(image.centerX, image.centerY, .05f)
+                        shapeRenderer.circle(image.centerX, image.centerY, .04f)
                 }
 
             }
