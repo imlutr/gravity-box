@@ -104,47 +104,78 @@ class MapBodiesCreationSystem : EntitySystem() {
                             entityA.polygon.rightmostX == entityB.polygon.leftmostX)
                             || entityA.polygon.polygon.boundingRectangle.overlaps(entityB.polygon.polygon.boundingRectangle))
                 ) {
-                    if (entityA.isCombined && !entityB.isCombined) {
-                        entityB.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
-                            combinedBody.set(entityA.combinedBody.newBodyEntity, isCombinedHorizontally = true)
-                        }
-                        entityB.body.resetInitialState()
-                    } else if (entityB.isCombined && !entityA.isCombined) {
-                        entityA.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
-                            combinedBody.set(entityB.combinedBody.newBodyEntity, isCombinedHorizontally = true)
-                        }
-                        entityA.body.resetInitialState()
-                    } else if (!entityA.isCombined && !entityB.isCombined) {
-                        val combinedBodyEntity = CombinedPlatformEntity.createEntity(isCombinedHorizontally = true)
-                        entityA.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
-                            combinedBody.set(combinedBodyEntity, isCombinedHorizontally = true)
-                        }
-                        entityA.body.resetInitialState()
-                        entityB.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
-                            combinedBody.set(combinedBodyEntity, isCombinedHorizontally = true)
-                        }
-                        entityB.body.resetInitialState()
-                    } else if (entityA.isCombined && entityB.isCombined) {
-                        if (entityA.combinedBody.newBodyEntity != entityB.combinedBody.newBodyEntity) {
-                            val platformsToMerge =
-                                engine.getEntitiesFor(Family.all(PlatformComponent::class.java).get()).filter {
-                                    it.tryGet(CombinedBodyComponent) != null && it.combinedBody.newBodyEntity == entityB.combinedBody.newBodyEntity
-                                }
-                            val bodyEntityToRemove = platformsToMerge.first().combinedBody.newBodyEntity
-                            platformsToMerge.forEach {
-                                if (!it.combinedBody.entityContainsBody) {
-                                    it.combinedBody.newBodyEntity = entityA.combinedBody.newBodyEntity
-                                }
-                            }
-                            engine.removeEntity(bodyEntityToRemove)
-                        }
-                    }
+                    combineEntities(entityA, entityB, isCombinedHorizontally = true)
                 }
             }
         }
     }
 
     private fun combinePlatformsVertically() {
+        val platforms = engine.getEntitiesFor(Family.all(PlatformComponent::class.java).get())
+        for (i in 0 until platforms.size()) {
+            val entityA = platforms[i]
+            if (entityA.isDeleted) {
+                continue
+            }
+            for (j in 0 until platforms.size()) {
+                val entityB = platforms[j]
+                if (entityB.isDeleted || entityA == entityB) {
+                    break
+                }
+                if (isSameRotation(entityA, entityB) &&
+                    entityA.polygon.leftmostX == entityB.polygon.leftmostX &&
+                    entityA.polygon.rightmostX == entityB.polygon.rightmostX &&
+                    ((entityA.polygon.bottommostY == entityB.polygon.bottommostY ||
+                            entityA.polygon.topmostY == entityB.polygon.topmostY ||
+                            entityA.polygon.bottommostY == entityB.polygon.topmostY ||
+                            entityA.polygon.topmostY == entityB.polygon.bottommostY)
+                            || entityA.polygon.polygon.boundingRectangle.overlaps(entityB.polygon.polygon.boundingRectangle))
+                ) {
+                    combineEntities(entityA, entityB, isCombinedVertically = true)
+                }
+            }
+        }
+    }
+
+    private fun combineEntities(
+        entityA: Entity, entityB: Entity,
+        isCombinedHorizontally: Boolean = false, isCombinedVertically: Boolean = false
+    ) {
+        if (entityA.isCombined && !entityB.isCombined) {
+            entityB.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
+                combinedBody.set(entityA.combinedBody.newBodyEntity, isCombinedHorizontally, isCombinedVertically)
+            }
+            entityB.body.resetInitialState()
+        } else if (entityB.isCombined && !entityA.isCombined) {
+            entityA.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
+                combinedBody.set(entityB.combinedBody.newBodyEntity, isCombinedHorizontally, isCombinedVertically)
+            }
+            entityA.body.resetInitialState()
+        } else if (!entityA.isCombined && !entityB.isCombined) {
+            val combinedBodyEntity = CombinedPlatformEntity.createEntity(isCombinedHorizontally, isCombinedVertically)
+            entityA.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
+                combinedBody.set(combinedBodyEntity, isCombinedHorizontally, isCombinedVertically)
+            }
+            entityA.body.resetInitialState()
+            entityB.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
+                combinedBody.set(combinedBodyEntity, isCombinedHorizontally, isCombinedVertically)
+            }
+            entityB.body.resetInitialState()
+        } else if (entityA.isCombined && entityB.isCombined) {
+            if (entityA.combinedBody.newBodyEntity != entityB.combinedBody.newBodyEntity) {
+                val platformsToMerge =
+                    engine.getEntitiesFor(Family.all(PlatformComponent::class.java).get()).filter {
+                        it.tryGet(CombinedBodyComponent) != null && it.combinedBody.newBodyEntity == entityB.combinedBody.newBodyEntity
+                    }
+                val bodyEntityToRemove = platformsToMerge.first().combinedBody.newBodyEntity
+                platformsToMerge.forEach {
+                    if (!it.combinedBody.entityContainsBody) {
+                        it.combinedBody.newBodyEntity = entityA.combinedBody.newBodyEntity
+                    }
+                }
+                engine.removeEntity(bodyEntityToRemove)
+            }
+        }
     }
 
     private fun createOtherBodies() {

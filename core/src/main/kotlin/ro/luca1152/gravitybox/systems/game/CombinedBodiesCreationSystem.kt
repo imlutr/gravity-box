@@ -64,6 +64,19 @@ class CombinedBodiesCreationSystem : EntitySystem() {
         }
     }
 
+    private fun createVerticalBodies() {
+        val bodyEntities = engine.getEntitiesFor(Family.all(CombinedBodyComponent::class.java).get()).filter {
+            it.combinedBody.entityContainsBody && it.combinedBody.isCombinedVertically
+        }
+        val platformsToCombine = engine.getEntitiesFor(Family.all(CombinedBodyComponent::class.java).get()).filter {
+            !it.combinedBody.entityContainsBody && it.combinedBody.isCombinedVertically
+        }
+        bodyEntities.forEach { bodyEntity ->
+            val platforms = platformsToCombine.filter { it.combinedBody.newBodyEntity == bodyEntity }
+            combinePlatforms(bodyEntity, platforms)
+        }
+    }
+
     private fun combinePlatforms(bodyEntity: Entity, platforms: List<Entity>) {
         var leftmostX = Float.POSITIVE_INFINITY
         var rightmostX = Float.NEGATIVE_INFINITY
@@ -112,9 +125,5 @@ class CombinedBodiesCreationSystem : EntitySystem() {
             setTransform(centerX, centerY, 0f)
         }
         bodyEntity.body.set(body, bodyEntity, PlatformEntity.CATEGORY_BITS, PlatformEntity.MASK_BITS)
-    }
-
-    private fun createVerticalBodies() {
-
     }
 }
