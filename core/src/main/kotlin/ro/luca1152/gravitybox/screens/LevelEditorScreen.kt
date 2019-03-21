@@ -23,6 +23,7 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -203,6 +204,7 @@ class LevelEditorScreen(
             } else {
                 isEditingNewLevel = true
                 levelEntity.map.saveMap()
+                updateLevelIdToFirstUnusued()
                 resetMapToInitialState()
             }
         }
@@ -216,10 +218,12 @@ class LevelEditorScreen(
         yesClickRunnable = Runnable {
             isEditingNewLevel = true
             levelEntity.map.saveMap()
+            updateLevelIdToFirstUnusued()
             resetMapToInitialState()
         }
         noClickRunnable = Runnable {
             isEditingNewLevel = true
+            updateLevelIdToFirstUnusued()
             resetMapToInitialState()
         }
     }
@@ -300,6 +304,8 @@ class LevelEditorScreen(
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
     private lateinit var finishEntity: Entity
+    private val levelsSavedCount
+        get() = Gdx.files.local("maps/editor").list().size
 
     override fun show() {
         addDependencies()
@@ -320,7 +326,11 @@ class LevelEditorScreen(
 
     private fun createGame() {
         createGameEntities()
-        resetMapToInitialState()
+        if (levelsSavedCount == 0) {
+            resetMapToInitialState()
+        } else {
+            loadLastEditedLevel()
+        }
         handleGameInput()
         addGameSystems()
     }
@@ -339,11 +349,18 @@ class LevelEditorScreen(
         playerEntity = PlayerEntity.createEntity(0)
     }
 
+    private fun loadLastEditedLevel() {
+        val lastEditedMapFile = getLastEditedMapFile()
+        val mapFactory = getMapFactory(lastEditedMapFile.path())
+        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity)
+        isEditingNewLevel = false
+        centerCameraOnPlayer()
+    }
+
     private fun resetMapToInitialState() {
         removeAdditionalEntities()
-        resetUndoRedo()
+        undoRedoEntity.undoRedo.reset()
         val platformEntity = PlatformEntity.createEntity(2, 0f, .5f, 4f)
-        repositionDefaultEntities(platformEntity)
         centerCameraOnPlatform(platformEntity)
         settingsPopUp.remove()
     }
@@ -359,8 +376,29 @@ class LevelEditorScreen(
         }
     }
 
-    private fun resetUndoRedo() {
-        undoRedoEntity.undoRedo.reset()
+    private fun getLastEditedMapFile(): FileHandle {
+        var minLastEditedTime = Long.MAX_VALUE
+        var minLastEditedFile = FileHandle("")
+        Gdx.files.local("maps/editor").list().forEach {
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())
+            val levelDate = formatter.parse(it.nameWithoutExtension())
+            val currentDate = Date(TimeUtils.millis())
+            val diffInMills = Math.abs(currentDate.time - levelDate.time)
+            if (diffInMills < minLastEditedTime) {
+                minLastEditedTime = diffInMills
+                minLastEditedFile = it
+            }
+        }
+        return minLastEditedFile
+    }
+
+    private fun getMapFactory(mapFilePath: String): MapFactory {
+        val jsonData = if (manager.isLoaded(mapFilePath)) {
+            manager.get<Text>(mapFilePath).string
+        } else {
+            Gdx.files.local(mapFilePath).readString()
+        }
+        return Json().fromJson(MapFactory::class.java, jsonData)
     }
 
     private fun repositionDefaultEntities(platformEntity: Entity) {
@@ -392,18 +430,19 @@ class LevelEditorScreen(
     private fun getFirstUnusedLevelId(): Int {
         val usedIds = Array<Int>()
         Gdx.files.local("maps/editor").list().forEach {
-            val jsonData = if (manager.isLoaded(it.path())) {
-                manager.get<Text>(it.path()).string
-            } else {
-                Gdx.files.local(it.path()).readString()
-            }
-            val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
+            val mapFactory = getMapFactory(it.path())
             usedIds.add(mapFactory.id)
         }
         var id = 1
         while (usedIds.contains(id))
             id++
         return id
+    }
+
+    private fun updateLevelIdToFirstUnusued() {
+        val newId = getFirstUnusedLevelId()
+        levelEntity.level.levelId = newId
+        levelEntity.map.levelId = newId
     }
 
     private fun centerCameraOnPlatform(platformEntity: Entity) {
