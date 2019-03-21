@@ -38,8 +38,8 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
     var categoryBits: Short = 0
     var maskBits: Short = 0
 
-    var initialX = 0f
-    var initialY = 0f
+    var initialX = Float.POSITIVE_INFINITY
+    var initialY = Float.POSITIVE_INFINITY
     var initialRotationRad = 0f
 
     var body: Body = world.createBody(BodyDef())
@@ -66,16 +66,25 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
     }
 
     fun resetToInitialState() {
-        body.run {
-            setTransform(initialX, initialY, initialRotationRad)
-            applyForceToCenter(0f, 0f, true) // Wake up the body so it doesn't float
-            setLinearVelocity(0f, 0f)
-            angularVelocity = 0f
+        if (initialX != Float.POSITIVE_INFINITY && initialY != Float.POSITIVE_INFINITY && bodyType != BodyDef.BodyType.StaticBody) {
+            body.run {
+                setTransform(initialX, initialY, initialRotationRad)
+                applyForceToCenter(0f, 0f, true) // Wake up the body so it doesn't float
+                setLinearVelocity(0f, 0f)
+                angularVelocity = 0f
+            }
         }
     }
 
     override fun reset() {
         destroyBody()
+        resetInitialState()
+    }
+
+    fun resetInitialState() {
+        initialX = Float.POSITIVE_INFINITY
+        initialY = Float.POSITIVE_INFINITY
+        initialRotationRad = 0f
     }
 
     fun destroyBody() {

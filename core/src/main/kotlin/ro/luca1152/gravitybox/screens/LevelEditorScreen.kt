@@ -444,7 +444,7 @@ class LevelEditorScreen(
             addSystem(ImageRenderingSystem())
             addSystem(OverlayRenderingSystem())
 //            addSystem(DebugRenderingSystem())
-            addSystem(PhysicsDebugRenderingSystem())
+//            addSystem(PhysicsDebugRenderingSystem())
         }
     }
 

@@ -25,6 +25,7 @@ import ro.luca1152.gravitybox.utils.components.ComponentResolver
 /** Contains level information. */
 class LevelComponent : Component, Poolable {
     var loadMap = false
+    var createCombinedBodies = false
     var forceUpdateMap = false
     var restartLevel = false
     var levelId = 0
@@ -35,6 +36,7 @@ class LevelComponent : Component, Poolable {
 
     override fun reset() {
         loadMap = false
+        createCombinedBodies = false
         forceUpdateMap = false
         restartLevel = false
         levelId = 0

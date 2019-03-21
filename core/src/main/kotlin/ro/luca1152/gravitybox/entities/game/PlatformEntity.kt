@@ -22,7 +22,6 @@ package ro.luca1152.gravitybox.entities.game
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.NinePatch
-import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.screens.Assets
@@ -67,9 +66,7 @@ object PlatformEntity {
         }
         add(engine.createComponent(EditorObjectComponent::class.java))
         add(engine.createComponent(SnapComponent::class.java))
-        add(engine.createComponent(BodyComponent::class.java)).run {
-            body.set(image.imageToBox2DBody(BodyDef.BodyType.StaticBody), this, CATEGORY_BITS, MASK_BITS)
-        }
+        add(engine.createComponent(BodyComponent::class.java))
         add(engine.createComponent(ColorComponent::class.java)).run {
             color.set(ColorType.DARK)
         }

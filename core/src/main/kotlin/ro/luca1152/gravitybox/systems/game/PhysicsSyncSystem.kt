@@ -32,8 +32,12 @@ class PhysicsSyncSystem : IteratingSystem(
     ).get()
 ) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (entity.tryGet(ImageComponent) != null) syncBodyPropertiesWithImage(entity, entity.image)
-        if (entity.tryGet(CollisionBoxComponent) != null) syncBodyPositionWithCollisionBox(entity, entity.collisionBox)
+        if (entity.tryGet(ImageComponent) != null && entity.tryGet(CombinedBodyComponent) == null) {
+            syncBodyPropertiesWithImage(entity, entity.image)
+        }
+        if (entity.tryGet(CollisionBoxComponent) != null) {
+            syncBodyPositionWithCollisionBox(entity, entity.collisionBox)
+        }
     }
 
     private fun syncBodyPropertiesWithImage(physicsEntity: Entity, image: ImageComponent) {
