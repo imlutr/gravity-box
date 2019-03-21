@@ -18,6 +18,7 @@
 package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.PooledEngine
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.app.KtxScreen
 import ro.luca1152.gravitybox.MyGame
@@ -43,10 +44,14 @@ class TransitionScreen(
     private var transitionScreenIsHidden = false
     private var currentScreen = game.shownScreen
     private val finishedFadingOut
-        get() = uiStage.batch.color.a == 0f
+        get() = uiStage.root.actions.size == 0
 
     init {
-        fadeOutEverything()
+        if (currentScreen !is TransitionScreen) {
+            Gdx.input.inputProcessor = null
+            fadeOutEverything()
+            game.transitionOldScreen = currentScreen
+        }
     }
 
     private fun fadeOutEverything() {
@@ -66,8 +71,10 @@ class TransitionScreen(
     override fun render(delta: Float) {
         update()
         clearScreen(Colors.bgColor)
-        if (!transitionScreenIsHidden) {
+        if (!transitionScreenIsHidden && currentScreen !is TransitionScreen) {
             currentScreen.render(delta)
+        } else if (currentScreen is TransitionScreen) {
+            game.transitionOldScreen!!.render(delta)
         }
     }
 
