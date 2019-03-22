@@ -227,6 +227,80 @@ class LevelEditorScreen(
             resetMapToInitialState()
         }
     }
+    private val cameraPopUpLeftColumn = Table(skin).apply {
+        val left = DistanceFieldLabel("Left", skin, "bold", 65f, Colors.gameColor)
+        val right = DistanceFieldLabel("Right", skin, "bold", 65f, Colors.gameColor)
+        val top = DistanceFieldLabel("Top", skin, "bold", 65f, Colors.gameColor)
+        val bottom = DistanceFieldLabel("Bottom", skin, "bold", 65f, Colors.gameColor)
+        defaults().spaceBottom(32f)
+        add(left).row()
+        add(right).row()
+        add(top).row()
+        add(bottom)
+    }
+
+    private fun getPaddingFromName(paddingName: String) = when (paddingName) {
+        "left" -> levelEntity.map.paddingLeft.toInt()
+        "right" -> levelEntity.map.paddingRight.toInt()
+        "top" -> levelEntity.map.paddingTop.toInt()
+        "bottom" -> levelEntity.map.paddingBottom.toInt()
+        else -> throw IllegalArgumentException("No padding found for the name given..")
+    }
+
+    private fun setPaddingFromName(paddingName: String, value: Int) {
+        when (paddingName) {
+            "left" -> levelEntity.map.paddingLeft = value.toFloat()
+            "right" -> levelEntity.map.paddingRight = value.toFloat()
+            "top" -> levelEntity.map.paddingTop = value.toFloat()
+            "bottom" -> levelEntity.map.paddingBottom = value.toFloat()
+            else -> throw java.lang.IllegalArgumentException("No padding found for the name given.")
+        }
+    }
+
+    private fun createMinusPaddingPlus(paddingName: String) = Table(skin).apply {
+        val paddingValueLabel =
+            DistanceFieldLabel("${getPaddingFromName(paddingName)}", skin, "bold", 65f, Colors.gameColor)
+        val minusButton = ClickButton(skin, "small-round-button").apply {
+            addIcon("small-minus-icon")
+            setColors(Colors.gameColor, Colors.uiDownColor)
+            addClickRunnable(Runnable {
+                val newPadding = getPaddingFromName(paddingName) - 1
+                setPaddingFromName(paddingName, newPadding)
+                paddingValueLabel.setText("$newPadding")
+            })
+        }
+        val plusButton = ClickButton(skin, "small-round-button").apply {
+            addIcon("small-plus-icon")
+            setColors(Colors.gameColor, Colors.uiDownColor)
+            addClickRunnable(Runnable {
+                val newPadding = getPaddingFromName(paddingName) + 1
+                setPaddingFromName(paddingName, newPadding)
+                paddingValueLabel.setText("$newPadding")
+            })
+        }
+        add(minusButton).space(15f)
+        add(paddingValueLabel).space(15f)
+        add(plusButton).space(15f)
+    }
+
+    private fun createCameraPopUpRightColumn() = Table(skin).apply {
+        defaults().spaceBottom(20f)
+        add(createMinusPaddingPlus("left")).growX().expand().row()
+        add(createMinusPaddingPlus("right")).growX().expand().row()
+        add(createMinusPaddingPlus("top")).growX().expand().row()
+        add(createMinusPaddingPlus("bottom")).growX().expand().bottom()
+    }
+
+    private fun createCameraPopUp() = PopUp(590f, 530f, skin).apply {
+        val title = DistanceFieldLabel("Padding", skin, "bold", 70f, Colors.gameColor)
+        widget.run {
+            pad(40f)
+            add(title).top().colspan(2).row()
+            add(cameraPopUpLeftColumn).left().padRight(28f)
+            add(createCameraPopUpRightColumn()).grow().right()
+        }
+    }
+
     private val newButton = ClickTextButton("simple-button", skin, "New", "bold", 80f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
@@ -253,17 +327,25 @@ class LevelEditorScreen(
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
+            uiStage.addActor(createCameraPopUp())
+        }
+    }
+    private val playerButton = ClickTextButton("simple-button", skin, "Player", "bold", 80f).apply {
+        upColor = Colors.gameColor
+        downColor = Colors.uiDownColor
+        clickRunnable = Runnable {
             gameCamera.position.set(playerEntity.image.centerX, playerEntity.image.centerY, 0f)
             hideSettingsPopUp = true
         }
     }
-    private val settingsPopUp = PopUp(500f, 400f, skin).apply {
+    private val settingsPopUp = PopUp(450f, 510f, skin).apply {
         widget.run {
             val buttonsTable = Table(skin).apply {
                 add(newButton).growX().expandY().top().row()
                 add(saveButton).growX().expandY().top().row()
                 add(loadButton).growX().expandY().top().row()
-                add(cameraButton).growX().expandY().row()
+                add(cameraButton).growX().expandY().top().row()
+                add(playerButton).growX().expandY().top().row()
             }
             add(buttonsTable).grow()
         }

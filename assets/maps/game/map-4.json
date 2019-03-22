@@ -1,5 +1,11 @@
 {
   "id": 3,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 6
+  },
   "player": {
     "id": 0,
     "position": {

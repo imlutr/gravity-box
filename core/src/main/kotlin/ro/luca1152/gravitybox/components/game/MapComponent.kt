@@ -37,10 +37,7 @@ import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
-import ro.luca1152.gravitybox.utils.json.FinishPrototype
-import ro.luca1152.gravitybox.utils.json.MapFactory
-import ro.luca1152.gravitybox.utils.json.ObjectPrototype
-import ro.luca1152.gravitybox.utils.json.PlayerPrototype
+import ro.luca1152.gravitybox.utils.json.*
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -73,6 +70,10 @@ class MapComponent : Component, Poolable {
     var mapBottom = Float.POSITIVE_INFINITY
     var mapTop = Float.NEGATIVE_INFINITY
     var updateRoundedPlatforms = true
+    var paddingLeft = 3f
+    var paddingRight = 3f
+    var paddingTop = 5f
+    var paddingBottom = 5f
 
     fun set(levelId: Int) {
         this.levelId = levelId
@@ -130,6 +131,12 @@ class MapComponent : Component, Poolable {
 
             // Map properties
             writeValue("id", levelId)
+            writeObjectStart("padding")
+            writeValue("left", paddingLeft)
+            writeValue("right", paddingRight)
+            writeValue("top", paddingTop)
+            writeValue("bottom", paddingBottom)
+            writeObjectEnd()
 
             // Objects
             player!!.json.writeToJson(this)
@@ -166,7 +173,7 @@ class MapComponent : Component, Poolable {
     ) {
         destroyAllBodies()
         removePlatforms()
-        createMap(mapFactory.id)
+        createMap(mapFactory.id, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
         createPlatforms(mapFactory.objects)
@@ -183,8 +190,12 @@ class MapComponent : Component, Poolable {
         }
     }
 
-    private fun createMap(id: Int) {
+    private fun createMap(id: Int, padding: PaddingPrototype) {
         levelId = id
+        paddingLeft = padding.left.toFloat()
+        paddingRight = padding.right.toFloat()
+        paddingTop = padding.top.toFloat()
+        paddingBottom = padding.bottom.toFloat()
     }
 
 
@@ -258,6 +269,10 @@ class MapComponent : Component, Poolable {
         mapRight = Float.NEGATIVE_INFINITY
         mapBottom = Float.POSITIVE_INFINITY
         mapTop = Float.NEGATIVE_INFINITY
+        paddingLeft = 3f
+        paddingRight = 3f
+        paddingTop = 5f
+        paddingBottom = 5f
         updateRoundedPlatforms = true
     }
 
