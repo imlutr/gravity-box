@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="UI TexturePacker" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.badlogic.gdx.tools.texturepacker.TexturePacker" />
+    <module name="desktop" />
+    <option name="PROGRAM_PARAMETERS" value="resources/textures/ui assets/skins uiskin" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Desktop" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="ro.luca1152.gravitybox.desktop.DesktopLauncher" />
+    <module name="desktop" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/assets" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
