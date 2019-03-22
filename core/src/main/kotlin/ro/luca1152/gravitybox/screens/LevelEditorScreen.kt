@@ -239,18 +239,47 @@ class LevelEditorScreen(
         add(bottom)
     }
 
+    private fun getPaddingFromName(paddingName: String) = when (paddingName) {
+        "left" -> levelEntity.map.paddingLeft.toInt()
+        "right" -> levelEntity.map.paddingRight.toInt()
+        "top" -> levelEntity.map.paddingTop.toInt()
+        "bottom" -> levelEntity.map.paddingBottom.toInt()
+        else -> throw IllegalArgumentException("No padding found for the name given..")
+    }
+
+    private fun setPaddingFromName(paddingName: String, value: Int) {
+        when (paddingName) {
+            "left" -> levelEntity.map.paddingLeft = value.toFloat()
+            "right" -> levelEntity.map.paddingRight = value.toFloat()
+            "top" -> levelEntity.map.paddingTop = value.toFloat()
+            "bottom" -> levelEntity.map.paddingBottom = value.toFloat()
+            else -> throw java.lang.IllegalArgumentException("No padding found for the name given.")
+        }
+    }
+
     private fun createMinusPaddingPlus(paddingName: String) = Table(skin).apply {
+        val paddingValueLabel =
+            DistanceFieldLabel("${getPaddingFromName(paddingName)}", skin, "bold", 65f, Colors.gameColor)
         val minusButton = ClickButton(skin, "small-round-button").apply {
             addIcon("small-minus-icon")
             setColors(Colors.gameColor, Colors.uiDownColor)
+            addClickRunnable(Runnable {
+                val newPadding = getPaddingFromName(paddingName) - 1
+                setPaddingFromName(paddingName, newPadding)
+                paddingValueLabel.setText("$newPadding")
+            })
         }
-        val paddingValue = DistanceFieldLabel("8", skin, "bold", 65f, Colors.gameColor)
         val plusButton = ClickButton(skin, "small-round-button").apply {
             addIcon("small-plus-icon")
             setColors(Colors.gameColor, Colors.uiDownColor)
+            addClickRunnable(Runnable {
+                val newPadding = getPaddingFromName(paddingName) + 1
+                setPaddingFromName(paddingName, newPadding)
+                paddingValueLabel.setText("$newPadding")
+            })
         }
         add(minusButton).space(15f)
-        add(paddingValue).space(15f)
+        add(paddingValueLabel).space(15f)
         add(plusButton).space(15f)
     }
 

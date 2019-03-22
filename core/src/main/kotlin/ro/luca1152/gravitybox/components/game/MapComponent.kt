@@ -73,6 +73,10 @@ class MapComponent : Component, Poolable {
     var mapBottom = Float.POSITIVE_INFINITY
     var mapTop = Float.NEGATIVE_INFINITY
     var updateRoundedPlatforms = true
+    var paddingLeft = 3f
+    var paddingRight = 3f
+    var paddingTop = 5f
+    var paddingBottom = 5f
 
     fun set(levelId: Int) {
         this.levelId = levelId
@@ -258,6 +262,10 @@ class MapComponent : Component, Poolable {
         mapRight = Float.NEGATIVE_INFINITY
         mapBottom = Float.POSITIVE_INFINITY
         mapTop = Float.NEGATIVE_INFINITY
+        paddingLeft = 3f
+        paddingRight = 3f
+        paddingTop = 5f
+        paddingBottom = 5f
         updateRoundedPlatforms = true
     }
 
