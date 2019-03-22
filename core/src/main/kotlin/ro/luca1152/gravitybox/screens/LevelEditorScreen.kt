@@ -138,8 +138,14 @@ class LevelEditorScreen(
         addClickRunnable(Runnable {
             uiStage.addActor(leaveConfirmationPopUp)
             leaveConfirmationPopUp.yesClickRunnable = if (isEditingNewLevel) {
-                Runnable {
-                    uiStage.addActor(saveBeforeLeavingPopUp)
+                if (undoRedoEntity.undoRedo.canUndo()) {
+                    Runnable {
+                        uiStage.addActor(saveBeforeLeavingPopUp)
+                    }
+                } else {
+                    Runnable {
+                        game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
+                    }
                 }
             } else {
                 Runnable {
