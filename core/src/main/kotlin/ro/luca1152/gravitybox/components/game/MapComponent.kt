@@ -70,8 +70,8 @@ class MapComponent : Component, Poolable {
     var mapBottom = Float.POSITIVE_INFINITY
     var mapTop = Float.NEGATIVE_INFINITY
     var updateRoundedPlatforms = true
-    var paddingLeft = 3f
-    var paddingRight = 3f
+    var paddingLeft = 2f
+    var paddingRight = 2f
     var paddingTop = 5f
     var paddingBottom = 5f
 
