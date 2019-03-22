@@ -51,6 +51,12 @@ object Colors {
         updateNamedColors()
     }
 
+    fun lerpTowardsDefaultColors() {
+        bgColor = bgColor.lerp(if (useDarkTheme) DarkTheme.game20 else LightTheme.game91, .1f)
+        gameColor = gameColor.lerp(if (useDarkTheme) DarkTheme.game95 else LightTheme.game57, .1f)
+        uiDownColor = uiDownColor.lerp(if (useDarkTheme) LightTheme.game29 else LightTheme.game29, .1f)
+    }
+
     private fun updateNamedColors() {
         bgColor = if (useDarkTheme) DarkTheme.game20.cpy() else LightTheme.game91.cpy()
         gameColor = if (useDarkTheme) DarkTheme.game95.cpy() else LightTheme.game57.cpy()

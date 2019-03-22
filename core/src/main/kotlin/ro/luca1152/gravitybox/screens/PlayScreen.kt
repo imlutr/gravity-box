@@ -157,5 +157,6 @@ class PlayScreen(
     override fun hide() {
         world.setContactListener(null)
         Gdx.input.inputProcessor = null
+        engine.removeSystem(engine.getSystem(FinishPointColorSystem::class.java))
     }
 }
