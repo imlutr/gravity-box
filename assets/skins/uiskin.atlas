@@ -162,7 +162,7 @@ move-icon
   index: -1
 pencil-icon
   rotate: false
-  xy: 2374, 847
+  xy: 2374, 846
   size: 77, 78
   orig: 77, 78
   offset: 0, 0
@@ -199,7 +199,7 @@ pop-up-frame
   index: -1
 redo-icon
   rotate: false
-  xy: 2484, 954
+  xy: 2485, 954
   size: 72, 81
   orig: 72, 81
   offset: 0, 0
@@ -220,7 +220,7 @@ regular-italic
   index: -1
 right-arrow-icon
   rotate: false
-  xy: 2453, 883
+  xy: 2453, 882
   size: 27, 42
   orig: 27, 42
   offset: 0, 0
@@ -257,9 +257,9 @@ small-button
   index: -1
 small-button-inside
   rotate: false
-  xy: 2374, 927
-  size: 108, 108
-  orig: 108, 108
+  xy: 2374, 926
+  size: 109, 109
+  orig: 109, 109
   offset: 0, 0
   index: -1
 small-horizontal-arrow
