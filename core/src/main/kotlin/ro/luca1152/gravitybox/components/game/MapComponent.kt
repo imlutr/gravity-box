@@ -37,10 +37,7 @@ import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.assets.Text
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
-import ro.luca1152.gravitybox.utils.json.FinishPrototype
-import ro.luca1152.gravitybox.utils.json.MapFactory
-import ro.luca1152.gravitybox.utils.json.ObjectPrototype
-import ro.luca1152.gravitybox.utils.json.PlayerPrototype
+import ro.luca1152.gravitybox.utils.json.*
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -134,6 +131,12 @@ class MapComponent : Component, Poolable {
 
             // Map properties
             writeValue("id", levelId)
+            writeObjectStart("padding")
+            writeValue("left", paddingLeft)
+            writeValue("right", paddingRight)
+            writeValue("top", paddingTop)
+            writeValue("bottom", paddingBottom)
+            writeObjectEnd()
 
             // Objects
             player!!.json.writeToJson(this)
@@ -170,7 +173,7 @@ class MapComponent : Component, Poolable {
     ) {
         destroyAllBodies()
         removePlatforms()
-        createMap(mapFactory.id)
+        createMap(mapFactory.id, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
         createPlatforms(mapFactory.objects)
@@ -187,8 +190,12 @@ class MapComponent : Component, Poolable {
         }
     }
 
-    private fun createMap(id: Int) {
+    private fun createMap(id: Int, padding: PaddingPrototype) {
         levelId = id
+        paddingLeft = padding.left.toFloat()
+        paddingRight = padding.right.toFloat()
+        paddingTop = padding.top.toFloat()
+        paddingBottom = padding.bottom.toFloat()
     }
 
 

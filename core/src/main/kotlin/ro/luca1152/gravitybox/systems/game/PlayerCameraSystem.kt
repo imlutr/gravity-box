@@ -72,23 +72,29 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
         val mapRight = (levelEntity.map.mapRight + levelEntity.map.paddingRight) * zoom
         val mapBottom = (levelEntity.map.mapBottom - levelEntity.map.paddingBottom) * zoom
         val mapTop = (levelEntity.map.mapTop + levelEntity.map.paddingTop) * zoom
+        val mapWidth = Math.abs(mapRight - mapLeft)
+        val mapHeight = Math.abs(mapTop - mapBottom)
         val cameraLeft = gameCamera.position.x - cameraHalfWidth
         val cameraRight = gameCamera.position.x + cameraHalfWidth
         val cameraBottom = gameCamera.position.y - cameraHalfHeight
         val cameraTop = gameCamera.position.y + cameraHalfHeight
 
         // Clamp horizontal axis
-        if (cameraLeft <= mapLeft && mapLeft + 2 * cameraHalfWidth < mapRight) {
+        if (mapWidth < gameCamera.viewportWidth - 4f) {
+            gameCamera.position.x = mapRight - mapWidth / 2f
+        } else if (cameraLeft <= mapLeft && mapLeft + 2 * cameraHalfWidth < mapRight) {
             gameCamera.position.x = mapLeft + cameraHalfWidth
         } else if (cameraRight >= mapRight) {
             gameCamera.position.x = mapRight - cameraHalfWidth
         }
 
         // Clamp vertical axis
-        if (cameraTop >= mapTop && mapTop - 2 * cameraHalfHeight > mapBottom) {
-            gameCamera.position.y = mapTop - cameraHalfHeight
+        if (mapHeight < gameCamera.viewportHeight - 5f) {
+            gameCamera.position.y = mapTop - mapHeight / 2f
         } else if (cameraBottom <= mapBottom) {
             gameCamera.position.y = mapBottom + cameraHalfHeight
+        } else if (cameraTop >= mapTop && mapTop - 2 * cameraHalfHeight > mapBottom) {
+            gameCamera.position.y = mapTop - cameraHalfHeight
         }
     }
 

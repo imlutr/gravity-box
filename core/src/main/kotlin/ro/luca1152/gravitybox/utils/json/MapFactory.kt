@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.utils.json
 /** Contains the structure of a map file. */
 class MapFactory {
     var id = 0
+    var padding = PaddingPrototype()
     var player = PlayerPrototype()
     var finish = FinishPrototype()
     var objects = ArrayList<ObjectPrototype>()

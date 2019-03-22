@@ -17,6 +17,13 @@
 
 package ro.luca1152.gravitybox.utils.json
 
+class PaddingPrototype {
+    var left = 0
+    var right = 0
+    var top = 0
+    var bottom = 0
+}
+
 class PositionPrototype {
     var x = 0f
     var y = 0f
