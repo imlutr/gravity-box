@@ -238,69 +238,6 @@ class LevelEditorScreen(
         add(top).row()
         add(bottom)
     }
-
-    private fun getPaddingFromName(paddingName: String) = when (paddingName) {
-        "left" -> levelEntity.map.paddingLeft.toInt()
-        "right" -> levelEntity.map.paddingRight.toInt()
-        "top" -> levelEntity.map.paddingTop.toInt()
-        "bottom" -> levelEntity.map.paddingBottom.toInt()
-        else -> throw IllegalArgumentException("No padding found for the name given..")
-    }
-
-    private fun setPaddingFromName(paddingName: String, value: Int) {
-        when (paddingName) {
-            "left" -> levelEntity.map.paddingLeft = value.toFloat()
-            "right" -> levelEntity.map.paddingRight = value.toFloat()
-            "top" -> levelEntity.map.paddingTop = value.toFloat()
-            "bottom" -> levelEntity.map.paddingBottom = value.toFloat()
-            else -> throw java.lang.IllegalArgumentException("No padding found for the name given.")
-        }
-    }
-
-    private fun createMinusPaddingPlus(paddingName: String) = Table(skin).apply {
-        val paddingValueLabel =
-            DistanceFieldLabel("${getPaddingFromName(paddingName)}", skin, "bold", 65f, Colors.gameColor)
-        val minusButton = ClickButton(skin, "small-round-button").apply {
-            addIcon("small-minus-icon")
-            setColors(Colors.gameColor, Colors.uiDownColor)
-            addClickRunnable(Runnable {
-                val newPadding = getPaddingFromName(paddingName) - 1
-                setPaddingFromName(paddingName, newPadding)
-                paddingValueLabel.setText("$newPadding")
-            })
-        }
-        val plusButton = ClickButton(skin, "small-round-button").apply {
-            addIcon("small-plus-icon")
-            setColors(Colors.gameColor, Colors.uiDownColor)
-            addClickRunnable(Runnable {
-                val newPadding = getPaddingFromName(paddingName) + 1
-                setPaddingFromName(paddingName, newPadding)
-                paddingValueLabel.setText("$newPadding")
-            })
-        }
-        add(minusButton).space(15f)
-        add(paddingValueLabel).space(15f)
-        add(plusButton).space(15f)
-    }
-
-    private fun createCameraPopUpRightColumn() = Table(skin).apply {
-        defaults().spaceBottom(20f)
-        add(createMinusPaddingPlus("left")).growX().expand().row()
-        add(createMinusPaddingPlus("right")).growX().expand().row()
-        add(createMinusPaddingPlus("top")).growX().expand().row()
-        add(createMinusPaddingPlus("bottom")).growX().expand().bottom()
-    }
-
-    private fun createCameraPopUp() = PopUp(590f, 530f, skin).apply {
-        val title = DistanceFieldLabel("Padding", skin, "bold", 70f, Colors.gameColor)
-        widget.run {
-            pad(40f)
-            add(title).top().colspan(2).row()
-            add(cameraPopUpLeftColumn).left().padRight(28f)
-            add(createCameraPopUpRightColumn()).grow().right()
-        }
-    }
-
     private val newButton = ClickTextButton("simple-button", skin, "New", "bold", 80f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
@@ -381,6 +318,8 @@ class LevelEditorScreen(
     }
     private var screenIsHidden = false
     private var isEditingNewLevel = true
+    private var updateLoadLevelPopUp = false
+    private var hideSettingsPopUp = false
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
     private lateinit var levelEntity: Entity
@@ -443,6 +382,7 @@ class LevelEditorScreen(
         removeAdditionalEntities()
         undoRedoEntity.undoRedo.reset()
         val platformEntity = PlatformEntity.createEntity(2, 0f, .5f, 4f)
+        repositionDefaultEntities(platformEntity)
         centerCameraOnPlatform(platformEntity)
         settingsPopUp.remove()
     }
@@ -680,8 +620,67 @@ class LevelEditorScreen(
         })
     }
 
-    private var updateLoadLevelPopUp = false
-    private var hideSettingsPopUp = false
+    private fun getPaddingFromName(paddingName: String) = when (paddingName) {
+        "left" -> levelEntity.map.paddingLeft.toInt()
+        "right" -> levelEntity.map.paddingRight.toInt()
+        "top" -> levelEntity.map.paddingTop.toInt()
+        "bottom" -> levelEntity.map.paddingBottom.toInt()
+        else -> throw IllegalArgumentException("No padding found for the name given..")
+    }
+
+    private fun setPaddingFromName(paddingName: String, value: Int) {
+        when (paddingName) {
+            "left" -> levelEntity.map.paddingLeft = value.toFloat()
+            "right" -> levelEntity.map.paddingRight = value.toFloat()
+            "top" -> levelEntity.map.paddingTop = value.toFloat()
+            "bottom" -> levelEntity.map.paddingBottom = value.toFloat()
+            else -> throw java.lang.IllegalArgumentException("No padding found for the name given.")
+        }
+    }
+
+    private fun createMinusPaddingPlus(paddingName: String) = Table(skin).apply {
+        val paddingValueLabel =
+            DistanceFieldLabel("${getPaddingFromName(paddingName)}", skin, "bold", 65f, Colors.gameColor)
+        val minusButton = ClickButton(skin, "small-round-button").apply {
+            addIcon("small-minus-icon")
+            setColors(Colors.gameColor, Colors.uiDownColor)
+            addClickRunnable(Runnable {
+                val newPadding = getPaddingFromName(paddingName) - 1
+                setPaddingFromName(paddingName, newPadding)
+                paddingValueLabel.setText("$newPadding")
+            })
+        }
+        val plusButton = ClickButton(skin, "small-round-button").apply {
+            addIcon("small-plus-icon")
+            setColors(Colors.gameColor, Colors.uiDownColor)
+            addClickRunnable(Runnable {
+                val newPadding = getPaddingFromName(paddingName) + 1
+                setPaddingFromName(paddingName, newPadding)
+                paddingValueLabel.setText("$newPadding")
+            })
+        }
+        add(minusButton).space(15f)
+        add(paddingValueLabel).space(15f)
+        add(plusButton).space(15f)
+    }
+
+    private fun createCameraPopUpRightColumn() = Table(skin).apply {
+        defaults().spaceBottom(20f)
+        add(createMinusPaddingPlus("left")).growX().expand().row()
+        add(createMinusPaddingPlus("right")).growX().expand().row()
+        add(createMinusPaddingPlus("top")).growX().expand().row()
+        add(createMinusPaddingPlus("bottom")).growX().expand().bottom()
+    }
+
+    private fun createCameraPopUp() = PopUp(590f, 530f, skin).apply {
+        val title = DistanceFieldLabel("Padding", skin, "bold", 70f, Colors.gameColor)
+        widget.run {
+            pad(40f)
+            add(title).top().colspan(2).row()
+            add(cameraPopUpLeftColumn).left().padRight(28f)
+            add(createCameraPopUpRightColumn()).grow().right()
+        }
+    }
 
     private fun createLoadLevelPopUp() = PopUp(520f, 500f, skin).apply {
         val scrollPane = ScrollPane(createLoadLevelTable(430f)).apply {
