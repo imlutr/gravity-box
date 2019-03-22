@@ -4,5 +4,5 @@
   paddingY: 2,
   filterMin: Linear,
   filterMag: Linear,
-  duplicatePadding: true,
+  duplicatePadding: true
 }

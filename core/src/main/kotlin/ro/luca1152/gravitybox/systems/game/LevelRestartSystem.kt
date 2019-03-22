@@ -49,7 +49,7 @@ class LevelRestartSystem : EntitySystem() {
                 if (it.tryGet(BodyComponent) != null) {
                     it.body.resetToInitialState()
                 }
-        }
+            }
         levelEntity.level.restartLevel = false
     }
 }
