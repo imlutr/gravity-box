@@ -137,8 +137,8 @@ class LevelEditorScreen(
         setToggleOffEveryOtherButton(true)
         addClickRunnable(Runnable {
             uiStage.addActor(leaveConfirmationPopUp)
-            leaveConfirmationPopUp.yesClickRunnable = if (isEditingNewLevel) {
-                if (undoRedoEntity.undoRedo.canUndo()) {
+            leaveConfirmationPopUp.yesClickRunnable = if (isEditingNewLevel || isCurrentLevelDeleted) {
+                if (undoRedoEntity.undoRedo.canUndo() || isCurrentLevelDeleted) {
                     Runnable {
                         uiStage.addActor(saveBeforeLeavingPopUp)
                     }
@@ -209,8 +209,9 @@ class LevelEditorScreen(
                 uiStage.addActor(saveLevelBeforeCreationConfirmationPopUp)
             } else {
                 isEditingNewLevel = true
+                isCurrentLevelDeleted = false
                 levelEntity.map.saveMap()
-                updateLevelIdToFirstUnusued()
+                updateLevelIdToFirstUnused()
                 resetMapToInitialState()
             }
         }
@@ -223,13 +224,15 @@ class LevelEditorScreen(
     ).apply {
         yesClickRunnable = Runnable {
             isEditingNewLevel = true
+            isCurrentLevelDeleted = false
             levelEntity.map.saveMap()
-            updateLevelIdToFirstUnusued()
+            updateLevelIdToFirstUnused()
             resetMapToInitialState()
         }
         noClickRunnable = Runnable {
             isEditingNewLevel = true
-            updateLevelIdToFirstUnusued()
+            isCurrentLevelDeleted = false
+            updateLevelIdToFirstUnused()
             resetMapToInitialState()
         }
     }
@@ -326,6 +329,7 @@ class LevelEditorScreen(
     private var isEditingNewLevel = true
     private var updateLoadLevelPopUp = false
     private var hideSettingsPopUp = false
+    private var isCurrentLevelDeleted = false
     private lateinit var inputEntity: Entity
     private lateinit var undoRedoEntity: Entity
     private lateinit var levelEntity: Entity
@@ -349,6 +353,9 @@ class LevelEditorScreen(
         }
         inputMultiplexer.clear()
         screenIsHidden = false
+        isCurrentLevelDeleted = false
+        updateLoadLevelPopUp = false
+        hideSettingsPopUp = false
         gameCamera.zoom = 0f
     }
 
@@ -468,7 +475,7 @@ class LevelEditorScreen(
         return id
     }
 
-    private fun updateLevelIdToFirstUnusued() {
+    private fun updateLevelIdToFirstUnused() {
         val newId = getFirstUnusedLevelId()
         levelEntity.level.levelId = newId
         levelEntity.map.levelId = newId
@@ -597,6 +604,7 @@ class LevelEditorScreen(
                         centerCameraOnPlayer()
                         hideSettingsPopUp = true
                         isEditingNewLevel = false
+                        isCurrentLevelDeleted = false
                         loadLevelPopUp.remove()
                     }
                 }
@@ -613,6 +621,9 @@ class LevelEditorScreen(
                     textLabel.setText("Are you sure you want to delete the level #$levelId?")
                     uiStage.addActor(this)
                     yesClickRunnable = Runnable {
+                        if (getMapFactory(levelFilePath).id == levelEntity.map.levelId) {
+                            isCurrentLevelDeleted = true
+                        }
                         Gdx.files.local(levelFilePath).delete()
                         loadLevelPopUp.remove()
                         updateLoadLevelPopUp = true

@@ -269,8 +269,8 @@ class MapComponent : Component, Poolable {
         mapRight = Float.NEGATIVE_INFINITY
         mapBottom = Float.POSITIVE_INFINITY
         mapTop = Float.NEGATIVE_INFINITY
-        paddingLeft = 3f
-        paddingRight = 3f
+        paddingLeft = 2f
+        paddingRight = 2f
         paddingTop = 5f
         paddingBottom = 5f
         updateRoundedPlatforms = true
