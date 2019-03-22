@@ -64,7 +64,7 @@ bold-italic
   index: -1
 empty-star
   rotate: false
-  xy: 2233, 145
+  xy: 2348, 194
   size: 31, 30
   orig: 31, 30
   offset: 0, 0
@@ -271,21 +271,35 @@ small-horizontal-arrow
   index: -1
 small-left-arrow-icon
   rotate: false
-  xy: 2348, 223
+  xy: 241, 43
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
   index: -1
+small-minus-icon
+  rotate: false
+  xy: 2276, 728
+  size: 42, 8
+  orig: 42, 8
+  offset: 0, 0
+  index: -1
+small-plus-icon
+  rotate: false
+  xy: 2196, 133
+  size: 42, 42
+  orig: 42, 42
+  offset: 0, 0
+  index: -1
 small-right-arrow-icon
   rotate: false
-  xy: 241, 43
+  xy: 2160, 530
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
   index: -1
 small-rotate-icon
   rotate: false
-  xy: 2196, 140
+  xy: 2348, 226
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
@@ -306,14 +320,14 @@ small-round-button-inside
   index: -1
 small-vertical-arrow
   rotate: false
-  xy: 463, 459
+  xy: 2240, 137
   size: 24, 38
   orig: 24, 38
   offset: 0, 0
   index: -1
 small-x-icon
   rotate: false
-  xy: 2160, 536
+  xy: 463, 465
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
