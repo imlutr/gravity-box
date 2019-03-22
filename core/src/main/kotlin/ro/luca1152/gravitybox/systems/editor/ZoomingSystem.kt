@@ -103,7 +103,9 @@ class ZoomingSystem(
 
     override fun addedToEngine(engine: Engine) {
         inputEntity = engine.getEntitiesFor(Family.all(InputComponent::class.java).get()).first()
-        gameCamera.zoom = DEFAULT_ZOOM
+        if (gameCamera.zoom == 0f) {
+            gameCamera.zoom = DEFAULT_ZOOM
+        }
         inputMultiplexer.addProcessor(gestureDetector)
         inputMultiplexer.addProcessor(keyListener)
     }

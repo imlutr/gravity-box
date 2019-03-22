@@ -343,6 +343,7 @@ class LevelEditorScreen(
         }
         inputMultiplexer.clear()
         screenIsHidden = false
+        gameCamera.zoom = 0f
     }
 
     private fun createGame() {

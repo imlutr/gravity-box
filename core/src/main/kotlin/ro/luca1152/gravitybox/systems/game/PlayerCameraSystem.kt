@@ -106,6 +106,7 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
         gameCamera.run {
             zoom = initialCameraZoom
             position.set(initialCameraPosition)
+            update()
         }
     }
 
