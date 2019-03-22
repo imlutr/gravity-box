@@ -475,8 +475,8 @@ class LevelEditorScreen(
     }
 
     private fun centerCameraOnPlayer() {
-        val playerPosition = playerEntity.body.body.worldCenter
-        gameCamera.position.set(playerPosition.x, playerPosition.y, 0f)
+        val playerImage = playerEntity.image
+        gameCamera.position.set(playerImage.centerX, playerImage.centerY, 0f)
     }
 
     private fun handleGameInput() {
