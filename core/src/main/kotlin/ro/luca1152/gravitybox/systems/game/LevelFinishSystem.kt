@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
+import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
@@ -57,7 +58,7 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
         else {
             deleteEntities()
             levelEntity.level.run {
-                levelId++
+                levelId = Math.min(levelId + 1, MyGame.LEVELS_NUMBER)
                 loadMap = true
                 forceUpdateMap = true
             }
