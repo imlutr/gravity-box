@@ -482,9 +482,9 @@ class LevelEditorScreen(
     }
 
     private fun centerCameraOnPlatform(platformEntity: Entity) {
-        val platformPosition = platformEntity.body.body.worldCenter
+        val platformImage = platformEntity.image
         val deltaY = 2f
-        gameCamera.position.set(platformPosition.x, platformPosition.y + deltaY, 0f)
+        gameCamera.position.set(platformImage.centerX, platformImage.centerY + deltaY, 0f)
     }
 
     private fun centerCameraOnPlayer() {
