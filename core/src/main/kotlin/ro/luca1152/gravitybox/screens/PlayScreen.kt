@@ -121,7 +121,6 @@ class PlayScreen(
             addSystem(OffScreenBulletDeletionSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())
-            addSystem(LevelFinishSystem(restartLevelWhenFinished = false))
             addSystem(LevelRestartSystem())
             addSystem(FinishPointColorSystem())
             addSystem(SelectedObjectColorSystem())
@@ -129,6 +128,7 @@ class PlayScreen(
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
+            addSystem(LevelFinishSystem(restartLevelWhenFinished = false))
 //            addSystem(PhysicsDebugRenderingSystem())
         }
     }
