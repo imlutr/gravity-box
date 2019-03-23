@@ -71,10 +71,10 @@ class LoadingScreen(
     }
 
     private fun loadGameMaps() {
-        Gdx.files.internal("maps/game").list().forEach {
+        for (i in 1..MyGame.LEVELS_NUMBER) {
             manager.run {
                 setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
-                load<Text>(it.path())
+                load<Text>("maps/game/map-$i.json")
             }
         }
     }
