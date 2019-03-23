@@ -22,15 +22,18 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-class OffScreenBulletDeletionSystem : IteratingSystem(
+class OffScreenBulletDeletionSystem(private val gameCamera: GameCamera = Injekt.get()) : IteratingSystem(
     Family.all(BulletComponent::class.java, ImageComponent::class.java).get()
 ) {
     private lateinit var levelEntity: Entity
     private val Entity.isOffScreen
-        get() = image.centerY < -20f + levelEntity.map.mapBottom
+        get() = image.centerY < -(gameCamera.viewportHeight / 2f) + levelEntity.map.mapBottom
 
     override fun addedToEngine(engine: Engine) {
         super.addedToEngine(engine)
