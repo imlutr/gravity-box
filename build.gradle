@@ -25,6 +25,7 @@ buildscript {
   }
   dependencies {
     classpath "com.android.tools.build:gradle:$androidPluginVersion"
+    classpath "com.github.jengelman.gradle.plugins:shadow:$shadowVersion"
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
   }
@@ -36,6 +37,7 @@ allprojects {
 }
 
 configure(subprojects - project(':android')) {
+  apply plugin: 'com.github.johnrengelman.shadow'
   apply plugin: 'java'
   apply plugin: 'kotlin'
   sourceCompatibility = 1.6
