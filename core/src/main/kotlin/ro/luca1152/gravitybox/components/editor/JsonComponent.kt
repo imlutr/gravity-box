@@ -27,7 +27,7 @@ import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Translates the entity's information to JSON. */
 class JsonComponent : Component, Poolable {
-    private var parentEntity = Entity()
+    private var parentEntity: Entity? = null
     private var jsonObjectName = ""
     private var jsonWillBeInArray = false
 
@@ -48,22 +48,24 @@ class JsonComponent : Component, Poolable {
             json.writeObjectStart(jsonObjectName)
         }
         parentEntity.run {
-            if (tryGet(PlatformComponent) != null) json.run {
-                writeValue("type", "platform")
-            }
-            if (tryGet(MapObjectComponent) != null) json.run {
-                writeValue("id", mapObject.id)
-            }
-            if (tryGet(ImageComponent) != null) json.run {
-                writeObjectStart("position")
-                writeValue("x", image.centerX.metersToPixels)
-                writeValue("y", image.centerY.metersToPixels)
-                writeObjectEnd()
-
+            this?.let {
                 if (tryGet(PlatformComponent) != null) json.run {
-                    writeValue("width", image.width.metersToPixels)
+                    writeValue("type", "platform")
                 }
-                writeValue("rotation", image.img.rotation.toInt())
+                if (tryGet(MapObjectComponent) != null) json.run {
+                    writeValue("id", mapObject.id)
+                }
+                if (tryGet(ImageComponent) != null) json.run {
+                    writeObjectStart("position")
+                    writeValue("x", image.centerX.metersToPixels)
+                    writeValue("y", image.centerY.metersToPixels)
+                    writeObjectEnd()
+
+                    if (tryGet(PlatformComponent) != null) json.run {
+                        writeValue("width", image.width.metersToPixels)
+                    }
+                    writeValue("rotation", image.img.rotation.toInt())
+                }
             }
         }
         json.writeObjectEnd()
@@ -72,7 +74,7 @@ class JsonComponent : Component, Poolable {
     override fun reset() {
         jsonObjectName = ""
         jsonWillBeInArray = false
-        parentEntity = Entity()
+        parentEntity = null
     }
 
     companion object : ComponentResolver<JsonComponent>(JsonComponent::class.java)

@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool
+import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxGame
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
@@ -165,10 +166,12 @@ fun Actor.hitAll(localX: Float, localY: Float, touchable: Boolean = false): Arra
     stage.actors.forEach { child ->
         if (child != this) {
             child.run {
-                val coords = this.parentToLocalCoordinates(this@hitAll.localToStageCoordinates(Vector2(localX, localY)))
+                val localPosition = Pools.obtain(Vector2::class.java).set(localX, localY)
+                val coords = this.parentToLocalCoordinates(this@hitAll.localToStageCoordinates(localPosition))
                 hit(coords.x, coords.y, touchable)?.let {
                     hitActors.add(it)
                 }
+                Pools.free(localPosition)
             }
         }
     }

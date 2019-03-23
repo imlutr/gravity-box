@@ -444,6 +444,7 @@ class LevelEditorScreen(
                 centerY = platformEntity.image.topY + FinishEntity.HEIGHT / 2f
             }
             editorObject.isSelected = false
+            polygon.update()
         }
         playerEntity.run {
             image.run {
@@ -451,15 +452,14 @@ class LevelEditorScreen(
                 centerY = platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
             }
             editorObject.isSelected = false
+            polygon.update()
         }
         levelEntity.run {
             map.run {
                 reset()
                 updateMapBounds()
             }
-            level.run {
-                forceUpdateMap = true
-            }
+            level.forceUpdateMap = true
         }
     }
 
@@ -482,9 +482,9 @@ class LevelEditorScreen(
     }
 
     private fun centerCameraOnPlatform(platformEntity: Entity) {
-        val platformPosition = platformEntity.body.body.worldCenter
+        val platformImage = platformEntity.image
         val deltaY = 2f
-        gameCamera.position.set(platformPosition.x, platformPosition.y + deltaY, 0f)
+        gameCamera.position.set(platformImage.centerX, platformImage.centerY + deltaY, 0f)
     }
 
     private fun centerCameraOnPlayer() {
@@ -511,11 +511,10 @@ class LevelEditorScreen(
             addSystem(UpdateGameCameraSystem())
             addSystem(OverlayCameraSyncSystem())
             addSystem(ExtendedTouchSyncSystem())
-            addSystem(PolygonSyncSystem())
             addSystem(GridRenderingSystem())
             addSystem(ObjectSnappingSystem())
-            addSystem(RoundedPlatformsSystem())
             addSystem(OverlayPositioningSystem())
+            addSystem(RoundedPlatformsSystem())
             addSystem(ImageRenderingSystem())
             addSystem(OverlayRenderingSystem())
             addSystem(DebugRenderingSystem())

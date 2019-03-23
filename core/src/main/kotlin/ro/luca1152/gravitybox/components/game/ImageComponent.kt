@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Pool.Poolable
+import com.badlogic.gdx.utils.Pools
 import ktx.actors.minus
 import ktx.actors.plus
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
@@ -183,9 +184,11 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
         trimSize: Float = 0f,
         world: World = Injekt.get()
     ): Body {
-        val bodyDef = BodyDef().apply {
+        val bodyDef = Pools.obtain(BodyDef::class.java).apply {
             type = bodyType
+            position.set(0f, 0f)
             fixedRotation = false
+            bullet = false
         }
         val polygonShape = PolygonShape().apply {
             setAsBox(width / 2f - trimSize, height / 2f - trimSize)
@@ -201,6 +204,7 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
             createFixture(fixtureDef)
             polygonShape.dispose()
             setTransform(centerX, centerY, img.rotation * MathUtils.degreesToRadians)
+            Pools.free(bodyDef)
         }
     }
 

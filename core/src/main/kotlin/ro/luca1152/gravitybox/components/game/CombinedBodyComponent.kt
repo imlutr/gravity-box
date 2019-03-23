@@ -24,7 +24,7 @@ import ro.luca1152.gravitybox.utils.components.ComponentResolver
 
 /** Indicates that the Entity's body was combined (welded) with another body. */
 class CombinedBodyComponent : Component, Poolable {
-    var newBodyEntity = Entity()
+    var newBodyEntity: Entity? = null
     var isCombinedHorizontally = false
     var isCombinedVertically = false
     var entityContainsBody = false
@@ -42,7 +42,7 @@ class CombinedBodyComponent : Component, Poolable {
     }
 
     override fun reset() {
-        newBodyEntity = Entity()
+        newBodyEntity = null
         isCombinedHorizontally = false
         isCombinedVertically = false
         entityContainsBody = false

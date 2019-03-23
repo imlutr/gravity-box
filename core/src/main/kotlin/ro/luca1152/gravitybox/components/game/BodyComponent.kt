@@ -42,7 +42,7 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
     var initialY = Float.POSITIVE_INFINITY
     var initialRotationRad = 0f
 
-    var body: Body = world.createBody(BodyDef())
+    lateinit var body: Body
 
     fun set(
         body: Body, userData: Entity,
@@ -88,8 +88,10 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
     }
 
     fun destroyBody() {
-        if (world.bodies.contains(body, false))
-            world.destroyBody(body)
+        if (::body.isInitialized) {
+            if (world.bodies.contains(body, false))
+                world.destroyBody(body)
+        }
     }
 
     companion object : ComponentResolver<BodyComponent>(BodyComponent::class.java)

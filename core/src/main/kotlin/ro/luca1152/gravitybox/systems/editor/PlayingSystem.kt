@@ -137,7 +137,6 @@ class PlayingSystem(
 
     private fun addPlaySystems() {
         engine.run {
-            addSystem(PolygonSyncSystem())
             addSystem(MapBodiesCreationSystem())
             addSystem(CombinedBodiesCreationSystem())
             addSystem(PhysicsSystem())
@@ -146,6 +145,7 @@ class PlayingSystem(
             addSystem(BulletCollisionSystem())
             addSystem(PlatformRemovalSystem())
             addSystem(OffScreenLevelRestartSystem())
+            addSystem(OffScreenBulletDeletionSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())
             addSystem(LevelFinishSystem(restartLevelWhenFinished = true))

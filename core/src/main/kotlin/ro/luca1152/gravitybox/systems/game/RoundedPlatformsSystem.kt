@@ -52,7 +52,7 @@ class RoundedPlatformsSystem(
         if (!mapEntity.map.updateRoundedPlatforms)
             return
         super.update(deltaTime)
-//        mapEntity.map.updateRoundedPlatforms = false
+        mapEntity.map.updateRoundedPlatforms = false
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
