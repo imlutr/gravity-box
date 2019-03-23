@@ -143,12 +143,12 @@ class MapBodiesCreationSystem : EntitySystem() {
     ) {
         if (entityA.isCombined && !entityB.isCombined) {
             entityB.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
-                combinedBody.set(entityA.combinedBody.newBodyEntity, isCombinedHorizontally, isCombinedVertically)
+                combinedBody.set(entityA.combinedBody.newBodyEntity!!, isCombinedHorizontally, isCombinedVertically)
             }
             entityB.body.resetInitialState()
         } else if (entityB.isCombined && !entityA.isCombined) {
             entityA.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
-                combinedBody.set(entityB.combinedBody.newBodyEntity, isCombinedHorizontally, isCombinedVertically)
+                combinedBody.set(entityB.combinedBody.newBodyEntity!!, isCombinedHorizontally, isCombinedVertically)
             }
             entityA.body.resetInitialState()
         } else if (!entityA.isCombined && !entityB.isCombined) {
