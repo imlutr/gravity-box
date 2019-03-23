@@ -58,6 +58,7 @@ object PlayerEntity {
         }
         add(engine.createComponent(PolygonComponent::class.java)).run {
             polygon.set(image.img)
+            polygon.update()
         }
         add(engine.createComponent(EditorObjectComponent::class.java))
         add(engine.createComponent(SnapComponent::class.java))

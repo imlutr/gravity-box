@@ -109,7 +109,6 @@ class PlayScreen(
     private fun addGameSystems() {
         engine.run {
             addSystem(MapLoadingSystem())
-            addSystem(PolygonSyncSystem())
             addSystem(MapBodiesCreationSystem())
             addSystem(CombinedBodiesCreationSystem())
             addSystem(RoundedPlatformsSystem())

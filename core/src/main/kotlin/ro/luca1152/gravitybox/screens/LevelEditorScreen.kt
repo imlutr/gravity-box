@@ -444,6 +444,7 @@ class LevelEditorScreen(
                 centerY = platformEntity.image.topY + FinishEntity.HEIGHT / 2f
             }
             editorObject.isSelected = false
+            polygon.update()
         }
         playerEntity.run {
             image.run {
@@ -451,15 +452,14 @@ class LevelEditorScreen(
                 centerY = platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
             }
             editorObject.isSelected = false
+            polygon.update()
         }
         levelEntity.run {
             map.run {
                 reset()
                 updateMapBounds()
             }
-            level.run {
-                forceUpdateMap = true
-            }
+            level.forceUpdateMap = true
         }
     }
 
@@ -511,7 +511,6 @@ class LevelEditorScreen(
             addSystem(UpdateGameCameraSystem())
             addSystem(OverlayCameraSyncSystem())
             addSystem(ExtendedTouchSyncSystem())
-            addSystem(PolygonSyncSystem())
             addSystem(GridRenderingSystem())
             addSystem(ObjectSnappingSystem())
             addSystem(OverlayPositioningSystem())

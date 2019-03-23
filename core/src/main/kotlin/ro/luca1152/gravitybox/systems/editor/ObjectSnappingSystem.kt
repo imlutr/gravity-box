@@ -328,6 +328,7 @@ class ObjectSnappingSystem : EntitySystem() {
     private fun updateRoundedPlatforms() {
         if (didSnapPlatform) {
             levelEntity.map.updateRoundedPlatforms = true
+            selectedObject!!.polygon.update()
         }
     }
 }

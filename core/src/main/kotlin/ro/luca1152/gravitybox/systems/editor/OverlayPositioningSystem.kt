@@ -79,8 +79,9 @@ class OverlayPositioningSystem(
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
-                mapEntity.map.updateRoundedPlatforms = true
                 scaleMapObject(x, this@apply, selectedMapObject!!, toLeft = true)
+                mapEntity.map.updateRoundedPlatforms = true
+                selectedMapObject!!.polygon.update()
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -124,8 +125,9 @@ class OverlayPositioningSystem(
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
-                mapEntity.map.updateRoundedPlatforms = true
                 scaleMapObject(x, this@apply, selectedMapObject!!, toRight = true)
+                mapEntity.map.updateRoundedPlatforms = true
+                selectedMapObject!!.polygon.update()
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -205,6 +207,7 @@ class OverlayPositioningSystem(
                 this@apply.icon!!.rotation = 360f - newRotation
 
                 updateRotationLabel()
+                selectedMapObject!!.polygon.update()
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -285,6 +288,7 @@ class OverlayPositioningSystem(
                 }
 
                 repositionOverlay()
+                selectedMapObject!!.polygon.update()
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -338,6 +342,7 @@ class OverlayPositioningSystem(
                 }
 
                 repositionOverlay()
+                selectedMapObject!!.polygon.update()
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
