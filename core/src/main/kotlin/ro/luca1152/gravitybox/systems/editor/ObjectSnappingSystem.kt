@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.systems.editor
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
@@ -31,21 +32,28 @@ import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.RESIZE_S
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.ROTATION_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.snap
-import ro.luca1152.gravitybox.components.game.ImageComponent
-import ro.luca1152.gravitybox.components.game.image
-import ro.luca1152.gravitybox.components.game.polygon
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
+import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 
 /** Snaps nearby map objects together when moved. */
 class ObjectSnappingSystem : EntitySystem() {
+    private lateinit var levelEntity: Entity
     private val selectedObject: Entity?
         get() = engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).filterNullableSingleton { it.editorObject.isSelected }
     private val onScreenObjects = Array<Entity>()
+    private var didSnapPlatform = false
+
+    override fun addedToEngine(engine: Engine) {
+        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+    }
 
     override fun update(deltaTime: Float) {
         super.update(deltaTime)
+        didSnapPlatform = false
         updateOnScreenObjects()
         snapSelectedObject()
+        updateRoundedPlatforms()
     }
 
     private fun updateOnScreenObjects() {
@@ -97,18 +105,22 @@ class ObjectSnappingSystem : EntitySystem() {
                 when {
                     Math.abs(diffRightLeft) <= DRAG_SNAP_THRESHOLD -> {
                         selectedObject!!.image.centerX += diffRightLeft
+                        didSnapPlatform = true
                         return
                     }
                     Math.abs(diffLeftLeft) <= DRAG_SNAP_THRESHOLD -> {
                         selectedObject!!.image.centerX += diffLeftLeft
+                        didSnapPlatform = true
                         return
                     }
                     Math.abs(diffRightRight) <= DRAG_SNAP_THRESHOLD -> {
                         selectedObject!!.image.centerX += diffRightRight
+                        didSnapPlatform = true
                         return
                     }
                     Math.abs(diffLeftRight) <= DRAG_SNAP_THRESHOLD -> {
                         selectedObject!!.image.centerX += diffLeftRight
+                        didSnapPlatform = true
                         return
                     }
                 }
@@ -129,18 +141,22 @@ class ObjectSnappingSystem : EntitySystem() {
                 when {
                     Math.abs(diffTopBottom) <= DRAG_SNAP_THRESHOLD -> {
                         selectedObject!!.image.centerY += diffTopBottom
+                        didSnapPlatform = true
                         return
                     }
                     Math.abs(diffBottomBottom) <= DRAG_SNAP_THRESHOLD -> {
                         selectedObject!!.image.centerY += diffBottomBottom
+                        didSnapPlatform = true
                         return
                     }
                     Math.abs(diffTopTop) <= DRAG_SNAP_THRESHOLD -> {
                         selectedObject!!.image.centerY += diffTopTop
+                        didSnapPlatform = true
                         return
                     }
                     Math.abs(diffBottomTop) <= DRAG_SNAP_THRESHOLD -> {
                         selectedObject!!.image.centerY += diffBottomTop
+                        didSnapPlatform = true
                         return
                     }
                 }
@@ -158,6 +174,7 @@ class ObjectSnappingSystem : EntitySystem() {
                 if (Math.abs(rotationDiff) < ROTATION_SNAP_THRESHOLD) {
                     selectedObject!!.image.img.rotation += rotationDiff
                     selectedObject!!.snap.snapRotationAngle = it.polygon.polygon.rotation
+                    didSnapPlatform = true
                     return
                 }
             }
@@ -190,6 +207,7 @@ class ObjectSnappingSystem : EntitySystem() {
                             polygon.expandPolygonWith(left = diffLeftLeft)
                             image.updateFromPolygon(polygon.polygon)
                             snap.snapLeft = selectedObject!!.polygon.leftmostX
+                            didSnapPlatform = true
                         }
                         return
                     }
@@ -198,6 +216,7 @@ class ObjectSnappingSystem : EntitySystem() {
                             polygon.expandPolygonWith(left = diffRightLeft)
                             image.updateFromPolygon(polygon.polygon)
                             snap.snapLeft = selectedObject!!.polygon.leftmostX
+                            didSnapPlatform = true
                         }
                         return
                     }
@@ -221,6 +240,7 @@ class ObjectSnappingSystem : EntitySystem() {
                             polygon.expandPolygonWith(right = diffLeftRight)
                             image.updateFromPolygon(polygon.polygon)
                             snap.snapRight = selectedObject!!.polygon.rightmostX
+                            didSnapPlatform = true
                         }
                         return
                     }
@@ -229,6 +249,7 @@ class ObjectSnappingSystem : EntitySystem() {
                             polygon.expandPolygonWith(right = diffRightRight)
                             image.updateFromPolygon(polygon.polygon)
                             snap.snapRight = selectedObject!!.polygon.rightmostX
+                            didSnapPlatform = true
                         }
                         return
                     }
@@ -252,6 +273,7 @@ class ObjectSnappingSystem : EntitySystem() {
                             polygon.expandPolygonWith(top = diffBottomTop)
                             image.updateFromPolygon(polygon.polygon)
                             snap.snapTop = selectedObject!!.polygon.topmostY
+                            didSnapPlatform = true
                         }
                         return
                     }
@@ -260,6 +282,7 @@ class ObjectSnappingSystem : EntitySystem() {
                             polygon.expandPolygonWith(top = diffTopTop)
                             image.updateFromPolygon(polygon.polygon)
                             snap.snapTop = selectedObject!!.polygon.topmostY
+                            didSnapPlatform = true
                         }
                         return
                     }
@@ -283,6 +306,7 @@ class ObjectSnappingSystem : EntitySystem() {
                             polygon.expandPolygonWith(bottom = diffTopBottom)
                             image.updateFromPolygon(polygon.polygon)
                             snap.snapBottom = selectedObject!!.polygon.bottommostY
+                            didSnapPlatform = true
                         }
                         return
                     }
@@ -291,6 +315,7 @@ class ObjectSnappingSystem : EntitySystem() {
                             polygon.expandPolygonWith(bottom = diffBottomBottom)
                             image.updateFromPolygon(polygon.polygon)
                             snap.snapBottom = selectedObject!!.polygon.bottommostY
+                            didSnapPlatform = true
                         }
                         return
                     }
@@ -298,5 +323,11 @@ class ObjectSnappingSystem : EntitySystem() {
             }
         }
         selectedObject!!.snap.resetSnappedBottom()
+    }
+
+    private fun updateRoundedPlatforms() {
+        if (didSnapPlatform) {
+            levelEntity.map.updateRoundedPlatforms = true
+        }
     }
 }

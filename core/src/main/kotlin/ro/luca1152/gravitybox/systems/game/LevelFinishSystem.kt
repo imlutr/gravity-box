@@ -62,6 +62,9 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
                 loadMap = true
                 forceUpdateMap = true
             }
+            levelEntity.map.run {
+                updateRoundedPlatforms = true
+            }
         }
     }
 
