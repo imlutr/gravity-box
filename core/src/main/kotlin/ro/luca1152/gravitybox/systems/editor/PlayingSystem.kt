@@ -145,6 +145,7 @@ class PlayingSystem(
             addSystem(BulletCollisionSystem())
             addSystem(PlatformRemovalSystem())
             addSystem(OffScreenLevelRestartSystem())
+            addSystem(OffScreenBulletDeletionSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())
             addSystem(LevelFinishSystem(restartLevelWhenFinished = true))

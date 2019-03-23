@@ -118,6 +118,7 @@ class PlayScreen(
             addSystem(BulletCollisionSystem())
             addSystem(PlatformRemovalSystem())
             addSystem(OffScreenLevelRestartSystem())
+            addSystem(OffScreenBulletDeletionSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())
             addSystem(LevelFinishSystem(restartLevelWhenFinished = false))
