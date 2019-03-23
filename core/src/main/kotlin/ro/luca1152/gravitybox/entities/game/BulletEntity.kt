@@ -23,6 +23,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.utils.Pools
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
@@ -41,10 +42,11 @@ object BulletEntity {
     ) = engine.createEntity().apply label@{
         add(engine.createComponent(BulletComponent::class.java))
         add(engine.createComponent(BodyComponent::class.java)).run {
-            val bodyDef = BodyDef().apply {
+            val bodyDef = Pools.obtain(BodyDef::class.java).apply {
                 type = BodyDef.BodyType.DynamicBody
-                bullet = true
                 position.set(x, y)
+                bullet = true
+                fixedRotation = false
             }
             val fixtureDef = FixtureDef().apply {
                 shape = PolygonShape().apply {
@@ -60,6 +62,7 @@ object BulletEntity {
                 gravityScale = .5f
                 userData = this@label
             }
+            Pools.free(bodyDef)
             this.body.set(body, this)
         }
         add(engine.createComponent(ImageComponent::class.java)).run {

@@ -23,6 +23,7 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pool.Poolable
+import com.badlogic.gdx.utils.Pools
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.bodies
@@ -42,7 +43,10 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
     var initialY = Float.POSITIVE_INFINITY
     var initialRotationRad = 0f
 
-    var body: Body = world.createBody(BodyDef())
+    private val bodyDefToDispose = Pools.obtain(BodyDef::class.java)
+    var body: Body = world.createBody(bodyDefToDispose).apply {
+        Pools.free(bodyDefToDispose)
+    }
 
     fun set(
         body: Body, userData: Entity,

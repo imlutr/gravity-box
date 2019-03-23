@@ -22,6 +22,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxInputAdapter
 import ro.luca1152.gravitybox.components.game.BulletComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
@@ -45,13 +47,15 @@ class ShootingSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get
     }
 
     private fun createBullet(worldX: Float, worldY: Float) {
-        val playerPosition = playerEntity.body.body.worldCenter
+        val playerPosition = Pools.obtain(Vector2::class.java).set(playerEntity.body.body.worldCenter)
         val bullet = BulletEntity.createEntity(playerPosition.x, playerPosition.y)
-        val velocity = playerEntity.body.body.worldCenter.cpy()
+        val velocity = Pools.obtain(Vector2::class.java).set(playerPosition)
         velocity.sub(worldX, worldY)
         velocity.nor()
         velocity.scl(-BulletComponent.SPEED)
-        bullet.body.body.linearVelocity = velocity
+        bullet.body.body.setLinearVelocity(velocity.x, velocity.y)
+        Pools.free(playerPosition)
+        Pools.free(velocity)
     }
 
     override fun addedToEngine(engine: Engine) {

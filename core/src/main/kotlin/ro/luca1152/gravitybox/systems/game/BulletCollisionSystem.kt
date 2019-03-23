@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.utils.Pools
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.ExplosionImageEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
@@ -79,7 +80,7 @@ class BulletCollisionSystem(private val world: World = Injekt.get()) :
             return
 
         // Calculate the distance
-        val blastDir = applyPoint.cpy().sub(blastCenter)
+        val blastDir = Pools.obtain(Vector2::class.java).set(applyPoint).sub(blastCenter)
         val distance = blastDir.len()
 
         // Calculate the inverse distance
@@ -95,6 +96,7 @@ class BulletCollisionSystem(private val world: World = Injekt.get()) :
             playerEntity.body.body.worldCenter,
             true
         )
+        Pools.free(blastDir)
     }
 }
 
