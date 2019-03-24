@@ -15,14 +15,17 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.json
+package ro.luca1152.gravitybox.utils.assets.loaders
 
-/** Contains the structure of a map file. */
-class MapFactory {
-    var id = 0
-    var padding = PaddingPrototype()
-    var player = PlayerPrototype()
-    var finish = FinishPrototype()
-    var objects = ArrayList<ObjectPrototype>()
+import com.badlogic.gdx.files.FileHandle
 
+/** Wrapper object for a string. */
+class Text {
+    var string: String = ""
+
+    constructor(byteArray: ByteArray) {
+        string = String(byteArray)
+    }
+
+    constructor(file: FileHandle) : this(file.readBytes())
 }

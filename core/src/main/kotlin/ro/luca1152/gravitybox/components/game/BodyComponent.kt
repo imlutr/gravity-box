@@ -23,8 +23,9 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.bodies
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -99,3 +100,15 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
 
 val Entity.body: BodyComponent
     get() = BodyComponent[this]
+
+
+fun Entity.body(
+    body: Body, userData: Entity,
+    categoryBits: Short = EntityCategory.NONE.bits, maskBits: Short = EntityCategory.NONE.bits,
+    density: Float = 1f, friction: Float = .2f
+) = add(engine.createComponent(BodyComponent::class.java).apply {
+    set(body, userData, categoryBits, maskBits, density, friction)
+})!!
+
+fun Entity.body() =
+    add(engine.createComponent(BodyComponent::class.java))!!

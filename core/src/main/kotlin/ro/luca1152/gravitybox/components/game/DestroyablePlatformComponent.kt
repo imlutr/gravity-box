@@ -18,8 +18,10 @@
 package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 
 /** Indicates that the entity is a destroyable platform. */
 class DestroyablePlatformComponent : Component, Poolable {
@@ -27,3 +29,6 @@ class DestroyablePlatformComponent : Component, Poolable {
 
     companion object : ComponentResolver<DestroyablePlatformComponent>(DestroyablePlatformComponent::class.java)
 }
+
+fun Entity.destroyablePlatform() =
+    add(engine.createComponent(DestroyablePlatformComponent::class.java))!!

@@ -34,8 +34,9 @@ import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxGame
 import ktx.app.clearScreen
+import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -213,3 +214,10 @@ fun Image.toMeters() = this.apply {
     width = width.pixelsToMeters
     height = height.pixelsToMeters
 }
+
+fun Entity.addToEngine(): Entity {
+    engine.addEntity(this)
+    return this
+}
+
+fun newEntity() = engine.createEntity()!!

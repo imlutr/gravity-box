@@ -29,9 +29,9 @@ import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton

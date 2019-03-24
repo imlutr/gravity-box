@@ -30,7 +30,7 @@ import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
-import ro.luca1152.gravitybox.screens.Assets
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.hitAll
 import ro.luca1152.gravitybox.utils.kotlin.tryGet

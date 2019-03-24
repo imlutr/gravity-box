@@ -22,7 +22,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 
 /** Indicates that the entity is a finish point. */
 class FinishComponent : Component, Poolable {
@@ -53,3 +54,8 @@ class FinishComponent : Component, Poolable {
 
 val Entity.finish: FinishComponent
     get() = FinishComponent[this]
+
+fun Entity.finish(blinkEndlessly: Boolean = true, finishImage: ImageComponent) =
+    add(engine.createComponent(FinishComponent::class.java).apply {
+        set(blinkEndlessly, finishImage)
+    })!!

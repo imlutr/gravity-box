@@ -23,7 +23,8 @@ import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 
 /** Contains a shape which is drawn in the DebugRenderingSystem. */
 class DebugShapeComponent : Component, Poolable {
@@ -53,3 +54,21 @@ class DebugShapeComponent : Component, Poolable {
 
 val Entity.debugShape: DebugShapeComponent
     get() = DebugShapeComponent[this]
+
+fun Entity.debugShape(polygon: Polygon) =
+    add(engine.createComponent(DebugShapeComponent::class.java).apply {
+        set(polygon)
+    })!!
+
+fun Entity.debugShape(rectangle: Rectangle) =
+    add(engine.createComponent(DebugShapeComponent::class.java).apply {
+        set(rectangle)
+    })!!
+
+fun Entity.debugShape(point: Vector2) =
+    add(engine.createComponent(DebugShapeComponent::class.java).apply {
+        set(point)
+    })!!
+
+fun Entity.debugShape() =
+    add(engine.createComponent(DebugShapeComponent::class.java))!!

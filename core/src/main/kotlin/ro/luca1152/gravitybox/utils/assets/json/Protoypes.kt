@@ -15,7 +15,7 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.json
+package ro.luca1152.gravitybox.utils.assets.json
 
 class PaddingPrototype {
     var left = 0

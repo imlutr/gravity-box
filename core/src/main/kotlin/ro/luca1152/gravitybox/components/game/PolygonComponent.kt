@@ -23,7 +23,8 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.kotlin.bottommostY
 import ro.luca1152.gravitybox.utils.kotlin.leftmostX
 import ro.luca1152.gravitybox.utils.kotlin.rightmostX
@@ -129,3 +130,11 @@ class PolygonComponent : Component, Poolable {
 
 val Entity.polygon: PolygonComponent
     get() = PolygonComponent[this]
+
+fun Entity.polygon(linkedImage: Image) =
+    add(engine.createComponent(PolygonComponent::class.java).apply {
+        set(linkedImage)
+    })!!
+
+fun Entity.polygon() =
+    add(engine.createComponent(PolygonComponent::class.java))!!

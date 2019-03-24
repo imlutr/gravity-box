@@ -17,25 +17,24 @@
 
 package ro.luca1152.gravitybox.entities.game
 
-import com.badlogic.ashley.core.PooledEngine
-import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
-import ro.luca1152.gravitybox.components.game.*
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.game.body
+import ro.luca1152.gravitybox.components.game.combinedBody
+import ro.luca1152.gravitybox.components.game.platform
+import ro.luca1152.gravitybox.components.game.polygon
+import ro.luca1152.gravitybox.utils.kotlin.addToEngine
+import ro.luca1152.gravitybox.utils.kotlin.newEntity
 
 object CombinedPlatformEntity {
     fun createEntity(
         isCombinedHorizontally: Boolean = false,
-        isCombinedVertically: Boolean = false,
-        engine: PooledEngine = Injekt.get()
-    ) = engine.createEntity().apply {
-        add(engine.createComponent(BodyComponent::class.java))
-        add(engine.createComponent(CombinedBodyComponent::class.java)).run {
-            combinedBody.set(this, isCombinedHorizontally, isCombinedVertically, entityContainsBody = true)
-        }
-        add(engine.createComponent(PlatformComponent::class.java))
-        add(engine.createComponent(EditorObjectComponent::class.java))
-        add(engine.createComponent(PolygonComponent::class.java))
-        engine.addEntity(this)
-    }!!
+        isCombinedVertically: Boolean = false
+    ) = newEntity().apply {
+        body()
+        combinedBody(this, isCombinedHorizontally, isCombinedVertically, true)
+        platform()
+        editorObject()
+        polygon()
+        addToEngine()
+    }
 }

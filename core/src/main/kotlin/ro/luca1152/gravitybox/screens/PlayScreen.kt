@@ -32,6 +32,7 @@ import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.kotlin.UIStage

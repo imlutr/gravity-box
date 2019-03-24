@@ -23,8 +23,9 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -70,6 +71,9 @@ class UndoRedoComponent : Component, Poolable {
 
 val Entity.undoRedo: UndoRedoComponent
     get() = UndoRedoComponent[this]
+
+fun Entity.undoRedo() =
+    add(engine.createComponent(UndoRedoComponent::class.java))!!
 
 abstract class Command {
     abstract val affectedEntity: Entity

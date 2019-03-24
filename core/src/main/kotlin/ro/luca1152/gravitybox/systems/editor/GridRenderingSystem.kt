@@ -27,7 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.graphics.copy
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
-import ro.luca1152.gravitybox.screens.Assets
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.ui.Colors

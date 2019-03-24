@@ -15,14 +15,13 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.entities.editor
+package ro.luca1152.gravitybox.utils.assets
 
-import ro.luca1152.gravitybox.components.editor.undoRedo
-import ro.luca1152.gravitybox.utils.kotlin.addToEngine
-import ro.luca1152.gravitybox.utils.kotlin.newEntity
+import com.badlogic.gdx.assets.AssetDescriptor
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 
-object UndoRedoEntity {
-    fun createEntity() = newEntity()
-        .undoRedo()
-        .addToEngine()
+object Assets {
+    val uiSkin = AssetDescriptor<Skin>("skins/uiskin.json", Skin::class.java)
+    val tileset = AssetDescriptor<TextureAtlas>("graphics/tileset.atlas", TextureAtlas::class.java)
 }

@@ -25,7 +25,6 @@ import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -36,8 +35,9 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.Pools
 import ktx.actors.minus
 import ktx.actors.plus
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getRectangleCenter
 import uy.kohesive.injekt.Injekt
@@ -119,8 +119,6 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
 
     fun set(texture: Texture, x: Float, y: Float, width: Float = 0f, height: Float = 0f, rotationInDeg: Float = 0f) =
         set(TextureRegion(texture), x, y, width, height, rotationInDeg)
-
-    fun set(texture: Texture, position: Vector2) = set(texture, position.x, position.y)
 
     fun set(
         ninePatch: NinePatch,
@@ -241,3 +239,42 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
 
 val Entity.image: ImageComponent
     get() = ImageComponent[this]
+
+fun Entity.image() =
+    add(engine.createComponent(ImageComponent::class.java))!!
+
+fun Entity.image(
+    textureRegion: TextureRegion,
+    x: Float, y: Float,
+    width: Float = 0f, height: Float = 0f,
+    rotationInDeg: Float = 0f
+) = add(engine.createComponent(ImageComponent::class.java).apply {
+    set(textureRegion, x, y, width, height, rotationInDeg)
+})!!
+
+fun Entity.image(
+    texture: Texture,
+    x: Float, y: Float,
+    width: Float = 0f, height: Float = 0f,
+    rotationInDeg: Float = 0f
+) = add(engine.createComponent(ImageComponent::class.java).apply {
+    set(texture, x, y, width, height, rotationInDeg)
+})!!
+
+fun Entity.image(
+    ninePatch: NinePatch,
+    x: Float, y: Float,
+    width: Float = 0f, height: Float = 0f,
+    rotationInDeg: Float = 0f
+) = add(engine.createComponent(ImageComponent::class.java).apply {
+    set(ninePatch, x, y, width, height, rotationInDeg)
+})!!
+
+fun Entity.image(
+    drawable: Drawable,
+    x: Float, y: Float,
+    width: Float = 0f, height: Float = 0f,
+    rotationInDeg: Float = 0f
+) = add(engine.createComponent(ImageComponent::class.java).apply {
+    set(drawable, x, y, width, height, rotationInDeg)
+})!!

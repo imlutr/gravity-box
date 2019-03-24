@@ -17,12 +17,17 @@
 
 package ro.luca1152.gravitybox.entities.game
 
-import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.screens.Assets
+import ro.luca1152.gravitybox.components.game.ColorType
+import ro.luca1152.gravitybox.components.game.color
+import ro.luca1152.gravitybox.components.game.explosion
+import ro.luca1152.gravitybox.components.game.image
+import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.assets.Assets
+import ro.luca1152.gravitybox.utils.kotlin.addToEngine
+import ro.luca1152.gravitybox.utils.kotlin.newEntity
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -30,27 +35,21 @@ import uy.kohesive.injekt.api.get
 object ExplosionImageEntity {
     fun createEntity(
         x: Float, y: Float,
-        manager: AssetManager = Injekt.get(),
-        engine: PooledEngine = Injekt.get()
-    ) = engine.createEntity().apply {
-        add(engine.createComponent(ExplosionComponent::class.java))
-        add(engine.createComponent(ImageComponent::class.java)).run {
-            image.run {
-                set(manager.get(Assets.tileset).findRegion("circle"), x, y)
-                img.addAction(
-                    Actions.sequence(
-                        Actions.parallel(
-                            Actions.scaleBy(3f, 3f, .25f),
-                            Actions.fadeOut(.25f, Interpolation.exp5)
-                        ),
-                        Actions.run { engine.removeAndResetEntity(this@apply) }
-                    )
+        manager: AssetManager = Injekt.get()
+    ) = newEntity()
+        .explosion()
+        .image(manager.get(Assets.tileset).findRegion("circle"), x, y)
+        .apply {
+            image.img.addAction(
+                Actions.sequence(
+                    Actions.parallel(
+                        Actions.scaleBy(3f, 3f, .25f),
+                        Actions.fadeOut(.25f, Interpolation.exp5)
+                    ),
+                    Actions.run { engine.removeAndResetEntity(this@apply) }
                 )
-            }
+            )
         }
-        add(engine.createComponent(ColorComponent::class.java)).run {
-            color.set(ColorType.DARK)
-        }
-        engine.addEntity(this)
-    }!!
+        .color(ColorType.DARK)
+        .addToEngine()
 }

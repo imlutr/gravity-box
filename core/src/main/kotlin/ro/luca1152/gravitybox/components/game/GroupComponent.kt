@@ -21,7 +21,8 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -46,3 +47,8 @@ class GroupComponent(private val gameStage: GameStage = Injekt.get()) : Componen
 
 val Entity.group: GroupComponent
     get() = GroupComponent[this]
+
+fun Entity.group(mockImage: ImageComponent) = add(
+    engine.createComponent(GroupComponent::class.java).apply {
+        set(mockImage)
+    })!!

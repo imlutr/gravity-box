@@ -46,8 +46,9 @@ import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.systems.editor.*
 import ro.luca1152.gravitybox.systems.game.*
-import ro.luca1152.gravitybox.utils.assets.Text
-import ro.luca1152.gravitybox.utils.json.MapFactory
+import ro.luca1152.gravitybox.utils.assets.Assets
+import ro.luca1152.gravitybox.utils.assets.json.MapFactory
+import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel

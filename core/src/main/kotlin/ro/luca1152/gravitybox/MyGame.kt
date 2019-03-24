@@ -59,7 +59,7 @@ class MyGame : KtxGame<Screen>() {
             addSingleton(GameStage)
             addSingleton(GameViewport)
             addSingleton(InputMultiplexer())
-            addSingleton(PooledEngine())
+            addSingleton(engine)
             addSingleton(ShapeRenderer())
             addSingleton(OverlayCamera)
             addSingleton(OverlayViewport)
@@ -85,3 +85,5 @@ class MyGame : KtxGame<Screen>() {
         }
     }
 }
+
+val engine = PooledEngine()

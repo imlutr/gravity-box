@@ -20,7 +20,8 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 
 /** Contains a color type (light/dark/darker). */
 class ColorComponent : Component, Poolable {
@@ -37,12 +38,18 @@ class ColorComponent : Component, Poolable {
     companion object : ComponentResolver<ColorComponent>(ColorComponent::class.java)
 }
 
-val Entity.color: ColorComponent
-    get() = ColorComponent[this]
-
 enum class ColorType {
     LIGHT,
     DARK,
     DARKER_DARK,
     NULL
+
 }
+
+val Entity.color: ColorComponent
+    get() = ColorComponent[this]
+
+fun Entity.color(colorType: ColorType) =
+    add(engine.createComponent(ColorComponent::class.java).apply {
+        set(colorType)
+    })!!

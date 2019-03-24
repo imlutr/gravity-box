@@ -24,8 +24,8 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.utils.Json
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.assets.Text
-import ro.luca1152.gravitybox.utils.json.MapFactory
+import ro.luca1152.gravitybox.utils.assets.json.MapFactory
+import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get

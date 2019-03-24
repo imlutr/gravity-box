@@ -15,17 +15,14 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("PrivatePropertyName", "HasPlatformType")
+package ro.luca1152.gravitybox.utils.assets.json
 
-package ro.luca1152.gravitybox.utils.components
+/** Contains the structure of a map file. */
+class MapFactory {
+    var id = 0
+    var padding = PaddingPrototype()
+    var player = PlayerPrototype()
+    var finish = FinishPrototype()
+    var objects = ArrayList<ObjectPrototype>()
 
-
-import com.badlogic.ashley.core.Component
-import com.badlogic.ashley.core.ComponentMapper
-import com.badlogic.ashley.core.Entity
-
-/** Components with an companion object which extends this can be referenced in an OOP-like style.*/
-open class ComponentResolver<T : Component>(componentClass: Class<T>) {
-    private val MAPPER = ComponentMapper.getFor(componentClass)!!
-    operator fun get(entity: Entity) = MAPPER[entity]
 }

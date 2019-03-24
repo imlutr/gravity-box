@@ -22,9 +22,10 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.ImageComponent
 import ro.luca1152.gravitybox.components.game.image
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
@@ -93,3 +94,8 @@ class ExtendedTouchComponent(private val gameStage: GameStage = Injekt.get()) : 
 
 val Entity.extendedTouch: ExtendedTouchComponent
     get() = ExtendedTouchComponent[this]
+
+fun Entity.extendedTouch(linkedEntity: Entity, extraWidth: Float, extraHeight: Float) =
+    add(engine.createComponent(ExtendedTouchComponent::class.java).apply {
+        set(linkedEntity, extraWidth, extraHeight)
+    })!!
