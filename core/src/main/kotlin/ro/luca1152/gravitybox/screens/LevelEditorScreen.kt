@@ -35,6 +35,7 @@ import ktx.app.KtxScreen
 import ktx.collections.contains
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.editor.input
 import ro.luca1152.gravitybox.components.editor.undoRedo
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.InputEntity
@@ -91,7 +92,6 @@ class LevelEditorScreen(
             undoRedoEntity.undoRedo.redo()
         })
     }
-    private var placeToolObjectType: Class<Any> = PlatformEntity.javaClass
     private val placeToolButton = PaneButton(skin, "small-button").apply paneButton@{
         addIcon("platform-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
@@ -102,13 +102,15 @@ class LevelEditorScreen(
             addIcon("platform-icon")
             setColors(Colors.gameColor, Colors.uiDownColor)
             setOpaque(true)
-            addClickRunnable(createButtonFromPaneRunnable(this@paneButton, this, PlatformEntity.javaClass))
+            addClickRunnable(createButtonFromPaneRunnable(this@paneButton, this, PlatformComponent::class.java))
         })
         addCellToPane(ClickButton(skin, "small-button").apply {
             addIcon("destroyable-platform-icon")
             setColors(Colors.gameColor, Colors.uiDownColor)
             setOpaque(true)
-            addClickRunnable(createButtonFromPaneRunnable(this@paneButton, this, PlatformEntity.javaClass))
+            addClickRunnable(
+                createButtonFromPaneRunnable(this@paneButton, this, DestroyablePlatformComponent::class.java)
+            )
         })
     }
     val moveToolButton = ToggleButton(skin, "small-button").apply {
@@ -422,11 +424,15 @@ class LevelEditorScreen(
         }
     }
 
-    private fun createButtonFromPaneRunnable(placeToolButton: PaneButton, button: ClickButton, objectType: Class<Any>) =
+    private fun createButtonFromPaneRunnable(
+        placeToolButton: PaneButton,
+        button: ClickButton,
+        objectType: Class<out Any>
+    ) =
         Runnable {
             placeToolButton.clickedOnButtonFromPane()
             placeToolButton.icon!!.drawable = button.icon!!.drawable
-            placeToolObjectType = objectType
+            inputEntity.input.placeToolObjectType = objectType
         }
 
     private fun getLastEditedMapFile(): FileHandle {

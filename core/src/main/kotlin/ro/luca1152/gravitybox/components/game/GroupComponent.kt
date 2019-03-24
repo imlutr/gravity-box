@@ -15,36 +15,34 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components.editor
+package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.game.PlatformComponent
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
-import ro.luca1152.gravitybox.utils.kotlin.Reference
-import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
+import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
-/** Keeps track of UI events. */
-class InputComponent : Component, Poolable {
-    var toggledButton = Reference<ToggleButton>()
-    var placeToolObjectType: Class<out Any> = PlatformComponent::class.java
-    var isPanning = false
-    var isZooming = false
+class GroupComponent(private val gameStage: GameStage = Injekt.get()) : Component, Poolable {
+    private lateinit var mockImage: ImageComponent
+    val group = Group()
 
-    fun set(toggledButton: Reference<ToggleButton>) {
-        this.toggledButton = toggledButton
+    fun set(mockImage: ImageComponent) {
+        group.debugAll()
+        this.mockImage = mockImage
+        gameStage.addActor(group)
     }
 
     override fun reset() {
-        toggledButton = Reference()
-        placeToolObjectType = PlatformComponent::class.java
-        isPanning = false
-        isZooming = false
+        group.clear()
+        group.remove()
     }
 
-    companion object : ComponentResolver<InputComponent>(InputComponent::class.java)
+    companion object : ComponentResolver<GroupComponent>(GroupComponent::class.java)
 }
 
-val Entity.input: InputComponent
-    get() = InputComponent[this]
+val Entity.group: GroupComponent
+    get() = GroupComponent[this]

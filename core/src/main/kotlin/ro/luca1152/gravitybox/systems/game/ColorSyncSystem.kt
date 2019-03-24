@@ -23,6 +23,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.Color
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Syncs the [ImageComponent]'s color with the color scheme. */
@@ -36,5 +37,8 @@ class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, C
                 else -> Color.RED
             }
         )
+        entity.tryGet(GroupComponent)?.group?.children?.forEach {
+            it.color.setWithoutAlpha(entity.image.color)
+        }
     }
 }

@@ -144,6 +144,13 @@ platform-9
   orig: 63, 16
   offset: 0, 0
   index: -1
+platform-dot
+  rotate: false
+  xy: 154, 65
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 player
   rotate: false
   xy: 131, 191

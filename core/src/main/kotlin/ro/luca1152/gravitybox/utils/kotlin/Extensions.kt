@@ -28,11 +28,13 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxGame
 import ktx.app.clearScreen
+import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -205,4 +207,9 @@ inline fun <T> Iterable<T>.filterSingleton(predicate: (T) -> Boolean): T {
     val filteredElement = filterNullableSingleton(predicate)
     check(filteredElement != null) { "A singleton can't be instantiated more than once" }
     return filteredElement
+}
+
+fun Image.toMeters() = this.apply {
+    width = width.pixelsToMeters
+    height = height.pixelsToMeters
 }

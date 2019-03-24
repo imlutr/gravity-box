@@ -25,6 +25,7 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.game.DestroyablePlatformComponent
 import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.components.game.MapObjectComponent
 import ro.luca1152.gravitybox.components.game.map
@@ -69,7 +70,8 @@ class ObjectPlacementSystem(
                 id,
                 MathUtils.floor(coords.x).toFloat() + .5f,
                 MathUtils.floor(coords.y).toFloat() + .5f,
-                platformWidth
+                platformWidth,
+                isDestroyable = inputEntity.input.placeToolObjectType == DestroyablePlatformComponent::class.java
             )
             mapEntity.map.updateRoundedPlatforms = true
             undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(platform, mapEntity))
