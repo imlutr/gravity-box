@@ -34,6 +34,10 @@ class MapObjectComponent : Component, Poolable {
         id = -1
     }
 
+    enum class MapObjectType {
+        PLATFORM
+    }
+
     companion object : ComponentResolver<MapObjectComponent>(MapObjectComponent::class.java)
 }
 

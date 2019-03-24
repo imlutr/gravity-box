@@ -50,10 +50,7 @@ import ro.luca1152.gravitybox.utils.json.MapFactory
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
-import ro.luca1152.gravitybox.utils.ui.button.ButtonType
-import ro.luca1152.gravitybox.utils.ui.button.ClickButton
-import ro.luca1152.gravitybox.utils.ui.button.ClickTextButton
-import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
+import ro.luca1152.gravitybox.utils.ui.button.*
 import ro.luca1152.gravitybox.utils.ui.popup.PopUp
 import ro.luca1152.gravitybox.utils.ui.popup.TextPopUp
 import ro.luca1152.gravitybox.utils.ui.popup.YesNoTextPopUp
@@ -94,12 +91,25 @@ class LevelEditorScreen(
             undoRedoEntity.undoRedo.redo()
         })
     }
-    private val placeToolButton = ToggleButton(skin, "small-button").apply {
+    private var placeToolObjectType: Class<Any> = PlatformEntity.javaClass
+    private val placeToolButton = PaneButton(skin, "small-button").apply paneButton@{
         addIcon("platform-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
         setToggledButtonReference(this@LevelEditorScreen.toggledButton)
         type = ButtonType.PLACE_TOOL_BUTTON
         setOpaque(true)
+        addCellToPane(ClickButton(skin, "small-button").apply {
+            addIcon("platform-icon")
+            setColors(Colors.gameColor, Colors.uiDownColor)
+            setOpaque(true)
+            addClickRunnable(createButtonFromPaneRunnable(this@paneButton, this, PlatformEntity.javaClass))
+        })
+        addCellToPane(ClickButton(skin, "small-button").apply {
+            addIcon("destroyable-platform-icon")
+            setColors(Colors.gameColor, Colors.uiDownColor)
+            setOpaque(true)
+            addClickRunnable(createButtonFromPaneRunnable(this@paneButton, this, PlatformEntity.javaClass))
+        })
     }
     val moveToolButton = ToggleButton(skin, "small-button").apply {
         addIcon("move-icon")
@@ -411,6 +421,13 @@ class LevelEditorScreen(
             engine.removeEntity(it)
         }
     }
+
+    private fun createButtonFromPaneRunnable(placeToolButton: PaneButton, button: ClickButton, objectType: Class<Any>) =
+        Runnable {
+            placeToolButton.clickedOnButtonFromPane()
+            placeToolButton.icon!!.drawable = button.icon!!.drawable
+            placeToolObjectType = objectType
+        }
 
     private fun getLastEditedMapFile(): FileHandle {
         var minLastEditedTime = Long.MAX_VALUE

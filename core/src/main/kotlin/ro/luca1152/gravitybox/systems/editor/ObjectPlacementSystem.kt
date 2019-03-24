@@ -29,14 +29,19 @@ import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.components.game.MapObjectComponent
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
+import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
+import ro.luca1152.gravitybox.utils.ui.button.PaneButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Places objects at touch when the place tool is used. */
-class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+class ObjectPlacementSystem(
+    private val inputMultiplexer: InputMultiplexer = Injekt.get(),
+    private val uiStage: UIStage = Injekt.get()
+) : EntitySystem() {
     private lateinit var undoRedoEntity: Entity
     private lateinit var inputEntity: Entity
     private lateinit var mapEntity: Entity
@@ -47,6 +52,7 @@ class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Inj
                 return false
 
             createPlatformAt(screenX, screenY)
+            uiStage.root.findActor<PaneButton>("PaneButton")?.clickedOnButtonFromPane()
 
             return true
         }
