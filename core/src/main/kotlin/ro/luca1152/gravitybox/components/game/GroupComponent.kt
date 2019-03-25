@@ -19,7 +19,14 @@ package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.NinePatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.engine
@@ -30,6 +37,125 @@ import uy.kohesive.injekt.api.get
 class GroupComponent(private val gameStage: GameStage = Injekt.get()) : Component, Poolable {
     private lateinit var mockImage: ImageComponent
     val group = Group()
+
+    var width: Float
+        get() = group.width
+        set(value) {
+            group.width = value
+        }
+    var height: Float
+        get() = group.height
+        set(value) {
+            group.height = value
+        }
+    var centerX: Float
+        get() {
+            require(width != 0f) { "The width can't be 0." }
+            return group.x + width / 2f
+        }
+        set(value) {
+            require(width != 0f) { "The width can't be 0." }
+            group.x = value - width / 2f
+        }
+    var leftX: Float
+        get() = group.x
+        set(value) {
+            group.x = value
+        }
+    var rightX: Float
+        get() {
+            require(width != 0f) { "The width can't be 0." }
+            return group.x + width
+        }
+        set(value) {
+            require(width != 0f) { "The width can't be 0." }
+            group.x = value - width
+        }
+    var centerY: Float
+        get() {
+            require(height != 0f) { "The height can't be 0." }
+            return group.y + height / 2f
+        }
+        set(value) {
+            require(height != 0f) { "The height can't be 0." }
+            group.y = value - height / 2f
+        }
+    var bottomY: Float
+        get() = group.y
+        set(value) {
+            group.y = value
+        }
+    var topY: Float
+        get() {
+            require(height != 0f) { "The height can't be 0." }
+            return group.y + height
+        }
+        set(value) {
+            require(height != 0f) { "The height can't be 0." }
+            group.y = value - height
+        }
+    var color: Color
+        get() = group.color
+        set(value) {
+            group.color = value
+            group.children.forEach {
+                it.color = value
+            }
+        }
+    var rotation: Float
+        get() = group.rotation
+        set(value) {
+            group.rotation = value
+        }
+    var userData: Any?
+        get() = group.userObject
+        set(value) {
+            group.userObject = value
+        }
+
+    fun addImage(
+        drawable: Drawable,
+        centerX: Float = 0f, centerY: Float = 0f,
+        width: Float = 0f, height: Float = 0f,
+        rotation: Float = 0f
+    ): Image {
+        val image = Image(drawable).apply {
+            if (width != 0f && height != 0f) {
+                setSize(width, height)
+            }
+            setPosition(centerX - width / 2f, centerY - height / 2f)
+            setOrigin(width / 2f, height / 2f)
+            rotateBy(rotation)
+        }
+        group.addActor(image)
+        return image
+    }
+
+    fun addImage(
+        textureRegion: TextureRegion,
+        centerX: Float = 0f, centerY: Float = 0f,
+        width: Float = 0f, height: Float = 0f,
+        rotation: Float = 0f
+    ) = addImage(TextureRegionDrawable(textureRegion), centerX, centerY, width, height, rotation)
+
+    fun addNinePatch(
+        ninePatch: NinePatch,
+        centerX: Float = 0f, centerY: Float = 0f,
+        width: Float = 0f, height: Float = 0f,
+        rotation: Float = 0f
+    ): Image {
+        ninePatch.scale(1 / PPM, 1 / PPM)
+        val image = Image(NinePatchDrawable(ninePatch)).apply {
+            if (width == 0f && height == 0f) {
+                setSize(width, height)
+            }
+            setPosition(centerX - width / 2f, centerY - height / 2f)
+            setOrigin(width / 2f, height / 2f)
+            rotateBy(rotation)
+        }
+        group.addActor(image)
+        return image
+    }
 
     fun set(mockImage: ImageComponent) {
         group.debugAll()

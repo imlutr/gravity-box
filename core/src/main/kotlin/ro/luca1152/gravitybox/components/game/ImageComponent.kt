@@ -117,9 +117,6 @@ class ImageComponent(private val stage: GameStage = Injekt.get()) : Component, P
     ) =
         set(TextureRegionDrawable(textureRegion), x, y, width, height, rotationInDeg)
 
-    fun set(texture: Texture, x: Float, y: Float, width: Float = 0f, height: Float = 0f, rotationInDeg: Float = 0f) =
-        set(TextureRegion(texture), x, y, width, height, rotationInDeg)
-
     fun set(
         ninePatch: NinePatch,
         x: Float, y: Float,
@@ -250,15 +247,6 @@ fun Entity.image(
     rotationInDeg: Float = 0f
 ) = add(engine.createComponent(ImageComponent::class.java).apply {
     set(textureRegion, x, y, width, height, rotationInDeg)
-})!!
-
-fun Entity.image(
-    texture: Texture,
-    x: Float, y: Float,
-    width: Float = 0f, height: Float = 0f,
-    rotationInDeg: Float = 0f
-) = add(engine.createComponent(ImageComponent::class.java).apply {
-    set(texture, x, y, width, height, rotationInDeg)
 })!!
 
 fun Entity.image(
