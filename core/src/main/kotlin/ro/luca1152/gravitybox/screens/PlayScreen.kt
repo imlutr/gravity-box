@@ -123,6 +123,7 @@ class PlayScreen(
             addSystem(LevelFinishDetectionSystem())
             addSystem(LevelRestartSystem())
             addSystem(FinishPointColorSystem())
+            addSystem(ColorSchemeSystem())
             addSystem(SelectedObjectColorSystem())
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem())

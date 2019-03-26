@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
+import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
@@ -56,6 +57,7 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
         if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
         else {
+            Colors.hue = MathUtils.random(0, 360)
             deleteEntities()
             levelEntity.level.run {
                 levelId = Math.min(levelId + 1, MyGame.LEVELS_NUMBER)
