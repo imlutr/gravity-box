@@ -29,6 +29,7 @@ import ro.luca1152.gravitybox.utils.kotlin.clearScreen
 import ro.luca1152.gravitybox.utils.kotlin.setScreen
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
+import ro.luca1152.gravitybox.utils.ui.popup.TextPopUp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -65,10 +66,28 @@ class MainMenuScreen(
     private val rateButton = ClickButton(skin, "small-button").apply {
         addIcon("heart-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
+        addClickRunnable(Runnable {
+            uiStage.addActor(
+                TextPopUp(
+                    450f, 250f,
+                    "[TO DO]",
+                    skin, "bold", 50f, Colors.gameColor
+                )
+            )
+        })
     }
     private val settingsButton = ClickButton(skin, "small-button").apply {
         addIcon("settings-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
+        addClickRunnable(Runnable {
+            uiStage.addActor(
+                TextPopUp(
+                    450f, 250f,
+                    "[TO DO]",
+                    skin, "bold", 50f, Colors.gameColor
+                )
+            )
+        })
     }
     private val bottomRow = Table().apply {
         add(rateButton).expandX().left()
