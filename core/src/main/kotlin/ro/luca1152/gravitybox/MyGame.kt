@@ -24,6 +24,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
@@ -31,6 +32,7 @@ import ktx.app.KtxGame
 import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.ui.Colors
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
@@ -45,9 +47,17 @@ class MyGame : KtxGame<Screen>() {
 
     override fun create() {
         Box2D.init()
+        randomizeColorSchemeHue()
         initializeDependencyInjection()
         addScreen(LoadingScreen())
         setScreen<LoadingScreen>()
+    }
+
+    private fun randomizeColorSchemeHue() {
+        Colors.run {
+            hue = MathUtils.random(0, 360)
+            updateAllColors()
+        }
     }
 
     private fun initializeDependencyInjection() {

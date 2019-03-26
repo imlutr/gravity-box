@@ -45,6 +45,10 @@ object Colors {
         resetAllColors()
     }
 
+    fun updateAllColors() {
+        resetAllColors()
+    }
+
     fun resetAllColors() {
         LightTheme.resetAllColors(hue)
         DarkTheme.resetAllColors(hue)
