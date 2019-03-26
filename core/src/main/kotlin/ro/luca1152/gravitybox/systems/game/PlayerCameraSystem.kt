@@ -79,8 +79,9 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
         val cameraBottom = gameCamera.position.y - cameraHalfHeight
         val cameraTop = gameCamera.position.y + cameraHalfHeight
 
+
         // Clamp horizontal axis
-        if (mapWidth < gameCamera.viewportWidth - 4f) {
+        if (mapWidth < gameCamera.viewportWidth) {
             gameCamera.position.x = mapRight - mapWidth / 2f
         } else if (cameraLeft <= mapLeft && mapLeft + 2 * cameraHalfWidth < mapRight) {
             gameCamera.position.x = mapLeft + cameraHalfWidth
@@ -96,6 +97,7 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
         } else if (cameraTop >= mapTop && mapTop - 2 * cameraHalfHeight > mapBottom) {
             gameCamera.position.y = mapTop - cameraHalfHeight
         }
+
     }
 
     override fun removedFromEngine(engine: Engine) {
