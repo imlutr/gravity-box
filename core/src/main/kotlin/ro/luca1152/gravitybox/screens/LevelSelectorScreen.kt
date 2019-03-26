@@ -24,8 +24,8 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
@@ -129,15 +129,15 @@ class LevelSelectorScreen(
     private fun createLevelButton(
         level: Int,
         horizontalSlidingPane: HorizontalSlidingPane
-    ) = Button(skin, "small-button").apply button@{
-        color = Colors.gameColor
-        top().padTop(18f)
+    ) = object : ClickButton(skin, "small-button") {
+        val thisButton = this
+
         val numberLabel =
             DistanceFieldLabel(level.toString(), skin, "extra-bold", 57f, Colors.gameColor).apply {
-                this@button.add(this).expand().center().row()
+                thisButton.add(this).expand().center().row()
             }
         val stars = createLevelButtonStars().apply {
-            this@button.add(this).bottom().padBottom(23f)
+            thisButton.add(this).bottom().padBottom(23f)
         }
 
         fun setAllColors(color: Color) {
@@ -146,33 +146,41 @@ class LevelSelectorScreen(
             stars.cells.forEach { it.actor.color.set(color) }
         }
 
-        addAction(forever(run(Runnable {
-            if (horizontalSlidingPane.isPanning)
-                setAllColors(Colors.gameColor)
-        })))
+        init {
+            color = Colors.gameColor
+            top().padTop(18f)
 
-        addListener(object : ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                addAction(
-                    sequence(
-                        delay(.05f),
-                        run(Runnable {
-                            if (!horizontalSlidingPane.isPanning)
-                                setAllColors(Colors.uiDownColor)
-                        })
+            addListener(object : ClickListener() {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    Actions.addAction(
+                        sequence(
+                            delay(.05f),
+                            run(Runnable {
+                                if (!horizontalSlidingPane.isPanning)
+                                    setAllColors(Colors.uiDownColor)
+                            })
+                        )
                     )
-                )
-                return true
-            }
-
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                setAllColors(Colors.gameColor)
-                if (!horizontalSlidingPane.isPanning && isOver(this@button, x, y)) {
-                    chosenLevel = Math.min(level, MyGame.LEVELS_NUMBER)
-                    game.setScreen(TransitionScreen(PlayScreen::class.java))
+                    return true
                 }
+
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    setAllColors(Colors.gameColor)
+                    if (!horizontalSlidingPane.isPanning && isOver(thisButton, x, y)) {
+                        chosenLevel = Math.min(level, MyGame.LEVELS_NUMBER)
+                        game.setScreen(TransitionScreen(PlayScreen::class.java))
+                    }
+                }
+            })
+        }
+
+        override fun act(delta: Float) {
+            super.act(delta)
+            when (isPressed) {
+                true -> setAllColors(Colors.uiDownColor)
+                false -> setAllColors(Colors.gameColor)
             }
-        })
+        }
     }
 
     override fun show() {
@@ -205,6 +213,7 @@ class LevelSelectorScreen(
     private fun update() {
         uiStage.act()
         updatePageArrowsVisibility()
+        updateColors()
     }
 
     private fun updatePageArrowsVisibility() {
@@ -216,5 +225,12 @@ class LevelSelectorScreen(
             horizontalSlidingPane.currentPage.roundToInt() == horizontalSlidingPane.pageCount -> false
             else -> true
         }
+    }
+
+    private fun updateColors() {
+        leftArrow.color = Colors.gameColor
+        rightArrow.color = Colors.gameColor
+        bigEmptyStar.color = Colors.gameColor
+        starsCountLabel.color = Colors.gameColor
     }
 }

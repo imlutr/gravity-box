@@ -757,6 +757,11 @@ class LevelEditorScreen(
     private fun grayOutButton(button: ClickButton) {
         button.run {
             setColors(Colors.gameColor, Colors.gameColor)
+            if (!button.isPressed) {
+                color = Colors.gameColor
+                icon?.color = Colors.gameColor
+            }
+            opaqueImage?.color = Colors.bgColor
             opaqueImage?.color?.a = 0f
             color.a = .3f
         }
@@ -765,6 +770,11 @@ class LevelEditorScreen(
     private fun resetButtonColor(button: ClickButton) {
         button.run {
             setColors(Colors.gameColor, Colors.uiDownColor)
+            if (!button.isPressed) {
+                color = Colors.gameColor
+                icon?.color = Colors.gameColor
+            }
+            opaqueImage?.color = Colors.bgColor
             opaqueImage?.color?.a = 1f
             color.a = 1f
         }

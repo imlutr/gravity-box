@@ -111,8 +111,13 @@ class MainMenuScreen(
     }
 
     override fun render(delta: Float) {
+        updateColors()
         uiStage.act()
         clearScreen(Colors.bgColor)
         uiStage.draw()
+    }
+
+    private fun updateColors() {
+        logoImage.color = Colors.gameColor
     }
 }

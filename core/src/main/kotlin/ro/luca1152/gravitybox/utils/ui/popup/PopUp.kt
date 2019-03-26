@@ -108,6 +108,14 @@ open class PopUp(
         })
     }
 
+    override fun act(delta: Float) {
+        super.act(delta)
+        screenTransparentBackground.color = Colors.bgColor
+        screenTransparentBackground.color.a = 0.4f
+        widgetFrame.color = Colors.gameColor
+        widgetOpaqueBackground.color = Colors.bgColor
+    }
+
     private fun addActors() {
         addActor(screenTransparentBackground)
         addActor(widget)

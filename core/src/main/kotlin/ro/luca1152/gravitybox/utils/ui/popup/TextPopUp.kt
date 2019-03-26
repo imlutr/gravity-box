@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.utils.ui.popup
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
+import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 class TextPopUp(
@@ -36,5 +37,10 @@ class TextPopUp(
 
     init {
         widget.add(textLabel).prefWidth(width - 50f).expand().center()
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        textLabel.color = Colors.gameColor
     }
 }
