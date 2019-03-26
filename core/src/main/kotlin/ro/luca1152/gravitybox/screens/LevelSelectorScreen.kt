@@ -55,14 +55,14 @@ class LevelSelectorScreen(
     private val bigEmptyStar = Image(skin, "big-empty-star").apply {
         color = Colors.gameColor
     }
-    private val starsCountLabel = DistanceFieldLabel("0/45", skin, "bold", 65f, Colors.gameColor)
+    private val starsCountLabel = DistanceFieldLabel("0/72", skin, "bold", 65f, Colors.gameColor)
     private val leftArrow = Image(skin.getDrawable("left-arrow-icon")).apply {
         color = Colors.gameColor
         isVisible = false
     }
     private val horizontalSlidingPane = HorizontalSlidingPane(uiStage.camera.viewportWidth, 1000f).apply {
         var level = 0
-        for (pageNumber in 1..4) {
+        for (pageNumber in 1..2) {
             val page = Table().apply {
                 defaults().space(50f)
                 addPage(this)
