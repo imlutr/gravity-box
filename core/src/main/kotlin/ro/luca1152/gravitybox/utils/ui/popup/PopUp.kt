@@ -57,7 +57,7 @@ open class PopUp(
         setSize(width - 2 * borderThickness, height - 2 * borderThickness)
         color = Colors.bgColor
     }
-    val widget = Table().apply {
+    val widget = Table(skin).apply {
         setSize(width, height)
         setPosition(uiStage.viewport.worldWidth / 2f - width / 2f, uiStage.viewport.worldHeight / 2f - height / 2f)
         addActor(widgetOpaqueBackground.apply {
