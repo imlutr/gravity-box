@@ -32,7 +32,7 @@ class HorizontalSlidingPane(
     private val flingSpeedThreshold: Float = 600f,
     private val overScrollDistance: Float = 100f
 ) : Group() {
-    private val pages: Group = Group()
+    val pages: Group = Group()
 
     val pageCount
         get() = pages.children.size

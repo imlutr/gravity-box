@@ -73,7 +73,7 @@ class TransitionScreen(
     }
 
     private fun update() {
-        Colors.lerpTowardsDefaultColors()
+        Colors.lerpTowardsDefaultColors(.1f)
         if (finishedFadingOut || !fadeOutCurrentScreen) {
             Colors.resetAllColors()
             uiStage.clear()

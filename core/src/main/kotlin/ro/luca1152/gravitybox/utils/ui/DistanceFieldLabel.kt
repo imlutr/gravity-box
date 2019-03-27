@@ -79,6 +79,11 @@ class DistanceFieldLabel(
         setFontScale(fontSize / DEFAULT_FONT_SIZE)
     }
 
+    override fun act(delta: Float) {
+        super.act(delta)
+        color = Colors.gameColor
+    }
+
     override fun draw(batch: Batch, parentAlpha: Float) {
         batch.shader = distanceFieldShader
         super.draw(batch, parentAlpha)
