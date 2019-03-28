@@ -198,9 +198,7 @@ class PlayScreen(
     }
 
     private fun updateHelpButtonVisibility() {
-        if (levelEntity.level.levelId != 1) {
-            helpButton.isVisible = false
-        }
+        helpButton.isVisible = levelEntity.level.levelId == 1
     }
 
     override fun resize(width: Int, height: Int) {
