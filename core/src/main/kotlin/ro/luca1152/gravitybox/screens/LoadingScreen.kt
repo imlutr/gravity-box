@@ -67,24 +67,19 @@ class LoadingScreen(
 
     private fun loadMaps() {
         loadGameMaps()
-        loadEditorMaps()
     }
 
     private fun loadGameMaps() {
+        manager.setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
         for (i in 1..MyGame.LEVELS_NUMBER) {
-            manager.run {
-                setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
-                load<Text>("maps/game/map-$i.json")
-            }
+            manager.load<Text>("maps/game/map-$i.json")
         }
     }
 
     private fun loadEditorMaps() {
+        manager.setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
         Gdx.files.local("maps/editor").list().forEach {
-            manager.run {
-                setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
-                load<Text>(it.path())
-            }
+            manager.load<Text>(it.path())
         }
     }
 
@@ -93,10 +88,17 @@ class LoadingScreen(
         clearScreen(Colors.bgColor)
     }
 
+    private var finishedLoadingOnce = false
+
     private fun update(delta: Float) {
         loadingAssetsTimer += delta
         uiStage.act()
         if (finishedLoadingAssets) {
+            if (!finishedLoadingOnce) {
+                finishedLoadingOnce = true
+                loadEditorMaps()
+                return
+            }
             logLoadingTime()
             addScreens()
             game.setScreen(TransitionScreen(MainMenuScreen::class.java, false))
