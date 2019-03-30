@@ -34,7 +34,7 @@ object CombinedPlatformEntity {
         combinedBody(this, isCombinedHorizontally, isCombinedVertically, true)
         platform()
         editorObject()
-        polygon()
+        polygon(false)
         addToEngine()
     }
 }

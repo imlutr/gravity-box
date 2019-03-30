@@ -29,14 +29,14 @@ import ro.luca1152.gravitybox.engine
 class FinishComponent : Component, Poolable {
     private var blinkEndlessly = true
 
-    fun set(blinkEndlessly: Boolean = true, finishImage: ImageComponent) {
+    fun set(blinkEndlessly: Boolean = true, finishImage: Scene2DComponent) {
         this.blinkEndlessly = blinkEndlessly
         if (blinkEndlessly)
             addPermanentFadeInFadeOutActions(finishImage)
     }
 
-    fun addPermanentFadeInFadeOutActions(image: ImageComponent) {
-        image.img.addAction(RepeatAction().apply {
+    fun addPermanentFadeInFadeOutActions(scene2D: Scene2DComponent) {
+        scene2D.group.addAction(RepeatAction().apply {
             action = Actions.sequence(
                 Actions.fadeOut(1f),
                 Actions.fadeIn(1f)
@@ -55,7 +55,7 @@ class FinishComponent : Component, Poolable {
 val Entity.finish: FinishComponent
     get() = FinishComponent[this]
 
-fun Entity.finish(blinkEndlessly: Boolean = true, finishImage: ImageComponent) =
+fun Entity.finish(blinkEndlessly: Boolean = true, finishImage: Scene2DComponent) =
     add(engine.createComponent(FinishComponent::class.java).apply {
         set(blinkEndlessly, finishImage)
     })!!

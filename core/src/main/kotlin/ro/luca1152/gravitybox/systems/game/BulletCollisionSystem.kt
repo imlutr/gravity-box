@@ -36,7 +36,7 @@ import uy.kohesive.injekt.api.get
 
 /** Handles what happens when a bullet collides with a map object. */
 class BulletCollisionSystem(private val world: World = Injekt.get()) :
-    IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
+    IteratingSystem(Family.all(BulletComponent::class.java).get()) {
     private lateinit var playerEntity: Entity
     private lateinit var finishEntity: Entity
 

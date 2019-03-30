@@ -32,14 +32,16 @@ import uy.kohesive.injekt.api.get
 object BulletEntity {
     private const val WIDTH = .15f
     private const val HEIGHT = .15f
+    private val CATEGORY_BITS = EntityCategory.BULLET.bits
+    private val MASK_BITS = EntityCategory.PLATFORM.bits
 
     fun createEntity(
         x: Float, y: Float,
         manager: AssetManager = Injekt.get()
     ) = newEntity().apply {
         bullet()
-        body(createBulletBody(x, y, this), this)
-        image(manager.get(Assets.tileset).findRegion("bullet"), x, y)
+        body(createBulletBody(x, y, this), CATEGORY_BITS, MASK_BITS)
+        scene2D(manager.get(Assets.tileset).findRegion("bullet"), x, y)
         color(ColorType.DARK)
         addToEngine()
     }

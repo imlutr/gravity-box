@@ -29,11 +29,11 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class OffScreenBulletDeletionSystem(private val gameCamera: GameCamera = Injekt.get()) : IteratingSystem(
-    Family.all(BulletComponent::class.java, ImageComponent::class.java).get()
+    Family.all(BulletComponent::class.java, Scene2DComponent::class.java).get()
 ) {
     private lateinit var levelEntity: Entity
     private val Entity.isOffScreen
-        get() = image.centerY < -(gameCamera.viewportHeight / 2f) + levelEntity.map.mapBottom
+        get() = scene2D.centerY < -(gameCamera.viewportHeight / 2f) + levelEntity.map.mapBottom
 
     override fun addedToEngine(engine: Engine) {
         super.addedToEngine(engine)

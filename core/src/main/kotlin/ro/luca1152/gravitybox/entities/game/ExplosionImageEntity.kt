@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ro.luca1152.gravitybox.components.game.ColorType
 import ro.luca1152.gravitybox.components.game.color
 import ro.luca1152.gravitybox.components.game.explosion
-import ro.luca1152.gravitybox.components.game.image
+import ro.luca1152.gravitybox.components.game.scene2D
 import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
@@ -38,9 +38,9 @@ object ExplosionImageEntity {
         manager: AssetManager = Injekt.get()
     ) = newEntity()
         .explosion()
-        .image(manager.get(Assets.tileset).findRegion("circle"), x, y)
+        .scene2D(manager.get(Assets.tileset).findRegion("circle"), x, y)
         .apply {
-            image.img.addAction(
+            scene2D.group.addAction(
                 Actions.sequence(
                     Actions.parallel(
                         Actions.scaleBy(3f, 3f, .25f),

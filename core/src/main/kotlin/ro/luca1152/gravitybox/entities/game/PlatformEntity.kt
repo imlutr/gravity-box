@@ -21,14 +21,12 @@ package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.NinePatch
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
-import ro.luca1152.gravitybox.utils.kotlin.toMeters
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -52,36 +50,34 @@ object PlatformEntity {
         mapObject(id)
         if (isDestroyable) {
             destroyablePlatform()
-            image()
-            image.img.run {
-                setPosition(x, y)
-                setSize(width, height)
-                rotation = rotationInDeg
-            }
-            scene2D(image)
-            scene2D.group.run {
-                addActor(Image(manager.get(Assets.tileset).findRegion("platform-dot")).toMeters())
-                addActor(Image(manager.get(Assets.tileset).findRegion("platform-dot")).toMeters().apply {
-                    this.x += this.width + 5.33f.pixelsToMeters
-                })
-                addActor(Image(manager.get(Assets.tileset).findRegion("platform-dot")).toMeters().apply {
-                    this.x += 2 * this.width + 2 * 5.33f.pixelsToMeters
-                })
-                setPosition(x - 1f / 2f + 2.66f.pixelsToMeters, y - 16.pixelsToMeters / 2f)
-            }
+//            scene2D()
+//            scene2D.group.run {
+//                setPosition(x, y)
+//                setSize(width, height)
+//                rotation = rotationInDeg
+//            }
+//            scene2D(image)
+//            scene2D.group.run {
+//                addActor(Image(manager.get(Assets.tileset).findRegion("platform-dot")).toMeters())
+//                addActor(Image(manager.get(Assets.tileset).findRegion("platform-dot")).toMeters().apply {
+//                    this.x += this.width + 5.33f.pixelsToMeters
+//                })
+//                addActor(Image(manager.get(Assets.tileset).findRegion("platform-dot")).toMeters().apply {
+//                    this.x += 2 * this.width + 2 * 5.33f.pixelsToMeters
+//                })
+//                setPosition(x - 1f / 2f + 2.66f.pixelsToMeters, y - 16.pixelsToMeters / 2f)
+//            }
         } else {
             platform()
-            image(
+            scene2D(
                 NinePatch(
                     manager.get(Assets.tileset).findRegion("platform-0"),
                     PATCH_LEFT, PATCH_RIGHT,
                     PATCH_TOP, PATCH_BOTTOM
                 ), x, y, width, height, rotationInDeg
             )
-            image.img.userObject = this
         }
-        polygon(image.img)
-        polygon.update()
+        polygon(scene2D)
         editorObject()
         snap()
         body()

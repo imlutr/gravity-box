@@ -18,7 +18,7 @@
 package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType.StaticBody
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.components.editor.overlay
@@ -43,17 +43,13 @@ object FinishEntity {
         manager: AssetManager = Injekt.get()
     ) = newEntity().apply {
         mapObject(id)
-        image(manager.get(Assets.tileset).findRegion("finish"), x, y, WIDTH, HEIGHT)
-        image.img.userObject = this
-        polygon(image.img)
-        polygon.update()
+        scene2D()
+        scene2D(manager.get(Assets.tileset).findRegion("finish"), x, y, WIDTH, HEIGHT)
+        polygon(scene2D)
         editorObject()
         snap()
-        finish(blinkEndlessly, image)
-        body(
-            image.imageToBox2DBody(BodyDef.BodyType.StaticBody, CATEGORY_BITS, MASK_BITS),
-            this, CATEGORY_BITS, MASK_BITS
-        )
+        finish(blinkEndlessly, scene2D)
+        body(scene2D.toBody(StaticBody, CATEGORY_BITS, MASK_BITS), CATEGORY_BITS, MASK_BITS)
         collisionBox(WIDTH, HEIGHT)
         color(ColorType.DARK)
         overlay(

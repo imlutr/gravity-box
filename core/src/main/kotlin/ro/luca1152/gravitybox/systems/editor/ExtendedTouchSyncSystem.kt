@@ -22,17 +22,14 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import ro.luca1152.gravitybox.components.editor.ExtendedTouchComponent
 import ro.luca1152.gravitybox.components.editor.extendedTouch
-import ro.luca1152.gravitybox.components.game.ImageComponent
-import ro.luca1152.gravitybox.components.game.image
+import ro.luca1152.gravitybox.components.game.Scene2DComponent
+import ro.luca1152.gravitybox.components.game.scene2D
 
-/** Syncs the [ExtendedTouchComponent]'s position and size with [ImageComponent]'s.*/
+/** Syncs the [ExtendedTouchComponent]'s position and size with [Scene2DComponent]'s.*/
 class ExtendedTouchSyncSystem :
-    IteratingSystem(Family.all(ImageComponent::class.java, ExtendedTouchComponent::class.java).get()) {
+    IteratingSystem(Family.all(Scene2DComponent::class.java, ExtendedTouchComponent::class.java).get()) {
+
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        entity.extendedTouch.run {
-            setPosition(entity.image.centerX, entity.image.centerY)
-            setSize(entity.image.width, entity.image.height)
-            boundsImage.rotation = entity.image.img.rotation
-        }
+        entity.extendedTouch.updateFromScene2D(entity.scene2D)
     }
 }

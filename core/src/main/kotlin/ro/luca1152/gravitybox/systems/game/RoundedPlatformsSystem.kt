@@ -40,7 +40,7 @@ import uy.kohesive.injekt.api.get
 /** Sets the according texture to platforms so they are correctly rounded. */
 class RoundedPlatformsSystem(
     private val manager: AssetManager = Injekt.get()
-) : IteratingSystem(Family.all(PlatformComponent::class.java, ImageComponent::class.java).get()) {
+) : IteratingSystem(Family.all(PlatformComponent::class.java, Scene2DComponent::class.java).get()) {
     private lateinit var mapEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
@@ -65,7 +65,7 @@ class RoundedPlatformsSystem(
     }
 
     private fun getIntBitmask(entity: Entity): Int {
-        entity.image.img.run {
+        entity.scene2D.group.run {
             val isStraightBottomRightCorner = isPlatformInBottomRightOf(this) || isPlatformAtRightOf(this)
             val isStraightTopRightCorner = isPlatformInTopRightOf(this) || isPlatformAtRightOf(this)
             val isStraightTopLeftCorner = isPlatformInTopLeftOf(this) || isPlatformAtLeftOf(this)
@@ -94,15 +94,16 @@ class RoundedPlatformsSystem(
     }
 
     private fun setCorrectTexture(entity: Entity, bitmask: Int) {
-        entity.image.run {
-            set(
+        entity.scene2D.run {
+            group.clearChildren()
+            addNinePatch(
                 NinePatch(
                     manager.get(Assets.tileset).findRegion("platform-$bitmask"),
                     PlatformEntity.PATCH_LEFT,
                     PlatformEntity.PATCH_RIGHT,
                     PlatformEntity.PATCH_TOP,
                     PlatformEntity.PATCH_BOTTOM
-                ), centerX, centerY, width, height, img.rotation
+                ), centerX, centerY, width, height, rotation
             )
         }
     }

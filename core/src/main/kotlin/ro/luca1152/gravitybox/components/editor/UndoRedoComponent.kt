@@ -86,16 +86,16 @@ class MoveCommand(
     private val deltaX: Float, private val deltaY: Float
 ) : Command() {
     init {
-        check(affectedEntity.tryGet(ImageComponent) != null)
-        { "The [affectedEntity] must have an [ImageComponent]." }
+        check(affectedEntity.tryGet(Scene2DComponent) != null)
+        { "The affectedEntity must have a Scene2DComponent in order to be moved." }
     }
 
     override fun execute() {
-        affectedEntity.image.img.moveBy(deltaX, deltaY)
+        affectedEntity.scene2D.group.moveBy(deltaX, deltaY)
     }
 
     override fun unexecute() {
-        affectedEntity.image.img.moveBy(-deltaX, -deltaY)
+        affectedEntity.scene2D.group.moveBy(-deltaX, -deltaY)
     }
 }
 
@@ -104,16 +104,16 @@ class RotateCommand(
     private val deltaAngle: Float
 ) : Command() {
     init {
-        check(affectedEntity.tryGet(ImageComponent) != null)
-        { "The [affectedEntity] must have an [ImageComponent]." }
+        check(affectedEntity.tryGet(Scene2DComponent) != null)
+        { "The affectedEntity must have a Scene2DComponent in order to be rotated." }
     }
 
     override fun execute() {
-        affectedEntity.image.img.rotation += deltaAngle
+        affectedEntity.scene2D.rotation += deltaAngle
     }
 
     override fun unexecute() {
-        affectedEntity.image.img.rotation -= deltaAngle
+        affectedEntity.scene2D.rotation -= deltaAngle
     }
 }
 
@@ -126,15 +126,15 @@ class AddCommand(
         affectedEntity.editorObject.run {
             isDeleted = false
         }
-        affectedEntity.tryGet(ImageComponent)?.run {
-            img.isVisible = true
-            img.touchable = Touchable.enabled
+        affectedEntity.tryGet(Scene2DComponent)?.run {
+            isVisible = true
+            isTouchable = true
 
             affectedEntity.tryGet(BodyComponent)?.run {
-                if (affectedEntity.tryGet(PlayerComponent) != null) {
-                    body = imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction, 0.02f)
+                body = if (affectedEntity.tryGet(PlayerComponent) != null) {
+                    affectedEntity.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction, 0.02f)
                 } else {
-                    body = imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction)
+                    affectedEntity.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction)
                 }
             }
         }
@@ -159,9 +159,9 @@ class AddCommand(
             isSelected = false
             isDeleted = true
         }
-        affectedEntity.tryGet(ImageComponent)?.run {
-            img.isVisible = false
-            img.touchable = Touchable.disabled
+        affectedEntity.tryGet(Scene2DComponent)?.run {
+            isVisible = false
+            isTouchable = false
         }
         affectedEntity.tryGet(ExtendedTouchComponent)?.run {
             boundsImage.touchable = Touchable.disabled
@@ -196,7 +196,7 @@ class DeleteCommand(
 }
 
 /**
- * Resizes the [affectedEntity]. If the entity was also moved after it was resized, values should be
+ * Resizes the [affectedEntity]. If the entity's center position also changed after it was resized, values should be
  * given to [deltaX] and [deltaY]. This is not done in an additional [MoveCommand] because undo() would
  * then have to be called two times (or the undo button pressed two times), instead of once.
  */
@@ -206,12 +206,12 @@ class ResizeCommand(
     private val deltaX: Float = 0f, private val deltaY: Float = 0f
 ) : Command() {
     init {
-        check(affectedEntity.tryGet(ImageComponent) != null)
+        check(affectedEntity.tryGet(Scene2DComponent) != null)
         { "The [affectedEntity] must have an [ImageComponent]." }
     }
 
     override fun execute() {
-        affectedEntity.image.run {
+        affectedEntity.scene2D.run {
             width += deltaWidth
             height += deltaHeight
             centerX += deltaX
@@ -220,7 +220,7 @@ class ResizeCommand(
     }
 
     override fun unexecute() {
-        affectedEntity.image.run {
+        affectedEntity.scene2D.run {
             width -= deltaWidth
             height -= deltaHeight
             centerX -= deltaX

@@ -293,7 +293,7 @@ class LevelEditorScreen(
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
-            gameCamera.position.set(playerEntity.image.centerX, playerEntity.image.centerY, 0f)
+            gameCamera.position.set(playerEntity.scene2D.centerX, playerEntity.scene2D.centerY, 0f)
             hideSettingsPopUp = true
         }
     }
@@ -463,17 +463,17 @@ class LevelEditorScreen(
 
     private fun repositionDefaultEntities(platformEntity: Entity) {
         finishEntity.run {
-            image.run {
-                centerX = platformEntity.image.rightX - FinishEntity.WIDTH / 2f
-                centerY = platformEntity.image.topY + FinishEntity.HEIGHT / 2f
+            scene2D.run {
+                centerX = platformEntity.scene2D.rightX - FinishEntity.WIDTH / 2f
+                centerY = platformEntity.scene2D.topY + FinishEntity.HEIGHT / 2f
             }
             editorObject.isSelected = false
             polygon.update()
         }
         playerEntity.run {
-            image.run {
-                centerX = platformEntity.image.leftX + PlayerEntity.WIDTH / 2f
-                centerY = platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
+            scene2D.run {
+                centerX = platformEntity.scene2D.leftX + PlayerEntity.WIDTH / 2f
+                centerY = platformEntity.scene2D.topY + PlayerEntity.HEIGHT / 2f
             }
             editorObject.isSelected = false
             polygon.update()
@@ -506,14 +506,14 @@ class LevelEditorScreen(
     }
 
     private fun centerCameraOnPlatform(platformEntity: Entity) {
-        val platformImage = platformEntity.image
+        val platformScene2D = platformEntity.scene2D
         val deltaY = 2f
-        gameCamera.position.set(platformImage.centerX, platformImage.centerY + deltaY, 0f)
+        gameCamera.position.set(platformScene2D.centerX, platformScene2D.centerY + deltaY, 0f)
     }
 
     private fun centerCameraOnPlayer() {
-        val playerImage = playerEntity.image
-        gameCamera.position.set(playerImage.centerX, playerImage.centerY, 0f)
+        val playerScene2D = playerEntity.scene2D
+        gameCamera.position.set(playerScene2D.centerX, playerScene2D.centerY, 0f)
     }
 
     private fun handleGameInput() {

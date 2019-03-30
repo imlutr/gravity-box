@@ -106,7 +106,7 @@ class PlayingSystem(
 
     private fun makeFinishPointEndlesslyBlink() {
         finishEntity.run {
-            finish.addPermanentFadeInFadeOutActions(image)
+            finish.addPermanentFadeInFadeOutActions(scene2D)
         }
     }
 
@@ -196,19 +196,19 @@ class PlayingSystem(
 
     private fun resetEntitiesPosition(engine: Engine) {
         engine.getEntitiesFor(
-            Family.all(ImageComponent::class.java, BodyComponent::class.java)
+            Family.all(Scene2DComponent::class.java, BodyComponent::class.java)
                 .exclude(CombinedBodyComponent::class.java).get()
         ).forEach {
-            it.image.run {
-                this.centerX = it.body.initialX
-                this.centerY = it.body.initialY
-                this.img.rotation = it.body.initialRotationRad * MathUtils.radiansToDegrees
+            it.scene2D.run {
+                centerX = it.body.initialX
+                centerY = it.body.initialY
+                rotation = it.body.initialRotationRad * MathUtils.radiansToDegrees
             }
         }
     }
 
     private fun removeFinishPointEndlessBlink() {
-        finishEntity.image.img.run {
+        finishEntity.scene2D.group.run {
             clearActions()
             color.a = 1f
         }

@@ -56,16 +56,16 @@ class JsonComponent : Component, Poolable {
                 if (tryGet(MapObjectComponent) != null) json.run {
                     writeValue("id", mapObject.id)
                 }
-                if (tryGet(ImageComponent) != null) json.run {
+                if (tryGet(Scene2DComponent) != null) json.run {
                     writeObjectStart("position")
-                    writeValue("x", image.centerX.metersToPixels)
-                    writeValue("y", image.centerY.metersToPixels)
+                    writeValue("x", scene2D.centerX.metersToPixels)
+                    writeValue("y", scene2D.centerY.metersToPixels)
                     writeObjectEnd()
 
                     if (tryGet(PlatformComponent) != null) json.run {
-                        writeValue("width", image.width.metersToPixels)
+                        writeValue("width", scene2D.width.metersToPixels)
                     }
-                    writeValue("rotation", image.img.rotation.toInt())
+                    writeValue("rotation", scene2D.rotation.toInt())
                 }
             }
         }

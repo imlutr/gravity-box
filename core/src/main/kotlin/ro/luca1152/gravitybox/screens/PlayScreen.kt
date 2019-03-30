@@ -131,6 +131,7 @@ class PlayScreen(
             addSystem(ImageRenderingSystem())
             addSystem(LevelFinishSystem(restartLevelWhenFinished = false))
 //            addSystem(PhysicsDebugRenderingSystem())
+            addSystem(DebugRenderingSystem())
         }
     }
 

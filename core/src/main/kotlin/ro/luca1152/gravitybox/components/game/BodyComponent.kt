@@ -19,13 +19,13 @@ package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.engine
-import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.bodies
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -44,11 +44,16 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
     var initialRotationRad = 0f
 
     lateinit var body: Body
+    val isInitialized
+        get() = ::body.isInitialized
 
     fun set(
-        body: Body, userData: Entity,
-        categoryBits: Short = EntityCategory.NONE.bits, maskBits: Short = EntityCategory.NONE.bits,
-        density: Float = 1f, friction: Float = .2f
+        body: Body,
+        userData: Entity,
+        categoryBits: Short,
+        maskBits: Short,
+        density: Float = 1f,
+        friction: Float = .2f
     ) {
         this.body = body
         body.userData = userData
@@ -103,12 +108,18 @@ val Entity.body: BodyComponent
 
 
 fun Entity.body(
-    body: Body, userData: Entity,
-    categoryBits: Short = EntityCategory.NONE.bits, maskBits: Short = EntityCategory.NONE.bits,
-    density: Float = 1f, friction: Float = .2f
+    body: Body,
+    categoryBits: Short,
+    maskBits: Short,
+    density: Float = 1f,
+    friction: Float = .2f
 ) = add(engine.createComponent(BodyComponent::class.java).apply {
-    set(body, userData, categoryBits, maskBits, density, friction)
+    set(body, this@body, categoryBits, maskBits, density, friction)
+    body.userData = this@body
 })!!
 
 fun Entity.body() =
     add(engine.createComponent(BodyComponent::class.java))!!
+
+val Float.toRadians
+    get() = this * MathUtils.degreesToRadians

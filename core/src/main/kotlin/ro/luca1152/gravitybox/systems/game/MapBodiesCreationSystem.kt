@@ -66,7 +66,7 @@ class MapBodiesCreationSystem : EntitySystem() {
     }
 
     private fun createBox2DBodies() {
-        createCombinedPlatformsBodies()
+//        createCombinedPlatformsBodies()
         createOtherBodies()
     }
 
@@ -210,7 +210,7 @@ class MapBodiesCreationSystem : EntitySystem() {
                     }
                     if (it.tryGet(CombinedBodyComponent) == null) {
                         it.body.set(
-                            it.image.imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction, trimSize),
+                            it.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction, trimSize),
                             it, categoryBits, maskBits, density, friction
                         )
                     }

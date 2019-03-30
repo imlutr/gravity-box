@@ -202,10 +202,10 @@ class MapComponent : Component, Poolable {
 
     private fun createPlayer(player: PlayerPrototype, playerEntity: Entity) {
         playerEntity.run {
-            image.run {
+            scene2D.run {
                 centerX = player.position.x.pixelsToMeters
                 centerY = player.position.y.pixelsToMeters
-                img.rotation = player.rotation.toFloat()
+                rotation = player.rotation.toFloat()
             }
             mapObject.run {
                 id = player.id
@@ -215,10 +215,10 @@ class MapComponent : Component, Poolable {
 
     private fun createFinish(finish: FinishPrototype, finishEntity: Entity) {
         finishEntity.run {
-            image.run {
+            scene2D.run {
                 centerX = finish.position.x.pixelsToMeters
                 centerY = finish.position.y.pixelsToMeters
-                img.rotation = finish.rotation.toFloat()
+                rotation = finish.rotation.toFloat()
             }
             mapObject.run {
                 id = finish.id

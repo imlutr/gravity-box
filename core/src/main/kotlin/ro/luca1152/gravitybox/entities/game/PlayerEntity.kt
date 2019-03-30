@@ -48,10 +48,8 @@ object PlayerEntity {
             showResizingButtons = false, showDeletionButton = false
         )
         player()
-        image(manager.get(Assets.tileset).findRegion("player"), x, y, WIDTH, HEIGHT)
-        image.img.userObject = this
-        polygon(image.img)
-        polygon.update()
+        scene2D(manager.get(Assets.tileset).findRegion("player"), x, y, WIDTH, HEIGHT)
+        polygon(scene2D)
         editorObject()
         snap()
         body()

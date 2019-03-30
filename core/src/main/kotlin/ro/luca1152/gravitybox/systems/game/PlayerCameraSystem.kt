@@ -23,8 +23,8 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.math.Vector3
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
-import ro.luca1152.gravitybox.components.game.image
 import ro.luca1152.gravitybox.components.game.map
+import ro.luca1152.gravitybox.components.game.scene2D
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.lerp
@@ -48,7 +48,7 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
     }
 
     private fun instantlyCenterCameraOnPlayer() {
-        gameCamera.position.set(playerEntity.image.centerX, playerEntity.image.centerY, 0f)
+        gameCamera.position.set(playerEntity.scene2D.centerX, playerEntity.scene2D.centerY, 0f)
     }
 
     override fun update(deltaTime: Float) {
@@ -58,8 +58,8 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
 
     private fun smoothlyFollowPlayer() {
         gameCamera.position.lerp(
-            playerEntity.image.centerX,
-            playerEntity.image.centerY,
+            playerEntity.scene2D.centerX,
+            playerEntity.scene2D.centerY,
             progress = .15f
         )
     }
