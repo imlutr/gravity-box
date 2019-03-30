@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.systems.editor
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -29,7 +28,7 @@ import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.ui.Colors
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -52,7 +51,7 @@ class GridRenderingSystem(
     private lateinit var levelEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
         gridGroup.run {
             clear()
             addActor(createVerticalLines())

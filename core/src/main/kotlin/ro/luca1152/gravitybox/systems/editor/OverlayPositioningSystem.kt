@@ -373,7 +373,7 @@ class OverlayPositioningSystem(
     private val buttonsPaddingY = 50f
 
     override fun addedToEngine(engine: Engine) {
-        mapEntity = engine.getSingletonFor(Family.all(MapComponent::class.java).get())
+        mapEntity = engine.getSingleton<MapComponent>()
         overlayStage.run {
             addActor(labels)
             addActor(overlayLevel1)

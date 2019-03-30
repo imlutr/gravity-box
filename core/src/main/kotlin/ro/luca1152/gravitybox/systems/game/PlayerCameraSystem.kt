@@ -20,14 +20,13 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.math.Vector3
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.image
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.lerp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -40,8 +39,8 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
     private var initialCameraPosition = Vector3()
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
+        playerEntity = engine.getSingleton<PlayerComponent>()
         initialCameraZoom = gameCamera.zoom
         initialCameraPosition.set(gameCamera.position)
         gameCamera.zoom = 1f

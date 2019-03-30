@@ -22,7 +22,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
@@ -31,7 +31,7 @@ class LevelRestartSystem : EntitySystem() {
     private lateinit var levelEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
     }
 
     override fun update(deltaTime: Float) {

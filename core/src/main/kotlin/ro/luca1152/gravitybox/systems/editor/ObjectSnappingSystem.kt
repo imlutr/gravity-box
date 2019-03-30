@@ -34,7 +34,7 @@ import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.snap
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 /** Snaps nearby map objects together when moved. */
 class ObjectSnappingSystem : EntitySystem() {
@@ -45,7 +45,7 @@ class ObjectSnappingSystem : EntitySystem() {
     private var didSnapPlatform = false
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
     }
 
     override fun update(deltaTime: Float) {

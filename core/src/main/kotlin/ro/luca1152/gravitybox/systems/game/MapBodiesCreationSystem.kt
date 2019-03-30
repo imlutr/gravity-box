@@ -30,7 +30,7 @@ import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Creates Box2D bodies from entities. */
@@ -44,7 +44,7 @@ class MapBodiesCreationSystem : EntitySystem() {
         get() = levelEntity.level.forceUpdateMap || (levelEntity.map.levelId != levelEntity.level.levelId)
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
     }
 
     override fun update(deltaTime: Float) {

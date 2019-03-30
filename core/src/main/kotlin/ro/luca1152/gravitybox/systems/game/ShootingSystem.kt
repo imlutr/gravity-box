@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pools
@@ -29,7 +28,7 @@ import ro.luca1152.gravitybox.components.game.BulletComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.body
 import ro.luca1152.gravitybox.entities.game.BulletEntity
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -59,7 +58,7 @@ class ShootingSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get
     }
 
     override fun addedToEngine(engine: Engine) {
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
+        playerEntity = engine.getSingleton<PlayerComponent>()
         inputMultiplexer.addProcessor(inputAdapter)
     }
 

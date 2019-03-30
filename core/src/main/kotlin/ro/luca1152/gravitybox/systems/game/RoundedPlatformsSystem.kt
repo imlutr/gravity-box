@@ -31,7 +31,7 @@ import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.assets.Assets
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.hitAll
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
@@ -45,7 +45,7 @@ class RoundedPlatformsSystem(
 
     override fun addedToEngine(engine: Engine) {
         super.addedToEngine(engine)
-        mapEntity = engine.getSingletonFor(Family.all(MapComponent::class.java).get())
+        mapEntity = engine.getSingleton<MapComponent>()
     }
 
     override fun update(deltaTime: Float) {

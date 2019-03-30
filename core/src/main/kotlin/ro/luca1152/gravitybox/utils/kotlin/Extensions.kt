@@ -94,8 +94,8 @@ fun Polygon.getRectangleCenter(): Vector2 {
     return Vector2((vertices[0] + vertices[4]) / 2f, (vertices[1] + vertices[5]) / 2f)
 }
 
-fun Engine.getNullableSingletonFor(family: Family): Entity? {
-    val entitiesFound = getEntitiesFor(family)
+inline fun <reified T : Component> Engine.getNullableSingleton(): Entity? {
+    val entitiesFound = getEntitiesFor(Family.all(T::class.java).get())
     check(entitiesFound.size() <= 1) { "A singleton can't be instantiated more than once." }
     return when (entitiesFound.size()) {
         1 -> entitiesFound.first()
@@ -103,13 +103,9 @@ fun Engine.getNullableSingletonFor(family: Family): Entity? {
     }
 }
 
-/**
- * Returns the first entity of [Engine.getEntitiesFor].
- * If there is more than one or no Entity found, [IllegalStateException] is thrown.
- */
-fun Engine.getSingletonFor(family: Family): Entity {
-    val entity = getNullableSingletonFor(family)
-    check(entity != null) { "No singleton found for the given Family. " }
+inline fun <reified T : Component> Engine.getSingleton(): Entity {
+    val entity = getNullableSingleton<T>()
+    check(entity != null) { "No singleton found for the given component." }
     return entity
 }
 

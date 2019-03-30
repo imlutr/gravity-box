@@ -35,7 +35,7 @@ import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
@@ -85,11 +85,11 @@ class PlayingSystem(
     private lateinit var finishEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get()).apply {
+        levelEntity = engine.getSingleton<LevelComponent>().apply {
             level.forceUpdateMap = true
         }
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
-        finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
+        playerEntity = engine.getSingleton<PlayerComponent>()
+        finishEntity = engine.getSingleton<FinishComponent>()
         setOwnBox2DContactListener()
         makeFinishPointEndlesslyBlink()
         hideLevelEditorUI()

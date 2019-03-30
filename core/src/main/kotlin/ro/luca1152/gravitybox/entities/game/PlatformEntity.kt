@@ -58,8 +58,8 @@ object PlatformEntity {
                 setSize(width, height)
                 rotation = rotationInDeg
             }
-            group(image)
-            group.group.run {
+            scene2D(image)
+            scene2D.group.run {
                 addActor(Image(manager.get(Assets.tileset).findRegion("platform-dot")).toMeters())
                 addActor(Image(manager.get(Assets.tileset).findRegion("platform-dot")).toMeters().apply {
                     this.x += this.width + 5.33f.pixelsToMeters

@@ -20,9 +20,8 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.ashley.core.Family
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 /** Detects when the player is inside the finish point. */
 class LevelFinishDetectionSystem : EntitySystem() {
@@ -33,9 +32,9 @@ class LevelFinishDetectionSystem : EntitySystem() {
         get() = playerEntity.collisionBox.box.overlaps(finishEntity.collisionBox.box)
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
-        finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
+        playerEntity = engine.getSingleton<PlayerComponent>()
+        finishEntity = engine.getSingleton<FinishComponent>()
     }
 
     override fun update(deltaTime: Float) {

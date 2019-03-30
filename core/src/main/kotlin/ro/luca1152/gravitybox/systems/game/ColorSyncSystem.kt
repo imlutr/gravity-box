@@ -37,7 +37,7 @@ class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, C
                 else -> Color.RED
             }
         )
-        entity.tryGet(GroupComponent)?.group?.children?.forEach {
+        entity.tryGet(Scene2DComponent)?.group?.children?.forEach {
             it.color.setWithoutAlpha(entity.image.color)
         }
     }

@@ -34,7 +34,7 @@ import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class GroupComponent(private val gameStage: GameStage = Injekt.get()) : Component, Poolable {
+class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Component, Poolable {
     private lateinit var mockImage: ImageComponent
     val group = Group()
 
@@ -112,24 +112,11 @@ class GroupComponent(private val gameStage: GameStage = Injekt.get()) : Componen
         set(value) {
             group.userObject = value
         }
-
-    fun addImage(
-        drawable: Drawable,
-        centerX: Float = 0f, centerY: Float = 0f,
-        width: Float = 0f, height: Float = 0f,
-        rotation: Float = 0f
-    ): Image {
-        val image = Image(drawable).apply {
-            if (width != 0f && height != 0f) {
-                setSize(width, height)
-            }
-            setPosition(centerX - width / 2f, centerY - height / 2f)
-            setOrigin(width / 2f, height / 2f)
-            rotateBy(rotation)
+    var isVisible: Boolean
+        get() = group.isVisible
+        set(value) {
+            group.isVisible = value
         }
-        group.addActor(image)
-        return image
-    }
 
     fun addImage(
         textureRegion: TextureRegion,
@@ -145,15 +132,28 @@ class GroupComponent(private val gameStage: GameStage = Injekt.get()) : Componen
         rotation: Float = 0f
     ): Image {
         ninePatch.scale(1 / PPM, 1 / PPM)
-        val image = Image(NinePatchDrawable(ninePatch)).apply {
-            if (width == 0f && height == 0f) {
+        return addImage(NinePatchDrawable(ninePatch), centerX, centerY, width, height, rotation)
+    }
+
+    fun addImage(
+        drawable: Drawable,
+        centerX: Float = 0f, centerY: Float = 0f,
+        width: Float = 0f, height: Float = 0f,
+        rotation: Float = 0f
+    ): Image {
+        val image = Image(drawable).apply {
+            if (width != 0f && height != 0f) {
                 setSize(width, height)
             }
             setPosition(centerX - width / 2f, centerY - height / 2f)
             setOrigin(width / 2f, height / 2f)
             rotateBy(rotation)
         }
-        group.addActor(image)
+        group.run {
+            addActor(image)
+            setSize(this.width + image.width, this.height + image.height)
+            setOrigin(this.width / 2f, this.height / 2f)
+        }
         return image
     }
 
@@ -164,17 +164,19 @@ class GroupComponent(private val gameStage: GameStage = Injekt.get()) : Componen
     }
 
     override fun reset() {
-        group.clear()
-        group.remove()
+        group.run {
+            clear()
+            remove()
+        }
     }
 
-    companion object : ComponentResolver<GroupComponent>(GroupComponent::class.java)
+    companion object : ComponentResolver<Scene2DComponent>(Scene2DComponent::class.java)
 }
 
-val Entity.group: GroupComponent
-    get() = GroupComponent[this]
+val Entity.scene2D: Scene2DComponent
+    get() = Scene2DComponent[this]
 
-fun Entity.group(mockImage: ImageComponent) = add(
-    engine.createComponent(GroupComponent::class.java).apply {
+fun Entity.scene2D(mockImage: ImageComponent) = add(
+    engine.createComponent(Scene2DComponent::class.java).apply {
         set(mockImage)
     })!!

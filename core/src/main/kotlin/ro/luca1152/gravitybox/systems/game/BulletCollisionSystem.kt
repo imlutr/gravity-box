@@ -28,7 +28,7 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pools
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.ExplosionImageEntity
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -42,8 +42,8 @@ class BulletCollisionSystem(private val world: World = Injekt.get()) :
 
     override fun addedToEngine(engine: Engine) {
         super.addedToEngine(engine)
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
-        finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
+        playerEntity = engine.getSingleton<PlayerComponent>()
+        finishEntity = engine.getSingleton<FinishComponent>()
     }
 
     override fun processEntity(bullet: Entity, deltaTime: Float) {

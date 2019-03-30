@@ -31,7 +31,7 @@ import ro.luca1152.gravitybox.components.game.MapObjectComponent
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
 import ro.luca1152.gravitybox.utils.ui.button.PaneButton
@@ -79,9 +79,9 @@ class ObjectPlacementSystem(
     }
 
     override fun addedToEngine(engine: Engine) {
-        undoRedoEntity = engine.getEntitiesFor(Family.all(UndoRedoComponent::class.java).get()).first()
-        inputEntity = engine.getEntitiesFor(Family.all(InputComponent::class.java).get()).first()
-        mapEntity = engine.getSingletonFor(Family.all(MapComponent::class.java).get())
+        undoRedoEntity = engine.getSingleton<UndoRedoComponent>()
+        inputEntity = engine.getSingleton<InputComponent>()
+        mapEntity = engine.getSingleton<MapComponent>()
         inputMultiplexer.addProcessor(inputAdapter)
     }
 
