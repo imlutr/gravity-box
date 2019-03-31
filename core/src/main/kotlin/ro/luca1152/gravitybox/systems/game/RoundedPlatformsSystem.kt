@@ -95,7 +95,11 @@ class RoundedPlatformsSystem(
 
     private fun setCorrectTexture(entity: Entity, bitmask: Int) {
         entity.scene2D.run {
-            group.clearChildren()
+            val oldWidth = width
+            val oldHeight = height
+            val oldCenterX = centerX
+            val oldCenterY = centerY
+            clearChildren()
             addNinePatch(
                 NinePatch(
                     manager.get(Assets.tileset).findRegion("platform-$bitmask"),
@@ -103,7 +107,7 @@ class RoundedPlatformsSystem(
                     PlatformEntity.PATCH_RIGHT,
                     PlatformEntity.PATCH_TOP,
                     PlatformEntity.PATCH_BOTTOM
-                ), centerX, centerY, width, height, rotation
+                ), oldCenterX, oldCenterY, oldWidth, oldHeight, rotation
             )
         }
     }

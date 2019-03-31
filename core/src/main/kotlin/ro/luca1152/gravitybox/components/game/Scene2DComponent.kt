@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.Pools
 import ro.luca1152.gravitybox.components.ComponentResolver
@@ -48,13 +49,15 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
             return if (super.hit(x, y, touchable) != null) this else null
         }
     }
+    var paddingX = 0f
+    var paddingY = 0f
     var width: Float
-        get() = group.width
+        get() = group.width + paddingX
         set(value) {
             group.width = value
         }
     var height: Float
-        get() = group.height
+        get() = group.height + paddingY
         set(value) {
             group.height = value
         }
@@ -147,30 +150,42 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
         ninePatch: NinePatch,
         centerX: Float = 0f, centerY: Float = 0f,
         width: Float = 0f, height: Float = 0f,
-        rotation: Float = 0f
+        rotation: Float = 0f,
+        appendWidth: Boolean = true, appendHeight: Boolean = true
     ): Image {
         ninePatch.scale(1 / PPM, 1 / PPM)
-        return addImage(NinePatchDrawable(ninePatch), centerX, centerY, width, height, rotation)
+        return addImage(
+            NinePatchDrawable(ninePatch),
+            centerX,
+            centerY,
+            width,
+            height,
+            rotation,
+            appendWidth,
+            appendHeight
+        )
     }
 
     fun addImage(
         textureRegion: TextureRegion,
         centerX: Float = 0f, centerY: Float = 0f,
         width: Float = 0f, height: Float = 0f,
-        rotation: Float = 0f
-    ) {
+        rotation: Float = 0f,
+        appendWidth: Boolean = true, appendHeight: Boolean = true
+    ): Image {
         val textureRegionDrawable = TextureRegionDrawable(textureRegion).apply {
             minWidth /= PPM
             minHeight /= PPM
         }
-        addImage(textureRegionDrawable, centerX, centerY, width, height, rotation)
+        return addImage(textureRegionDrawable, centerX, centerY, width, height, rotation, appendWidth, appendHeight)
     }
 
     fun addImage(
         drawable: Drawable,
         centerX: Float = 0f, centerY: Float = 0f,
         width: Float = 0f, height: Float = 0f,
-        rotation: Float = 0f
+        rotation: Float = 0f,
+        appendWidth: Boolean = true, appendHeight: Boolean = true
     ): Image {
         val image = Image(drawable).apply {
             if (width != 0f && height != 0f) {
@@ -179,7 +194,10 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
         }
         group.run {
             addActor(image)
-            setSize(image.width, image.height)
+            setSize(
+                group.width + (if (appendWidth) image.width else 0f),
+                group.height + (if (appendHeight) image.height else 0f)
+            )
             setOrigin(this.width / 2f, this.height / 2f)
             this.rotation = rotation
             gameStage.addActor(this)
@@ -235,6 +253,27 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
             polygonShape.dispose()
             Pools.free(bodyDef)
         }
+    }
+
+    /** Removes the [actor] from the [group] also subtracting its width and height. */
+    fun removeActor(actor: Actor) {
+        require(group.children.contains(actor))
+        { "The given actor does not belong to this Scene2DComponent." }
+
+        group.width -= actor.width
+        group.height -= actor.height
+        actor.remove()
+    }
+
+    fun clearChildren() {
+        val actorsToRemove = Array<Actor>()
+        group.children.forEach {
+            actorsToRemove.add(it)
+        }
+        actorsToRemove.forEach {
+            removeActor(it)
+        }
+        group.clearChildren()
     }
 
     override fun reset() {

@@ -50,23 +50,25 @@ object PlatformEntity {
         mapObject(id)
         if (isDestroyable) {
             destroyablePlatform()
-//            scene2D()
-//            scene2D.group.run {
-//                setPosition(x, y)
-//                setSize(width, height)
-//                rotation = rotationInDeg
-//            }
-//            scene2D(image)
-//            scene2D.group.run {
-//                addActor(Image(manager.get(Assets.tileset).findRegion("platform-dot")).toMeters())
-//                addActor(Image(manager.get(Assets.tileset).findRegion("platform-dot")).toMeters().apply {
-//                    this.x += this.width + 5.33f.pixelsToMeters
-//                })
-//                addActor(Image(manager.get(Assets.tileset).findRegion("platform-dot")).toMeters().apply {
-//                    this.x += 2 * this.width + 2 * 5.33f.pixelsToMeters
-//                })
-//                setPosition(x - 1f / 2f + 2.66f.pixelsToMeters, y - 16.pixelsToMeters / 2f)
-//            }
+            scene2D()
+            scene2D.run {
+                addImage(manager.get(Assets.tileset).findRegion("platform-dot"))
+                addImage(
+                    manager.get(Assets.tileset).findRegion("platform-dot"),
+                    appendWidth = true, appendHeight = false
+                ).run {
+                    this.x += this.width + 5.33f.pixelsToMeters
+                }
+                addImage(
+                    manager.get(Assets.tileset).findRegion("platform-dot"),
+                    appendWidth = true, appendHeight = false
+                ).run {
+                    this.x += 2 * (this.width + 5.33f.pixelsToMeters)
+                }
+                paddingX = 2 * 5.33f.pixelsToMeters
+                centerX = x
+                centerY = y
+            }
         } else {
             platform()
             scene2D(

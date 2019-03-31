@@ -527,7 +527,6 @@ class LevelEditorScreen(
         engine.run {
             addSystem(UndoRedoSystem())
             addSystem(SelectedObjectColorSystem())
-            addSystem(ColorSyncSystem())
             addSystem(ObjectPlacementSystem())
             addSystem(ZoomingSystem())
             addSystem(PanningSystem())
@@ -539,6 +538,7 @@ class LevelEditorScreen(
             addSystem(ObjectSnappingSystem())
             addSystem(OverlayPositioningSystem())
             addSystem(RoundedPlatformsSystem())
+            addSystem(ColorSyncSystem())
             addSystem(ImageRenderingSystem())
             addSystem(OverlayRenderingSystem())
             addSystem(DebugRenderingSystem())
