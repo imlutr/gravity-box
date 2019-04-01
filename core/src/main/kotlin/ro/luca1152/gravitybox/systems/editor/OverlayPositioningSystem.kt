@@ -424,10 +424,8 @@ class OverlayPositioningSystem(
         toLeft: Boolean = false,
         toRight: Boolean = false
     ) {
-        if (!toLeft && !toRight)
-            error { "No scale direction given." }
-        if (toLeft && toRight)
-            error { "Can't scale in two directions." }
+        if (!toLeft && !toRight) error { "No scale direction given." }
+        if (toLeft && toRight) error { "Can't scale in two directions." }
 
         // Translate [xDragged] to game coords system and subtract half of the button's width so deltaX is 0 in the button's center
         var deltaX = (xDragged.pixelsToMeters - (buttonDragged.width / 2f).pixelsToMeters) * gameCamera.zoom

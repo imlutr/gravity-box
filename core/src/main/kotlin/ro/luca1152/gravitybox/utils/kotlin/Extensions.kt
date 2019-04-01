@@ -28,14 +28,12 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxGame
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.engine
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -192,23 +190,12 @@ val Polygon.topmostY: Float
 fun Float.approximatelyEqualTo(fl: Float) = Math.abs(this - fl) <= 1e-5f
 
 inline fun <T> Iterable<T>.filterNullableSingleton(predicate: (T) -> Boolean): T? {
-    val filteredList = filterTo(ArrayList<T>(), predicate)
+    val filteredList = filterTo(ArrayList(), predicate)
     check(filteredList.size <= 1) { "A singleton can't be instantiated more than once" }
     return when {
         filteredList.size == 1 -> filteredList.first()
         else -> null
     }
-}
-
-inline fun <T> Iterable<T>.filterSingleton(predicate: (T) -> Boolean): T {
-    val filteredElement = filterNullableSingleton(predicate)
-    check(filteredElement != null) { "A singleton can't be instantiated more than once" }
-    return filteredElement
-}
-
-fun Image.toMeters() = this.apply {
-    width = width.pixelsToMeters
-    height = height.pixelsToMeters
 }
 
 fun Entity.addToEngine(): Entity {

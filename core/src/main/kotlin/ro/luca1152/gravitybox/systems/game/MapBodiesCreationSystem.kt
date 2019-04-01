@@ -66,7 +66,7 @@ class MapBodiesCreationSystem : EntitySystem() {
     }
 
     private fun createBox2DBodies() {
-//        createCombinedPlatformsBodies()
+        createCombinedPlatformsBodies()
         createOtherBodies()
     }
 

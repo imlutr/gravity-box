@@ -27,7 +27,7 @@ class PaneButton(skin: Skin, styleName: String) : ToggleButton(skin, styleName) 
     private val paneTable = Table(skin)
     private var cellCount = 0
     private var touchLevel = 0
-    var paneWidthInCells = 4
+    private var paneWidthInCells = 4
     fun addCellToPane(cell: Table) {
         cellCount++
         paneTable.add(cell)

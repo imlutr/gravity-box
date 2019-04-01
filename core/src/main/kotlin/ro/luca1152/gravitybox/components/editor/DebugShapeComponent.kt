@@ -55,20 +55,5 @@ class DebugShapeComponent : Component, Poolable {
 val Entity.debugShape: DebugShapeComponent
     get() = DebugShapeComponent[this]
 
-fun Entity.debugShape(polygon: Polygon) =
-    add(engine.createComponent(DebugShapeComponent::class.java).apply {
-        set(polygon)
-    })!!
-
-fun Entity.debugShape(rectangle: Rectangle) =
-    add(engine.createComponent(DebugShapeComponent::class.java).apply {
-        set(rectangle)
-    })!!
-
-fun Entity.debugShape(point: Vector2) =
-    add(engine.createComponent(DebugShapeComponent::class.java).apply {
-        set(point)
-    })!!
-
 fun Entity.debugShape() =
     add(engine.createComponent(DebugShapeComponent::class.java))!!

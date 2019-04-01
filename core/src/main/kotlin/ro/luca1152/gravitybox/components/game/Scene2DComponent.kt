@@ -50,7 +50,7 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
         }
     }
     var paddingX = 0f
-    var paddingY = 0f
+    private var paddingY = 0f
     var width: Float
         get() = group.width + paddingX
         set(value) {
@@ -213,10 +213,10 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
         val height = yCoords.last() - yCoords.first()
         val center = polygon.getRectangleCenter()
 
-        group.run {
-            setSize(width, height)
-            setOrigin(center.x, center.y)
-        }
+        this.width = width
+        this.height = height
+        centerX = center.x
+        centerY = center.y
     }
 
     fun toBody(
@@ -252,24 +252,16 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
         }
     }
 
-    /** Removes the [actor] from the [group] also subtracting its width and height. */
-    private fun removeActor(actor: Actor) {
-        require(group.children.contains(actor))
-        { "The given actor does not belong to this Scene2DComponent." }
-
-        group.width -= actor.width
-        group.height -= actor.height
-        actor.remove()
-    }
-
     fun clearChildren() {
         val actorsToRemove = Array<Actor>()
         group.children.forEach {
             actorsToRemove.add(it)
         }
         actorsToRemove.forEach {
-            removeActor(it)
+            it.remove()
         }
+        width = 0f
+        height = 0f
         group.clearChildren()
     }
 
