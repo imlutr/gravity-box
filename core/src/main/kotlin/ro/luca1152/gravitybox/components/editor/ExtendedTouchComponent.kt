@@ -54,7 +54,7 @@ class ExtendedTouchComponent(private val gameStage: GameStage = Injekt.get()) : 
     fun updateFromScene2D(scene2D: Scene2DComponent) {
         boundsImage.run {
             setSize(scene2D.width + extraWidth, scene2D.height + extraHeight)
-            setPosition(scene2D.leftX, scene2D.bottomY)
+            setPosition(scene2D.leftX - extraWidth / 2f, scene2D.bottomY - extraHeight / 2f)
             setOrigin(width / 2f, height / 2f)
             rotation = scene2D.rotation
         }
