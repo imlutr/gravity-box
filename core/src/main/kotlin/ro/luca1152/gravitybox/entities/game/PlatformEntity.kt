@@ -52,20 +52,22 @@ object PlatformEntity {
             destroyablePlatform()
             scene2D()
             scene2D.run {
-                addImage(manager.get(Assets.tileset).findRegion("platform-dot"))
-                addImage(
-                    manager.get(Assets.tileset).findRegion("platform-dot"),
-                    appendWidth = true, appendHeight = false
-                ).run {
-                    this.x += this.width + 5.33f.pixelsToMeters
+                paddingX = (2 * 5.33f + 2 * 5.33f / 2f).pixelsToMeters
+                addImage(manager.get(Assets.tileset).findRegion("platform-dot")).run {
+                    this.x += 5.33f.pixelsToMeters / 2f
                 }
                 addImage(
                     manager.get(Assets.tileset).findRegion("platform-dot"),
                     appendWidth = true, appendHeight = false
                 ).run {
-                    this.x += 2 * (this.width + 5.33f.pixelsToMeters)
+                    this.x += this.width + (5.33f).pixelsToMeters + 5.33f.pixelsToMeters / 2f
                 }
-                paddingX = 2 * 5.33f.pixelsToMeters
+                addImage(
+                    manager.get(Assets.tileset).findRegion("platform-dot"),
+                    appendWidth = true, appendHeight = false
+                ).run {
+                    this.x += 2 * (this.width + 5.33f.pixelsToMeters) + 5.33f.pixelsToMeters / 2f
+                }
                 centerX = x
                 centerY = y
             }

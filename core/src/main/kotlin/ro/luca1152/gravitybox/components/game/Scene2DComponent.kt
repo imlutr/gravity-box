@@ -156,13 +156,10 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
         ninePatch.scale(1 / PPM, 1 / PPM)
         return addImage(
             NinePatchDrawable(ninePatch),
-            centerX,
-            centerY,
-            width,
-            height,
+            centerX, centerY,
+            width, height,
             rotation,
-            appendWidth,
-            appendHeight
+            appendWidth, appendHeight
         )
     }
 
@@ -180,7 +177,7 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
         return addImage(textureRegionDrawable, centerX, centerY, width, height, rotation, appendWidth, appendHeight)
     }
 
-    fun addImage(
+    private fun addImage(
         drawable: Drawable,
         centerX: Float = 0f, centerY: Float = 0f,
         width: Float = 0f, height: Float = 0f,
@@ -198,7 +195,7 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
                 group.width + (if (appendWidth) image.width else 0f),
                 group.height + (if (appendHeight) image.height else 0f)
             )
-            setOrigin(this.width / 2f, this.height / 2f)
+            setOrigin(this@Scene2DComponent.width / 2f, this@Scene2DComponent.height / 2f)
             this.rotation = rotation
             gameStage.addActor(this)
         }
@@ -256,7 +253,7 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
     }
 
     /** Removes the [actor] from the [group] also subtracting its width and height. */
-    fun removeActor(actor: Actor) {
+    private fun removeActor(actor: Actor) {
         require(group.children.contains(actor))
         { "The given actor does not belong to this Scene2DComponent." }
 
@@ -305,7 +302,7 @@ val Entity.scene2D: Scene2DComponent
 fun Entity.scene2D() =
     add(engine.createComponent(Scene2DComponent::class.java).apply {
         userObject = this@scene2D
-    })
+    })!!
 
 fun Entity.scene2D(
     ninePatch: NinePatch,
@@ -315,7 +312,7 @@ fun Entity.scene2D(
 ) = add(engine.createComponent(Scene2DComponent::class.java).apply {
     addNinePatch(ninePatch, centerX, centerY, width, height, rotation)
     userObject = this@scene2D
-})
+})!!
 
 fun Entity.scene2D(
     textureRegion: TextureRegion,
