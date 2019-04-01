@@ -49,15 +49,13 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
             return if (super.hit(x, y, touchable) != null) this else null
         }
     }
-    var paddingX = 0f
-    private var paddingY = 0f
     var width: Float
-        get() = group.width + paddingX
+        get() = group.width
         set(value) {
             group.width = value
         }
     var height: Float
-        get() = group.height + paddingY
+        get() = group.height
         set(value) {
             group.height = value
         }

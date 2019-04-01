@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.systems.editor
 
 import com.badlogic.ashley.core.*
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Vector2
@@ -32,6 +33,7 @@ import ktx.actors.plus
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
@@ -39,6 +41,7 @@ import ro.luca1152.gravitybox.utils.ui.button.Button
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import kotlin.math.roundToInt
 
 /** Positions the overlay. */
 class OverlayPositioningSystem(
@@ -79,7 +82,10 @@ class OverlayPositioningSystem(
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
-                scaleMapObject(x, this@apply, selectedMapObject!!, toLeft = true)
+                scaleMapObject(
+                    x, this@apply, selectedMapObject!!, toLeft = true,
+                    isDestroyablePlatform = selectedMapObject!!.tryGet(DestroyablePlatformComponent) != null
+                )
                 mapEntity.map.updateRoundedPlatforms = true
                 selectedMapObject!!.polygon.update()
             }
@@ -125,7 +131,10 @@ class OverlayPositioningSystem(
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
-                scaleMapObject(x, this@apply, selectedMapObject!!, toRight = true)
+                scaleMapObject(
+                    x, this@apply, selectedMapObject!!, toRight = true,
+                    isDestroyablePlatform = selectedMapObject!!.tryGet(DestroyablePlatformComponent) != null
+                )
                 mapEntity.map.updateRoundedPlatforms = true
                 selectedMapObject!!.polygon.update()
             }
@@ -422,7 +431,9 @@ class OverlayPositioningSystem(
         buttonDragged: Button,
         linkedMapObject: Entity,
         toLeft: Boolean = false,
-        toRight: Boolean = false
+        toRight: Boolean = false,
+        isDestroyablePlatform: Boolean = false,
+        manager: AssetManager = Injekt.get()
     ) {
         if (!toLeft && !toRight) error { "No scale direction given." }
         if (toLeft && toRight) error { "Can't scale in two directions." }
@@ -433,7 +444,15 @@ class OverlayPositioningSystem(
 
         val scene2D = linkedMapObject.scene2D
         var newWidth = Math.max(.5f, scene2D.width - deltaX)
-        newWidth = newWidth.roundToNearest(1f, .15f)
+        newWidth = if (isDestroyablePlatform) {
+            newWidth.roundToNearest(
+                (16f + 5.33f).pixelsToMeters,
+                (16f + 5.33f).pixelsToMeters,
+                5.33f.pixelsToMeters / 2f
+            )
+        } else {
+            newWidth.roundToNearest(1f, .15f)
+        }
 
         // Scale the platform correctly, taking in consideration its rotation and the scaling direction
         val localLeft = if (toLeft) -(newWidth - scene2D.width) else 0f
@@ -454,9 +473,30 @@ class OverlayPositioningSystem(
             }
         }
         val position = selectedMapObjectPolygon.getRectangleCenter()
-        scene2D.width = newWidth
-        scene2D.centerX = position.x
-        scene2D.centerY = position.y
+        scene2D.run {
+            if (isDestroyablePlatform) {
+                val dotsToAdd = ((newWidth - width) / (5.33f + 16f).pixelsToMeters).roundToInt()
+                if (dotsToAdd > 0) {
+                    for (i in 0 until dotsToAdd) {
+                        addImage(
+                            manager.get(Assets.tileset).findRegion("platform-dot"),
+                            appendWidth = false, appendHeight = false
+                        ).run {
+                            x = scene2D.width + (5.33f).pixelsToMeters
+                        }
+                        scene2D.width += (16f + 5.33f).pixelsToMeters
+                    }
+                } else if (dotsToAdd < 0) {
+                    for (i in 0 until Math.abs(dotsToAdd)) {
+                        scene2D.group.children.last().remove()
+                    }
+                }
+            }
+
+            width = newWidth
+            centerX = position.x
+            centerY = position.y
+        }
 
         updateEditorObject()
 
