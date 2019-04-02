@@ -35,6 +35,7 @@ import ro.luca1152.gravitybox.components.editor.snap
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Snaps nearby map objects together when moved. */
 class ObjectSnappingSystem : EntitySystem() {
@@ -185,6 +186,9 @@ class ObjectSnappingSystem : EntitySystem() {
     private fun snapObjectSize() {
         selectedObject!!.polygon.expandPolygonWith()
         if (!selectedObject!!.editorObject.isResizing) {
+            return
+        }
+        if (selectedObject!!.tryGet(DestroyablePlatformComponent) != null) {
             return
         }
         snapObjectLeft()

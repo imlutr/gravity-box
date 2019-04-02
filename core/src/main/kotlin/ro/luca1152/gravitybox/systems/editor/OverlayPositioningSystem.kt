@@ -491,6 +491,7 @@ class OverlayPositioningSystem(
                         scene2D.group.children.last().remove()
                     }
                 }
+                originX = (newWidth + 5.33f.pixelsToMeters / 2f) / 2f
             }
 
             width = newWidth
