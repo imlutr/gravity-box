@@ -67,8 +67,8 @@ object PlatformEntity {
                 ).run {
                     this.x += 2 * (this.width + 5.33f.pixelsToMeters) + 5.33f.pixelsToMeters / 2f
                 }
-                this.width += (2 * 5.33f + 5.33f / 2f).pixelsToMeters
-                originX = (this.width + 5.33f.pixelsToMeters / 2f) / 2f
+                this.width += (2 * 5.33f + 2 * 5.33f / 2f).pixelsToMeters
+                originX = this.width / 2f
                 centerX = x
                 centerY = y
             }

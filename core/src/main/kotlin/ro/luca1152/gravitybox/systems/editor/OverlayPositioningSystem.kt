@@ -448,7 +448,7 @@ class OverlayPositioningSystem(
             newWidth.roundToNearest(
                 (16f + 5.33f).pixelsToMeters,
                 (16f + 5.33f).pixelsToMeters,
-                5.33f.pixelsToMeters / 2f
+                0f
             )
         } else {
             newWidth.roundToNearest(1f, .15f)
@@ -482,7 +482,7 @@ class OverlayPositioningSystem(
                             manager.get(Assets.tileset).findRegion("platform-dot"),
                             appendWidth = false, appendHeight = false
                         ).run {
-                            x = scene2D.width + (5.33f).pixelsToMeters
+                            x = scene2D.width + (5.33f).pixelsToMeters / 2f
                         }
                         scene2D.width += (16f + 5.33f).pixelsToMeters
                     }
