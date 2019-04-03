@@ -33,7 +33,6 @@ import ktx.actors.plus
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
@@ -41,7 +40,6 @@ import ro.luca1152.gravitybox.utils.ui.button.Button
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import kotlin.math.roundToInt
 
 /** Positions the overlay. */
 class OverlayPositioningSystem(
@@ -474,29 +472,12 @@ class OverlayPositioningSystem(
         }
         val position = selectedMapObjectPolygon.getRectangleCenter()
         scene2D.run {
-            if (isDestroyablePlatform) {
-                val dotsToAdd = ((newWidth - width) / (5.33f + 16f).pixelsToMeters).roundToInt()
-                if (dotsToAdd > 0) {
-                    for (i in 0 until dotsToAdd) {
-                        addImage(
-                            manager.get(Assets.tileset).findRegion("platform-dot"),
-                            appendWidth = false, appendHeight = false
-                        ).run {
-                            x = scene2D.width + (5.33f).pixelsToMeters / 2f
-                        }
-                        scene2D.width += (16f + 5.33f).pixelsToMeters
-                    }
-                } else if (dotsToAdd < 0) {
-                    for (i in 0 until Math.abs(dotsToAdd)) {
-                        scene2D.group.children.last().remove()
-                    }
-                }
-                originX = (newWidth + 5.33f.pixelsToMeters / 2f) / 2f
-            }
-
             width = newWidth
             centerX = position.x
             centerY = position.y
+            if (isDestroyablePlatform) {
+                linkedMapObject.destroyablePlatform.updateScene2D(scene2D)
+            }
         }
 
         updateEditorObject()

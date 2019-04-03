@@ -211,20 +211,30 @@ class ResizeCommand(
     }
 
     override fun execute() {
+        val newCenterX = affectedEntity.scene2D.centerX + deltaX
+        val newCenterY = affectedEntity.scene2D.centerY + deltaY
         affectedEntity.scene2D.run {
             width += deltaWidth
             height += deltaHeight
-            centerX += deltaX
-            centerY += deltaY
+            centerX = newCenterX
+            centerY = newCenterY
+        }
+        affectedEntity.tryGet(DestroyablePlatformComponent)?.run {
+            updateScene2D(affectedEntity.scene2D)
         }
     }
 
     override fun unexecute() {
+        val newCenterX = affectedEntity.scene2D.centerX - deltaX
+        val newCenterY = affectedEntity.scene2D.centerY - deltaY
         affectedEntity.scene2D.run {
             width -= deltaWidth
             height -= deltaHeight
-            centerX -= deltaX
-            centerY -= deltaY
+            centerX = newCenterX
+            centerY = newCenterY
+        }
+        affectedEntity.tryGet(DestroyablePlatformComponent)?.run {
+            updateScene2D(affectedEntity.scene2D)
         }
     }
 }

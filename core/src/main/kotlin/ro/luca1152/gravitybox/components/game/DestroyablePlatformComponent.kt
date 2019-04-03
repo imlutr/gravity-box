@@ -19,16 +19,51 @@ package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.assets.Assets
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 /** Indicates that the entity is a destroyable platform. */
 class DestroyablePlatformComponent : Component, Poolable {
     override fun reset() {}
+
+    fun updateScene2D(
+        scene2D: Scene2DComponent,
+        manager: AssetManager = Injekt.get()
+    ) {
+        val oldWidth = scene2D.width
+        val oldCenterY = scene2D.centerY
+        val oldCenterX = scene2D.centerX
+        var appendedHeight = false
+        scene2D.clearChildren()
+        val dotsCount = (oldWidth / (16f + 5.33f).pixelsToMeters).toInt()
+        for (i in 0 until dotsCount) {
+            scene2D.run {
+                width += 5.33f.pixelsToMeters / 2f
+                addImage(
+                    manager.get(Assets.tileset).findRegion("platform-dot"),
+                    appendWidth = true, appendHeight = !appendedHeight
+                ).run {
+                    x += 5.33f.pixelsToMeters / 2f + i * (16f + 5.33f).pixelsToMeters
+                }
+                appendedHeight = true
+                width += 5.33f.pixelsToMeters / 2f
+                originX = width / 2f
+            }
+        }
+        scene2D.centerY = oldCenterY
+        scene2D.centerX = oldCenterX
+    }
 
     companion object : ComponentResolver<DestroyablePlatformComponent>(DestroyablePlatformComponent::class.java)
 }
 
 fun Entity.destroyablePlatform() =
     add(engine.createComponent(DestroyablePlatformComponent::class.java))!!
+
+val Entity.destroyablePlatform: DestroyablePlatformComponent
+    get() = DestroyablePlatformComponent[this]
