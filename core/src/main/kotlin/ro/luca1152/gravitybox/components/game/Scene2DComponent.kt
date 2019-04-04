@@ -53,11 +53,13 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
         get() = group.width
         set(value) {
             group.width = value
+            centerOrigin()
         }
     var height: Float
         get() = group.height
         set(value) {
             group.height = value
+            centerOrigin()
         }
     var centerX: Float
         get() {
@@ -144,6 +146,11 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
             group.touchable = if (value) Touchable.enabled else Touchable.disabled
         }
 
+    private fun centerOrigin() {
+        originX = width / 2f
+        originY = height / 2f
+    }
+
     fun addNinePatch(
         ninePatch: NinePatch,
         centerX: Float = 0f, centerY: Float = 0f,
@@ -213,8 +220,8 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
 
         this.width = width
         this.height = height
-        centerX = center.x
-        centerY = center.y
+        this.centerX = center.x
+        this.centerY = center.y
     }
 
     fun toBody(

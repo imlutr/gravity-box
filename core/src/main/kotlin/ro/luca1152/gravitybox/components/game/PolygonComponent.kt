@@ -51,7 +51,7 @@ class PolygonComponent : Component, Poolable {
         updateVertices()
         polygon.run {
             setPosition(scene2D.leftX, scene2D.bottomY)
-            setOrigin(scene2D.originX, scene2D.originY)
+            setOrigin(scene2D.width / 2f, scene2D.height / 2f)
             rotation = scene2D.rotation
         }
     }

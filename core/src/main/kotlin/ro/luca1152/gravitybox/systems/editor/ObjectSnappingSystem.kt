@@ -241,6 +241,7 @@ class ObjectSnappingSystem : EntitySystem() {
                 when {
                     Math.abs(diffLeftRight) <= RESIZE_SNAP_THRESHOLD -> {
                         selectedObject!!.run {
+                            polygon.update()
                             polygon.expandPolygonWith(right = diffLeftRight)
                             scene2D.updateFromPolygon(polygon.polygon)
                             snap.snapRight = selectedObject!!.polygon.rightmostX
