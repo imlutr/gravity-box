@@ -43,35 +43,15 @@ object PlatformEntity {
     fun createEntity(
         id: Int, x: Float, y: Float,
         width: Float, height: Float = DEFAULT_THICKNESS,
-        rotationInDeg: Float = DEFAULT_ROTATION,
+        rotation: Float = DEFAULT_ROTATION,
         isDestroyable: Boolean = false,
         manager: AssetManager = Injekt.get()
     ) = newEntity().apply {
         mapObject(id)
         if (isDestroyable) {
             destroyablePlatform()
-            scene2D()
-            scene2D.run {
-                addImage(manager.get(Assets.tileset).findRegion("platform-dot")).run {
-                    this.x += 5.33f.pixelsToMeters / 2f
-                }
-                addImage(
-                    manager.get(Assets.tileset).findRegion("platform-dot"),
-                    appendWidth = true, appendHeight = false
-                ).run {
-                    this.x += this.width + (5.33f).pixelsToMeters + 5.33f.pixelsToMeters / 2f
-                }
-                addImage(
-                    manager.get(Assets.tileset).findRegion("platform-dot"),
-                    appendWidth = true, appendHeight = false
-                ).run {
-                    this.x += 2 * (this.width + 5.33f.pixelsToMeters) + 5.33f.pixelsToMeters / 2f
-                }
-                this.width += (2 * 5.33f + 2 * 5.33f / 2f).pixelsToMeters
-                originX = this.width / 2f
-                centerX = x
-                centerY = y
-            }
+            scene2D(x, y, width, height, rotation)
+            destroyablePlatform.updateScene2D(scene2D)
         } else {
             platform()
             scene2D(
@@ -79,7 +59,7 @@ object PlatformEntity {
                     manager.get(Assets.tileset).findRegion("platform-0"),
                     PATCH_LEFT, PATCH_RIGHT,
                     PATCH_TOP, PATCH_BOTTOM
-                ), x, y, width, height, rotationInDeg
+                ), x, y, width, height, rotation
             )
         }
         polygon(scene2D)

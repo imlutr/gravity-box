@@ -50,7 +50,7 @@ class JsonComponent : Component, Poolable {
         }
         parentEntity.run {
             this?.let {
-                if (tryGet(PlatformComponent) != null) json.run {
+                if (tryGet(PlatformComponent) != null || tryGet(DestroyablePlatformComponent) != null) json.run {
                     writeValue("type", "platform")
                 }
                 if (tryGet(MapObjectComponent) != null) json.run {
@@ -62,10 +62,13 @@ class JsonComponent : Component, Poolable {
                     writeValue("y", scene2D.centerY.metersToPixels)
                     writeObjectEnd()
 
-                    if (tryGet(PlatformComponent) != null) json.run {
+                    if (tryGet(PlatformComponent) != null || tryGet(DestroyablePlatformComponent) != null) json.run {
                         writeValue("width", scene2D.width.metersToPixels)
                     }
                     writeValue("rotation", scene2D.rotation.toInt())
+                    if (tryGet(DestroyablePlatformComponent) != null) json.run {
+                        writeValue("isDestroyable", true)
+                    }
                 }
             }
         }

@@ -118,7 +118,9 @@ class MapComponent : Component, Poolable {
                         check(finishPoint == null) { " A map can't have more than one finish point." }
                         finishPoint = it
                     }
-                    it.tryGet(PlatformComponent) != null -> platforms.add(it)
+                    it.tryGet(PlatformComponent) != null || it.tryGet(DestroyablePlatformComponent) != null -> {
+                        platforms.add(it)
+                    }
                 }
             }
         }
@@ -234,7 +236,8 @@ class MapComponent : Component, Poolable {
                     it.position.x.pixelsToMeters,
                     it.position.y.pixelsToMeters,
                     it.width.pixelsToMeters,
-                    rotationInDeg = it.rotation.toFloat()
+                    rotation = it.rotation.toFloat(),
+                    isDestroyable = it.isDestroyable
                 )
             }
         }

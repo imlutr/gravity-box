@@ -47,4 +47,5 @@ class ObjectPrototype {
     var position = PositionPrototype()
     var width = 0f
     var rotation = 0
+    var isDestroyable = false
 }

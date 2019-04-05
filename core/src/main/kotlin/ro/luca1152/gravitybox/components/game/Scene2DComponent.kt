@@ -321,3 +321,16 @@ fun Entity.scene2D(
         addImage(textureRegion, centerX, centerY, width, height, rotation)
         userObject = this@scene2D
     })!!
+
+fun Entity.scene2D(
+    centerX: Float = 0f, centerY: Float = 0f,
+    width: Float = 0f, height: Float = 0f,
+    rotation: Float = 0f
+) =
+    add(engine.createComponent(Scene2DComponent::class.java).apply {
+        this.width = width
+        this.height = height
+        this.centerX = centerX
+        this.centerY = centerY
+        this.rotation = rotation
+    })!!
