@@ -38,6 +38,7 @@ class DestroyablePlatformComponent : Component, Poolable {
         val oldWidth = scene2D.width
         val oldCenterY = scene2D.centerY
         val oldCenterX = scene2D.centerX
+        val oldRotation = scene2D.rotation
         var appendedHeight = false
         scene2D.clearChildren()
         val dotsCount = (oldWidth / (16f + 5.33f).pixelsToMeters).toInt()
@@ -55,8 +56,12 @@ class DestroyablePlatformComponent : Component, Poolable {
                 originX = width / 2f
             }
         }
-        scene2D.centerY = oldCenterY
-        scene2D.centerX = oldCenterX
+        scene2D.run {
+            width = oldWidth
+            centerX = oldCenterX
+            centerY = oldCenterY
+            rotation = oldRotation
+        }
     }
 
     companion object : ComponentResolver<DestroyablePlatformComponent>(DestroyablePlatformComponent::class.java)
