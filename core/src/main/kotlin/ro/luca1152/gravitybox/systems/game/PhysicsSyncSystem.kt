@@ -21,6 +21,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
+import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
+import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
@@ -29,6 +31,9 @@ class PhysicsSyncSystem : IteratingSystem(
     Family.all(BodyComponent::class.java).one(Scene2DComponent::class.java, CollisionBoxComponent::class.java).get()
 ) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
+        if (entity.tryGet(EditorObjectComponent) != null && entity.editorObject.isDeleted) {
+            return
+        }
         if (entity.tryGet(Scene2DComponent) != null && entity.tryGet(CombinedBodyComponent) == null) {
             syncBodyPropertiesWithScene2D(entity, entity.scene2D)
         }
