@@ -154,7 +154,7 @@ class PlayingSystem(
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
-//            addSystem(PhysicsDebugRenderingSystem())
+            addSystem(PhysicsDebugRenderingSystem())
         }
     }
 
@@ -234,6 +234,7 @@ class PlayingSystem(
         engine.getEntitiesFor(Family.all(DestroyablePlatformComponent::class.java).get()).forEach {
             if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
                 it.scene2D.isVisible = true
+                it.destroyablePlatform.isRemoved = false
             }
         }
     }

@@ -44,19 +44,21 @@ class LevelRestartSystem : EntitySystem() {
         restartTheLevel()
     }
 
-    pprivate
-    fun restartTheLevel() {
+    private fun restartTheLevel() {
         engine.getEntitiesFor(Family.all(BulletComponent::class.java).get()).forEach {
             engine.removeAndResetEntity(it)
         }
         engine.getEntitiesFor(Family.all(DestroyablePlatformComponent::class.java).get()).forEach {
             if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
                 it.run {
-                    scene2D.isVisible = true
-                    val bodyType = BodyDef.BodyType.StaticBody
-                    val categoryBits = PlatformEntity.CATEGORY_BITS
-                    val maskBits = PlatformEntity.MASK_BITS
-                    body(scene2D.toBody(bodyType, categoryBits, maskBits), categoryBits, maskBits)
+                    if (destroyablePlatform.isRemoved) {
+                        destroyablePlatform.isRemoved = false
+                        scene2D.isVisible = true
+                        val bodyType = BodyDef.BodyType.StaticBody
+                        val categoryBits = PlatformEntity.CATEGORY_BITS
+                        val maskBits = PlatformEntity.MASK_BITS
+                        body(scene2D.toBody(bodyType, categoryBits, maskBits), categoryBits, maskBits)
+                    }
                 }
             }
         }

@@ -33,7 +33,10 @@ class PlatformRemovalSystem :
             if (destroyablePlatform.remove) {
                 remove(BodyComponent::class.java)
                 scene2D.isVisible = false
-                destroyablePlatform.remove = false
+                destroyablePlatform.run {
+                    remove = false
+                    isRemoved = true
+                }
             }
         }
     }
