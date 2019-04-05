@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
-import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.app.KtxGame
@@ -60,18 +59,17 @@ class LoadingScreen(
     }
 
     private fun loadMaps() {
+        manager.setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
         loadGameMaps()
     }
 
     private fun loadGameMaps() {
-        manager.setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
         for (i in 1..MyGame.LEVELS_NUMBER) {
             manager.load<Text>("maps/game/map-$i.json")
         }
     }
 
     private fun loadEditorMaps() {
-        manager.setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
         Gdx.files.local("maps/editor").list().forEach {
             manager.load<Text>(it.path())
         }
