@@ -189,7 +189,7 @@ class MapBodiesCreationSystem : EntitySystem() {
                     var friction = .2f
                     var trimSize = 0f
                     when {
-                        it.tryGet(PlatformComponent) != null -> {
+                        it.tryGet(PlatformComponent) != null || it.tryGet(DestroyablePlatformComponent) != null -> {
                             bodyType = BodyDef.BodyType.StaticBody
                             categoryBits = PlatformEntity.CATEGORY_BITS
                             maskBits = PlatformEntity.MASK_BITS

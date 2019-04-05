@@ -29,7 +29,11 @@ import uy.kohesive.injekt.api.get
 
 /** Indicates that the entity is a destroyable platform. */
 class DestroyablePlatformComponent : Component, Poolable {
-    override fun reset() {}
+    var remove = false
+
+    override fun reset() {
+        remove = false
+    }
 
     fun updateScene2D(
         scene2D: Scene2DComponent,

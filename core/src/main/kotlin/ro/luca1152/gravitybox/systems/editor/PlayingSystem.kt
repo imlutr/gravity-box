@@ -179,6 +179,7 @@ class PlayingSystem(
         removeFinishPointEndlessBlink()
         reselectMapObject()
         destroyAllBodies()
+        resetDestroyablePlatforms(engine)
         levelEditorScreen.addGameSystems()
     }
 
@@ -230,6 +231,12 @@ class PlayingSystem(
 
     private fun destroyAllBodies() {
         levelEntity.map.destroyAllBodies()
+    }
+
+    private fun resetDestroyablePlatforms(engine: Engine) {
+        engine.getEntitiesFor(Family.all(DestroyablePlatformComponent::class.java).get()).forEach {
+            it.scene2D.isVisible = true
+        }
     }
 
     private fun showLevelEditorUI() {

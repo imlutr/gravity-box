@@ -21,7 +21,9 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
+import com.badlogic.gdx.physics.box2d.BodyDef
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
@@ -43,6 +45,15 @@ class LevelRestartSystem : EntitySystem() {
     private fun restartTheLevel() {
         engine.getEntitiesFor(Family.all(BulletComponent::class.java).get()).forEach {
             engine.removeAndResetEntity(it)
+        }
+        engine.getEntitiesFor(Family.all(DestroyablePlatformComponent::class.java).get()).forEach {
+            it.run {
+                scene2D.isVisible = true
+                val bodyType = BodyDef.BodyType.StaticBody
+                val categoryBits = PlatformEntity.CATEGORY_BITS
+                val maskBits = PlatformEntity.MASK_BITS
+                body(scene2D.toBody(bodyType, categoryBits, maskBits), categoryBits, maskBits)
+            }
         }
         engine.getEntitiesFor(Family.all(BodyComponent::class.java).exclude(CombinedBodyComponent::class.java).get())
             .forEach {

@@ -25,12 +25,7 @@ import ro.luca1152.gravitybox.engine
 
 /** Indicates that the entity is a platform. */
 class PlatformComponent : Component, Poolable {
-    var remove = false
-    var isDynamic = false
-
-    override fun reset() {
-        remove = false
-    }
+    override fun reset() {}
 
     companion object : ComponentResolver<PlatformComponent>(PlatformComponent::class.java)
 }
