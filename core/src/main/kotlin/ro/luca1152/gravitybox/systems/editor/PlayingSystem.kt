@@ -33,10 +33,7 @@ import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
-import ro.luca1152.gravitybox.utils.kotlin.UIStage
-import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
-import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
+import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
@@ -235,7 +232,9 @@ class PlayingSystem(
 
     private fun resetDestroyablePlatforms(engine: Engine) {
         engine.getEntitiesFor(Family.all(DestroyablePlatformComponent::class.java).get()).forEach {
-            it.scene2D.isVisible = true
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                it.scene2D.isVisible = true
+            }
         }
     }
 
