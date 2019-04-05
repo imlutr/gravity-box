@@ -31,13 +31,14 @@ import com.badlogic.gdx.utils.JsonWriter
 import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.collections.sortBy
+import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.json
+import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
-import ro.luca1152.gravitybox.utils.assets.Text
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
-import ro.luca1152.gravitybox.utils.json.*
+import ro.luca1152.gravitybox.utils.assets.json.*
+import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -117,7 +118,9 @@ class MapComponent : Component, Poolable {
                         check(finishPoint == null) { " A map can't have more than one finish point." }
                         finishPoint = it
                     }
-                    it.tryGet(PlatformComponent) != null -> platforms.add(it)
+                    it.tryGet(PlatformComponent) != null || it.tryGet(DestroyablePlatformComponent) != null -> {
+                        platforms.add(it)
+                    }
                 }
             }
         }
@@ -201,10 +204,10 @@ class MapComponent : Component, Poolable {
 
     private fun createPlayer(player: PlayerPrototype, playerEntity: Entity) {
         playerEntity.run {
-            image.run {
+            scene2D.run {
                 centerX = player.position.x.pixelsToMeters
                 centerY = player.position.y.pixelsToMeters
-                img.rotation = player.rotation.toFloat()
+                rotation = player.rotation.toFloat()
             }
             mapObject.run {
                 id = player.id
@@ -214,10 +217,10 @@ class MapComponent : Component, Poolable {
 
     private fun createFinish(finish: FinishPrototype, finishEntity: Entity) {
         finishEntity.run {
-            image.run {
+            scene2D.run {
                 centerX = finish.position.x.pixelsToMeters
                 centerY = finish.position.y.pixelsToMeters
-                img.rotation = finish.rotation.toFloat()
+                rotation = finish.rotation.toFloat()
             }
             mapObject.run {
                 id = finish.id
@@ -233,7 +236,8 @@ class MapComponent : Component, Poolable {
                     it.position.x.pixelsToMeters,
                     it.position.y.pixelsToMeters,
                     it.width.pixelsToMeters,
-                    rotationInDeg = it.rotation.toFloat()
+                    rotation = it.rotation.toFloat(),
+                    isDestroyable = it.isDestroyable
                 )
             }
         }
@@ -287,3 +291,8 @@ class MapComponent : Component, Poolable {
 
 val Entity.map: MapComponent
     get() = MapComponent[this]
+
+fun Entity.map(levelId: Int) =
+    add(engine.createComponent(MapComponent::class.java).apply {
+        set(levelId)
+    })!!

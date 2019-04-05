@@ -25,18 +25,24 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.game.DestroyablePlatformComponent
 import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.components.game.MapObjectComponent
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
+import ro.luca1152.gravitybox.utils.ui.button.PaneButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Places objects at touch when the place tool is used. */
-class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+class ObjectPlacementSystem(
+    private val inputMultiplexer: InputMultiplexer = Injekt.get(),
+    private val uiStage: UIStage = Injekt.get()
+) : EntitySystem() {
     private lateinit var undoRedoEntity: Entity
     private lateinit var inputEntity: Entity
     private lateinit var mapEntity: Entity
@@ -47,6 +53,7 @@ class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Inj
                 return false
 
             createPlatformAt(screenX, screenY)
+            uiStage.root.findActor<PaneButton>("PaneButton")?.clickedOnButtonFromPane()
 
             return true
         }
@@ -63,7 +70,8 @@ class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Inj
                 id,
                 MathUtils.floor(coords.x).toFloat() + .5f,
                 MathUtils.floor(coords.y).toFloat() + .5f,
-                platformWidth
+                platformWidth,
+                isDestroyable = inputEntity.input.placeToolObjectType == DestroyablePlatformComponent::class.java
             )
             mapEntity.map.updateRoundedPlatforms = true
             undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(platform, mapEntity))
@@ -71,9 +79,9 @@ class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Inj
     }
 
     override fun addedToEngine(engine: Engine) {
-        undoRedoEntity = engine.getEntitiesFor(Family.all(UndoRedoComponent::class.java).get()).first()
-        inputEntity = engine.getEntitiesFor(Family.all(InputComponent::class.java).get()).first()
-        mapEntity = engine.getSingletonFor(Family.all(MapComponent::class.java).get())
+        undoRedoEntity = engine.getSingleton<UndoRedoComponent>()
+        inputEntity = engine.getSingleton<InputComponent>()
+        mapEntity = engine.getSingleton<MapComponent>()
         inputMultiplexer.addProcessor(inputAdapter)
     }
 

@@ -20,14 +20,13 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import ktx.app.KtxInputAdapter
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.level
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -46,8 +45,8 @@ class KeyboardLevelRestartSystem(private val inputMultiplexer: InputMultiplexer 
     }
 
     override fun addedToEngine(engine: Engine) {
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        playerEntity = engine.getSingleton<PlayerComponent>()
+        levelEntity = engine.getSingleton<LevelComponent>()
         inputMultiplexer.addProcessor(inputAdapter)
     }
 

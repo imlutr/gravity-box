@@ -35,6 +35,7 @@ import ktx.app.KtxScreen
 import ktx.collections.contains
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.editor.input
 import ro.luca1152.gravitybox.components.editor.undoRedo
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.InputEntity
@@ -45,15 +46,13 @@ import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.systems.editor.*
 import ro.luca1152.gravitybox.systems.game.*
-import ro.luca1152.gravitybox.utils.assets.Text
-import ro.luca1152.gravitybox.utils.json.MapFactory
+import ro.luca1152.gravitybox.utils.assets.Assets
+import ro.luca1152.gravitybox.utils.assets.json.MapFactory
+import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
-import ro.luca1152.gravitybox.utils.ui.button.ButtonType
-import ro.luca1152.gravitybox.utils.ui.button.ClickButton
-import ro.luca1152.gravitybox.utils.ui.button.ClickTextButton
-import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
+import ro.luca1152.gravitybox.utils.ui.button.*
 import ro.luca1152.gravitybox.utils.ui.popup.PopUp
 import ro.luca1152.gravitybox.utils.ui.popup.TextPopUp
 import ro.luca1152.gravitybox.utils.ui.popup.YesNoTextPopUp
@@ -94,12 +93,26 @@ class LevelEditorScreen(
             undoRedoEntity.undoRedo.redo()
         })
     }
-    private val placeToolButton = ToggleButton(skin, "small-button").apply {
+    private val placeToolButton = PaneButton(skin, "small-button").apply paneButton@{
         addIcon("platform-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
         setToggledButtonReference(this@LevelEditorScreen.toggledButton)
         type = ButtonType.PLACE_TOOL_BUTTON
         setOpaque(true)
+        addCellToPane(ClickButton(skin, "small-button").apply {
+            addIcon("platform-icon")
+            setColors(Colors.gameColor, Colors.uiDownColor)
+            setOpaque(true)
+            addClickRunnable(createButtonFromPaneRunnable(this@paneButton, this, PlatformComponent::class.java))
+        })
+        addCellToPane(ClickButton(skin, "small-button").apply {
+            addIcon("destroyable-platform-icon")
+            setColors(Colors.gameColor, Colors.uiDownColor)
+            setOpaque(true)
+            addClickRunnable(
+                createButtonFromPaneRunnable(this@paneButton, this, DestroyablePlatformComponent::class.java)
+            )
+        })
     }
     val moveToolButton = ToggleButton(skin, "small-button").apply {
         addIcon("move-icon")
@@ -280,7 +293,7 @@ class LevelEditorScreen(
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
-            gameCamera.position.set(playerEntity.image.centerX, playerEntity.image.centerY, 0f)
+            gameCamera.position.set(playerEntity.scene2D.centerX, playerEntity.scene2D.centerY, 0f)
             hideSettingsPopUp = true
         }
     }
@@ -412,6 +425,17 @@ class LevelEditorScreen(
         }
     }
 
+    private fun createButtonFromPaneRunnable(
+        placeToolButton: PaneButton,
+        button: ClickButton,
+        objectType: Class<out Any>
+    ) =
+        Runnable {
+            placeToolButton.clickedOnButtonFromPane()
+            placeToolButton.icon!!.drawable = button.icon!!.drawable
+            inputEntity.input.placeToolObjectType = objectType
+        }
+
     private fun getLastEditedMapFile(): FileHandle {
         var minLastEditedTime = Long.MAX_VALUE
         var minLastEditedFile = FileHandle("")
@@ -439,17 +463,17 @@ class LevelEditorScreen(
 
     private fun repositionDefaultEntities(platformEntity: Entity) {
         finishEntity.run {
-            image.run {
-                centerX = platformEntity.image.rightX - FinishEntity.WIDTH / 2f
-                centerY = platformEntity.image.topY + FinishEntity.HEIGHT / 2f
+            scene2D.run {
+                centerX = platformEntity.scene2D.rightX - FinishEntity.WIDTH / 2f
+                centerY = platformEntity.scene2D.topY + FinishEntity.HEIGHT / 2f
             }
             editorObject.isSelected = false
             polygon.update()
         }
         playerEntity.run {
-            image.run {
-                centerX = platformEntity.image.leftX + PlayerEntity.WIDTH / 2f
-                centerY = platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
+            scene2D.run {
+                centerX = platformEntity.scene2D.leftX + PlayerEntity.WIDTH / 2f
+                centerY = platformEntity.scene2D.topY + PlayerEntity.HEIGHT / 2f
             }
             editorObject.isSelected = false
             polygon.update()
@@ -482,14 +506,14 @@ class LevelEditorScreen(
     }
 
     private fun centerCameraOnPlatform(platformEntity: Entity) {
-        val platformImage = platformEntity.image
+        val platformScene2D = platformEntity.scene2D
         val deltaY = 2f
-        gameCamera.position.set(platformImage.centerX, platformImage.centerY + deltaY, 0f)
+        gameCamera.position.set(platformScene2D.centerX, platformScene2D.centerY + deltaY, 0f)
     }
 
     private fun centerCameraOnPlayer() {
-        val playerImage = playerEntity.image
-        gameCamera.position.set(playerImage.centerX, playerImage.centerY, 0f)
+        val playerScene2D = playerEntity.scene2D
+        gameCamera.position.set(playerScene2D.centerX, playerScene2D.centerY, 0f)
     }
 
     private fun handleGameInput() {
@@ -503,7 +527,6 @@ class LevelEditorScreen(
         engine.run {
             addSystem(UndoRedoSystem())
             addSystem(SelectedObjectColorSystem())
-            addSystem(ColorSyncSystem())
             addSystem(ObjectPlacementSystem())
             addSystem(ZoomingSystem())
             addSystem(PanningSystem())
@@ -515,6 +538,7 @@ class LevelEditorScreen(
             addSystem(ObjectSnappingSystem())
             addSystem(OverlayPositioningSystem())
             addSystem(RoundedPlatformsSystem())
+            addSystem(ColorSyncSystem())
             addSystem(ImageRenderingSystem())
             addSystem(OverlayRenderingSystem())
             addSystem(DebugRenderingSystem())

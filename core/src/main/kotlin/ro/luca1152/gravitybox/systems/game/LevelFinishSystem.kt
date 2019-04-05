@@ -25,7 +25,7 @@ import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Handles what happens when a level is finished. */
@@ -43,8 +43,8 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
         get() = playerEntity.player.isInsideFinishPoint && colorSchemeIsFullyTransitioned
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
+        playerEntity = engine.getSingleton<PlayerComponent>()
     }
 
     override fun update(deltaTime: Float) {

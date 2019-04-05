@@ -30,8 +30,8 @@ import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
-import ro.luca1152.gravitybox.screens.Assets
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.assets.Assets
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.hitAll
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
@@ -40,12 +40,12 @@ import uy.kohesive.injekt.api.get
 /** Sets the according texture to platforms so they are correctly rounded. */
 class RoundedPlatformsSystem(
     private val manager: AssetManager = Injekt.get()
-) : IteratingSystem(Family.all(PlatformComponent::class.java, ImageComponent::class.java).get()) {
+) : IteratingSystem(Family.all(PlatformComponent::class.java, Scene2DComponent::class.java).get()) {
     private lateinit var mapEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         super.addedToEngine(engine)
-        mapEntity = engine.getSingletonFor(Family.all(MapComponent::class.java).get())
+        mapEntity = engine.getSingleton<MapComponent>()
     }
 
     override fun update(deltaTime: Float) {
@@ -65,7 +65,7 @@ class RoundedPlatformsSystem(
     }
 
     private fun getIntBitmask(entity: Entity): Int {
-        entity.image.img.run {
+        entity.scene2D.group.run {
             val isStraightBottomRightCorner = isPlatformInBottomRightOf(this) || isPlatformAtRightOf(this)
             val isStraightTopRightCorner = isPlatformInTopRightOf(this) || isPlatformAtRightOf(this)
             val isStraightTopLeftCorner = isPlatformInTopLeftOf(this) || isPlatformAtLeftOf(this)
@@ -94,15 +94,20 @@ class RoundedPlatformsSystem(
     }
 
     private fun setCorrectTexture(entity: Entity, bitmask: Int) {
-        entity.image.run {
-            set(
+        entity.scene2D.run {
+            val oldWidth = width
+            val oldHeight = height
+            val oldCenterX = centerX
+            val oldCenterY = centerY
+            clearChildren()
+            addNinePatch(
                 NinePatch(
                     manager.get(Assets.tileset).findRegion("platform-$bitmask"),
                     PlatformEntity.PATCH_LEFT,
                     PlatformEntity.PATCH_RIGHT,
                     PlatformEntity.PATCH_TOP,
                     PlatformEntity.PATCH_BOTTOM
-                ), centerX, centerY, width, height, img.rotation
+                ), oldCenterX, oldCenterY, oldWidth, oldHeight, rotation
             )
         }
     }

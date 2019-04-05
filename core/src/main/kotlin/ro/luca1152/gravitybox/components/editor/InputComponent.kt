@@ -20,13 +20,16 @@ package ro.luca1152.gravitybox.components.editor
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.components.game.PlatformComponent
+import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.kotlin.Reference
 import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
 
 /** Keeps track of UI events. */
 class InputComponent : Component, Poolable {
     var toggledButton = Reference<ToggleButton>()
+    var placeToolObjectType: Class<out Any> = PlatformComponent::class.java
     var isPanning = false
     var isZooming = false
 
@@ -36,6 +39,7 @@ class InputComponent : Component, Poolable {
 
     override fun reset() {
         toggledButton = Reference()
+        placeToolObjectType = PlatformComponent::class.java
         isPanning = false
         isZooming = false
     }
@@ -45,3 +49,8 @@ class InputComponent : Component, Poolable {
 
 val Entity.input: InputComponent
     get() = InputComponent[this]
+
+fun Entity.input(toggledButton: Reference<ToggleButton>) =
+    add(engine.createComponent(InputComponent::class.java).apply {
+        set(toggledButton)
+    })!!

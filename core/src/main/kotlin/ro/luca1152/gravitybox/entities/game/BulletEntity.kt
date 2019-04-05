@@ -17,60 +17,60 @@
 
 package ro.luca1152.gravitybox.entities.game
 
-import com.badlogic.ashley.core.PooledEngine
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.physics.box2d.BodyDef
-import com.badlogic.gdx.physics.box2d.FixtureDef
-import com.badlogic.gdx.physics.box2d.PolygonShape
-import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Pools
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.screens.Assets
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
+import ro.luca1152.gravitybox.utils.kotlin.addToEngine
+import ro.luca1152.gravitybox.utils.kotlin.newEntity
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object BulletEntity {
     private const val WIDTH = .15f
     private const val HEIGHT = .15f
+    private val CATEGORY_BITS = EntityCategory.BULLET.bits
+    private val MASK_BITS = EntityCategory.PLATFORM.bits
 
     fun createEntity(
         x: Float, y: Float,
-        world: World = Injekt.get(),
-        manager: AssetManager = Injekt.get(),
-        engine: PooledEngine = Injekt.get()
-    ) = engine.createEntity().apply label@{
-        add(engine.createComponent(BulletComponent::class.java))
-        add(engine.createComponent(BodyComponent::class.java)).run {
-            val bodyDef = Pools.obtain(BodyDef::class.java).apply {
-                type = BodyDef.BodyType.DynamicBody
-                position.set(x, y)
-                bullet = true
-                fixedRotation = false
+        manager: AssetManager = Injekt.get()
+    ) = newEntity().apply {
+        bullet()
+        body(createBulletBody(x, y, this), CATEGORY_BITS, MASK_BITS)
+        scene2D(manager.get(Assets.tileset).findRegion("bullet"), x, y)
+        color(ColorType.DARK)
+        addToEngine()
+    }
+
+    private fun createBulletBody(
+        x: Float, y: Float,
+        userData: Entity,
+        world: World = Injekt.get()
+    ): Body {
+        val bodyDef = Pools.obtain(BodyDef::class.java).apply {
+            type = BodyDef.BodyType.DynamicBody
+            position.set(x, y)
+            bullet = true
+            fixedRotation = false
+        }
+        val fixtureDef = FixtureDef().apply {
+            shape = PolygonShape().apply {
+                setAsBox(WIDTH, HEIGHT)
             }
-            val fixtureDef = FixtureDef().apply {
-                shape = PolygonShape().apply {
-                    setAsBox(WIDTH, HEIGHT)
-                }
-                density = .2f
-                filter.categoryBits = EntityCategory.BULLET.bits
-                filter.maskBits = EntityCategory.PLATFORM.bits
-            }
-            val body = world.createBody(bodyDef).apply {
-                createFixture(fixtureDef)
-                fixtureDef.shape.dispose()
-                gravityScale = .5f
-                userData = this@label
-            }
+            density = .2f
+            filter.categoryBits = EntityCategory.BULLET.bits
+            filter.maskBits = EntityCategory.PLATFORM.bits
+        }
+        return world.createBody(bodyDef).apply {
             Pools.free(bodyDef)
-            this.body.set(body, this)
+            createFixture(fixtureDef)
+            fixtureDef.shape.dispose()
+            gravityScale = .5f
+            this.userData = userData
         }
-        add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(manager.get(Assets.tileset).findRegion("bullet"), x, y)
-        }
-        add(engine.createComponent(ColorComponent::class.java)).run {
-            color.colorType = ColorType.DARK
-        }
-        engine.addEntity(this)
-    }!!
+    }
 }

@@ -41,8 +41,8 @@ open class ClickButton(skin: Skin, styleName: String) : Button(skin, styleName) 
                 // Toggle off every other button if the click button was set to do so
                 if (toggleOffButtons) {
                     toggledButton.get()?.isToggled = false
+                    stage.root.findActor<PaneButton>("PaneButton")?.clickedOutsidePane()
                 }
-
                 clickRunnable?.run()
             }
         }

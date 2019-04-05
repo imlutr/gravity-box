@@ -19,12 +19,11 @@ package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IntervalSystem
 import com.badlogic.gdx.graphics.Color
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.player
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Gradually changes the color scheme when the player enters/leaves the finish point. */
@@ -60,7 +59,7 @@ class FinishPointColorSystem : IntervalSystem(1 / 70f) {
         }
 
     override fun addedToEngine(engine: Engine) {
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
+        playerEntity = engine.getSingleton<PlayerComponent>()
     }
 
     override fun updateInterval() {

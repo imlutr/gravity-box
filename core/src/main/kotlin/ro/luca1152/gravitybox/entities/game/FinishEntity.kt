@@ -17,13 +17,17 @@
 
 package ro.luca1152.gravitybox.entities.game
 
-import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.physics.box2d.BodyDef
-import ro.luca1152.gravitybox.components.editor.*
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType.StaticBody
+import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.editor.json
+import ro.luca1152.gravitybox.components.editor.overlay
+import ro.luca1152.gravitybox.components.editor.snap
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.screens.Assets
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
+import ro.luca1152.gravitybox.utils.kotlin.addToEngine
+import ro.luca1152.gravitybox.utils.kotlin.newEntity
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -36,50 +40,23 @@ object FinishEntity {
     fun createEntity(
         id: Int = 0, x: Float = 0f, y: Float = 0f,
         blinkEndlessly: Boolean = true,
-        manager: AssetManager = Injekt.get(),
-        engine: PooledEngine = Injekt.get()
-    ) = engine.createEntity().apply {
-        add(engine.createComponent(MapObjectComponent::class.java)).run {
-            mapObject.set(id)
-        }
-        add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(manager.get(Assets.tileset).findRegion("finish"), x, y, WIDTH, HEIGHT)
-            image.img.userObject = this
-        }
-        add(engine.createComponent(PolygonComponent::class.java)).run {
-            polygon.set(image.img)
-            polygon.update()
-        }
-        add(engine.createComponent(EditorObjectComponent::class.java))
-        add(engine.createComponent(SnapComponent::class.java))
-        add(engine.createComponent(FinishComponent::class.java)).run {
-            finish.set(blinkEndlessly, image)
-        }
-        add(engine.createComponent(BodyComponent::class.java)).run {
-            body.set(
-                image.imageToBox2DBody(BodyDef.BodyType.StaticBody, CATEGORY_BITS, MASK_BITS),
-                this,
-                CATEGORY_BITS,
-                MASK_BITS
-            )
-        }
-        add(engine.createComponent(CollisionBoxComponent::class.java)).run {
-            collisionBox.set(WIDTH, HEIGHT)
-        }
-        add(engine.createComponent(ColorComponent::class.java)).run {
-            color.set(ColorType.DARK)
-        }
-        add(engine.createComponent(OverlayComponent::class.java)).run {
-            overlay.set(
-                showMovementButtons = true,
-                showRotationButton = true,
-                showResizingButtons = false,
-                showDeletionButton = false
-            )
-        }
-        add(engine.createComponent(JsonComponent::class.java)).run {
-            json.setObject(this, "finish")
-        }
-        engine.addEntity(this)
-    }!!
+        manager: AssetManager = Injekt.get()
+    ) = newEntity().apply {
+        mapObject(id)
+        scene2D()
+        scene2D(manager.get(Assets.tileset).findRegion("finish"), x, y, WIDTH, HEIGHT)
+        polygon(scene2D)
+        editorObject()
+        snap()
+        finish(blinkEndlessly, scene2D)
+        body(scene2D.toBody(StaticBody, CATEGORY_BITS, MASK_BITS), CATEGORY_BITS, MASK_BITS)
+        collisionBox(WIDTH, HEIGHT)
+        color(ColorType.DARK)
+        overlay(
+            showMovementButtons = true, showRotationButton = true,
+            showResizingButtons = false, showDeletionButton = false
+        )
+        json(this, "finish")
+        addToEngine()
+    }
 }

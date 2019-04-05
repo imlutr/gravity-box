@@ -15,14 +15,37 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.json
+package ro.luca1152.gravitybox.utils.assets.json
 
-/** Contains the structure of a map file. */
-class MapFactory {
+class PaddingPrototype {
+    var left = 0
+    var right = 0
+    var top = 0
+    var bottom = 0
+}
+
+class PositionPrototype {
+    var x = 0f
+    var y = 0f
+}
+
+class PlayerPrototype {
     var id = 0
-    var padding = PaddingPrototype()
-    var player = PlayerPrototype()
-    var finish = FinishPrototype()
-    var objects = ArrayList<ObjectPrototype>()
+    var position = PositionPrototype()
+    var rotation = 0
+}
 
+class FinishPrototype {
+    var id = 0
+    var position = PositionPrototype()
+    var rotation = 0
+}
+
+class ObjectPrototype {
+    var type = ""
+    var id = 0
+    var position = PositionPrototype()
+    var width = 0f
+    var rotation = 0
+    var isDestroyable = false
 }

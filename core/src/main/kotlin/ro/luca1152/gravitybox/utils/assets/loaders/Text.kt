@@ -15,36 +15,17 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.json
+package ro.luca1152.gravitybox.utils.assets.loaders
 
-class PaddingPrototype {
-    var left = 0
-    var right = 0
-    var top = 0
-    var bottom = 0
-}
+import com.badlogic.gdx.files.FileHandle
 
-class PositionPrototype {
-    var x = 0f
-    var y = 0f
-}
+/** Wrapper object for a string. */
+class Text {
+    var string: String = ""
 
-class PlayerPrototype {
-    var id = 0
-    var position = PositionPrototype()
-    var rotation = 0
-}
+    constructor(byteArray: ByteArray) {
+        string = String(byteArray)
+    }
 
-class FinishPrototype {
-    var id = 0
-    var position = PositionPrototype()
-    var rotation = 0
-}
-
-class ObjectPrototype {
-    var type = ""
-    var id = 0
-    var position = PositionPrototype()
-    var width = 0f
-    var rotation = 0
+    constructor(file: FileHandle) : this(file.readBytes())
 }

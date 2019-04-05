@@ -34,7 +34,8 @@ import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.snap
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Snaps nearby map objects together when moved. */
 class ObjectSnappingSystem : EntitySystem() {
@@ -45,7 +46,7 @@ class ObjectSnappingSystem : EntitySystem() {
     private var didSnapPlatform = false
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
     }
 
     override fun update(deltaTime: Float) {
@@ -58,8 +59,8 @@ class ObjectSnappingSystem : EntitySystem() {
 
     private fun updateOnScreenObjects() {
         onScreenObjects.clear()
-        engine.getEntitiesFor(Family.all(ImageComponent::class.java, SnapComponent::class.java).get()).forEach {
-            if (it.image.img.isOnScreen()) {
+        engine.getEntitiesFor(Family.all(Scene2DComponent::class.java, SnapComponent::class.java).get()).forEach {
+            if (it.scene2D.group.isOnScreen()) {
                 onScreenObjects.add(it)
             }
         }
@@ -104,22 +105,22 @@ class ObjectSnappingSystem : EntitySystem() {
                 val diffLeftRight = it.polygon.leftmostX - selectedObject!!.polygon.rightmostX
                 when {
                     Math.abs(diffRightLeft) <= DRAG_SNAP_THRESHOLD -> {
-                        selectedObject!!.image.centerX += diffRightLeft
+                        selectedObject!!.scene2D.centerX += diffRightLeft
                         didSnapPlatform = true
                         return
                     }
                     Math.abs(diffLeftLeft) <= DRAG_SNAP_THRESHOLD -> {
-                        selectedObject!!.image.centerX += diffLeftLeft
+                        selectedObject!!.scene2D.centerX += diffLeftLeft
                         didSnapPlatform = true
                         return
                     }
                     Math.abs(diffRightRight) <= DRAG_SNAP_THRESHOLD -> {
-                        selectedObject!!.image.centerX += diffRightRight
+                        selectedObject!!.scene2D.centerX += diffRightRight
                         didSnapPlatform = true
                         return
                     }
                     Math.abs(diffLeftRight) <= DRAG_SNAP_THRESHOLD -> {
-                        selectedObject!!.image.centerX += diffLeftRight
+                        selectedObject!!.scene2D.centerX += diffLeftRight
                         didSnapPlatform = true
                         return
                     }
@@ -140,22 +141,22 @@ class ObjectSnappingSystem : EntitySystem() {
                 val diffBottomTop = it.polygon.bottommostY - selectedObject!!.polygon.topmostY
                 when {
                     Math.abs(diffTopBottom) <= DRAG_SNAP_THRESHOLD -> {
-                        selectedObject!!.image.centerY += diffTopBottom
+                        selectedObject!!.scene2D.centerY += diffTopBottom
                         didSnapPlatform = true
                         return
                     }
                     Math.abs(diffBottomBottom) <= DRAG_SNAP_THRESHOLD -> {
-                        selectedObject!!.image.centerY += diffBottomBottom
+                        selectedObject!!.scene2D.centerY += diffBottomBottom
                         didSnapPlatform = true
                         return
                     }
                     Math.abs(diffTopTop) <= DRAG_SNAP_THRESHOLD -> {
-                        selectedObject!!.image.centerY += diffTopTop
+                        selectedObject!!.scene2D.centerY += diffTopTop
                         didSnapPlatform = true
                         return
                     }
                     Math.abs(diffBottomTop) <= DRAG_SNAP_THRESHOLD -> {
-                        selectedObject!!.image.centerY += diffBottomTop
+                        selectedObject!!.scene2D.centerY += diffBottomTop
                         didSnapPlatform = true
                         return
                     }
@@ -172,7 +173,7 @@ class ObjectSnappingSystem : EntitySystem() {
             if (it != selectedObject) {
                 val rotationDiff = it.polygon.polygon.rotation - selectedObject!!.polygon.polygon.rotation
                 if (Math.abs(rotationDiff) < ROTATION_SNAP_THRESHOLD) {
-                    selectedObject!!.image.img.rotation += rotationDiff
+                    selectedObject!!.scene2D.rotation += rotationDiff
                     selectedObject!!.snap.snapRotationAngle = it.polygon.polygon.rotation
                     didSnapPlatform = true
                     return
@@ -185,6 +186,9 @@ class ObjectSnappingSystem : EntitySystem() {
     private fun snapObjectSize() {
         selectedObject!!.polygon.expandPolygonWith()
         if (!selectedObject!!.editorObject.isResizing) {
+            return
+        }
+        if (selectedObject!!.tryGet(DestroyablePlatformComponent) != null) {
             return
         }
         snapObjectLeft()
@@ -205,7 +209,7 @@ class ObjectSnappingSystem : EntitySystem() {
                     Math.abs(diffLeftLeft) <= RESIZE_SNAP_THRESHOLD -> {
                         selectedObject!!.run {
                             polygon.expandPolygonWith(left = diffLeftLeft)
-                            image.updateFromPolygon(polygon.polygon)
+                            scene2D.updateFromPolygon(polygon.polygon)
                             snap.snapLeft = selectedObject!!.polygon.leftmostX
                             didSnapPlatform = true
                         }
@@ -214,7 +218,7 @@ class ObjectSnappingSystem : EntitySystem() {
                     Math.abs(diffRightLeft) <= RESIZE_SNAP_THRESHOLD -> {
                         selectedObject!!.run {
                             polygon.expandPolygonWith(left = diffRightLeft)
-                            image.updateFromPolygon(polygon.polygon)
+                            scene2D.updateFromPolygon(polygon.polygon)
                             snap.snapLeft = selectedObject!!.polygon.leftmostX
                             didSnapPlatform = true
                         }
@@ -237,8 +241,9 @@ class ObjectSnappingSystem : EntitySystem() {
                 when {
                     Math.abs(diffLeftRight) <= RESIZE_SNAP_THRESHOLD -> {
                         selectedObject!!.run {
+                            polygon.update()
                             polygon.expandPolygonWith(right = diffLeftRight)
-                            image.updateFromPolygon(polygon.polygon)
+                            scene2D.updateFromPolygon(polygon.polygon)
                             snap.snapRight = selectedObject!!.polygon.rightmostX
                             didSnapPlatform = true
                         }
@@ -247,7 +252,7 @@ class ObjectSnappingSystem : EntitySystem() {
                     Math.abs(diffRightRight) <= RESIZE_SNAP_THRESHOLD -> {
                         selectedObject!!.run {
                             polygon.expandPolygonWith(right = diffRightRight)
-                            image.updateFromPolygon(polygon.polygon)
+                            scene2D.updateFromPolygon(polygon.polygon)
                             snap.snapRight = selectedObject!!.polygon.rightmostX
                             didSnapPlatform = true
                         }
@@ -271,7 +276,7 @@ class ObjectSnappingSystem : EntitySystem() {
                     Math.abs(diffBottomTop) <= RESIZE_SNAP_THRESHOLD -> {
                         selectedObject!!.run {
                             polygon.expandPolygonWith(top = diffBottomTop)
-                            image.updateFromPolygon(polygon.polygon)
+                            scene2D.updateFromPolygon(polygon.polygon)
                             snap.snapTop = selectedObject!!.polygon.topmostY
                             didSnapPlatform = true
                         }
@@ -280,7 +285,7 @@ class ObjectSnappingSystem : EntitySystem() {
                     Math.abs(diffTopTop) <= RESIZE_SNAP_THRESHOLD -> {
                         selectedObject!!.run {
                             polygon.expandPolygonWith(top = diffTopTop)
-                            image.updateFromPolygon(polygon.polygon)
+                            scene2D.updateFromPolygon(polygon.polygon)
                             snap.snapTop = selectedObject!!.polygon.topmostY
                             didSnapPlatform = true
                         }
@@ -304,7 +309,7 @@ class ObjectSnappingSystem : EntitySystem() {
                     Math.abs(diffTopBottom) <= RESIZE_SNAP_THRESHOLD -> {
                         selectedObject!!.run {
                             polygon.expandPolygonWith(bottom = diffTopBottom)
-                            image.updateFromPolygon(polygon.polygon)
+                            scene2D.updateFromPolygon(polygon.polygon)
                             snap.snapBottom = selectedObject!!.polygon.bottommostY
                             didSnapPlatform = true
                         }
@@ -313,7 +318,7 @@ class ObjectSnappingSystem : EntitySystem() {
                     Math.abs(diffBottomBottom) <= RESIZE_SNAP_THRESHOLD -> {
                         selectedObject!!.run {
                             polygon.expandPolygonWith(bottom = diffBottomBottom)
-                            image.updateFromPolygon(polygon.polygon)
+                            scene2D.updateFromPolygon(polygon.polygon)
                             snap.snapBottom = selectedObject!!.polygon.bottommostY
                             didSnapPlatform = true
                         }

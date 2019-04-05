@@ -23,8 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 
 /** A [Button] which toggles when clicked on. */
-class ToggleButton(skin: Skin, styleName: String) : Button(skin, styleName) {
-    private var toggleRunnable: Runnable? = null
+open class ToggleButton(skin: Skin, styleName: String) : Button(skin, styleName) {
+    var toggleRunnable: Runnable? = null
+    var toggleOnce = true
 
     var isToggled = false
         set(value) {
@@ -54,16 +55,14 @@ class ToggleButton(skin: Skin, styleName: String) : Button(skin, styleName) {
         color = upColor
         icon?.color = upColor
         addListener(object : ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                // Return true so touchUp can be called
-                return true
-            }
-
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                if (!isToggled) {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                if (!isToggled || !toggleOnce) {
                     toggleButtonOn()
-                    if (isOver(this@ToggleButton, x, y))
-                        toggleRunnable?.run()
+                    val paneButton = stage.root.findActor<PaneButton>("PaneButton")
+                    if (paneButton != null && paneButton != this@ToggleButton) {
+                        paneButton.clickedOutsidePane()
+                    }
+                    toggleRunnable?.run()
                 }
             }
 

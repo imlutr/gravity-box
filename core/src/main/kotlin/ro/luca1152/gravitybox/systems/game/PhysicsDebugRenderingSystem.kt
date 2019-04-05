@@ -65,6 +65,9 @@ class PhysicsDebugRenderingSystem(
     private fun drawXAtOrigins() {
         shapeRenderer.set(ShapeRenderer.ShapeType.Line)
         for (entity in engine.getEntitiesFor(Family.all(BodyComponent::class.java).get())) {
+            if (!entity.body.isInitialized) {
+                return
+            }
             val body = entity.body.body
             if (body.type == BodyDef.BodyType.DynamicBody && body.userData != null) {
                 (body.userData as Entity).run {
@@ -74,7 +77,7 @@ class PhysicsDebugRenderingSystem(
                         this.tryGet(BulletComponent) != null -> shapeRenderer.color = Color.YELLOW
                     }
                     if (this.tryGet(PlayerComponent) != null)
-                        shapeRenderer.circle(image.centerX, image.centerY, .04f)
+                        shapeRenderer.circle(scene2D.centerX, scene2D.centerY, .04f)
                 }
 
             }

@@ -23,8 +23,8 @@ import com.badlogic.gdx.physics.box2d.Contact
 import com.badlogic.gdx.physics.box2d.ContactImpulse
 import com.badlogic.gdx.physics.box2d.ContactListener
 import com.badlogic.gdx.physics.box2d.Manifold
+import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Reacts accordingly to every Box2D collision. */
@@ -43,17 +43,18 @@ class WorldContactListener : ContactListener {
         // Find the specific entities
         val bulletEntity = findEntity(BulletComponent, entityA, entityB)
         val platformEntity = findEntity(PlatformComponent, entityA, entityB)
+        val destroyablePlatformEntity = findEntity(DestroyablePlatformComponent, entityA, entityB)
         val combinedPlatformEntity = findEntity(CombinedBodyComponent, entityA, entityB)
 
         // A bullet and a platform collided
-        if (bulletEntity != null && platformEntity != null) {
+        if (bulletEntity != null && (platformEntity != null || destroyablePlatformEntity != null)) {
             // Remove the bullet
             bulletEntity.bullet.collidedWithPlatform = true
-            bulletEntity.bullet.collidedWith = platformEntity
+            bulletEntity.bullet.collidedWith = platformEntity ?: destroyablePlatformEntity
 
-            // Remove the platform if it's dynamic
-            if (platformEntity.platform.isDynamic)
-                platformEntity.platform.remove = true
+            if (destroyablePlatformEntity != null) {
+                destroyablePlatformEntity.destroyablePlatform.remove = true
+            }
         }
 
         if (bulletEntity != null && combinedPlatformEntity != null) {

@@ -29,13 +29,13 @@ import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.screens.Assets
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
@@ -85,11 +85,11 @@ class PlayingSystem(
     private lateinit var finishEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get()).apply {
+        levelEntity = engine.getSingleton<LevelComponent>().apply {
             level.forceUpdateMap = true
         }
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
-        finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
+        playerEntity = engine.getSingleton<PlayerComponent>()
+        finishEntity = engine.getSingleton<FinishComponent>()
         setOwnBox2DContactListener()
         makeFinishPointEndlesslyBlink()
         hideLevelEditorUI()
@@ -106,7 +106,7 @@ class PlayingSystem(
 
     private fun makeFinishPointEndlesslyBlink() {
         finishEntity.run {
-            finish.addPermanentFadeInFadeOutActions(image)
+            finish.addPermanentFadeInFadeOutActions(scene2D)
         }
     }
 
@@ -179,6 +179,7 @@ class PlayingSystem(
         removeFinishPointEndlessBlink()
         reselectMapObject()
         destroyAllBodies()
+        resetDestroyablePlatforms(engine)
         levelEditorScreen.addGameSystems()
     }
 
@@ -196,19 +197,19 @@ class PlayingSystem(
 
     private fun resetEntitiesPosition(engine: Engine) {
         engine.getEntitiesFor(
-            Family.all(ImageComponent::class.java, BodyComponent::class.java)
+            Family.all(Scene2DComponent::class.java, BodyComponent::class.java)
                 .exclude(CombinedBodyComponent::class.java).get()
         ).forEach {
-            it.image.run {
-                this.centerX = it.body.initialX
-                this.centerY = it.body.initialY
-                this.img.rotation = it.body.initialRotationRad * MathUtils.radiansToDegrees
+            it.scene2D.run {
+                centerX = it.body.initialX
+                centerY = it.body.initialY
+                rotation = it.body.initialRotationRad * MathUtils.radiansToDegrees
             }
         }
     }
 
     private fun removeFinishPointEndlessBlink() {
-        finishEntity.image.img.run {
+        finishEntity.scene2D.group.run {
             clearActions()
             color.a = 1f
         }
@@ -230,6 +231,12 @@ class PlayingSystem(
 
     private fun destroyAllBodies() {
         levelEntity.map.destroyAllBodies()
+    }
+
+    private fun resetDestroyablePlatforms(engine: Engine) {
+        engine.getEntitiesFor(Family.all(DestroyablePlatformComponent::class.java).get()).forEach {
+            it.scene2D.isVisible = true
+        }
     }
 
     private fun showLevelEditorUI() {
