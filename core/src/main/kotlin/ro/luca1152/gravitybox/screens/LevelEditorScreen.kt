@@ -113,6 +113,14 @@ class LevelEditorScreen(
                 createButtonFromPaneRunnable(this@paneButton, this, DestroyablePlatformComponent::class.java)
             )
         })
+        addCellToPane(ClickButton(skin, "small-button").apply {
+            addIcon("collectible-point-icon")
+            setColors(Colors.gameColor, Colors.uiDownColor)
+            setOpaque(true)
+            addClickRunnable(
+                createButtonFromPaneRunnable(this@paneButton, this, CollectiblePointComponent::class.java)
+            )
+        })
     }
     val moveToolButton = ToggleButton(skin, "small-button").apply {
         addIcon("move-icon")
