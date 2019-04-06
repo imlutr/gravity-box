@@ -179,7 +179,7 @@ class MapBodiesCreationSystem : EntitySystem() {
     }
 
     private fun createOtherBodies() {
-        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get())
+        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java, BodyComponent::class.java).get())
             .forEach {
                 if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
                     var bodyType = BodyDef.BodyType.StaticBody
@@ -209,9 +209,6 @@ class MapBodiesCreationSystem : EntitySystem() {
                         }
                     }
                     if (it.tryGet(CombinedBodyComponent) == null) {
-                        if (it.tryGet(BodyComponent) == null) {
-                            it.body()
-                        }
                         it.body.set(
                             it.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction, trimSize),
                             it, categoryBits, maskBits, density, friction

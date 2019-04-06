@@ -40,7 +40,6 @@ object CollectiblePointEntity {
     ) = engine.createEntity().apply {
         scene2D(manager.get(Assets.tileset).findRegion("collectible-point"), centerX, centerY, WIDTH, HEIGHT, rotation)
         color(ColorType.DARK)
-        body()
         collectiblePoint()
         editorObject()
         mapObject(id)

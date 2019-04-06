@@ -26,8 +26,12 @@ import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 class PointsCollectionSystem : IteratingSystem(Family.all(CollectiblePointComponent::class.java).get()) {
     private lateinit var playerEntity: Entity
-    private val Entity.collidesWithPlayer
-        get() = this.collisionBox.box.overlaps(playerEntity.collisionBox.box)
+    private val Entity.collidesWithPlayer: Boolean
+        get() {
+            playerEntity.polygon.update()
+            this.polygon.update()
+            return this.polygon.polygon.boundingRectangle.overlaps(playerEntity.polygon.polygon.boundingRectangle)
+        }
 
     override fun addedToEngine(engine: Engine) {
         super.addedToEngine(engine)
@@ -42,7 +46,6 @@ class PointsCollectionSystem : IteratingSystem(Family.all(CollectiblePointCompon
 
     private fun collectPoint(entity: Entity) {
         entity.run {
-            remove(BodyComponent::class.java)
             collectiblePoint.isCollected = true
             scene2D.isVisible = false
         }
