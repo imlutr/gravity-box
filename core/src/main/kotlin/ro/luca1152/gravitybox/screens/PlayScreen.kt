@@ -73,15 +73,6 @@ class PlayScreen(
         })
     }
 
-//    private val helpTextPopUp = TextPopUp(
-//        500f, 400f,
-//        """
-//            HOW TO PLAY
-//            Tap to shoot
-//        """.trimIndent(),
-//        skin, "bold", 50f, Colors.gameColor
-//    )
-
     private val helpTextPopUp = PopUp(520f, 380f, skin).apply {
         widget.run {
             add(DistanceFieldLabel("HOW TO PLAY", skin, "extra-bold", 45f, Colors.gameColor)).row()
@@ -160,6 +151,7 @@ class PlayScreen(
             addSystem(OffScreenBulletDeletionSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())
+            addSystem(PointsCollectionSystem())
             addSystem(LevelRestartSystem())
             addSystem(FinishPointColorSystem())
             addSystem(ColorSchemeSystem())

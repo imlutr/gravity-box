@@ -209,6 +209,9 @@ class MapBodiesCreationSystem : EntitySystem() {
                         }
                     }
                     if (it.tryGet(CombinedBodyComponent) == null) {
+                        if (it.tryGet(BodyComponent) == null) {
+                            it.body()
+                        }
                         it.body.set(
                             it.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction, trimSize),
                             it, categoryBits, maskBits, density, friction

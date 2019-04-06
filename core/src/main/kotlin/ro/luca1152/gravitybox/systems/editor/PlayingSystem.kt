@@ -145,6 +145,7 @@ class PlayingSystem(
             addSystem(OffScreenBulletDeletionSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())
+            addSystem(PointsCollectionSystem())
             addSystem(LevelFinishSystem(restartLevelWhenFinished = true))
             addSystem(LevelRestartSystem())
             addSystem(FinishPointColorSystem())
@@ -177,6 +178,7 @@ class PlayingSystem(
         reselectMapObject()
         destroyAllBodies()
         resetDestroyablePlatforms(engine)
+        resetCollectiblePoints(engine)
         levelEditorScreen.addGameSystems()
     }
 
@@ -235,6 +237,15 @@ class PlayingSystem(
             if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
                 it.scene2D.isVisible = true
                 it.destroyablePlatform.isRemoved = false
+            }
+        }
+    }
+
+    private fun resetCollectiblePoints(engine: Engine) {
+        engine.getEntitiesFor(Family.all(CollectiblePointComponent::class.java).get()).forEach {
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                it.scene2D.isVisible = true
+                it.collectiblePoint.isCollected = false
             }
         }
     }

@@ -20,11 +20,21 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.engine
 
 class CollectiblePointComponent : Component, Poolable {
-    override fun reset() {}
+    var isCollected = false
+
+    override fun reset() {
+        isCollected = false
+    }
+
+    companion object : ComponentResolver<CollectiblePointComponent>(CollectiblePointComponent::class.java)
 }
+
+val Entity.collectiblePoint: CollectiblePointComponent
+    get() = CollectiblePointComponent[this]
 
 fun Entity.collectiblePoint() =
     add(engine.createComponent(CollectiblePointComponent::class.java))!!
