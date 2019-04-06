@@ -102,9 +102,7 @@ class PlayingSystem(
     }
 
     private fun makeFinishPointEndlesslyBlink() {
-        finishEntity.run {
-            finish.addPermanentFadeInFadeOutActions(scene2D)
-        }
+        finishEntity.fadeInFadeOut(finishEntity.scene2D)
     }
 
     private fun hideLevelEditorUI() {

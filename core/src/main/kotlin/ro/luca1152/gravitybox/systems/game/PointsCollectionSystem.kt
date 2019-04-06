@@ -24,6 +24,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
+/** Handles what happens when the player collides with a collectible point. */
 class PointsCollectionSystem : IteratingSystem(Family.all(CollectiblePointComponent::class.java).get()) {
     private lateinit var playerEntity: Entity
     private val Entity.collidesWithPlayer: Boolean

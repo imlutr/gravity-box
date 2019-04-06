@@ -48,7 +48,11 @@ object FinishEntity {
         polygon(scene2D)
         editorObject()
         snap()
-        finish(blinkEndlessly, scene2D)
+        finish()
+        if (blinkEndlessly) {
+            // Delay the effect so it starts after transitioning to the PlayScreen
+            fadeInFadeOut(scene2D, .25f)
+        }
         body(scene2D.toBody(StaticBody, CATEGORY_BITS, MASK_BITS), CATEGORY_BITS, MASK_BITS)
         collisionBox(WIDTH, HEIGHT)
         color(ColorType.DARK)
