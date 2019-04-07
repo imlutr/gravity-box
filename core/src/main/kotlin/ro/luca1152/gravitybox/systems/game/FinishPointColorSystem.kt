@@ -21,7 +21,9 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalSystem
 import com.badlogic.gdx.graphics.Color
+import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
+import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.player
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -33,6 +35,7 @@ class FinishPointColorSystem : IntervalSystem(1 / 70f) {
     }
 
     private lateinit var playerEntity: Entity
+    private lateinit var levelEntity: Entity
 
     private val targetGameColor: Color
         get() = when (playerEntity.player.isInsideFinishPoint) {
@@ -60,9 +63,13 @@ class FinishPointColorSystem : IntervalSystem(1 / 70f) {
 
     override fun addedToEngine(engine: Engine) {
         playerEntity = engine.getSingleton<PlayerComponent>()
+        levelEntity = engine.getSingleton<LevelComponent>()
     }
 
     override fun updateInterval() {
+        if (!levelEntity.level.canFinish && playerEntity.player.isInsideFinishPoint) {
+            return
+        }
         lerpColors()
     }
 

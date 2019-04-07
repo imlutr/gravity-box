@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
@@ -89,6 +90,7 @@ class PlayingSystem(
         finishEntity = engine.getSingleton<FinishComponent>()
         setOwnBox2DContactListener()
         makeFinishPointEndlesslyBlink()
+        makePointsEndlesslyBlink()
         hideLevelEditorUI()
         deselectMapObject()
         removeAllSystems(includingThisSystem = false)
@@ -102,7 +104,19 @@ class PlayingSystem(
     }
 
     private fun makeFinishPointEndlesslyBlink() {
-        finishEntity.fadeInFadeOut(finishEntity.scene2D)
+        if (levelEntity.level.canFinish) {
+            finishEntity.fadeInFadeOut(finishEntity.scene2D)
+        } else {
+            finishEntity.scene2D.color.a = FinishEntity.FINISH_BLOCKED_ALPHA
+        }
+    }
+
+    private fun makePointsEndlesslyBlink() {
+        engine.getEntitiesFor(Family.all(CollectiblePointComponent::class.java).get()).forEach {
+            if (it.tryGet(FadeInFadeOutComponent) == null) {
+                it.fadeInFadeOut(it.scene2D)
+            }
+        }
     }
 
     private fun hideLevelEditorUI() {
@@ -150,6 +164,7 @@ class PlayingSystem(
             addSystem(SelectedObjectColorSystem())
             addSystem(RoundedPlatformsSystem())
             addSystem(ColorSyncSystem())
+            addSystem(CanFinishLevelSystem())
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
@@ -173,6 +188,7 @@ class PlayingSystem(
         removePlayEntities(engine)
         resetEntitiesPosition(engine)
         removeFinishPointEndlessBlink()
+        removePointsEndlessBlink(engine)
         reselectMapObject()
         destroyAllBodies()
         resetDestroyablePlatforms(engine)
@@ -209,6 +225,14 @@ class PlayingSystem(
         finishEntity.scene2D.group.run {
             clearActions()
             color.a = 1f
+        }
+    }
+
+    private fun removePointsEndlessBlink(engine: Engine) {
+        engine.getEntitiesFor(Family.all(CollectiblePointComponent::class.java).get()).forEach {
+            if (it.tryGet(FadeInFadeOutComponent) != null) {
+                it.remove(FadeInFadeOutComponent::class.java)
+            }
         }
     }
 

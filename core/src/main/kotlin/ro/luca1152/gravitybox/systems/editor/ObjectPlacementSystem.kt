@@ -78,7 +78,8 @@ class ObjectPlacementSystem(
                     CollectiblePointEntity.createEntity(
                         id,
                         MathUtils.floor(coords.x).toFloat() + .5f,
-                        MathUtils.floor(coords.y).toFloat() + .5f
+                        MathUtils.floor(coords.y).toFloat() + .5f,
+                        blinkEndlessly = false
                     )
                 }
                 else -> error("placeToolObjectType was not recognized.")

@@ -31,6 +31,9 @@ class LevelComponent : Component, Poolable {
     var restartLevel = false
     var levelId = 1
 
+    /** True if every point (if any) was collected. */
+    var canFinish = true
+
     fun set(levelNumber: Int) {
         this.levelId = levelNumber
     }

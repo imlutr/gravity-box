@@ -34,6 +34,8 @@ import uy.kohesive.injekt.api.get
 object FinishEntity {
     const val WIDTH = 2f
     const val HEIGHT = 2f
+    /** The finish point's color alpha used when the level cannot be finished. */
+    const val FINISH_BLOCKED_ALPHA = .2f
     val CATEGORY_BITS = EntityCategory.FINISH.bits
     val MASK_BITS = EntityCategory.FINISH.bits
 

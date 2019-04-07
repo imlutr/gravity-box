@@ -157,6 +157,7 @@ class PlayScreen(
             addSystem(ColorSchemeSystem())
             addSystem(SelectedObjectColorSystem())
             addSystem(ColorSyncSystem())
+            addSystem(CanFinishLevelSystem())
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())

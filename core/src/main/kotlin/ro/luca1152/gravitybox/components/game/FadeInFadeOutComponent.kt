@@ -38,23 +38,23 @@ class FadeInFadeOutComponent : Component, Poolable {
     }
 
     private fun addPermanentFadeInFadeOut(delayBeforeStarting: Float) {
-        fadeInFadeOutAction = RepeatAction().apply {
-            action = Actions.sequence(
-                Actions.fadeOut(1f),
-                Actions.fadeIn(1f)
-            )
-            count = RepeatAction.FOREVER
-        }
-        scene2D.group.addAction(
-            SequenceAction(
-                Actions.delay(delayBeforeStarting),
-                fadeInFadeOutAction
+        fadeInFadeOutAction = SequenceAction(
+            Actions.delay(delayBeforeStarting),
+            Actions.fadeIn(1f - scene2D.color.a),
+            Actions.repeat(
+                RepeatAction.FOREVER,
+                Actions.sequence(
+                    Actions.fadeOut(1f),
+                    Actions.fadeIn(1f)
+                )
             )
         )
+        scene2D.group.addAction(fadeInFadeOutAction)
     }
 
     override fun reset() {
         scene2D.group.removeAction(fadeInFadeOutAction)
+        scene2D.color.a = 1f
         fadeInFadeOutAction = null
     }
 

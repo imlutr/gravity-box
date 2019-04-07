@@ -37,10 +37,14 @@ object CollectiblePointEntity {
         id: Int,
         centerX: Float, centerY: Float,
         rotation: Float = 0f,
+        blinkEndlessly: Boolean = true,
         manager: AssetManager = Injekt.get()
     ) = engine.createEntity().apply {
         scene2D(manager.get(Assets.tileset).findRegion("collectible-point"), centerX, centerY, WIDTH, HEIGHT, rotation)
         color(ColorType.DARK)
+        if (blinkEndlessly) {
+            fadeInFadeOut(scene2D)
+        }
         collectiblePoint()
         editorObject()
         mapObject(id)
