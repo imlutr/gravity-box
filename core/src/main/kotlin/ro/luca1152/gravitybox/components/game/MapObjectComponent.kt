@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that the entity is an object from a game map. */
 class MapObjectComponent : Component, Poolable {
@@ -42,6 +42,6 @@ val Entity.mapObject: MapObjectComponent
     get() = MapObjectComponent[this]
 
 fun Entity.mapObject(id: Int) =
-    add(engine.createComponent(MapObjectComponent::class.java).apply {
+    add(createComponent<MapObjectComponent>().apply {
         set(id)
     })!!

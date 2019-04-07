@@ -30,6 +30,7 @@ import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
@@ -142,22 +143,22 @@ class MapBodiesCreationSystem : EntitySystem() {
         isCombinedHorizontally: Boolean = false, isCombinedVertically: Boolean = false
     ) {
         if (entityA.isCombined && !entityB.isCombined) {
-            entityB.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
+            entityB.add(createComponent<CombinedBodyComponent>()).run {
                 combinedBody.set(entityA.combinedBody.newBodyEntity!!, isCombinedHorizontally, isCombinedVertically)
             }
             entityB.body.resetInitialState()
         } else if (entityB.isCombined && !entityA.isCombined) {
-            entityA.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
+            entityA.add(createComponent<CombinedBodyComponent>()).run {
                 combinedBody.set(entityB.combinedBody.newBodyEntity!!, isCombinedHorizontally, isCombinedVertically)
             }
             entityA.body.resetInitialState()
         } else if (!entityA.isCombined && !entityB.isCombined) {
             val combinedBodyEntity = CombinedPlatformEntity.createEntity(isCombinedHorizontally, isCombinedVertically)
-            entityA.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
+            entityA.add(createComponent<CombinedBodyComponent>()).run {
                 combinedBody.set(combinedBodyEntity, isCombinedHorizontally, isCombinedVertically)
             }
             entityA.body.resetInitialState()
-            entityB.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
+            entityB.add(createComponent<CombinedBodyComponent>()).run {
                 combinedBody.set(combinedBodyEntity, isCombinedHorizontally, isCombinedVertically)
             }
             entityB.body.resetInitialState()

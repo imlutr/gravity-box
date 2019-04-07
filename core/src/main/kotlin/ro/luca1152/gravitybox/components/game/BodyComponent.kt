@@ -25,8 +25,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.kotlin.bodies
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -113,13 +113,13 @@ fun Entity.body(
     maskBits: Short,
     density: Float = 1f,
     friction: Float = .2f
-) = add(engine.createComponent(BodyComponent::class.java).apply {
+) = add(createComponent<BodyComponent>().apply {
     set(body, this@body, categoryBits, maskBits, density, friction)
     body.userData = this@body
 })!!
 
 fun Entity.body() =
-    add(engine.createComponent(BodyComponent::class.java))!!
+    add(createComponent<BodyComponent>())!!
 
 val Float.toRadians
     get() = this * MathUtils.degreesToRadians

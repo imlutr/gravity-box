@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Contains information regarding one entity's overlay. */
 class OverlayComponent : Component, Poolable {
@@ -62,6 +62,6 @@ val Entity.overlay: OverlayComponent
 fun Entity.overlay(
     showMovementButtons: Boolean, showRotationButton: Boolean,
     showResizingButtons: Boolean, showDeletionButton: Boolean
-) = add(engine.createComponent(OverlayComponent::class.java).apply {
+) = add(createComponent<OverlayComponent>().apply {
     set(showMovementButtons, showRotationButton, showResizingButtons, showDeletionButton)
 })!!

@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Translates the entity's information to JSON. */
@@ -93,14 +93,14 @@ val Entity.json: JsonComponent
     get() = JsonComponent[this]
 
 fun Entity.json() =
-    add(engine.createComponent(JsonComponent::class.java))!!
+    add(createComponent<JsonComponent>())!!
 
 fun Entity.json(parentEntity: Entity, jsonObjectName: String) =
-    add(engine.createComponent(JsonComponent::class.java).apply {
+    add(createComponent<JsonComponent>().apply {
         setObject(parentEntity, jsonObjectName)
     })!!
 
 fun Entity.json(parentEntity: Entity) =
-    add(engine.createComponent(JsonComponent::class.java).apply {
+    add(createComponent<JsonComponent>().apply {
         setArrayObject(parentEntity)
     })!!

@@ -19,33 +19,29 @@ package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
-/** Indicates that the entity is a player. */
-class PlayerComponent : Component, Poolable {
-    var isInsideFinishPoint = false
+/** Contains an entity. */
+class LinkedEntityComponent : Component, Poolable {
+    var entity: Entity? = null
 
-    fun reset(body: Body) {
-        body.run {
-            setTransform(0f, 0f, 0f) // Reset the position
-            applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
-            setLinearVelocity(0f, 0f)
-            angularVelocity = 0f
-        }
+    fun set(entity: Entity) {
+        this.entity = entity
     }
 
     override fun reset() {
-        isInsideFinishPoint = false
+        entity = null
     }
 
-    companion object : ComponentResolver<PlayerComponent>(PlayerComponent::class.java)
+    companion object : ComponentResolver<LinkedEntityComponent>(LinkedEntityComponent::class.java)
 }
 
-val Entity.player: PlayerComponent
-    get() = PlayerComponent[this]
+val Entity.linkedEntity: LinkedEntityComponent
+    get() = LinkedEntityComponent[this]
 
-fun Entity.player() =
-    add(createComponent<PlayerComponent>())!!
+fun Entity.linkedEntity(entity: Entity) =
+    add(createComponent<LinkedEntityComponent>().apply {
+        set(entity)
+    })!!

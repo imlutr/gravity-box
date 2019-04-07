@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 class CollectiblePointComponent : Component, Poolable {
     var isCollected = false
@@ -37,4 +37,4 @@ val Entity.collectiblePoint: CollectiblePointComponent
     get() = CollectiblePointComponent[this]
 
 fun Entity.collectiblePoint() =
-    add(engine.createComponent(CollectiblePointComponent::class.java))!!
+    add(createComponent<CollectiblePointComponent>())!!

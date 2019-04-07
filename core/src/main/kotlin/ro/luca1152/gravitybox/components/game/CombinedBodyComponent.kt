@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that the Entity's body was combined (welded) with another body. */
 class CombinedBodyComponent : Component, Poolable {
@@ -60,6 +60,6 @@ fun Entity.combinedBody(
     isCombinedHorizontally: Boolean = false,
     isCombinedVertically: Boolean = false,
     entityContainsBody: Boolean = false
-) = add(engine.createComponent(CombinedBodyComponent::class.java).apply {
+) = add(createComponent<CombinedBodyComponent>().apply {
     set(newBodyEntity, isCombinedHorizontally, isCombinedVertically, entityContainsBody)
 })!!

@@ -26,6 +26,7 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
@@ -65,7 +66,7 @@ class ObjectPlacementSystem(
             val id = engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get())
                 .filter { !it.editorObject.isDeleted }.size
             val placedEntity = when (inputEntity.input.placeToolObjectType) {
-                PlatformComponent::class.java, DestroyablePlatformComponent::class.java -> {
+                PlatformComponent::class.java, DestroyablePlatformComponent::class.java, MovingObjectComponent::class.java -> {
                     PlatformEntity.createEntity(
                         id,
                         MathUtils.floor(coords.x).toFloat() + .5f,
@@ -83,6 +84,16 @@ class ObjectPlacementSystem(
                     )
                 }
                 else -> error("placeToolObjectType was not recognized.")
+            }
+
+            // Place the mock moving platform in the level editor
+            if (inputEntity.input.placeToolObjectType == MovingObjectComponent::class.java) {
+                val mockPlatform = MovingMockPlatformEntity.createEntity(
+                    placedEntity,
+                    placedEntity.scene2D.centerX + 1f, placedEntity.scene2D.centerY + 1f,
+                    placedEntity.scene2D.width, placedEntity.scene2D.rotation
+                )
+                placedEntity.linkedEntity(mockPlatform)
             }
 
             mapEntity.map.updateRoundedPlatforms = true

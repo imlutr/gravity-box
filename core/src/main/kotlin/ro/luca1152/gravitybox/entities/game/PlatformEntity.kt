@@ -45,6 +45,7 @@ object PlatformEntity {
         width: Float,
         rotation: Float = ROTATION,
         isDestroyable: Boolean = false,
+        targetX: Float = Float.POSITIVE_INFINITY, targetY: Float = Float.POSITIVE_INFINITY,
         manager: AssetManager = Injekt.get()
     ) = newEntity().apply {
         mapObject(id)
@@ -61,6 +62,9 @@ object PlatformEntity {
                     PATCH_TOP, PATCH_BOTTOM
                 ), x, y, width, HEIGHT, rotation
             )
+        }
+        if (targetX != Float.POSITIVE_INFINITY && targetY != Float.POSITIVE_INFINITY) {
+            movingObject(targetX, targetY)
         }
         polygon(scene2D)
         editorObject()

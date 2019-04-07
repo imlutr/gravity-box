@@ -35,11 +35,11 @@ import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.json
-import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -309,6 +309,6 @@ val Entity.map: MapComponent
     get() = MapComponent[this]
 
 fun Entity.map(levelId: Int) =
-    add(engine.createComponent(MapComponent::class.java).apply {
+    add(createComponent<MapComponent>().apply {
         set(levelId)
     })!!

@@ -22,8 +22,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.assets.Assets
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -74,7 +74,7 @@ class DestroyablePlatformComponent : Component, Poolable {
 }
 
 fun Entity.destroyablePlatform() =
-    add(engine.createComponent(DestroyablePlatformComponent::class.java))!!
+    add(createComponent<DestroyablePlatformComponent>())!!
 
 val Entity.destroyablePlatform: DestroyablePlatformComponent
     get() = DestroyablePlatformComponent[this]

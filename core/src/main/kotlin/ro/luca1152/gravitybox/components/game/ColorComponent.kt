@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Contains a color type (light/dark/darker). */
 class ColorComponent : Component, Poolable {
@@ -50,6 +50,6 @@ val Entity.color: ColorComponent
     get() = ColorComponent[this]
 
 fun Entity.color(colorType: ColorType) =
-    add(engine.createComponent(ColorComponent::class.java).apply {
+    add(createComponent<ColorComponent>().apply {
         set(colorType)
     })!!

@@ -19,33 +19,34 @@ package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
-/** Indicates that the entity is a player. */
-class PlayerComponent : Component, Poolable {
-    var isInsideFinishPoint = false
+/** Indicates that the map object is moving back an forth to a given position. */
+class MovingObjectComponent : Component, Poolable {
+    val SPEED = 1f
+    var targetX = 0f
+    var targetY = 0f
 
-    fun reset(body: Body) {
-        body.run {
-            setTransform(0f, 0f, 0f) // Reset the position
-            applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
-            setLinearVelocity(0f, 0f)
-            angularVelocity = 0f
-        }
+    fun set(targetX: Float, targetY: Float) {
+        this.targetX = targetX
+        this.targetY = targetY
     }
 
     override fun reset() {
-        isInsideFinishPoint = false
+        targetX = 0f
+        targetY = 0f
     }
 
-    companion object : ComponentResolver<PlayerComponent>(PlayerComponent::class.java)
+    companion object : ComponentResolver<MovingObjectComponent>(MovingObjectComponent::class.java)
 }
 
-val Entity.player: PlayerComponent
-    get() = PlayerComponent[this]
+val Entity.movingObject: MovingObjectComponent
+    get() = MovingObjectComponent[this]
 
-fun Entity.player() =
-    add(createComponent<PlayerComponent>())!!
+fun Entity.movingObject(
+    targetX: Float, targetY: Float
+) = add(createComponent<MovingObjectComponent>().apply {
+    set(targetX, targetY)
+})!!

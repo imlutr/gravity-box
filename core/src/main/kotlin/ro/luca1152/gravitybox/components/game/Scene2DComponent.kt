@@ -35,8 +35,8 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.Pools
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.getRectangleCenter
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -297,7 +297,7 @@ val Entity.scene2D: Scene2DComponent
 
 
 fun Entity.scene2D() =
-    add(engine.createComponent(Scene2DComponent::class.java).apply {
+    add(createComponent<Scene2DComponent>().apply {
         userObject = this@scene2D
     })!!
 
@@ -306,7 +306,7 @@ fun Entity.scene2D(
     centerX: Float = 0f, centerY: Float = 0f,
     width: Float = 0f, height: Float = 0f,
     rotation: Float = 0f
-) = add(engine.createComponent(Scene2DComponent::class.java).apply {
+) = add(createComponent<Scene2DComponent>().apply {
     addNinePatch(ninePatch, centerX, centerY, width, height, rotation)
     userObject = this@scene2D
 })!!
@@ -317,7 +317,7 @@ fun Entity.scene2D(
     width: Float = 0f, height: Float = 0f,
     rotation: Float = 0f
 ) =
-    add(engine.createComponent(Scene2DComponent::class.java).apply {
+    add(createComponent<Scene2DComponent>().apply {
         addImage(textureRegion, centerX, centerY, width, height, rotation)
         userObject = this@scene2D
     })!!
@@ -327,7 +327,7 @@ fun Entity.scene2D(
     width: Float = 0f, height: Float = 0f,
     rotation: Float = 0f
 ) =
-    add(engine.createComponent(Scene2DComponent::class.java).apply {
+    add(createComponent<Scene2DComponent>().apply {
         this.width = width
         this.height = height
         this.centerX = centerX

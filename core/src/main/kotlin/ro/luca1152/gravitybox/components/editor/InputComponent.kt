@@ -22,8 +22,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.PlatformComponent
-import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.kotlin.Reference
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
 
 /** Keeps track of UI events. */
@@ -51,6 +51,6 @@ val Entity.input: InputComponent
     get() = InputComponent[this]
 
 fun Entity.input(toggledButton: Reference<ToggleButton>) =
-    add(engine.createComponent(InputComponent::class.java).apply {
+    add(createComponent<InputComponent>().apply {
         set(toggledButton)
     })!!

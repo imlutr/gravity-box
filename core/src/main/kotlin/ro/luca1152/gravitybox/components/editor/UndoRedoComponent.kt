@@ -25,7 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -73,7 +73,7 @@ val Entity.undoRedo: UndoRedoComponent
     get() = UndoRedoComponent[this]
 
 fun Entity.undoRedo() =
-    add(engine.createComponent(UndoRedoComponent::class.java))!!
+    add(createComponent<UndoRedoComponent>())!!
 
 abstract class Command {
     abstract val affectedEntity: Entity
