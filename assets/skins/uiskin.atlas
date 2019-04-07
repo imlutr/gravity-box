@@ -62,9 +62,16 @@ bold-italic
   orig: 512, 256
   offset: 0, 0
   index: -1
+collectible-point-icon
+  rotate: false
+  xy: 2160, 563
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
 destroyable-platform-icon
   rotate: false
-  xy: 2348, 239
+  xy: 241, 59
   size: 85, 22
   orig: 85, 22
   offset: 0, 0
@@ -113,7 +120,7 @@ extra-light-italic
   index: -1
 full-star
   rotate: false
-  xy: 2197, 540
+  xy: 2197, 533
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -127,7 +134,7 @@ gravity-box
   index: -1
 heart-icon
   rotate: false
-  xy: 2160, 570
+  xy: 2348, 198
   size: 71, 63
   orig: 71, 63
   offset: 0, 0
@@ -183,7 +190,7 @@ pencil-icon
   index: -1
 platform-icon
   rotate: false
-  xy: 241, 60
+  xy: 2421, 240
   size: 85, 21
   orig: 85, 21
   offset: 0, 0
@@ -313,7 +320,7 @@ small-right-arrow-icon
   index: -1
 small-rotate-icon
   rotate: false
-  xy: 2160, 533
+  xy: 2160, 526
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
@@ -334,14 +341,14 @@ small-round-button-inside
   index: -1
 small-vertical-arrow
   rotate: false
-  xy: 241, 20
+  xy: 2421, 200
   size: 24, 38
   orig: 24, 38
   offset: 0, 0
   index: -1
 small-x-icon
   rotate: false
-  xy: 2348, 205
+  xy: 241, 25
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

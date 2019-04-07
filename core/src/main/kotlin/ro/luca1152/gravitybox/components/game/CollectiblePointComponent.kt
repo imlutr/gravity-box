@@ -23,36 +23,18 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.engine
 
-/** Contains level information. */
-class LevelComponent : Component, Poolable {
-    var loadMap = false
-    var createCombinedBodies = false
-    var forceUpdateMap = false
-    var restartLevel = false
-    var levelId = 1
-
-    /** True if every point (if any) was collected. */
-    var canFinish = true
-
-    fun set(levelNumber: Int) {
-        this.levelId = levelNumber
-    }
+class CollectiblePointComponent : Component, Poolable {
+    var isCollected = false
 
     override fun reset() {
-        loadMap = false
-        createCombinedBodies = false
-        forceUpdateMap = false
-        restartLevel = false
-        levelId = 1
+        isCollected = false
     }
 
-    companion object : ComponentResolver<LevelComponent>(LevelComponent::class.java)
+    companion object : ComponentResolver<CollectiblePointComponent>(CollectiblePointComponent::class.java)
 }
 
-val Entity.level: LevelComponent
-    get() = LevelComponent[this]
+val Entity.collectiblePoint: CollectiblePointComponent
+    get() = CollectiblePointComponent[this]
 
-fun Entity.level(levelNumber: Int) =
-    add(engine.createComponent(LevelComponent::class.java).apply {
-        set(levelNumber)
-    })!!
+fun Entity.collectiblePoint() =
+    add(engine.createComponent(CollectiblePointComponent::class.java))!!

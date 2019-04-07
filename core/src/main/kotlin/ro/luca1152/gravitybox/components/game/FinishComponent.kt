@@ -19,35 +19,13 @@ package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.engine
 
 /** Indicates that the entity is a finish point. */
 class FinishComponent : Component, Poolable {
-    private var blinkEndlessly = true
-
-    fun set(blinkEndlessly: Boolean = true, finishImage: Scene2DComponent) {
-        this.blinkEndlessly = blinkEndlessly
-        if (blinkEndlessly)
-            addPermanentFadeInFadeOutActions(finishImage)
-    }
-
-    fun addPermanentFadeInFadeOutActions(scene2D: Scene2DComponent) {
-        scene2D.group.addAction(RepeatAction().apply {
-            action = Actions.sequence(
-                Actions.fadeOut(1f),
-                Actions.fadeIn(1f)
-            )
-            count = RepeatAction.FOREVER
-        })
-    }
-
-    override fun reset() {
-        blinkEndlessly = true
-    }
+    override fun reset() {}
 
     companion object : ComponentResolver<FinishComponent>(FinishComponent::class.java)
 }
@@ -55,7 +33,5 @@ class FinishComponent : Component, Poolable {
 val Entity.finish: FinishComponent
     get() = FinishComponent[this]
 
-fun Entity.finish(blinkEndlessly: Boolean = true, finishImage: Scene2DComponent) =
-    add(engine.createComponent(FinishComponent::class.java).apply {
-        set(blinkEndlessly, finishImage)
-    })!!
+fun Entity.finish() =
+    add(engine.createComponent(FinishComponent::class.java))!!

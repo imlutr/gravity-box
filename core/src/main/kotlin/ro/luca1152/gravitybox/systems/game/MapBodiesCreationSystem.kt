@@ -179,7 +179,7 @@ class MapBodiesCreationSystem : EntitySystem() {
     }
 
     private fun createOtherBodies() {
-        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get())
+        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java, BodyComponent::class.java).get())
             .forEach {
                 if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
                     var bodyType = BodyDef.BodyType.StaticBody

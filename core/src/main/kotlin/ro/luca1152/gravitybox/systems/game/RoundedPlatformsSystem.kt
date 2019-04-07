@@ -113,22 +113,22 @@ class RoundedPlatformsSystem(
     }
 
     private fun isPlatformInBottomRightOf(actor: Actor) =
-        isPlatform(actor.hitAll(actor.width - PlatformEntity.DEFAULT_THICKNESS / 2f, (-5).pixelsToMeters))
+        isPlatform(actor.hitAll(actor.width - PlatformEntity.HEIGHT / 2f, (-5).pixelsToMeters))
 
     private fun isPlatformAtRightOf(actor: Actor) =
         isPlatform(actor.hitAll(actor.width + 5.pixelsToMeters, actor.height / 2f))
 
     private fun isPlatformInTopRightOf(actor: Actor) =
-        isPlatform(actor.hitAll(actor.width - PlatformEntity.DEFAULT_THICKNESS / 2f, actor.height + 5.pixelsToMeters))
+        isPlatform(actor.hitAll(actor.width - PlatformEntity.HEIGHT / 2f, actor.height + 5.pixelsToMeters))
 
     private fun isPlatformInTopLeftOf(actor: Actor) =
-        isPlatform(actor.hitAll(PlatformEntity.DEFAULT_THICKNESS / 2f, actor.height + 5.pixelsToMeters))
+        isPlatform(actor.hitAll(PlatformEntity.HEIGHT / 2f, actor.height + 5.pixelsToMeters))
 
     private fun isPlatformAtLeftOf(actor: Actor) =
         isPlatform(actor.hitAll((-5).pixelsToMeters, actor.height / 2f))
 
     private fun isPlatformInBottomLeftOf(actor: Actor) =
-        isPlatform(actor.hitAll(PlatformEntity.DEFAULT_THICKNESS / 2f, (-5).pixelsToMeters))
+        isPlatform(actor.hitAll(PlatformEntity.HEIGHT / 2f, (-5).pixelsToMeters))
 
     private fun isPlatform(actors: Array<Actor>): Boolean {
         actors.forEach {

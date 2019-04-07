@@ -45,9 +45,20 @@ class LevelRestartSystem : EntitySystem() {
     }
 
     private fun restartTheLevel() {
+        removeBullets()
+        resetDestroyablePlatforms()
+        resetCollectiblePoints()
+        resetBodiesToInitialState()
+        levelEntity.level.restartLevel = false
+    }
+
+    private fun removeBullets() {
         engine.getEntitiesFor(Family.all(BulletComponent::class.java).get()).forEach {
             engine.removeAndResetEntity(it)
         }
+    }
+
+    private fun resetDestroyablePlatforms() {
         engine.getEntitiesFor(Family.all(DestroyablePlatformComponent::class.java).get()).forEach {
             if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
                 it.run {
@@ -62,12 +73,27 @@ class LevelRestartSystem : EntitySystem() {
                 }
             }
         }
+    }
+
+    private fun resetCollectiblePoints() {
+        engine.getEntitiesFor(Family.all(CollectiblePointComponent::class.java).get()).forEach {
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                it.run {
+                    if (collectiblePoint.isCollected) {
+                        collectiblePoint.isCollected = false
+                        scene2D.isVisible = true
+                    }
+                }
+            }
+        }
+    }
+
+    private fun resetBodiesToInitialState() {
         engine.getEntitiesFor(Family.all(BodyComponent::class.java).exclude(CombinedBodyComponent::class.java).get())
             .forEach {
                 if (it.tryGet(BodyComponent) != null) {
                     it.body.resetToInitialState()
                 }
             }
-        levelEntity.level.restartLevel = false
     }
 }

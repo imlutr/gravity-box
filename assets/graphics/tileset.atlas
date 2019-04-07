@@ -1,159 +1,166 @@
 
 tileset.png
-size: 199,256
+size: 199,261
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 bullet
   rotate: false
-  xy: 132, 61
+  xy: 131, 12
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 circle
   rotate: false
-  xy: 1, 61
+  xy: 1, 66
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
+collectible-point
+  rotate: false
+  xy: 1, 1
+  size: 63, 63
+  orig: 63, 63
+  offset: 0, 0
+  index: -1
 finish
   rotate: false
-  xy: 1, 127
+  xy: 1, 132
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pixel
   rotate: false
-  xy: 197, 254
+  xy: 197, 259
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 platform-0
   rotate: false
-  xy: 1, 43
+  xy: 131, 178
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-1
   rotate: false
-  xy: 131, 173
+  xy: 131, 160
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-10
   rotate: false
-  xy: 66, 37
+  xy: 132, 124
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-11
   rotate: false
-  xy: 66, 19
+  xy: 132, 106
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-12
   rotate: false
-  xy: 66, 1
+  xy: 132, 88
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-13
   rotate: false
-  xy: 132, 119
+  xy: 132, 70
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-14
   rotate: false
-  xy: 132, 101
+  xy: 132, 52
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-15
   rotate: false
-  xy: 132, 83
+  xy: 131, 34
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-2
   rotate: false
-  xy: 1, 25
+  xy: 131, 142
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-3
   rotate: false
-  xy: 131, 155
+  xy: 67, 114
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-4
   rotate: false
-  xy: 1, 7
+  xy: 67, 96
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-5
   rotate: false
-  xy: 131, 137
+  xy: 67, 78
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-6
   rotate: false
-  xy: 67, 109
+  xy: 67, 60
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-7
   rotate: false
-  xy: 67, 91
+  xy: 66, 42
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-8
   rotate: false
-  xy: 67, 73
+  xy: 66, 24
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-9
   rotate: false
-  xy: 67, 55
+  xy: 66, 6
   size: 63, 16
   orig: 63, 16
   offset: 0, 0
   index: -1
 platform-dot
   rotate: false
-  xy: 154, 65
+  xy: 153, 16
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 player
   rotate: false
-  xy: 131, 191
+  xy: 131, 196
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

@@ -25,10 +25,8 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.components.editor.*
-import ro.luca1152.gravitybox.components.game.DestroyablePlatformComponent
-import ro.luca1152.gravitybox.components.game.MapComponent
-import ro.luca1152.gravitybox.components.game.MapObjectComponent
-import ro.luca1152.gravitybox.components.game.map
+import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
@@ -66,15 +64,29 @@ class ObjectPlacementSystem(
             val platformWidth = 1f
             val id = engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get())
                 .filter { !it.editorObject.isDeleted }.size
-            val platform = PlatformEntity.createEntity(
-                id,
-                MathUtils.floor(coords.x).toFloat() + .5f,
-                MathUtils.floor(coords.y).toFloat() + .5f,
-                platformWidth,
-                isDestroyable = inputEntity.input.placeToolObjectType == DestroyablePlatformComponent::class.java
-            )
+            val placedEntity = when (inputEntity.input.placeToolObjectType) {
+                PlatformComponent::class.java, DestroyablePlatformComponent::class.java -> {
+                    PlatformEntity.createEntity(
+                        id,
+                        MathUtils.floor(coords.x).toFloat() + .5f,
+                        MathUtils.floor(coords.y).toFloat() + .5f,
+                        platformWidth,
+                        isDestroyable = inputEntity.input.placeToolObjectType == DestroyablePlatformComponent::class.java
+                    )
+                }
+                CollectiblePointComponent::class.java -> {
+                    CollectiblePointEntity.createEntity(
+                        id,
+                        MathUtils.floor(coords.x).toFloat() + .5f,
+                        MathUtils.floor(coords.y).toFloat() + .5f,
+                        blinkEndlessly = false
+                    )
+                }
+                else -> error("placeToolObjectType was not recognized.")
+            }
+
             mapEntity.map.updateRoundedPlatforms = true
-            undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(platform, mapEntity))
+            undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(placedEntity, mapEntity))
         }
     }
 

@@ -36,6 +36,7 @@ import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
@@ -106,7 +107,7 @@ class MapComponent : Component, Poolable {
     private fun getJsonFromMap(engine: PooledEngine = Injekt.get()): Json {
         var player: Entity? = null
         var finishPoint: Entity? = null
-        val platforms = Array<Entity>()
+        val objects = Array<Entity>()
         engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
             if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
                 when {
@@ -118,8 +119,9 @@ class MapComponent : Component, Poolable {
                         check(finishPoint == null) { " A map can't have more than one finish point." }
                         finishPoint = it
                     }
-                    it.tryGet(PlatformComponent) != null || it.tryGet(DestroyablePlatformComponent) != null -> {
-                        platforms.add(it)
+                    it.tryGet(PlatformComponent) != null || it.tryGet(DestroyablePlatformComponent) != null ||
+                            it.tryGet(CollectiblePointComponent) != null -> {
+                        objects.add(it)
                     }
                 }
             }
@@ -145,8 +147,8 @@ class MapComponent : Component, Poolable {
             player!!.json.writeToJson(this)
             finishPoint!!.json.writeToJson(this)
             writeArrayStart("objects")
-            platforms.sortBy { it.mapObject.id }
-            platforms.forEach {
+            objects.sortBy { it.mapObject.id }
+            objects.forEach {
                 it.json.writeToJson(this)
             }
             writeArrayEnd()
@@ -179,7 +181,7 @@ class MapComponent : Component, Poolable {
         createMap(mapFactory.id, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
-        createPlatforms(mapFactory.objects)
+        createObjects(mapFactory.objects)
         updateMapBounds()
     }
 
@@ -228,19 +230,33 @@ class MapComponent : Component, Poolable {
         }
     }
 
-    private fun createPlatforms(objects: ArrayList<ObjectPrototype>) {
+    private fun createObjects(objects: ArrayList<ObjectPrototype>) {
         objects.forEach {
             when {
-                it.type == "platform" -> PlatformEntity.createEntity(
-                    it.id,
-                    it.position.x.pixelsToMeters,
-                    it.position.y.pixelsToMeters,
-                    it.width.pixelsToMeters,
-                    rotation = it.rotation.toFloat(),
-                    isDestroyable = it.isDestroyable
-                )
+                it.type == "platform" -> createPlatform(it)
+                it.type == "point" -> createPoint(it)
             }
         }
+    }
+
+    private fun createPlatform(platform: ObjectPrototype) {
+        PlatformEntity.createEntity(
+            platform.id,
+            platform.position.x.pixelsToMeters,
+            platform.position.y.pixelsToMeters,
+            platform.width.pixelsToMeters,
+            rotation = platform.rotation.toFloat(),
+            isDestroyable = platform.isDestroyable
+        )
+    }
+
+    private fun createPoint(point: ObjectPrototype) {
+        CollectiblePointEntity.createEntity(
+            point.id,
+            point.position.x.pixelsToMeters,
+            point.position.y.pixelsToMeters,
+            point.rotation.toFloat()
+        )
     }
 
     private fun getMapFileNameForId(
