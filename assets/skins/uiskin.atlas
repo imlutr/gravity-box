@@ -78,7 +78,7 @@ destroyable-platform-icon
   index: -1
 empty-star
   rotate: false
-  xy: 2240, 145
+  xy: 2421, 208
   size: 31, 30
   orig: 31, 30
   offset: 0, 0
@@ -120,7 +120,7 @@ extra-light-italic
   index: -1
 full-star
   rotate: false
-  xy: 2197, 533
+  xy: 275, 6
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -181,6 +181,13 @@ move-icon
   orig: 79, 79
   offset: 0, 0
   index: -1
+moving-platform-icon
+  rotate: false
+  xy: 2421, 240
+  size: 85, 21
+  orig: 85, 21
+  offset: 0, 0
+  index: -1
 pencil-icon
   rotate: false
   xy: 2374, 846
@@ -190,7 +197,7 @@ pencil-icon
   index: -1
 platform-icon
   rotate: false
-  xy: 2421, 240
+  xy: 241, 36
   size: 85, 21
   orig: 85, 21
   offset: 0, 0
@@ -341,14 +348,14 @@ small-round-button-inside
   index: -1
 small-vertical-arrow
   rotate: false
-  xy: 2421, 200
+  xy: 328, 43
   size: 24, 38
   orig: 24, 38
   offset: 0, 0
   index: -1
 small-x-icon
   rotate: false
-  xy: 241, 25
+  xy: 241, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
