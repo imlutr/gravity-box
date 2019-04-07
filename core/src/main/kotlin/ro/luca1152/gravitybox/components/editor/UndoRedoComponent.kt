@@ -110,10 +110,16 @@ class RotateCommand(
 
     override fun execute() {
         affectedEntity.scene2D.rotation += deltaAngle
+        if (affectedEntity.tryGet(MovingObjectComponent) != null) {
+            affectedEntity.linkedEntity.entity!!.scene2D.rotation += deltaAngle
+        }
     }
 
     override fun unexecute() {
         affectedEntity.scene2D.rotation -= deltaAngle
+        if (affectedEntity.tryGet(MovingObjectComponent) != null) {
+            affectedEntity.linkedEntity.entity!!.scene2D.rotation -= deltaAngle
+        }
     }
 }
 
@@ -136,6 +142,12 @@ class AddCommand(
                 } else {
                     affectedEntity.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction)
                 }
+            }
+        }
+        if (affectedEntity.tryGet(MovingObjectComponent) != null) {
+            affectedEntity.linkedEntity.entity!!.scene2D.run {
+                isVisible = true
+                isTouchable = true
             }
         }
         affectedEntity.tryGet(ExtendedTouchComponent)?.run {
@@ -162,6 +174,12 @@ class AddCommand(
         affectedEntity.tryGet(Scene2DComponent)?.run {
             isVisible = false
             isTouchable = false
+        }
+        if (affectedEntity.tryGet(MovingObjectComponent) != null) {
+            affectedEntity.linkedEntity.entity!!.scene2D.run {
+                isVisible = false
+                isTouchable = false
+            }
         }
         affectedEntity.tryGet(ExtendedTouchComponent)?.run {
             boundsImage.touchable = Touchable.disabled
@@ -222,6 +240,16 @@ class ResizeCommand(
         affectedEntity.tryGet(DestroyablePlatformComponent)?.run {
             updateScene2D(affectedEntity.scene2D)
         }
+        if (affectedEntity.tryGet(MovingObjectComponent) != null) {
+            affectedEntity.linkedEntity.entity!!.scene2D.run {
+                width += deltaWidth
+                height += deltaHeight
+                group.children.first().width += deltaWidth
+                group.children.first().height += deltaHeight
+                centerX += deltaX - deltaWidth / 2f
+                centerY += deltaY - deltaHeight / 2f
+            }
+        }
     }
 
     override fun unexecute() {
@@ -235,6 +263,16 @@ class ResizeCommand(
         }
         affectedEntity.tryGet(DestroyablePlatformComponent)?.run {
             updateScene2D(affectedEntity.scene2D)
+        }
+        if (affectedEntity.tryGet(MovingObjectComponent) != null) {
+            affectedEntity.linkedEntity.entity!!.scene2D.run {
+                width -= deltaWidth
+                height -= deltaHeight
+                group.children.first().width -= deltaWidth
+                group.children.first().height -= deltaHeight
+                centerX -= deltaX - deltaWidth / 2f
+                centerY -= deltaY - deltaHeight / 2f
+            }
         }
     }
 }

@@ -94,6 +94,7 @@ class ObjectPlacementSystem(
                     placedEntity.scene2D.width, placedEntity.scene2D.rotation
                 )
                 placedEntity.linkedEntity(mockPlatform)
+                placedEntity.movingObject(mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
             }
 
             mapEntity.map.updateRoundedPlatforms = true

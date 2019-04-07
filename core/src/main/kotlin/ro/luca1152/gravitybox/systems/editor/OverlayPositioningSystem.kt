@@ -19,7 +19,6 @@ package ro.luca1152.gravitybox.systems.editor
 
 import com.badlogic.ashley.core.*
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Vector2
@@ -208,6 +207,10 @@ class OverlayPositioningSystem(
                         newRotation.roundToNearest(45f, 7f)
                     }
                 newRotation = toPositiveAngle(newRotation)
+
+                if (selectedMapObject!!.tryGet(MovingObjectComponent) != null) {
+                    selectedMapObject!!.linkedEntity.entity!!.scene2D.rotation = newRotation
+                }
 
                 scene2d.rotation = newRotation
                 overlayLevel1.rotation = newRotation
@@ -430,8 +433,7 @@ class OverlayPositioningSystem(
         linkedMapObject: Entity,
         toLeft: Boolean = false,
         toRight: Boolean = false,
-        isDestroyablePlatform: Boolean = false,
-        manager: AssetManager = Injekt.get()
+        isDestroyablePlatform: Boolean = false
     ) {
         if (!toLeft && !toRight) error { "No scale direction given." }
         if (toLeft && toRight) error { "Can't scale in two directions." }
@@ -471,8 +473,16 @@ class OverlayPositioningSystem(
             }
         }
         val position = selectedMapObjectPolygon.getRectangleCenter()
+        scene2D.width = newWidth
+        if (selectedMapObject!!.tryGet(MovingObjectComponent) != null) {
+            selectedMapObject!!.linkedEntity.entity!!.scene2D.run {
+                group.children.first().width = newWidth
+                width = newWidth
+                centerX += position.x - scene2D.centerX
+                centerY += position.y - scene2D.centerY
+            }
+        }
         scene2D.run {
-            width = newWidth
             centerX = position.x
             centerY = position.y
             if (isDestroyablePlatform) {

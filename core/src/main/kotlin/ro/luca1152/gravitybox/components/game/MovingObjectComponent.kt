@@ -25,7 +25,9 @@ import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that the map object is moving back an forth to a given position. */
 class MovingObjectComponent : Component, Poolable {
-    val SPEED = 1f
+    companion object : ComponentResolver<MovingObjectComponent>(MovingObjectComponent::class.java) {
+        const val SPEED = 1f
+    }
     var targetX = 0f
     var targetY = 0f
 
@@ -38,8 +40,6 @@ class MovingObjectComponent : Component, Poolable {
         targetX = 0f
         targetY = 0f
     }
-
-    companion object : ComponentResolver<MovingObjectComponent>(MovingObjectComponent::class.java)
 }
 
 val Entity.movingObject: MovingObjectComponent
