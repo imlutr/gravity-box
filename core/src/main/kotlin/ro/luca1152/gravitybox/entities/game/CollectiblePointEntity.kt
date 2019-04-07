@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.gdx.assets.AssetManager
 import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.components.editor.overlay
 import ro.luca1152.gravitybox.components.editor.snap
 import ro.luca1152.gravitybox.components.game.*
@@ -46,6 +47,7 @@ object CollectiblePointEntity {
         collisionBox(WIDTH, HEIGHT)
         polygon(scene2D)
         snap()
+        json(this)
         overlay(
             showMovementButtons = true, showRotationButton = true,
             showResizingButtons = false, showDeletionButton = true

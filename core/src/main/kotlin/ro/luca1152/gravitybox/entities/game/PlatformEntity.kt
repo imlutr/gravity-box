@@ -35,22 +35,22 @@ object PlatformEntity {
     const val PATCH_RIGHT = 9
     const val PATCH_TOP = 5
     const val PATCH_BOTTOM = 5
-    const val DEFAULT_ROTATION = 0f
-    const val DEFAULT_THICKNESS = .25f
+    const val ROTATION = 0f
+    const val HEIGHT = .25f
     val CATEGORY_BITS = EntityCategory.PLATFORM.bits
     val MASK_BITS = EntityCategory.OBSTACLE.bits
 
     fun createEntity(
         id: Int, x: Float, y: Float,
-        width: Float, height: Float = DEFAULT_THICKNESS,
-        rotation: Float = DEFAULT_ROTATION,
+        width: Float,
+        rotation: Float = ROTATION,
         isDestroyable: Boolean = false,
         manager: AssetManager = Injekt.get()
     ) = newEntity().apply {
         mapObject(id)
         if (isDestroyable) {
             destroyablePlatform()
-            scene2D(x, y, width, height, rotation)
+            scene2D(x, y, width, HEIGHT, rotation)
             destroyablePlatform.updateScene2D(scene2D)
         } else {
             platform()
@@ -59,7 +59,7 @@ object PlatformEntity {
                     manager.get(Assets.tileset).findRegion("platform-0"),
                     PATCH_LEFT, PATCH_RIGHT,
                     PATCH_TOP, PATCH_BOTTOM
-                ), x, y, width, height, rotation
+                ), x, y, width, HEIGHT, rotation
             )
         }
         polygon(scene2D)
@@ -71,7 +71,7 @@ object PlatformEntity {
             showMovementButtons = true, showRotationButton = true,
             showResizingButtons = true, showDeletionButton = true
         )
-        extendedTouch(this, 0f, 1f - height)
+        extendedTouch(this, 0f, 1f - HEIGHT)
         json(this)
         addToEngine()
     }

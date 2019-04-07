@@ -50,8 +50,13 @@ class JsonComponent : Component, Poolable {
         }
         parentEntity.run {
             this?.let {
-                if (tryGet(PlatformComponent) != null || tryGet(DestroyablePlatformComponent) != null) json.run {
-                    writeValue("type", "platform")
+                when {
+                    tryGet(PlatformComponent) != null || tryGet(DestroyablePlatformComponent) != null -> {
+                        json.writeValue("type", "platform")
+                    }
+                    tryGet(CollectiblePointComponent) != null -> {
+                        json.writeValue("type", "point")
+                    }
                 }
                 if (tryGet(MapObjectComponent) != null) json.run {
                     writeValue("id", mapObject.id)
