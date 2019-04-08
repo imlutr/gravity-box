@@ -293,9 +293,11 @@ class PlayingSystem(
 
     private fun showMockObjects(engine: Engine) {
         engine.getEntitiesFor(Family.all(MockMapObjectComponent::class.java).get()).forEach {
-            it.scene2D.run {
-                isVisible = true
-                isTouchable = true
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                it.scene2D.run {
+                    isVisible = true
+                    isTouchable = true
+                }
             }
         }
     }

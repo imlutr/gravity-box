@@ -145,9 +145,12 @@ class AddCommand(
             }
         }
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
-            affectedEntity.linkedEntity.entity!!.scene2D.run {
-                isVisible = true
-                isTouchable = true
+            affectedEntity.linkedEntity.entity!!.run {
+                scene2D.run {
+                    isVisible = true
+                    isTouchable = true
+                }
+                editorObject.isDeleted = false
             }
         }
         affectedEntity.tryGet(ExtendedTouchComponent)?.run {
@@ -156,7 +159,7 @@ class AddCommand(
         affectedEntity.tryGet(ColorComponent)?.run {
             colorType = ColorType.DARK
         }
-        affectedEntity.tryGet(MapObjectComponent).run {
+        affectedEntity.tryGet(MapObjectComponent)?.run {
             val newId = affectedEntity.mapObject.id
             engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
                 if (!it.editorObject.isDeleted && it != affectedEntity && it.mapObject.id >= newId)
@@ -176,9 +179,12 @@ class AddCommand(
             isTouchable = false
         }
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
-            affectedEntity.linkedEntity.entity!!.scene2D.run {
-                isVisible = false
-                isTouchable = false
+            affectedEntity.linkedEntity.entity!!.run {
+                scene2D.run {
+                    isVisible = false
+                    isTouchable = false
+                }
+                editorObject.isDeleted = true
             }
         }
         affectedEntity.tryGet(ExtendedTouchComponent)?.run {
@@ -187,7 +193,7 @@ class AddCommand(
         affectedEntity.tryGet(BodyComponent)?.run {
             destroyBody()
         }
-        affectedEntity.tryGet(MapObjectComponent).run {
+        affectedEntity.tryGet(MapObjectComponent)?.run {
             val deletedId = affectedEntity.mapObject.id
             engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
                 if (!it.editorObject.isDeleted && it.mapObject.id > deletedId)

@@ -24,8 +24,10 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pools
 import ktx.math.times
+import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 
 class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::class.java).get()) {
@@ -37,6 +39,9 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
+        if (entity.tryGet(LinkedEntityComponent) != null && entity.linkedEntity.entity!!.editorObject.isDeleted) {
+            return
+        }
         moveObject(entity)
     }
 
