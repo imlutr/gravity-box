@@ -209,6 +209,9 @@ class MapBodiesCreationSystem : EntitySystem() {
                             maskBits = FinishEntity.MASK_BITS
                         }
                     }
+                    if (it.tryGet(MovingObjectComponent) != null) {
+                        bodyType = BodyDef.BodyType.KinematicBody
+                    }
                     if (it.tryGet(CombinedBodyComponent) == null) {
                         it.body.set(
                             it.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction, trimSize),

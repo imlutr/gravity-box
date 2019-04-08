@@ -49,6 +49,7 @@ class LevelRestartSystem : EntitySystem() {
         resetDestroyablePlatforms()
         resetCollectiblePoints()
         resetBodiesToInitialState()
+        resetMovingPlatforms()
         levelEntity.level.restartLevel = false
     }
 
@@ -94,6 +95,19 @@ class LevelRestartSystem : EntitySystem() {
                 if (it.tryGet(BodyComponent) != null) {
                     it.body.resetToInitialState()
                 }
+                it.scene2D.run {
+                    centerX = it.body.body.worldCenter.x
+                    centerY = it.body.body.worldCenter.y
+                }
             }
+    }
+
+    private fun resetMovingPlatforms() {
+        engine.getEntitiesFor(Family.all(MovingObjectComponent::class.java).get()).forEach {
+            it.movingObject.run {
+                isMovingTowardsEndPoint = true
+                moved(it, it.linkedEntity.entity!!)
+            }
+        }
     }
 }

@@ -99,6 +99,8 @@ class OverlayPositioningSystem(
                             scene2D.centerX - initialImageX, scene2D.centerY - initialImageY
                         )
                     )
+                selectedMapObject!!.tryGet(MovingObjectComponent)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.entity!!)
             }
         })
     }
@@ -148,6 +150,8 @@ class OverlayPositioningSystem(
                             scene2D.centerX - initialImageX, scene2D.centerY - initialImageY
                         )
                     )
+                selectedMapObject!!.tryGet(MovingObjectComponent)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.entity!!)
             }
         })
     }
@@ -231,6 +235,8 @@ class OverlayPositioningSystem(
                             scene2d.rotation - initialImageRotation
                         )
                     )
+                selectedMapObject!!.tryGet(MovingObjectComponent)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.entity!!)
             }
 
             private fun getAngleBetween(rotateButton: Button, objectScene2D: Scene2DComponent): Float {
@@ -318,6 +324,13 @@ class OverlayPositioningSystem(
                             0f
                         )
                     )
+                selectedMapObject!!.tryGet(MovingObjectComponent)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.entity!!)
+                selectedMapObject!!.tryGet(MockMapObjectComponent)?.let {
+                    selectedMapObject!!.linkedEntity.entity!!.movingObject.moved(
+                        selectedMapObject!!.linkedEntity.entity, selectedMapObject
+                    )
+                }
             }
         })
     }
@@ -372,6 +385,13 @@ class OverlayPositioningSystem(
                             scene2D.centerY - initialImageY
                         )
                     )
+                selectedMapObject!!.tryGet(MovingObjectComponent)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.entity!!)
+                selectedMapObject!!.tryGet(MockMapObjectComponent)?.let {
+                    selectedMapObject!!.linkedEntity.entity!!.movingObject.moved(
+                        selectedMapObject!!.linkedEntity.entity, selectedMapObject
+                    )
+                }
             }
         })
     }
