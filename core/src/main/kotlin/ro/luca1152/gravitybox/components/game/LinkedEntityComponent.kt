@@ -37,6 +37,11 @@ class LinkedEntityComponent : Component, Poolable {
         return entities.get(key)
     }
 
+    fun remove(key: String): Entity {
+        require(entities.get(key) != null) { "No entity found for the given key." }
+        return entities.remove(key)
+    }
+
     override fun reset() {
         entities.clear()
     }

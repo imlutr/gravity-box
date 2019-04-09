@@ -23,27 +23,31 @@ import ro.luca1152.gravitybox.components.editor.dashedLine
 import ro.luca1152.gravitybox.components.game.DestroyablePlatformComponent
 import ro.luca1152.gravitybox.components.game.PlatformComponent
 import ro.luca1152.gravitybox.components.game.linkedEntity
+import ro.luca1152.gravitybox.components.game.scene2D
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 object DashedLineEntity {
     fun createEntity(
-        platformEntity: Entity, mockPlatformEntity: Entity,
-        startX: Float, startY: Float,
-        endX: Float, endY: Float
-    ) = newEntity()
-        .dashedLine(startX, startY, endX, endY)
-        .linkedEntity()
-        .addToEngine()
-        .linkedEntity.apply {
-        require(platformEntity.tryGet(PlatformComponent) != null || platformEntity.tryGet(DestroyablePlatformComponent) != null)
-        { "The given platformEntity is not a platform." }
+        platformEntity: Entity, mockPlatformEntity: Entity
+    ) = newEntity().apply {
+        dashedLine(
+            platformEntity.scene2D.centerX, platformEntity.scene2D.centerY,
+            mockPlatformEntity.scene2D.centerX, mockPlatformEntity.scene2D.centerY
+        )
+        linkedEntity()
+        addToEngine()
+        linkedEntity.apply {
+            require(
+                platformEntity.tryGet(PlatformComponent) != null || platformEntity.tryGet(DestroyablePlatformComponent) != null
+            ) { "The given platformEntity is not a platform." }
 
-        require(mockPlatformEntity.tryGet(MockMapObjectComponent) != null)
-        { "The given mockPlatformEntity is not a mock platform." }
+            require(mockPlatformEntity.tryGet(MockMapObjectComponent) != null)
+            { "The given mockPlatformEntity is not a mock platform." }
 
-        add("platform", platformEntity)
-        add("mockPlatform", mockPlatformEntity)
+            add("platform", platformEntity)
+            add("mockPlatform", mockPlatformEntity)
+        }
     }
 }

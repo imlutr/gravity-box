@@ -716,11 +716,10 @@ class OverlayPositioningSystem(
                     }
                     linkedEntity("mockPlatform", mockPlatform)
 
-                    DashedLineEntity.createEntity(
-                        selectedMapObject!!, mockPlatform,
-                        scene2D.centerX, scene2D.centerY,
-                        mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY
-                    )
+                    val dashedLine = DashedLineEntity.createEntity(selectedMapObject!!, mockPlatform)
+
+                    mockPlatform.linkedEntity.add("dashedLine", dashedLine)
+                    selectedMapObject!!.linkedEntity.add("dashedLine", dashedLine)
                 }
             }
             untickRunnable = Runnable {

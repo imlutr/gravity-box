@@ -25,7 +25,9 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
+import ro.luca1152.gravitybox.utils.kotlin.removeComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -166,6 +168,19 @@ class AddCommand(
                     it.mapObject.id++
             }
         }
+        affectedEntity.tryGet(MockMapObjectComponent)?.run {
+            if (affectedEntity.linkedEntity.get("platform").tryGet(MovingObjectComponent) == null) {
+                val dashedLine =
+                    DashedLineEntity.createEntity(affectedEntity.linkedEntity.get("platform"), affectedEntity)
+                affectedEntity.linkedEntity.run {
+                    add("dashedLine", dashedLine)
+                    get("platform").run {
+                        movingObject(affectedEntity.scene2D.centerX, affectedEntity.scene2D.centerY)
+                        linkedEntity.add("dashedLine", dashedLine)
+                    }
+                }
+            }
+        }
         mapEntity.map.updateRoundedPlatforms = true
     }
 
@@ -198,6 +213,13 @@ class AddCommand(
             engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
                 if (!it.editorObject.isDeleted && it.mapObject.id > deletedId)
                     it.mapObject.id--
+            }
+        }
+        affectedEntity.tryGet(MockMapObjectComponent)?.run {
+            engine.removeEntity(affectedEntity.linkedEntity.remove("dashedLine"))
+            affectedEntity.linkedEntity.get("platform").run {
+                removeComponent<MovingObjectComponent>()
+                linkedEntity.remove("dashedLine")
             }
         }
         mapEntity.map.updateRoundedPlatforms = true
