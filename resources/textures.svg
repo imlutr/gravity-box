@@ -511,8 +511,8 @@
      inkscape:bbox-nodes="true"
      inkscape:bbox-paths="true"
      inkscape:current-layer="layer1"
-     inkscape:cx="1970.9208"
-     inkscape:cy="-762.5123"
+     inkscape:cx="7766.5395"
+     inkscape:cy="-117.00028"
      inkscape:document-units="px"
      inkscape:measure-end="3774.09,-659.996"
      inkscape:measure-start="3774.27,-645.147"
@@ -534,7 +534,7 @@
      inkscape:window-width="1920"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:zoom="0.25791479">
+     inkscape:zoom="0.1823733">
     <inkscape:grid
        empcolor="#7a1919"
        empopacity="0.25098039"
@@ -3724,6 +3724,7 @@
 
 
 
+
 &gt;&gt;&gt;&gt;&gt;&gt;&gt; destroyable-platforms
   <g
    id="g2001"
@@ -3958,5 +3959,111 @@
      cx="763.66687"
      style="fill:none;fill-opacity:1;stroke:#549191;stroke-width:1.85208334;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:70;stroke-opacity:1;paint-order:fill markers stroke" />
 </g>
+<rect
+   y="194.9238"
+   x="1709.9081"
+   width="190.5"
+   ry="0"
+   id="rect2191-3-3"
+   height="338.66666"
+   style="fill:#d1e8e8;fill-opacity:1;stroke:none;stroke-width:10.92071629;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+<rect
+   style="fill:none;fill-opacity:1;stroke:#549191;stroke-width:4.16049385;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+   height="97.416359"
+   id="rect951-3-6-7-3-6-0-67"
+   ry="0"
+   width="141.04095"
+   x="1734.6376"
+   y="315.54892" />
+<g
+   id="g1869-6-7-5"
+   transform="translate(856.98399,4.2525157)">
+  <circle
+     inkscape:export-ydpi="95"
+     inkscape:export-xdpi="95"
+     inkscape:export-filename="./circle1726-3.png"
+     transform="scale(-1,1)"
+     r="10.430011"
+     id="circle1726-3-3-2-6-6-1-5-3"
+     cy="311.42679"
+     cx="-1017.6641"
+     style="opacity:1;vector-effect:none;fill:#d1e8e8;fill-opacity:1;stroke:#549191;stroke-width:3.0427084;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+  <g
+     transform="matrix(1.2792008,0,0,1.2792008,-27.822802,-219.26994)"
+     id="g1784-2-5-3-5">
+    <path
+       style="fill:none;stroke:#549191;stroke-width:2.11666656;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 814.33032,411.85584 6.35915,6.35915"
+       id="path1754-9-54-5-6"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#549191;stroke-width:2.11666656;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 820.68947,411.85584 -6.35915,6.35915"
+       id="path1766-1-7-6-2"
+       inkscape:connector-curvature="0" />
+  </g>
+</g>
+<text
+   xml:space="preserve"
+   style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:-3.17235422px;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   x="1768.8234"
+   y="345.60947"
+   id="text2043-9"><tspan
+     sodipodi:role="line"
+     x="1768.8234"
+     y="345.60947"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:17.19791603px;line-height:1.5;font-family:Nunito;-inkscape-font-specification:'Nunito Bold';fill:#549191;fill-opacity:1;stroke-width:0.26458332"
+     id="tspan2067-1">Destroyable</tspan><tspan
+     sodipodi:role="line"
+     x="1768.8234"
+     y="371.40634"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:17.19791603px;line-height:1.5;font-family:Nunito;-inkscape-font-specification:'Nunito Bold';fill:#549191;fill-opacity:1;stroke-width:0.26458332"
+     id="tspan1199">Moving</tspan><tspan
+     sodipodi:role="line"
+     x="1768.8234"
+     y="397.20322"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:17.19791603px;line-height:1.5;font-family:Nunito;-inkscape-font-specification:'Nunito Bold';fill:#549191;fill-opacity:1;stroke-width:0.26458332"
+     id="tspan1201">Rotating</tspan></text>
+<g
+   id="g2351">
+  <rect
+     ry="3.4002631"
+     rx="0"
+     y="332.47519"
+     x="1747.9385"
+     height="13.829538"
+     width="13.829538"
+     id="rect2258"
+     style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#549191;stroke-width:2.38125001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+  <text
+     id="text2307"
+     y="343.32959"
+     x="1754.8457"
+     style="font-style:normal;font-weight:normal;font-size:15.98225307px;line-height:18.16165161px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:-8.71032906px;text-anchor:middle;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.726466"
+     xml:space="preserve"><tspan
+       id="tspan2309"
+       style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-family:Nunito;-inkscape-font-specification:'Nunito Ultra-Bold';fill:#549191;fill-opacity:1;stroke-width:0.726466"
+       y="343.32959"
+       x="1754.8457"
+       sodipodi:role="line">x</tspan></text>
+</g>
+<rect
+   style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#549191;stroke-width:2.38124967;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+   id="rect2258-1"
+   width="13.829537"
+   height="13.829537"
+   x="1747.0419"
+   y="357.79169"
+   rx="0"
+   ry="3.4002631" />
+<rect
+   style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#549191;stroke-width:2.38124967;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+   id="rect2258-1-5"
+   width="13.829536"
+   height="13.829536"
+   x="1747.2983"
+   y="386.25919"
+   rx="0"
+   ry="3.4002631" />
 </g>
 </svg>

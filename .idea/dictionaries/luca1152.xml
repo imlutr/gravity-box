@@ -16,6 +16,8 @@
       <w>undos</w>
       <w>unexecute</w>
       <w>unproject</w>
+      <w>untick</w>
+      <w>unticked</w>
     </words>
   </dictionary>
 </component>

@@ -26,6 +26,7 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ktx.actors.plus
@@ -36,13 +37,16 @@ import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.Button
+import ro.luca1152.gravitybox.utils.ui.button.Checkbox
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
+import ro.luca1152.gravitybox.utils.ui.popup.PopUp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Positions the overlay. */
 class OverlayPositioningSystem(
-    skin: Skin = Injekt.get(),
+    private val skin: Skin = Injekt.get(),
+    private val uiStage: UIStage = Injekt.get(),
     private val gameStage: GameStage = Injekt.get(),
     private val gameCamera: GameCamera = Injekt.get(),
     private val overlayCamera: OverlayCamera = Injekt.get(),
@@ -399,6 +403,9 @@ class OverlayPositioningSystem(
         addIcon("small-settings-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
+        addClickRunnable(Runnable {
+            uiStage.addActor(createSettingsPopUp())
+        })
     }
 
     private val selectedMapObject: Entity?
@@ -654,5 +661,38 @@ class OverlayPositioningSystem(
         var newAngle = angle % 360f
         if (newAngle < 0f) newAngle += 360f
         return newAngle
+    }
+
+    private fun createSettingsPopUp() = PopUp(500f, 310f, skin).apply {
+        widget.run {
+            add(createDestroyableCheckbox()).padBottom(20f).expandX().left().row()
+            add(createMovingCheckbox()).padBottom(20f).expandX().left().row()
+            add(createRotatingCheckbox()).expandX().left().row()
+        }
+    }
+
+    private fun createDestroyableCheckbox() = Table(skin).apply {
+        val checkbox = Checkbox(skin).apply {
+            isTicked = selectedMapObject!!.tryGet(DestroyablePlatformComponent) != null
+        }
+        val label = DistanceFieldLabel("Destroyable", skin, "bold", 65f, Colors.gameColor)
+        add(checkbox).padRight(20f)
+        add(label)
+    }
+
+    private fun createMovingCheckbox() = Table(skin).apply {
+        val checkbox = Checkbox(skin).apply {
+            isTicked = selectedMapObject!!.tryGet(MovingObjectComponent) != null
+        }
+        val label = DistanceFieldLabel("Moving", skin, "bold", 65f, Colors.gameColor)
+        add(checkbox).padRight(20f)
+        add(label)
+    }
+
+    private fun createRotatingCheckbox() = Table(skin).apply {
+        val checkbox = Checkbox(skin)
+        val label = DistanceFieldLabel("Rotating", skin, "bold", 65f, Colors.gameColor)
+        add(checkbox).padRight(20f)
+        add(label)
     }
 }

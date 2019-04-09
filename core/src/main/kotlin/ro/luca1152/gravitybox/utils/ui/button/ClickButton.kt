@@ -49,7 +49,7 @@ open class ClickButton(skin: Skin, styleName: String) : Button(skin, styleName) 
     }
 
     init {
-        addListener(clickListener)
+        super.addListener(clickListener)
     }
 
     /**

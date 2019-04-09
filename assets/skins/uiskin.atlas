@@ -62,6 +62,13 @@ bold-italic
   orig: 512, 256
   offset: 0, 0
   index: -1
+checkbox-x-icon
+  rotate: false
+  xy: 2200, 531
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
 collectible-point-icon
   rotate: false
   xy: 2160, 563
@@ -71,14 +78,21 @@ collectible-point-icon
   index: -1
 destroyable-platform-icon
   rotate: false
-  xy: 241, 59
+  xy: 2421, 239
   size: 85, 22
   orig: 85, 22
   offset: 0, 0
   index: -1
+empty-checkbox
+  rotate: false
+  xy: 241, 20
+  size: 61, 61
+  orig: 61, 61
+  offset: 0, 0
+  index: -1
 empty-star
   rotate: false
-  xy: 275, 4
+  xy: 551, 543
   size: 31, 30
   orig: 31, 30
   offset: 0, 0
@@ -120,7 +134,7 @@ extra-light-italic
   index: -1
 full-star
   rotate: false
-  xy: 2240, 147
+  xy: 2536, 233
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -183,7 +197,7 @@ move-icon
   index: -1
 moving-platform-icon
   rotate: false
-  xy: 2421, 240
+  xy: 304, 60
   size: 85, 21
   orig: 85, 21
   offset: 0, 0
@@ -197,7 +211,7 @@ pencil-icon
   index: -1
 platform-icon
   rotate: false
-  xy: 241, 36
+  xy: 2421, 216
   size: 85, 21
   orig: 85, 21
   offset: 0, 0
@@ -306,7 +320,7 @@ small-left-arrow-icon
   index: -1
 small-minus-icon
   rotate: false
-  xy: 2276, 728
+  xy: 2200, 521
   size: 42, 8
   orig: 42, 8
   offset: 0, 0
@@ -320,7 +334,7 @@ small-plus-icon
   index: -1
 small-right-arrow-icon
   rotate: false
-  xy: 328, 43
+  xy: 2508, 223
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
@@ -355,14 +369,14 @@ small-settings-icon
   index: -1
 small-vertical-arrow
   rotate: false
-  xy: 2421, 200
+  xy: 2240, 137
   size: 24, 38
   orig: 24, 38
   offset: 0, 0
   index: -1
 small-x-icon
   rotate: false
-  xy: 241, 2
+  xy: 304, 26
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
