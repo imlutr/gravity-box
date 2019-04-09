@@ -364,8 +364,13 @@ class OverlayPositioningSystem(
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
                 var newCenterY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
-                if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null) {
+                if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null ||
+                    (selectedMapObject as Entity).tryGet(DestroyablePlatformComponent) != null ||
+                    (selectedMapObject as Entity).tryGet(MockMapObjectComponent) != null
+                ) {
                     newCenterY = newCenterY.roundToNearest(1f, .125f, .5f)
+                } else {
+                    newCenterY = newCenterY.roundToNearest(.5f, .125f)
                 }
 
                 if (Math.abs(selectedMapObject!!.snap.snapCenterY - newCenterY) <= DRAG_SNAP_THRESHOLD) {
