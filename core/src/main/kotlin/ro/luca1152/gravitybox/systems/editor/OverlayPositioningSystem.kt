@@ -33,6 +33,7 @@ import ktx.actors.plus
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
@@ -674,6 +675,20 @@ class OverlayPositioningSystem(
     private fun createDestroyableCheckbox() = Table(skin).apply {
         val checkbox = Checkbox(skin).apply {
             isTicked = selectedMapObject!!.tryGet(DestroyablePlatformComponent) != null
+            tickRunnable = Runnable {
+                selectedMapObject!!.run {
+                    removeComponent<PlatformComponent>()
+                    destroyablePlatform()
+                    destroyablePlatform.updateScene2D(selectedMapObject!!.scene2D)
+                }
+            }
+            untickRunnable = Runnable {
+                selectedMapObject!!.run {
+                    removeComponent<DestroyablePlatformComponent>()
+                    platform()
+                }
+                mapEntity.map.updateRoundedPlatforms = true
+            }
         }
         val label = DistanceFieldLabel("Destroyable", skin, "bold", 65f, Colors.gameColor)
         add(checkbox).padRight(20f)
@@ -683,6 +698,25 @@ class OverlayPositioningSystem(
     private fun createMovingCheckbox() = Table(skin).apply {
         val checkbox = Checkbox(skin).apply {
             isTicked = selectedMapObject!!.tryGet(MovingObjectComponent) != null
+            tickRunnable = Runnable {
+                selectedMapObject!!.run {
+                    movingObject(scene2D.centerX + 1f, scene2D.centerY + 1f)
+                    val mockPlatform = MovingMockPlatformEntity.createEntity(
+                        selectedMapObject!!,
+                        movingObject.endPoint.x, movingObject.endPoint.y,
+                        scene2D.width, scene2D.height
+                    )
+                    mockPlatform.linkedEntity(selectedMapObject!!)
+                    linkedEntity(mockPlatform)
+                }
+            }
+            untickRunnable = Runnable {
+                selectedMapObject!!.run {
+                    removeComponent<MovingObjectComponent>()
+                    engine.removeEntity(linkedEntity.entity)
+                    removeComponent<LinkedEntityComponent>()
+                }
+            }
         }
         val label = DistanceFieldLabel("Moving", skin, "bold", 65f, Colors.gameColor)
         add(checkbox).padRight(20f)

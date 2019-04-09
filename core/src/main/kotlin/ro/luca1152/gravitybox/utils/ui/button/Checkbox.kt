@@ -23,10 +23,10 @@ import ro.luca1152.gravitybox.utils.ui.Colors
 /** A checkbox capable of being ticked and unticked. */
 class Checkbox(skin: Skin) : ClickButton(skin, "checkbox") {
     /** What happens when the checkbox is ticked. */
-    val tickRunnable: Runnable? = null
+    var tickRunnable: Runnable? = null
 
     /** What happens when the checkbox is unticked. */
-    val untickRunnable: Runnable? = null
+    var untickRunnable: Runnable? = null
 
     /** True if the [Checkbox] is ticked. */
     var isTicked = false

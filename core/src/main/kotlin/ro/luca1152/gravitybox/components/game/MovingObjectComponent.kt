@@ -49,8 +49,12 @@ class MovingObjectComponent : Component, Poolable {
     }
 
     fun moved(platformEntity: Entity? = null, mockPlatformEntity: Entity? = null) {
-        require(platformEntity?.tryGet(PlatformComponent) != null) { "The provided platformEntity is not a platform." }
-        require(mockPlatformEntity?.tryGet(MockMapObjectComponent) != null) { "The provided mockPlatformEntity is not a mock platform" }
+        require(platformEntity?.tryGet(PlatformComponent) != null || platformEntity?.tryGet(DestroyablePlatformComponent) != null)
+        { "The provided platformEntity is not a platform." }
+
+        require(mockPlatformEntity?.tryGet(MockMapObjectComponent) != null)
+        { "The provided mockPlatformEntity is not a mock platform." }
+
         platformEntity?.let {
             startPoint.set(platformEntity.scene2D.centerX, platformEntity.scene2D.centerY)
         }

@@ -20,10 +20,7 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import ro.luca1152.gravitybox.components.game.BodyComponent
-import ro.luca1152.gravitybox.components.game.DestroyablePlatformComponent
-import ro.luca1152.gravitybox.components.game.destroyablePlatform
-import ro.luca1152.gravitybox.components.game.scene2D
+import ro.luca1152.gravitybox.components.game.*
 
 /** Removes every platform marked for removal. */
 class PlatformRemovalSystem :
@@ -31,7 +28,7 @@ class PlatformRemovalSystem :
     override fun processEntity(entity: Entity, deltaTime: Float) {
         entity.run {
             if (destroyablePlatform.remove) {
-                remove(BodyComponent::class.java)
+                body.destroyBody()
                 scene2D.isVisible = false
                 destroyablePlatform.run {
                     remove = false

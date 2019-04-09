@@ -42,6 +42,9 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
         if (entity.tryGet(LinkedEntityComponent) != null && entity.linkedEntity.entity!!.editorObject.isDeleted) {
             return
         }
+        if (entity.tryGet(DestroyablePlatformComponent) != null && entity.destroyablePlatform.isRemoved) {
+            return
+        }
         moveObject(entity)
     }
 
