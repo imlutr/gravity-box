@@ -395,6 +395,11 @@ class OverlayPositioningSystem(
             }
         })
     }
+    private val settingsButton = ClickButton(skin, "small-round-button").apply {
+        addIcon("small-settings-icon")
+        setColors(Colors.gameColor, Colors.uiDownColor)
+        setOpaque(true)
+    }
 
     private val selectedMapObject: Entity?
         get() = engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).filterNullableSingleton { it.editorObject.isSelected }
@@ -403,7 +408,7 @@ class OverlayPositioningSystem(
     private val labels = Group().apply { this + rotationLabel }
     private val overlayLevel1 =
         Group().apply { this + horizontalPositionButton + verticalPositionButton + rotateButton + deleteButton }
-    private val overlayLevel2 = Group().apply { this + leftArrowButton + rightArrowButton }
+    private val overlayLevel2 = Group().apply { this + leftArrowButton + rightArrowButton + settingsButton }
     private val buttonsPaddingX = 20f
     private val buttonsPaddingY = 50f
 
@@ -567,6 +572,7 @@ class OverlayPositioningSystem(
             0f
         )
         rotateButton.setPosition(rightArrowButton.x, rightArrowButton.y + rightArrowButton.height + buttonsPaddingY)
+        settingsButton.setPosition(rotateButton.x, rotateButton.y)
         horizontalPositionButton.run {
             setPosition(
                 overlayLevel1.width / 2f - horizontalPositionButton.width / 2f,
@@ -623,7 +629,8 @@ class OverlayPositioningSystem(
 
     private fun updateOverlayShown() {
         val overlayLevel = (selectedMapObject as Entity).overlay.overlayLevel
-        val showLevel2Overlay = selectedMapObject!!.overlay.showResizingButtons
+        val showLevel2Overlay =
+            selectedMapObject!!.overlay.showResizingButtons || selectedMapObject!!.overlay.showSettingsButton
         overlayLevel1.isVisible = if (showLevel2Overlay) (overlayLevel == 1) else true
         overlayLevel2.isVisible = if (showLevel2Overlay) (overlayLevel == 2) else false
     }

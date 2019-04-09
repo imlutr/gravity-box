@@ -34,15 +34,17 @@ class OverlayComponent : Component, Poolable {
     var showRotationButton = true
     var showResizingButtons = true
     var showDeletionButton = true
+    var showSettingsButton = true
 
     fun set(
-        showMovementButtons: Boolean, showRotationButton: Boolean,
-        showResizingButtons: Boolean, showDeletionButton: Boolean
+        showMovementButtons: Boolean, showRotationButton: Boolean, showDeletionButton: Boolean,
+        showResizingButtons: Boolean, showSettingsButton: Boolean
     ) {
         this.showMovementButtons = showMovementButtons
         this.showRotationButton = showRotationButton
-        this.showResizingButtons = showResizingButtons
         this.showDeletionButton = showDeletionButton
+        this.showResizingButtons = showResizingButtons
+        this.showSettingsButton = showSettingsButton
     }
 
     override fun reset() {
@@ -50,6 +52,7 @@ class OverlayComponent : Component, Poolable {
         showRotationButton = true
         showResizingButtons = true
         showDeletionButton = true
+        showSettingsButton = true
         overlayLevel = 1
     }
 
@@ -60,8 +63,8 @@ val Entity.overlay: OverlayComponent
     get() = OverlayComponent[this]
 
 fun Entity.overlay(
-    showMovementButtons: Boolean, showRotationButton: Boolean,
-    showResizingButtons: Boolean, showDeletionButton: Boolean
+    showMovementButtons: Boolean, showRotationButton: Boolean, showDeletionButton: Boolean,
+    showResizingButtons: Boolean, showSettingsButton: Boolean
 ) = add(createComponent<OverlayComponent>().apply {
-    set(showMovementButtons, showRotationButton, showResizingButtons, showDeletionButton)
+    set(showMovementButtons, showRotationButton, showDeletionButton, showResizingButtons, showSettingsButton)
 })!!

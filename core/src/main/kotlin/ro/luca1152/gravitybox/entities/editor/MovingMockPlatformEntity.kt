@@ -54,8 +54,8 @@ object MovingMockPlatformEntity {
         snap()
         color(ColorType.DARK)
         overlay(
-            showMovementButtons = true, showRotationButton = false,
-            showResizingButtons = false, showDeletionButton = true
+            showMovementButtons = true, showRotationButton = false, showDeletionButton = true,
+            showResizingButtons = false, showSettingsButton = false
         )
         extendedTouch(this, 0f, 1f - PlatformEntity.HEIGHT)
         addToEngine()

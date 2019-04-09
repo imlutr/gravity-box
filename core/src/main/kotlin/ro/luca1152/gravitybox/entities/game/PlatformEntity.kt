@@ -72,8 +72,8 @@ object PlatformEntity {
         body()
         color(ColorType.DARK)
         overlay(
-            showMovementButtons = true, showRotationButton = true,
-            showResizingButtons = true, showDeletionButton = true
+            showMovementButtons = true, showRotationButton = true, showDeletionButton = true,
+            showResizingButtons = true, showSettingsButton = true
         )
         extendedTouch(this, 0f, 1f - HEIGHT)
         json(this)

@@ -53,8 +53,8 @@ object CollectiblePointEntity {
         snap()
         json(this)
         overlay(
-            showMovementButtons = true, showRotationButton = true,
-            showResizingButtons = false, showDeletionButton = true
+            showMovementButtons = true, showRotationButton = true, showDeletionButton = true,
+            showResizingButtons = false, showSettingsButton = false
         )
         addToEngine()
     }
