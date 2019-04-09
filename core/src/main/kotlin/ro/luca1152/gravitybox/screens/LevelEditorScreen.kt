@@ -106,27 +106,11 @@ class LevelEditorScreen(
             addClickRunnable(createButtonFromPaneRunnable(this@paneButton, this, PlatformComponent::class.java))
         })
         addCellToPane(ClickButton(skin, "small-button").apply {
-            addIcon("destroyable-platform-icon")
-            setColors(Colors.gameColor, Colors.uiDownColor)
-            setOpaque(true)
-            addClickRunnable(
-                createButtonFromPaneRunnable(this@paneButton, this, DestroyablePlatformComponent::class.java)
-            )
-        })
-        addCellToPane(ClickButton(skin, "small-button").apply {
             addIcon("collectible-point-icon")
             setColors(Colors.gameColor, Colors.uiDownColor)
             setOpaque(true)
             addClickRunnable(
                 createButtonFromPaneRunnable(this@paneButton, this, CollectiblePointComponent::class.java)
-            )
-        })
-        addCellToPane(ClickButton(skin, "small-button").apply {
-            addIcon("moving-platform-icon")
-            setColors(Colors.gameColor, Colors.uiDownColor)
-            setOpaque(true)
-            addClickRunnable(
-                createButtonFromPaneRunnable(this@paneButton, this, MovingObjectComponent::class.java)
             )
         })
     }
