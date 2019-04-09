@@ -33,6 +33,7 @@ import ktx.actors.plus
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -105,7 +106,7 @@ class OverlayPositioningSystem(
                         )
                     )
                 selectedMapObject!!.tryGet(MovingObjectComponent)
-                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.entity!!)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.get("mockPlatform"))
             }
         })
     }
@@ -156,7 +157,7 @@ class OverlayPositioningSystem(
                         )
                     )
                 selectedMapObject!!.tryGet(MovingObjectComponent)
-                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.entity!!)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.get("mockPlatform"))
             }
         })
     }
@@ -218,7 +219,7 @@ class OverlayPositioningSystem(
                 newRotation = toPositiveAngle(newRotation)
 
                 if (selectedMapObject!!.tryGet(MovingObjectComponent) != null) {
-                    selectedMapObject!!.linkedEntity.entity!!.scene2D.rotation = newRotation
+                    selectedMapObject!!.linkedEntity.get("mockPlatform").scene2D.rotation = newRotation
                 }
 
                 scene2d.rotation = newRotation
@@ -241,7 +242,7 @@ class OverlayPositioningSystem(
                         )
                     )
                 selectedMapObject!!.tryGet(MovingObjectComponent)
-                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.entity!!)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.get("mockPlatform"))
             }
 
             private fun getAngleBetween(rotateButton: Button, objectScene2D: Scene2DComponent): Float {
@@ -330,10 +331,10 @@ class OverlayPositioningSystem(
                         )
                     )
                 selectedMapObject!!.tryGet(MovingObjectComponent)
-                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.entity!!)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.get("mockPlatform"))
                 selectedMapObject!!.tryGet(MockMapObjectComponent)?.let {
-                    selectedMapObject!!.linkedEntity.entity!!.movingObject.moved(
-                        selectedMapObject!!.linkedEntity.entity, selectedMapObject
+                    selectedMapObject!!.linkedEntity.get("platform").movingObject.moved(
+                        selectedMapObject!!.linkedEntity.get("platform"), selectedMapObject
                     )
                 }
             }
@@ -364,13 +365,13 @@ class OverlayPositioningSystem(
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
                 var newCenterY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
-                if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null ||
+                newCenterY = if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null ||
                     (selectedMapObject as Entity).tryGet(DestroyablePlatformComponent) != null ||
                     (selectedMapObject as Entity).tryGet(MockMapObjectComponent) != null
                 ) {
-                    newCenterY = newCenterY.roundToNearest(1f, .125f, .5f)
+                    newCenterY.roundToNearest(1f, .125f, .5f)
                 } else {
-                    newCenterY = newCenterY.roundToNearest(.5f, .125f)
+                    newCenterY.roundToNearest(.5f, .125f)
                 }
 
                 if (Math.abs(selectedMapObject!!.snap.snapCenterY - newCenterY) <= DRAG_SNAP_THRESHOLD) {
@@ -396,10 +397,10 @@ class OverlayPositioningSystem(
                         )
                     )
                 selectedMapObject!!.tryGet(MovingObjectComponent)
-                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.entity!!)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.get("mockPlatform"))
                 selectedMapObject!!.tryGet(MockMapObjectComponent)?.let {
-                    selectedMapObject!!.linkedEntity.entity!!.movingObject.moved(
-                        selectedMapObject!!.linkedEntity.entity, selectedMapObject
+                    selectedMapObject!!.linkedEntity.get("platform").movingObject.moved(
+                        selectedMapObject!!.linkedEntity.get("platform"), selectedMapObject
                     )
                 }
             }
@@ -513,7 +514,7 @@ class OverlayPositioningSystem(
         val position = selectedMapObjectPolygon.getRectangleCenter()
         scene2D.width = newWidth
         if (selectedMapObject!!.tryGet(MovingObjectComponent) != null) {
-            selectedMapObject!!.linkedEntity.entity!!.scene2D.run {
+            selectedMapObject!!.linkedEntity.get("mockPlatform").scene2D.run {
                 group.children.first().width = newWidth
                 width = newWidth
                 centerX += position.x - scene2D.centerX
@@ -710,15 +711,22 @@ class OverlayPositioningSystem(
                         selectedMapObject!!,
                         movingObject.endPoint.x, movingObject.endPoint.y,
                         scene2D.width, scene2D.height
+                    ).apply {
+                        linkedEntity("platform", selectedMapObject!!)
+                    }
+                    linkedEntity("mockPlatform", mockPlatform)
+
+                    DashedLineEntity.createEntity(
+                        selectedMapObject!!, mockPlatform,
+                        scene2D.centerX, scene2D.centerY,
+                        mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY
                     )
-                    mockPlatform.linkedEntity(selectedMapObject!!)
-                    linkedEntity(mockPlatform)
                 }
             }
             untickRunnable = Runnable {
                 selectedMapObject!!.run {
                     removeComponent<MovingObjectComponent>()
-                    engine.removeEntity(linkedEntity.entity)
+                    engine.removeEntity(linkedEntity.get("mockPlatform"))
                     removeComponent<LinkedEntityComponent>()
                 }
             }

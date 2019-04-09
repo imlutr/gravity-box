@@ -177,7 +177,7 @@ class ObjectSnappingSystem : EntitySystem() {
                     selectedObject!!.snap.snapRotationAngle = it.polygon.polygon.rotation
                     didSnapPlatform = true
                     if (selectedObject!!.tryGet(MovingObjectComponent) != null) {
-                        selectedObject!!.linkedEntity.entity!!.scene2D.rotation += rotationDiff
+                        selectedObject!!.linkedEntity.get("mockPlatform").scene2D.rotation += rotationDiff
                     }
                     return
                 }
@@ -222,7 +222,7 @@ class ObjectSnappingSystem : EntitySystem() {
             scene2D.updateFromPolygon(polygon.polygon)
             if (tryGet(MovingObjectComponent) != null) {
                 updateMockMovingObject(
-                    linkedEntity.entity!!,
+                    linkedEntity.get("mockPlatform"),
                     oldWidth, scene2D.width,
                     oldCenterX, scene2D.centerX,
                     oldCenterY, scene2D.centerY

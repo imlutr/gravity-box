@@ -107,7 +107,7 @@ class LevelRestartSystem : EntitySystem() {
         engine.getEntitiesFor(Family.all(MovingObjectComponent::class.java).get()).forEach {
             it.movingObject.run {
                 isMovingTowardsEndPoint = true
-                moved(it, it.linkedEntity.entity!!)
+                moved(it, it.linkedEntity.get("mockPlatform"))
             }
         }
     }

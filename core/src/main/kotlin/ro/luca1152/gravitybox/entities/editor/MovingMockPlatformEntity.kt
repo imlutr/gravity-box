@@ -50,7 +50,7 @@ object MovingMockPlatformEntity {
         polygon(scene2D)
         editorObject()
         mockMapObject()
-        linkedEntity(realPlatform)
+        linkedEntity("platform", realPlatform)
         snap()
         color(ColorType.DARK)
         overlay(

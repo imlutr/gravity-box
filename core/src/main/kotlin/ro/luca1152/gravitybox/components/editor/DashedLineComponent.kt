@@ -15,42 +15,46 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components.game
+package ro.luca1152.gravitybox.components.editor
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.utils.ObjectMap
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
-/** Contains a [ObjectMap] of [Entity]s. */
-class LinkedEntityComponent : Component, Poolable {
-    var entities = ObjectMap<String, Entity>()
+class DashedLineComponent : Component, Poolable {
+    var startX = 0f
+    var startY = 0f
+    var endX = 0f
+    var endY = 0f
 
-    fun add(key: String, entity: Entity) {
-        entities.put(key, entity)
-    }
-
-    fun get(key: String): Entity {
-        require(entities.get(key) != null) { "No entity found for the given key." }
-        return entities.get(key)
+    fun set(
+        startX: Float, startY: Float,
+        endX: Float, endY: Float
+    ) {
+        this.startX = startX
+        this.startY = startY
+        this.endX = endX
+        this.endY = endY
     }
 
     override fun reset() {
-        entities.clear()
+        startX = 0f
+        startY = 0f
+        endX = 0f
+        endY = 0f
     }
 
-    companion object : ComponentResolver<LinkedEntityComponent>(LinkedEntityComponent::class.java)
+    companion object : ComponentResolver<DashedLineComponent>(DashedLineComponent::class.java)
 }
 
-val Entity.linkedEntity: LinkedEntityComponent
-    get() = LinkedEntityComponent[this]
+val Entity.dashedLine: DashedLineComponent
+    get() = DashedLineComponent[this]
 
-fun Entity.linkedEntity(key: String, entity: Entity) =
-    add(createComponent<LinkedEntityComponent>().apply {
-        add(key, entity)
-    })!!
-
-fun Entity.linkedEntity() =
-    add(createComponent<LinkedEntityComponent>())!!
+fun Entity.dashedLine(
+    startX: Float, startY: Float,
+    endX: Float, endY: Float
+) = add(createComponent<DashedLineComponent>().apply {
+    set(startX, startY, endX, endY)
+})!!

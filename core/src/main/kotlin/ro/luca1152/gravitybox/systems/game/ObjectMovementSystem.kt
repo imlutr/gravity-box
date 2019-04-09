@@ -39,7 +39,7 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (entity.tryGet(LinkedEntityComponent) != null && entity.linkedEntity.entity!!.editorObject.isDeleted) {
+        if (entity.tryGet(LinkedEntityComponent) != null && entity.linkedEntity.get("mockPlatform").editorObject.isDeleted) {
             return
         }
         if (entity.tryGet(DestroyablePlatformComponent) != null && entity.destroyablePlatform.isRemoved) {

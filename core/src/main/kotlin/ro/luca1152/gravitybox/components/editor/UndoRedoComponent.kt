@@ -111,14 +111,14 @@ class RotateCommand(
     override fun execute() {
         affectedEntity.scene2D.rotation += deltaAngle
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
-            affectedEntity.linkedEntity.entity!!.scene2D.rotation += deltaAngle
+            affectedEntity.linkedEntity.get("mockPlatform").scene2D.rotation += deltaAngle
         }
     }
 
     override fun unexecute() {
         affectedEntity.scene2D.rotation -= deltaAngle
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
-            affectedEntity.linkedEntity.entity!!.scene2D.rotation -= deltaAngle
+            affectedEntity.linkedEntity.get("mockPlatform").scene2D.rotation -= deltaAngle
         }
     }
 }
@@ -145,7 +145,7 @@ class AddCommand(
             }
         }
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
-            affectedEntity.linkedEntity.entity!!.run {
+            affectedEntity.linkedEntity.get("mockPlatform").run {
                 scene2D.run {
                     isVisible = true
                     isTouchable = true
@@ -179,7 +179,7 @@ class AddCommand(
             isTouchable = false
         }
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
-            affectedEntity.linkedEntity.entity!!.run {
+            affectedEntity.linkedEntity.get("mockPlatform").run {
                 scene2D.run {
                     isVisible = false
                     isTouchable = false
@@ -247,7 +247,7 @@ class ResizeCommand(
             updateScene2D(affectedEntity.scene2D)
         }
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
-            affectedEntity.linkedEntity.entity!!.scene2D.run {
+            affectedEntity.linkedEntity.get("mockPlatform").scene2D.run {
                 width += deltaWidth
                 height += deltaHeight
                 group.children.first().width += deltaWidth
@@ -271,7 +271,7 @@ class ResizeCommand(
             updateScene2D(affectedEntity.scene2D)
         }
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
-            affectedEntity.linkedEntity.entity!!.scene2D.run {
+            affectedEntity.linkedEntity.get("mockPlatform").scene2D.run {
                 width -= deltaWidth
                 height -= deltaHeight
                 group.children.first().width -= deltaWidth
