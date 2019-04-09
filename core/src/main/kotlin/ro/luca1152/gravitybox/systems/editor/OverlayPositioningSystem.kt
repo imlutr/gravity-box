@@ -402,8 +402,8 @@ class OverlayPositioningSystem(
     private val selectedMapObjectPolygon = Polygon().apply { vertices = FloatArray(8) }
     private val labels = Group().apply { this + rotationLabel }
     private val overlayLevel1 =
-        Group().apply { this + horizontalPositionButton + verticalPositionButton + rotateButton }
-    private val overlayLevel2 = Group().apply { this + leftArrowButton + rightArrowButton + deleteButton }
+        Group().apply { this + horizontalPositionButton + verticalPositionButton + rotateButton + deleteButton }
+    private val overlayLevel2 = Group().apply { this + leftArrowButton + rightArrowButton }
     private val buttonsPaddingX = 20f
     private val buttonsPaddingY = 50f
 
@@ -566,10 +566,6 @@ class OverlayPositioningSystem(
             leftArrowButton.width + buttonsPaddingX + scene2D.width.metersToPixels / gameCamera.zoom + buttonsPaddingX,
             0f
         )
-        deleteButton.run {
-            setPosition(rightArrowButton.x, deleteButton.height + buttonsPaddingY)
-            icon!!.rotation = 360f - scene2D.rotation
-        }
         rotateButton.setPosition(rightArrowButton.x, rightArrowButton.y + rightArrowButton.height + buttonsPaddingY)
         horizontalPositionButton.run {
             setPosition(
@@ -580,6 +576,10 @@ class OverlayPositioningSystem(
         }
         verticalPositionButton.run {
             setPosition(rightArrowButton.x, rightArrowButton.y)
+            icon!!.rotation = 360f - scene2D.rotation
+        }
+        deleteButton.run {
+            setPosition(leftArrowButton.x, verticalPositionButton.y)
             icon!!.rotation = 360f - scene2D.rotation
         }
     }
@@ -623,8 +623,7 @@ class OverlayPositioningSystem(
 
     private fun updateOverlayShown() {
         val overlayLevel = (selectedMapObject as Entity).overlay.overlayLevel
-        val showLevel2Overlay =
-            selectedMapObject!!.overlay.showResizingButtons || selectedMapObject!!.overlay.showDeletionButton
+        val showLevel2Overlay = selectedMapObject!!.overlay.showResizingButtons
         overlayLevel1.isVisible = if (showLevel2Overlay) (overlayLevel == 1) else true
         overlayLevel2.isVisible = if (showLevel2Overlay) (overlayLevel == 2) else false
     }

@@ -26,8 +26,8 @@ import ro.luca1152.gravitybox.utils.kotlin.createComponent
 /** Contains information regarding one entity's overlay. */
 class OverlayComponent : Component, Poolable {
     /**
-     * First level: move, rotate
-     * Second level: resize, delete
+     * First level: move, rotate, delete
+     * Second level: resize
      */
     var overlayLevel = 1
     var showMovementButtons = true
