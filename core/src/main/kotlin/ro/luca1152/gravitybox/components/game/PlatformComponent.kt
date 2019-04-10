@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that the entity is a platform. */
 class PlatformComponent : Component, Poolable {
@@ -34,4 +34,4 @@ val Entity.platform: PlatformComponent
     get() = PlatformComponent[this]
 
 fun Entity.platform() =
-    add(engine.createComponent(PlatformComponent::class.java))!!
+    add(createComponent<PlatformComponent>())!!

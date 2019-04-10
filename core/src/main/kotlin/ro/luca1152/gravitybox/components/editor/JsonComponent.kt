@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Translates the entity's information to JSON. */
@@ -66,7 +66,12 @@ class JsonComponent : Component, Poolable {
                     writeValue("x", scene2D.centerX.metersToPixels)
                     writeValue("y", scene2D.centerY.metersToPixels)
                     writeObjectEnd()
-
+                    if (tryGet(MovingObjectComponent) != null) json.run {
+                        writeObjectStart("movingTo")
+                        writeValue("x", movingObject.endPoint.x.metersToPixels)
+                        writeValue("y", movingObject.endPoint.y.metersToPixels)
+                        writeObjectEnd()
+                    }
                     if (tryGet(PlatformComponent) != null || tryGet(DestroyablePlatformComponent) != null) json.run {
                         writeValue("width", scene2D.width.metersToPixels)
                     }
@@ -93,14 +98,14 @@ val Entity.json: JsonComponent
     get() = JsonComponent[this]
 
 fun Entity.json() =
-    add(engine.createComponent(JsonComponent::class.java))!!
+    add(createComponent<JsonComponent>())!!
 
 fun Entity.json(parentEntity: Entity, jsonObjectName: String) =
-    add(engine.createComponent(JsonComponent::class.java).apply {
+    add(createComponent<JsonComponent>().apply {
         setObject(parentEntity, jsonObjectName)
     })!!
 
 fun Entity.json(parentEntity: Entity) =
-    add(engine.createComponent(JsonComponent::class.java).apply {
+    add(createComponent<JsonComponent>().apply {
         setArrayObject(parentEntity)
     })!!

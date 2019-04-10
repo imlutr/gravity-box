@@ -27,6 +27,7 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Array
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
+import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.FinishEntity
@@ -92,6 +93,7 @@ class PlayingSystem(
         makeFinishPointEndlesslyBlink()
         makePointsEndlesslyBlink()
         hideLevelEditorUI()
+        hideMockObjects()
         deselectMapObject()
         removeAllSystems(includingThisSystem = false)
         addPlaySystems()
@@ -123,6 +125,15 @@ class PlayingSystem(
         levelEditorScreen.rootTable.isVisible = false
     }
 
+    private fun hideMockObjects() {
+        engine.getEntitiesFor(Family.all(MockMapObjectComponent::class.java).get()).forEach {
+            it.scene2D.run {
+                isVisible = false
+                isTouchable = false
+            }
+        }
+    }
+
     private fun deselectMapObject() {
         engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get())
             .filterNullableSingleton { it.editorObject.isSelected }?.let {
@@ -148,8 +159,10 @@ class PlayingSystem(
         engine.run {
             addSystem(MapBodiesCreationSystem())
             addSystem(CombinedBodiesCreationSystem())
+            addSystem(ObjectMovementSystem())
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
+            addSystem(LevelRestartSystem())
             addSystem(ShootingSystem())
             addSystem(BulletCollisionSystem())
             addSystem(PlatformRemovalSystem())
@@ -159,7 +172,6 @@ class PlayingSystem(
             addSystem(LevelFinishDetectionSystem())
             addSystem(PointsCollectionSystem())
             addSystem(LevelFinishSystem(restartLevelWhenFinished = true))
-            addSystem(LevelRestartSystem())
             addSystem(FinishPointColorSystem())
             addSystem(SelectedObjectColorSystem())
             addSystem(RoundedPlatformsSystem())
@@ -169,6 +181,7 @@ class PlayingSystem(
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
 //            addSystem(PhysicsDebugRenderingSystem())
+            addSystem(DebugRenderingSystem())
         }
     }
 
@@ -184,6 +197,7 @@ class PlayingSystem(
         Colors.resetAllColors()
         hidePlayUI()
         showLevelEditorUI()
+        showMockObjects(engine)
         enableMoveTool()
         removePlayEntities(engine)
         resetEntitiesPosition(engine)
@@ -275,5 +289,16 @@ class PlayingSystem(
 
     private fun showLevelEditorUI() {
         levelEditorScreen.rootTable.isVisible = true
+    }
+
+    private fun showMockObjects(engine: Engine) {
+        engine.getEntitiesFor(Family.all(MockMapObjectComponent::class.java).get()).forEach {
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                it.scene2D.run {
+                    isVisible = true
+                    isTouchable = true
+                }
+            }
+        }
     }
 }

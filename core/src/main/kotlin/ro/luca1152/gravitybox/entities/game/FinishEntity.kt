@@ -59,8 +59,8 @@ object FinishEntity {
         collisionBox(WIDTH, HEIGHT)
         color(ColorType.DARK)
         overlay(
-            showMovementButtons = true, showRotationButton = true,
-            showResizingButtons = false, showDeletionButton = false
+            showMovementButtons = true, showRotationButton = true, showDeletionButton = false,
+            showResizingButtons = false, showSettingsButton = false
         )
         json(this, "finish")
         addToEngine()

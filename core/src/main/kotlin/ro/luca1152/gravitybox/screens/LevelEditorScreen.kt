@@ -106,14 +106,6 @@ class LevelEditorScreen(
             addClickRunnable(createButtonFromPaneRunnable(this@paneButton, this, PlatformComponent::class.java))
         })
         addCellToPane(ClickButton(skin, "small-button").apply {
-            addIcon("destroyable-platform-icon")
-            setColors(Colors.gameColor, Colors.uiDownColor)
-            setOpaque(true)
-            addClickRunnable(
-                createButtonFromPaneRunnable(this@paneButton, this, DestroyablePlatformComponent::class.java)
-            )
-        })
-        addCellToPane(ClickButton(skin, "small-button").apply {
             addIcon("collectible-point-icon")
             setColors(Colors.gameColor, Colors.uiDownColor)
             setOpaque(true)
@@ -408,7 +400,7 @@ class LevelEditorScreen(
     private fun loadLastEditedLevel() {
         val lastEditedMapFile = getLastEditedMapFile()
         val mapFactory = getMapFactory(lastEditedMapFile.path())
-        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity)
+        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity, true)
         isEditingNewLevel = false
         centerCameraOnPlayer()
     }
@@ -547,6 +539,7 @@ class LevelEditorScreen(
             addSystem(OverlayPositioningSystem())
             addSystem(RoundedPlatformsSystem())
             addSystem(ColorSyncSystem())
+            addSystem(DashedLineRenderingSystem())
             addSystem(ImageRenderingSystem())
             addSystem(OverlayRenderingSystem())
             addSystem(DebugRenderingSystem())
@@ -631,7 +624,7 @@ class LevelEditorScreen(
                     textLabel.setText("Are you sure you want to load the level #${mapFactory.id}?")
                     uiStage.addActor(this)
                     yesClickRunnable = Runnable {
-                        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity)
+                        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity, true)
                         centerCameraOnPlayer()
                         hideSettingsPopUp = true
                         isEditingNewLevel = false

@@ -107,6 +107,15 @@ inline fun <reified T : Component> Engine.getSingleton(): Entity {
     return entity
 }
 
+inline fun <reified T : Component> createComponent(): T {
+    return engine.createComponent(T::class.java)
+}
+
+inline fun <reified T : Component> Entity.removeComponent() {
+    remove(T::class.java)
+}
+
+
 fun Engine.removeAllSystems(except: ArrayList<Class<out EntitySystem>> = ArrayList()) {
     val systemsToRemove = Array<EntitySystem>()
     systems.forEach {

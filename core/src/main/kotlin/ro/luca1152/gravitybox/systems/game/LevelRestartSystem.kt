@@ -45,10 +45,11 @@ class LevelRestartSystem : EntitySystem() {
     }
 
     private fun restartTheLevel() {
-        removeBullets()
+        resetBodiesToInitialState()
+        resetMovingPlatforms()
         resetDestroyablePlatforms()
         resetCollectiblePoints()
-        resetBodiesToInitialState()
+        removeBullets()
         levelEntity.level.restartLevel = false
     }
 
@@ -65,7 +66,8 @@ class LevelRestartSystem : EntitySystem() {
                     if (destroyablePlatform.isRemoved) {
                         destroyablePlatform.isRemoved = false
                         scene2D.isVisible = true
-                        val bodyType = BodyDef.BodyType.StaticBody
+                        val bodyType =
+                            if (tryGet(DestroyablePlatformComponent) == null) BodyDef.BodyType.StaticBody else BodyDef.BodyType.KinematicBody
                         val categoryBits = PlatformEntity.CATEGORY_BITS
                         val maskBits = PlatformEntity.MASK_BITS
                         body(scene2D.toBody(bodyType, categoryBits, maskBits), categoryBits, maskBits)
@@ -93,7 +95,20 @@ class LevelRestartSystem : EntitySystem() {
             .forEach {
                 if (it.tryGet(BodyComponent) != null) {
                     it.body.resetToInitialState()
+                    it.scene2D.run {
+                        centerX = it.body.body.worldCenter.x
+                        centerY = it.body.body.worldCenter.y
+                    }
                 }
             }
+    }
+
+    private fun resetMovingPlatforms() {
+        engine.getEntitiesFor(Family.all(MovingObjectComponent::class.java).get()).forEach {
+            it.movingObject.run {
+                isMovingTowardsEndPoint = true
+                moved(it, it.linkedEntity.get("mockPlatform"))
+            }
+        }
     }
 }

@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Contains level information. */
 class LevelComponent : Component, Poolable {
@@ -53,6 +53,6 @@ val Entity.level: LevelComponent
     get() = LevelComponent[this]
 
 fun Entity.level(levelNumber: Int) =
-    add(engine.createComponent(LevelComponent::class.java).apply {
+    add(createComponent<LevelComponent>().apply {
         set(levelNumber)
     })!!

@@ -142,6 +142,7 @@ class PlayScreen(
             addSystem(MapBodiesCreationSystem())
             addSystem(CombinedBodiesCreationSystem())
             addSystem(RoundedPlatformsSystem())
+            addSystem(ObjectMovementSystem())
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(ShootingSystem())

@@ -15,37 +15,20 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components.game
+package ro.luca1152.gravitybox.components.editor
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
-/** Indicates that the entity is a player. */
-class PlayerComponent : Component, Poolable {
-    var isInsideFinishPoint = false
+/** Indicates that the entity is a mock map object (it doesn't have functionality, it is used only in the level editor). */
+class MockMapObjectComponent : Component, Poolable {
+    override fun reset() {}
 
-    fun reset(body: Body) {
-        body.run {
-            setTransform(0f, 0f, 0f) // Reset the position
-            applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
-            setLinearVelocity(0f, 0f)
-            angularVelocity = 0f
-        }
-    }
-
-    override fun reset() {
-        isInsideFinishPoint = false
-    }
-
-    companion object : ComponentResolver<PlayerComponent>(PlayerComponent::class.java)
+    companion object : ComponentResolver<MockMapObjectComponent>(MockMapObjectComponent::class.java)
 }
 
-val Entity.player: PlayerComponent
-    get() = PlayerComponent[this]
-
-fun Entity.player() =
-    add(createComponent<PlayerComponent>())!!
+fun Entity.mockMapObject() =
+    add(createComponent<MockMapObjectComponent>())!!

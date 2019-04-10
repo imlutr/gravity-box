@@ -21,7 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that the entity is a bullet. */
 class BulletComponent : Component, Poolable {
@@ -42,4 +42,4 @@ val Entity.bullet: BulletComponent
     get() = BulletComponent[this]
 
 fun Entity.bullet() =
-    add(engine.createComponent(BulletComponent::class.java))!!
+    add(createComponent<BulletComponent>())!!

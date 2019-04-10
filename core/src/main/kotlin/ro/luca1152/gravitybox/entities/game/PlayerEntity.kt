@@ -44,8 +44,8 @@ object PlayerEntity {
     ) = newEntity().apply {
         mapObject(id)
         overlay(
-            showMovementButtons = true, showRotationButton = true,
-            showResizingButtons = false, showDeletionButton = false
+            showMovementButtons = true, showRotationButton = true, showDeletionButton = false,
+            showResizingButtons = false, showSettingsButton = false
         )
         player()
         scene2D(manager.get(Assets.tileset).findRegion("player"), x, y, WIDTH, HEIGHT)

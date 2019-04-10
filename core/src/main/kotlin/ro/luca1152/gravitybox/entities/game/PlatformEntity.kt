@@ -41,10 +41,12 @@ object PlatformEntity {
     val MASK_BITS = EntityCategory.OBSTACLE.bits
 
     fun createEntity(
-        id: Int, x: Float, y: Float,
+        id: Int,
+        x: Float, y: Float,
         width: Float,
         rotation: Float = ROTATION,
         isDestroyable: Boolean = false,
+        targetX: Float = Float.POSITIVE_INFINITY, targetY: Float = Float.POSITIVE_INFINITY,
         manager: AssetManager = Injekt.get()
     ) = newEntity().apply {
         mapObject(id)
@@ -62,14 +64,17 @@ object PlatformEntity {
                 ), x, y, width, HEIGHT, rotation
             )
         }
+        if (targetX != Float.POSITIVE_INFINITY && targetY != Float.POSITIVE_INFINITY) {
+            movingObject(targetX, targetY)
+        }
         polygon(scene2D)
         editorObject()
         snap()
         body()
         color(ColorType.DARK)
         overlay(
-            showMovementButtons = true, showRotationButton = true,
-            showResizingButtons = true, showDeletionButton = true
+            showMovementButtons = true, showRotationButton = true, showDeletionButton = true,
+            showResizingButtons = true, showSettingsButton = true
         )
         extendedTouch(this, 0f, 1f - HEIGHT)
         json(this)

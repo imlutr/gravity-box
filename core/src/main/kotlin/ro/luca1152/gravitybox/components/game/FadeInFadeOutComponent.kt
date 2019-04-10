@@ -25,7 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Adds a permanent fade in-fade out effect. */
 class FadeInFadeOutComponent : Component, Poolable {
@@ -62,6 +62,6 @@ class FadeInFadeOutComponent : Component, Poolable {
 }
 
 fun Entity.fadeInFadeOut(scene2D: Scene2DComponent, delayBeforeStarting: Float = 0f) =
-    add(engine.createComponent(FadeInFadeOutComponent::class.java).apply {
+    add(createComponent<FadeInFadeOutComponent>().apply {
         set(scene2D, delayBeforeStarting)
     })!!

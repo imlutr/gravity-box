@@ -19,7 +19,6 @@ package ro.luca1152.gravitybox.systems.editor
 
 import com.badlogic.ashley.core.*
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Vector2
@@ -27,6 +26,7 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ktx.actors.plus
@@ -37,13 +37,16 @@ import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.Button
+import ro.luca1152.gravitybox.utils.ui.button.Checkbox
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
+import ro.luca1152.gravitybox.utils.ui.popup.PopUp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Positions the overlay. */
 class OverlayPositioningSystem(
-    skin: Skin = Injekt.get(),
+    private val skin: Skin = Injekt.get(),
+    private val uiStage: UIStage = Injekt.get(),
     private val gameStage: GameStage = Injekt.get(),
     private val gameCamera: GameCamera = Injekt.get(),
     private val overlayCamera: OverlayCamera = Injekt.get(),
@@ -100,6 +103,8 @@ class OverlayPositioningSystem(
                             scene2D.centerX - initialImageX, scene2D.centerY - initialImageY
                         )
                     )
+                selectedMapObject!!.tryGet(MovingObjectComponent)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.get("mockPlatform"))
             }
         })
     }
@@ -149,6 +154,8 @@ class OverlayPositioningSystem(
                             scene2D.centerX - initialImageX, scene2D.centerY - initialImageY
                         )
                     )
+                selectedMapObject!!.tryGet(MovingObjectComponent)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.get("mockPlatform"))
             }
         })
     }
@@ -209,6 +216,10 @@ class OverlayPositioningSystem(
                     }
                 newRotation = toPositiveAngle(newRotation)
 
+                if (selectedMapObject!!.tryGet(MovingObjectComponent) != null) {
+                    selectedMapObject!!.linkedEntity.get("mockPlatform").scene2D.rotation = newRotation
+                }
+
                 scene2d.rotation = newRotation
                 overlayLevel1.rotation = newRotation
                 this@apply.icon!!.rotation = 360f - newRotation
@@ -228,6 +239,8 @@ class OverlayPositioningSystem(
                             scene2d.rotation - initialImageRotation
                         )
                     )
+                selectedMapObject!!.tryGet(MovingObjectComponent)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.get("mockPlatform"))
             }
 
             private fun getAngleBetween(rotateButton: Button, objectScene2D: Scene2DComponent): Float {
@@ -315,6 +328,13 @@ class OverlayPositioningSystem(
                             0f
                         )
                     )
+                selectedMapObject!!.tryGet(MovingObjectComponent)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.get("mockPlatform"))
+                selectedMapObject!!.tryGet(MockMapObjectComponent)?.let {
+                    selectedMapObject!!.linkedEntity.get("platform").movingObject.moved(
+                        selectedMapObject!!.linkedEntity.get("platform"), selectedMapObject
+                    )
+                }
             }
         })
     }
@@ -343,8 +363,13 @@ class OverlayPositioningSystem(
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
                 var newCenterY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
-                if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null) {
-                    newCenterY = newCenterY.roundToNearest(1f, .125f, .5f)
+                newCenterY = if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null ||
+                    (selectedMapObject as Entity).tryGet(DestroyablePlatformComponent) != null ||
+                    (selectedMapObject as Entity).tryGet(MockMapObjectComponent) != null
+                ) {
+                    newCenterY.roundToNearest(1f, .125f, .5f)
+                } else {
+                    newCenterY.roundToNearest(.5f, .125f)
                 }
 
                 if (Math.abs(selectedMapObject!!.snap.snapCenterY - newCenterY) <= DRAG_SNAP_THRESHOLD) {
@@ -369,7 +394,22 @@ class OverlayPositioningSystem(
                             scene2D.centerY - initialImageY
                         )
                     )
+                selectedMapObject!!.tryGet(MovingObjectComponent)
+                    ?.moved(selectedMapObject, selectedMapObject!!.linkedEntity.get("mockPlatform"))
+                selectedMapObject!!.tryGet(MockMapObjectComponent)?.let {
+                    selectedMapObject!!.linkedEntity.get("platform").movingObject.moved(
+                        selectedMapObject!!.linkedEntity.get("platform"), selectedMapObject
+                    )
+                }
             }
+        })
+    }
+    private val settingsButton = ClickButton(skin, "small-round-button").apply {
+        addIcon("small-settings-icon")
+        setColors(Colors.gameColor, Colors.uiDownColor)
+        setOpaque(true)
+        addClickRunnable(Runnable {
+            uiStage.addActor(createSettingsPopUp())
         })
     }
 
@@ -379,8 +419,8 @@ class OverlayPositioningSystem(
     private val selectedMapObjectPolygon = Polygon().apply { vertices = FloatArray(8) }
     private val labels = Group().apply { this + rotationLabel }
     private val overlayLevel1 =
-        Group().apply { this + horizontalPositionButton + verticalPositionButton + rotateButton }
-    private val overlayLevel2 = Group().apply { this + leftArrowButton + rightArrowButton + deleteButton }
+        Group().apply { this + horizontalPositionButton + verticalPositionButton + rotateButton + deleteButton }
+    private val overlayLevel2 = Group().apply { this + leftArrowButton + rightArrowButton + settingsButton }
     private val buttonsPaddingX = 20f
     private val buttonsPaddingY = 50f
 
@@ -430,8 +470,7 @@ class OverlayPositioningSystem(
         linkedMapObject: Entity,
         toLeft: Boolean = false,
         toRight: Boolean = false,
-        isDestroyablePlatform: Boolean = false,
-        manager: AssetManager = Injekt.get()
+        isDestroyablePlatform: Boolean = false
     ) {
         if (!toLeft && !toRight) error { "No scale direction given." }
         if (toLeft && toRight) error { "Can't scale in two directions." }
@@ -471,8 +510,16 @@ class OverlayPositioningSystem(
             }
         }
         val position = selectedMapObjectPolygon.getRectangleCenter()
+        scene2D.width = newWidth
+        if (selectedMapObject!!.tryGet(MovingObjectComponent) != null) {
+            selectedMapObject!!.linkedEntity.get("mockPlatform").scene2D.run {
+                group.children.first().width = newWidth
+                width = newWidth
+                centerX += position.x - scene2D.centerX
+                centerY += position.y - scene2D.centerY
+            }
+        }
         scene2D.run {
-            width = newWidth
             centerX = position.x
             centerY = position.y
             if (isDestroyablePlatform) {
@@ -536,11 +583,8 @@ class OverlayPositioningSystem(
             leftArrowButton.width + buttonsPaddingX + scene2D.width.metersToPixels / gameCamera.zoom + buttonsPaddingX,
             0f
         )
-        deleteButton.run {
-            setPosition(rightArrowButton.x, deleteButton.height + buttonsPaddingY)
-            icon!!.rotation = 360f - scene2D.rotation
-        }
         rotateButton.setPosition(rightArrowButton.x, rightArrowButton.y + rightArrowButton.height + buttonsPaddingY)
+        settingsButton.setPosition(rotateButton.x, rotateButton.y)
         horizontalPositionButton.run {
             setPosition(
                 overlayLevel1.width / 2f - horizontalPositionButton.width / 2f,
@@ -550,6 +594,10 @@ class OverlayPositioningSystem(
         }
         verticalPositionButton.run {
             setPosition(rightArrowButton.x, rightArrowButton.y)
+            icon!!.rotation = 360f - scene2D.rotation
+        }
+        deleteButton.run {
+            setPosition(leftArrowButton.x, verticalPositionButton.y)
             icon!!.rotation = 360f - scene2D.rotation
         }
     }
@@ -594,7 +642,7 @@ class OverlayPositioningSystem(
     private fun updateOverlayShown() {
         val overlayLevel = (selectedMapObject as Entity).overlay.overlayLevel
         val showLevel2Overlay =
-            selectedMapObject!!.overlay.showResizingButtons || selectedMapObject!!.overlay.showDeletionButton
+            selectedMapObject!!.overlay.showResizingButtons || selectedMapObject!!.overlay.showSettingsButton
         overlayLevel1.isVisible = if (showLevel2Overlay) (overlayLevel == 1) else true
         overlayLevel2.isVisible = if (showLevel2Overlay) (overlayLevel == 2) else false
     }
@@ -618,5 +666,62 @@ class OverlayPositioningSystem(
         var newAngle = angle % 360f
         if (newAngle < 0f) newAngle += 360f
         return newAngle
+    }
+
+    private fun createSettingsPopUp() = PopUp(500f, 310f, skin).apply {
+        widget.run {
+            add(createDestroyableCheckbox()).padBottom(20f).expandX().left().row()
+            add(createMovingCheckbox()).padBottom(20f).expandX().left().row()
+            add(createRotatingCheckbox()).expandX().left().row()
+        }
+    }
+
+    private fun createDestroyableCheckbox() = Table(skin).apply {
+        val checkbox = Checkbox(skin).apply {
+            isTicked = selectedMapObject!!.tryGet(DestroyablePlatformComponent) != null
+            tickRunnable = Runnable {
+                val command = MakeObjectDestroyableCommand(selectedMapObject!!).apply {
+                    execute()
+                }
+                undoRedoEntity.undoRedo.addExecutedCommand(command)
+            }
+            untickRunnable = Runnable {
+                val command = MakeObjectNonDestroyableCommand(selectedMapObject!!).apply {
+                    execute()
+                }
+                undoRedoEntity.undoRedo.addExecutedCommand(command)
+            }
+        }
+        val label = DistanceFieldLabel("Destroyable", skin, "bold", 65f, Colors.gameColor)
+        add(checkbox).padRight(20f)
+        add(label)
+    }
+
+    private fun createMovingCheckbox() = Table(skin).apply {
+        val checkbox = Checkbox(skin).apply {
+            isTicked = selectedMapObject!!.tryGet(MovingObjectComponent) != null
+            tickRunnable = Runnable {
+                val command = MakeObjectMovingCommand(selectedMapObject!!).apply {
+                    execute()
+                }
+                undoRedoEntity.undoRedo.addExecutedCommand(command)
+            }
+            untickRunnable = Runnable {
+                val command = MakeObjectNonMovingCommand(selectedMapObject!!).apply {
+                    execute()
+                }
+                undoRedoEntity.undoRedo.addExecutedCommand(command)
+            }
+        }
+        val label = DistanceFieldLabel("Moving", skin, "bold", 65f, Colors.gameColor)
+        add(checkbox).padRight(20f)
+        add(label)
+    }
+
+    private fun createRotatingCheckbox() = Table(skin).apply {
+        val checkbox = Checkbox(skin)
+        val label = DistanceFieldLabel("Rotating", skin, "bold", 65f, Colors.gameColor)
+        add(checkbox).padRight(20f)
+        add(label)
     }
 }

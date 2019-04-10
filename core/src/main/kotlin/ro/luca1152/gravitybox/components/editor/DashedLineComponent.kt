@@ -15,37 +15,46 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.components.game
+package ro.luca1152.gravitybox.components.editor
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
-/** Indicates that the entity is a player. */
-class PlayerComponent : Component, Poolable {
-    var isInsideFinishPoint = false
+class DashedLineComponent : Component, Poolable {
+    var startX = 0f
+    var startY = 0f
+    var endX = 0f
+    var endY = 0f
 
-    fun reset(body: Body) {
-        body.run {
-            setTransform(0f, 0f, 0f) // Reset the position
-            applyForceToCenter(0f, 0f, true) // Wake the body so it doesn't float
-            setLinearVelocity(0f, 0f)
-            angularVelocity = 0f
-        }
+    fun set(
+        startX: Float, startY: Float,
+        endX: Float, endY: Float
+    ) {
+        this.startX = startX
+        this.startY = startY
+        this.endX = endX
+        this.endY = endY
     }
 
     override fun reset() {
-        isInsideFinishPoint = false
+        startX = 0f
+        startY = 0f
+        endX = 0f
+        endY = 0f
     }
 
-    companion object : ComponentResolver<PlayerComponent>(PlayerComponent::class.java)
+    companion object : ComponentResolver<DashedLineComponent>(DashedLineComponent::class.java)
 }
 
-val Entity.player: PlayerComponent
-    get() = PlayerComponent[this]
+val Entity.dashedLine: DashedLineComponent
+    get() = DashedLineComponent[this]
 
-fun Entity.player() =
-    add(createComponent<PlayerComponent>())!!
+fun Entity.dashedLine(
+    startX: Float, startY: Float,
+    endX: Float, endY: Float
+) = add(createComponent<DashedLineComponent>().apply {
+    set(startX, startY, endX, endY)
+})!!
