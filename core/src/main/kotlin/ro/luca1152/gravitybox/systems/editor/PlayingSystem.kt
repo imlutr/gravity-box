@@ -26,9 +26,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Array
-import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
-import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
-import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
@@ -92,6 +90,7 @@ class PlayingSystem(
         setOwnBox2DContactListener()
         makeFinishPointEndlesslyBlink()
         makePointsEndlesslyBlink()
+        hideRotatingIndicators()
         hideLevelEditorUI()
         hideMockObjects()
         deselectMapObject()
@@ -118,6 +117,12 @@ class PlayingSystem(
             if (it.tryGet(FadeInFadeOutComponent) == null) {
                 it.fadeInFadeOut(it.scene2D)
             }
+        }
+    }
+
+    private fun hideRotatingIndicators() {
+        engine.getEntitiesFor(Family.all(RotatingIndicatorComponent::class.java).get()).forEach {
+            it.rotatingIndicator.indicatorImage.isVisible = false
         }
     }
 
@@ -203,6 +208,7 @@ class PlayingSystem(
         resetEntitiesPosition(engine)
         removeFinishPointEndlessBlink()
         removePointsEndlessBlink(engine)
+        showRotatingIndicators(engine)
         reselectMapObject()
         destroyAllBodies()
         resetDestroyablePlatforms(engine)
@@ -247,6 +253,12 @@ class PlayingSystem(
             if (it.tryGet(FadeInFadeOutComponent) != null) {
                 it.remove(FadeInFadeOutComponent::class.java)
             }
+        }
+    }
+
+    private fun showRotatingIndicators(engine: Engine) {
+        engine.getEntitiesFor(Family.all(RotatingIndicatorComponent::class.java).get()).forEach {
+            it.rotatingIndicator.indicatorImage.isVisible = true
         }
     }
 
