@@ -505,14 +505,14 @@
      id="base"
      pagecolor="#ffffff"
      showborder="false"
-     showgrid="false"
+     showgrid="true"
      showguides="true"
      units="px"
      inkscape:bbox-nodes="true"
      inkscape:bbox-paths="true"
      inkscape:current-layer="layer1"
-     inkscape:cx="6680.3565"
-     inkscape:cy="-155.16466"
+     inkscape:cx="218.03226"
+     inkscape:cy="-484.56801"
      inkscape:document-units="px"
      inkscape:measure-end="3774.09,-659.996"
      inkscape:measure-start="3774.27,-645.147"
@@ -523,7 +523,7 @@
      inkscape:snap-bbox="true"
      inkscape:snap-bbox-edge-midpoints="true"
      inkscape:snap-bbox-midpoints="true"
-     inkscape:snap-global="true"
+     inkscape:snap-global="false"
      inkscape:snap-intersection-paths="true"
      inkscape:snap-midpoints="false"
      inkscape:snap-nodes="true"
@@ -534,7 +534,7 @@
      inkscape:window-width="1920"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:zoom="8.2532734">
+     inkscape:zoom="0.7294932">
     <inkscape:grid
        empcolor="#7a1919"
        empopacity="0.25098039"
@@ -3726,6 +3726,7 @@
 
 
 
+
 &gt;&gt;&gt;&gt;&gt;&gt;&gt; destroyable-platforms
   <g
    id="g2001"
@@ -4059,5 +4060,69 @@
    y="386.25919"
    rx="0"
    ry="3.4002631" />
+<g
+   id="g2060"
+   transform="translate(-16.798385,-33.853235)">
+  <rect
+     inkscape:export-ydpi="95"
+     inkscape:export-xdpi="95"
+     inkscape:export-filename="./rect840-8-4-5-3-5.png"
+     y="-459.98334"
+     x="-50.350208"
+     width="16.933332"
+     transform="scale(-1)"
+     ry="2.1093059"
+     rx="2.1256618"
+     id="rect840-8-4-5-3-5-36"
+     height="4.2333174"
+     style="fill:#549191;fill-opacity:1;stroke:none;stroke-width:1.79031265;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <g
+     id="g2017">
+    <g
+       id="g1988"
+       transform="translate(0,0.06800526)">
+      <path
+         sodipodi:open="true"
+         d="m 44.871303,461.98077 a 3.5366898,3.5366905 0 0 1 -2.897087,1.50813 3.5366898,3.5366905 0 0 1 -2.897086,-1.50813"
+         sodipodi:end="2.5307274"
+         sodipodi:start="0.61086524"
+         sodipodi:ry="3.5366905"
+         sodipodi:rx="3.5366898"
+         sodipodi:cy="459.95221"
+         sodipodi:cx="41.974216"
+         sodipodi:type="arc"
+         id="path1968"
+         style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#549191;stroke-width:1.0583334;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+      <path
+         sodipodi:nodetypes="ccc"
+         inkscape:connector-curvature="0"
+         id="path1974"
+         d="m 40.055778,461.46592 -1.397579,-0.49885 -0.39075,1.3539"
+         style="fill:none;stroke:#549191;stroke-width:1.0583334;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <g
+       transform="rotate(-180,41.751166,457.82995)"
+       id="g1988-7">
+      <path
+         sodipodi:open="true"
+         d="m 44.871303,461.98077 a 3.5366898,3.5366905 0 0 1 -2.897087,1.50813 3.5366898,3.5366905 0 0 1 -2.897086,-1.50813"
+         sodipodi:end="2.5307274"
+         sodipodi:start="0.61086524"
+         sodipodi:ry="3.5366905"
+         sodipodi:rx="3.5366898"
+         sodipodi:cy="459.95221"
+         sodipodi:cx="41.974216"
+         sodipodi:type="arc"
+         id="path1968-5"
+         style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#549191;stroke-width:1.0583334;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+      <path
+         sodipodi:nodetypes="ccc"
+         inkscape:connector-curvature="0"
+         id="path1974-3"
+         d="m 40.055778,461.46592 -1.397579,-0.49885 -0.39075,1.3539"
+         style="fill:none;stroke:#549191;stroke-width:1.0583334;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+  </g>
+</g>
 </g>
 </svg>

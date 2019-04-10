@@ -64,7 +64,7 @@ bold-italic
   index: -1
 checkbox-x-icon
   rotate: false
-  xy: 2200, 531
+  xy: 2525, 922
   size: 30, 30
   orig: 30, 30
   offset: 0, 0
@@ -92,7 +92,7 @@ empty-checkbox
   index: -1
 empty-star
   rotate: false
-  xy: 551, 543
+  xy: 2485, 885
   size: 31, 30
   orig: 31, 30
   offset: 0, 0
@@ -134,7 +134,7 @@ extra-light-italic
   index: -1
 full-star
   rotate: false
-  xy: 2536, 233
+  xy: 2453, 847
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -262,9 +262,16 @@ regular-italic
   index: -1
 right-arrow-icon
   rotate: false
-  xy: 2453, 882
+  xy: 514, 531
   size: 27, 42
   orig: 27, 42
+  offset: 0, 0
+  index: -1
+rotating-platform-indicator
+  rotate: false
+  xy: 2453, 877
+  size: 30, 47
+  orig: 30, 47
   offset: 0, 0
   index: -1
 semi-bold
@@ -320,7 +327,7 @@ small-left-arrow-icon
   index: -1
 small-minus-icon
   rotate: false
-  xy: 2200, 521
+  xy: 514, 521
   size: 42, 8
   orig: 42, 8
   offset: 0, 0
@@ -341,7 +348,7 @@ small-right-arrow-icon
   index: -1
 small-rotate-icon
   rotate: false
-  xy: 514, 538
+  xy: 2160, 526
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
@@ -362,7 +369,7 @@ small-round-button-inside
   index: -1
 small-settings-icon
   rotate: false
-  xy: 2160, 526
+  xy: 2485, 917
   size: 38, 35
   orig: 38, 35
   offset: 0, 0
