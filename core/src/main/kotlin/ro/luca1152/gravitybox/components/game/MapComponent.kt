@@ -35,6 +35,8 @@ import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.json
+import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
+import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.assets.json.*
@@ -174,14 +176,16 @@ class MapComponent : Component, Poolable {
 
     fun loadMap(
         mapFactory: MapFactory,
-        playerEntity: Entity, finishEntity: Entity
+        playerEntity: Entity,
+        finishEntity: Entity,
+        isLevelEditor: Boolean = false
     ) {
         destroyAllBodies()
         removePlatforms()
         createMap(mapFactory.id, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
-        createObjects(mapFactory.objects)
+        createObjects(mapFactory.objects, isLevelEditor)
         updateMapBounds()
     }
 
@@ -230,24 +234,39 @@ class MapComponent : Component, Poolable {
         }
     }
 
-    private fun createObjects(objects: ArrayList<ObjectPrototype>) {
+    private fun createObjects(objects: ArrayList<ObjectPrototype>, isLevelEditor: Boolean) {
         objects.forEach {
             when {
-                it.type == "platform" -> createPlatform(it)
+                it.type == "platform" -> createPlatform(it, isLevelEditor)
                 it.type == "point" -> createPoint(it)
             }
         }
     }
 
-    private fun createPlatform(platform: ObjectPrototype) {
-        PlatformEntity.createEntity(
+    private fun createPlatform(platform: ObjectPrototype, isLevelEditor: Boolean) {
+        val newPlatform = PlatformEntity.createEntity(
             platform.id,
             platform.position.x.pixelsToMeters,
             platform.position.y.pixelsToMeters,
             platform.width.pixelsToMeters,
             rotation = platform.rotation.toFloat(),
-            isDestroyable = platform.isDestroyable
+            isDestroyable = platform.isDestroyable,
+            targetX = platform.movingTo.x.pixelsToMeters,
+            targetY = platform.movingTo.y.pixelsToMeters
         )
+        if (isLevelEditor) {
+            val mockPlatform = MovingMockPlatformEntity.createEntity(
+                newPlatform,
+                newPlatform.scene2D.centerX + 1f, newPlatform.scene2D.centerY + 1f,
+                newPlatform.scene2D.width, newPlatform.scene2D.rotation
+            )
+            newPlatform.linkedEntity("mockPlatform", mockPlatform)
+            newPlatform.movingObject(mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
+
+            val dashedLine = DashedLineEntity.createEntity(newPlatform, mockPlatform)
+            mockPlatform.linkedEntity.add("dashedLine", dashedLine)
+            newPlatform.linkedEntity.add("dashedLine", dashedLine)
+        }
     }
 
     private fun createPoint(point: ObjectPrototype) {

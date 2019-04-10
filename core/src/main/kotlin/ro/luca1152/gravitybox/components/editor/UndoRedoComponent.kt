@@ -351,7 +351,6 @@ class MakeObjectMovingCommand(override val affectedEntity: Entity) : Command() {
             linkedEntity("mockPlatform", mockPlatform)
 
             val dashedLine = DashedLineEntity.createEntity(this, mockPlatform)
-
             mockPlatform.linkedEntity.add("dashedLine", dashedLine)
             this.linkedEntity.add("dashedLine", dashedLine)
         }

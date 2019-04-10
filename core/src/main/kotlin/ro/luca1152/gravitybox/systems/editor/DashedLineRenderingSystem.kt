@@ -22,6 +22,7 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pools
@@ -37,6 +38,7 @@ import uy.kohesive.injekt.api.get
 
 class DashedLineRenderingSystem(
     private val shapeRenderer: ShapeRenderer = Injekt.get(),
+    private val batch: Batch = Injekt.get(),
     private val gameCamera: GameCamera = Injekt.get()
 ) : IteratingSystem(Family.all(DashedLineComponent::class.java).get()) {
     companion object {
@@ -69,7 +71,7 @@ class DashedLineRenderingSystem(
             direction.nor()
             shapeRenderer.run {
                 projectionMatrix = gameCamera.combined
-                setColor(Colors.gameColor.r, Colors.gameColor.g, Colors.gameColor.b, COLOR_ALPHA)
+                setColor(Colors.gameColor.r, Colors.gameColor.g, Colors.gameColor.b, COLOR_ALPHA * batch.color.a)
                 Gdx.gl.glEnable(GL20.GL_BLEND)
                 begin(ShapeRenderer.ShapeType.Filled)
 

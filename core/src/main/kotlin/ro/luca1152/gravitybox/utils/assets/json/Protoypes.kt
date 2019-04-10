@@ -41,6 +41,11 @@ class FinishPrototype {
     var rotation = 0
 }
 
+class MovingToPrototype {
+    var x = Float.POSITIVE_INFINITY
+    var y = Float.POSITIVE_INFINITY
+}
+
 class ObjectPrototype {
     var type = ""
     var id = 0
@@ -48,4 +53,5 @@ class ObjectPrototype {
     var width = 0f
     var rotation = 0
     var isDestroyable = false
+    var movingTo = MovingToPrototype()
 }

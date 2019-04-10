@@ -400,7 +400,7 @@ class LevelEditorScreen(
     private fun loadLastEditedLevel() {
         val lastEditedMapFile = getLastEditedMapFile()
         val mapFactory = getMapFactory(lastEditedMapFile.path())
-        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity)
+        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity, true)
         isEditingNewLevel = false
         centerCameraOnPlayer()
     }
@@ -624,7 +624,7 @@ class LevelEditorScreen(
                     textLabel.setText("Are you sure you want to load the level #${mapFactory.id}?")
                     uiStage.addActor(this)
                     yesClickRunnable = Runnable {
-                        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity)
+                        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity, true)
                         centerCameraOnPlayer()
                         hideSettingsPopUp = true
                         isEditingNewLevel = false

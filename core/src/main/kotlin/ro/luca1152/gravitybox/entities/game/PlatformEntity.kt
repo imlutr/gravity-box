@@ -41,7 +41,8 @@ object PlatformEntity {
     val MASK_BITS = EntityCategory.OBSTACLE.bits
 
     fun createEntity(
-        id: Int, x: Float, y: Float,
+        id: Int,
+        x: Float, y: Float,
         width: Float,
         rotation: Float = ROTATION,
         isDestroyable: Boolean = false,
