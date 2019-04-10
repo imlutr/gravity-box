@@ -680,16 +680,14 @@ class OverlayPositioningSystem(
         val checkbox = Checkbox(skin).apply {
             isTicked = selectedMapObject!!.tryGet(DestroyablePlatformComponent) != null
             tickRunnable = Runnable {
-                val command = MakeObjectDestroyableCommand(selectedMapObject!!).apply {
-                    execute()
-                }
+                val command = MakeObjectDestroyableCommand(selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
+                command.execute()
             }
             untickRunnable = Runnable {
-                val command = MakeObjectNonDestroyableCommand(selectedMapObject!!).apply {
-                    execute()
-                }
+                val command = MakeObjectNonDestroyableCommand(selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
+                command.execute()
             }
         }
         val label = DistanceFieldLabel("Destroyable", skin, "bold", 65f, Colors.gameColor)
@@ -701,16 +699,14 @@ class OverlayPositioningSystem(
         val checkbox = Checkbox(skin).apply {
             isTicked = selectedMapObject!!.tryGet(MovingObjectComponent) != null
             tickRunnable = Runnable {
-                val command = MakeObjectMovingCommand(selectedMapObject!!).apply {
-                    execute()
-                }
+                val command = MakeObjectMovingCommand(selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
+                command.execute()
             }
             untickRunnable = Runnable {
-                val command = MakeObjectNonMovingCommand(selectedMapObject!!).apply {
-                    execute()
-                }
+                val command = MakeObjectNonMovingCommand(selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
+                command.execute()
             }
         }
         val label = DistanceFieldLabel("Moving", skin, "bold", 65f, Colors.gameColor)
@@ -719,7 +715,19 @@ class OverlayPositioningSystem(
     }
 
     private fun createRotatingCheckbox() = Table(skin).apply {
-        val checkbox = Checkbox(skin)
+        val checkbox = Checkbox(skin).apply {
+            isTicked = selectedMapObject!!.tryGet(RotatingObjectComponent) != null
+            tickRunnable = Runnable {
+                val command = MakeObjectRotatingCommand(selectedMapObject!!)
+                undoRedoEntity.undoRedo.addExecutedCommand(command)
+                command.execute()
+            }
+            untickRunnable = Runnable {
+                val command = MakeObjectNonRotatingCommand(selectedMapObject!!)
+                undoRedoEntity.undoRedo.addExecutedCommand(command)
+                command.execute()
+            }
+        }
         val label = DistanceFieldLabel("Rotating", skin, "bold", 65f, Colors.gameColor)
         add(checkbox).padRight(20f)
         add(label)

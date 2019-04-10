@@ -377,3 +377,31 @@ class MakeObjectNonMovingCommand(override val affectedEntity: Entity) : Command(
         makeMoving.execute()
     }
 }
+
+class MakeObjectRotatingCommand(override val affectedEntity: Entity) : Command() {
+    override fun execute() {
+        affectedEntity.run {
+            rotatingObject()
+            rotatingIndicator()
+        }
+    }
+
+    override fun unexecute() {
+        affectedEntity.run {
+            removeComponent<RotatingObjectComponent>()
+            removeComponent<RotatingIndicatorComponent>()
+        }
+    }
+}
+
+class MakeObjectNonRotatingCommand(override val affectedEntity: Entity) : Command() {
+    private val makeRotating = MakeObjectRotatingCommand(affectedEntity)
+
+    override fun execute() {
+        makeRotating.unexecute()
+    }
+
+    override fun unexecute() {
+        makeRotating.execute()
+    }
+}

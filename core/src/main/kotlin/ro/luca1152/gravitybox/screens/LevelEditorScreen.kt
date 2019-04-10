@@ -538,6 +538,7 @@ class LevelEditorScreen(
             addSystem(ObjectSnappingSystem())
             addSystem(OverlayPositioningSystem())
             addSystem(RoundedPlatformsSystem())
+            addSystem(RotatingIndicatorSystem())
             addSystem(ColorSyncSystem())
             addSystem(DashedLineRenderingSystem())
             addSystem(ImageRenderingSystem())
