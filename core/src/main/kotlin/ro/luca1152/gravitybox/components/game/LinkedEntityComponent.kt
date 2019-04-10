@@ -33,12 +33,12 @@ class LinkedEntityComponent : Component, Poolable {
     }
 
     fun get(key: String): Entity {
-        require(entities.get(key) != null) { "No entity found for the given key." }
+        require(entities.get(key) != null) { "No entity found for the given key (\"$key\")." }
         return entities.get(key)
     }
 
     fun remove(key: String): Entity {
-        require(entities.get(key) != null) { "No entity found for the given key." }
+        require(entities.get(key) != null) { "No entity found for the given key (\"$key\")." }
         return entities.remove(key)
     }
 
