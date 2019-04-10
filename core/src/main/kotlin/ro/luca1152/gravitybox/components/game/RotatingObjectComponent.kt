@@ -25,9 +25,15 @@ import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that a map object is a rotating one. */
 class RotatingObjectComponent : Component, Poolable {
-    override fun reset() {}
+    companion object : ComponentResolver<RotatingObjectComponent>(RotatingObjectComponent::class.java) {
+        const val SPEED = .4f
+    }
 
-    companion object : ComponentResolver<RotatingObjectComponent>(RotatingObjectComponent::class.java)
+    var speed = SPEED
+
+    override fun reset() {
+        speed = SPEED
+    }
 }
 
 val Entity.rotatingObject: RotatingObjectComponent

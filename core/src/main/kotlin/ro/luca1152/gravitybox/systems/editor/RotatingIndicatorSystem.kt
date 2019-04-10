@@ -24,6 +24,7 @@ import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.rotatingIndicator
 import ro.luca1152.gravitybox.components.game.RotatingObjectComponent
 import ro.luca1152.gravitybox.components.game.scene2D
+import ro.luca1152.gravitybox.systems.game.PhysicsSystem
 import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Sets the correct position and rotation of rotating indicators. */
@@ -35,6 +36,7 @@ class RotatingIndicatorSystem : IteratingSystem(Family.all(RotatingObjectCompone
                 y = scene2D.centerY - height / 2f
                 rotation = scene2D.rotation
                 color = if (editorObject.isSelected) Colors.uiDownColor else Colors.gameColor
+                isVisible = engine.getSystem(PhysicsSystem::class.java) == null
             }
         }
     }

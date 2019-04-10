@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.components.editor
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
@@ -41,6 +42,7 @@ class RotatingIndicatorComponent : Component, Poolable {
         indicatorImage = Image(manager.get(Assets.uiSkin).getDrawable("rotating-platform-indicator")).apply {
             setSize(prefWidth.pixelsToMeters, prefHeight.pixelsToMeters)
             setOrigin(width / 2f, height / 2f)
+            touchable = Touchable.disabled
         }
         gameStage.addActor(indicatorImage)
     }
