@@ -34,9 +34,7 @@ import com.badlogic.gdx.utils.TimeUtils
 import ktx.app.KtxScreen
 import ktx.collections.contains
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.editor.editorObject
-import ro.luca1152.gravitybox.components.editor.input
-import ro.luca1152.gravitybox.components.editor.undoRedo
+import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.InputEntity
 import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
@@ -415,14 +413,15 @@ class LevelEditorScreen(
     }
 
     private fun removeAdditionalEntities() {
+        val entitiesToRemove = Array<Entity>()
         engine.getEntitiesFor(
-            Family.all(MapObjectComponent::class.java).exclude(
-                PlayerComponent::class.java,
-                FinishComponent::class.java
+            Family.one(
+                MapObjectComponent::class.java, DashedLineComponent::class.java, MockMapObjectComponent::class.java
+            ).exclude(
+                PlayerComponent::class.java, FinishComponent::class.java
             ).get()
-        ).forEach {
-            engine.removeEntity(it)
-        }
+        ).forEach { entitiesToRemove.add(it) }
+        entitiesToRemove.forEach { engine.removeEntity(it) }
     }
 
     private fun createButtonFromPaneRunnable(
