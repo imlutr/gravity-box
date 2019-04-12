@@ -219,9 +219,11 @@ class LevelEditorScreen(
             if (isEditingNewLevel) {
                 uiStage.addActor(saveLevelBeforeCreationConfirmationPopUp)
             } else {
+                if (!isCurrentLevelDeleted) {
+                    levelEntity.map.saveMap()
+                }
                 isEditingNewLevel = true
                 isCurrentLevelDeleted = false
-                levelEntity.map.saveMap()
                 updateLevelIdToFirstUnused()
                 resetMapToInitialState()
             }
