@@ -207,7 +207,6 @@ class MapComponent : Component, Poolable {
         paddingBottom = padding.bottom.toFloat()
     }
 
-
     private fun createPlayer(player: PlayerPrototype, playerEntity: Entity) {
         playerEntity.run {
             scene2D.run {

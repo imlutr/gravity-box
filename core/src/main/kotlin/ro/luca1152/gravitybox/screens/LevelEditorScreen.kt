@@ -477,12 +477,17 @@ class LevelEditorScreen(
             editorObject.isSelected = false
             polygon.update()
         }
+        val oldId = levelEntity.map.levelId
         levelEntity.run {
             map.run {
                 reset()
                 updateMapBounds()
+                levelId = oldId
             }
-            level.forceUpdateMap = true
+            level.run {
+                levelId = oldId
+                forceUpdateMap = true
+            }
         }
     }
 
