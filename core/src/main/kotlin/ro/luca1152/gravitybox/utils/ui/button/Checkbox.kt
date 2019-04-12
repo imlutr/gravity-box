@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.utils.ui.button
 
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ro.luca1152.gravitybox.utils.ui.Colors
 
@@ -27,6 +28,14 @@ class Checkbox(skin: Skin) : ClickButton(skin, "checkbox") {
 
     /** What happens when the checkbox is unticked. */
     var untickRunnable: Runnable? = null
+
+    /** If false, the checkbox will be disabled, grayed out. */
+    var canBeTicked = true
+        set(value) {
+            field = value
+            touchable = if (value) Touchable.enabled else Touchable.disabled
+            color.a = if (value) 1f else .3f
+        }
 
     /** True if the [Checkbox] is ticked. */
     var isTicked = false
@@ -40,13 +49,15 @@ class Checkbox(skin: Skin) : ClickButton(skin, "checkbox") {
         setColors(Colors.gameColor, Colors.uiDownColor)
         icon!!.isVisible = false
         addClickRunnable(Runnable {
-            isTicked = !isTicked
-            if (isTicked) {
-                tickRunnable?.run()
-                icon!!.isVisible = true
-            } else {
-                untickRunnable?.run()
-                icon!!.isVisible = false
+            if (canBeTicked) {
+                isTicked = !isTicked
+                if (isTicked) {
+                    tickRunnable?.run()
+                    icon!!.isVisible = true
+                } else {
+                    untickRunnable?.run()
+                    icon!!.isVisible = false
+                }
             }
         })
     }

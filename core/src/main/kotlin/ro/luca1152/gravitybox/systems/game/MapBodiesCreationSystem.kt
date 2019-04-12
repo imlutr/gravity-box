@@ -22,6 +22,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
@@ -33,6 +35,8 @@ import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 /** Creates Box2D bodies from entities. */
 class MapBodiesCreationSystem : EntitySystem() {
@@ -179,7 +183,7 @@ class MapBodiesCreationSystem : EntitySystem() {
         }
     }
 
-    private fun createOtherBodies() {
+    private fun createOtherBodies(world: World = Injekt.get()) {
         engine.getEntitiesFor(Family.all(MapObjectComponent::class.java, BodyComponent::class.java).get())
             .forEach {
                 if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
@@ -212,11 +216,29 @@ class MapBodiesCreationSystem : EntitySystem() {
                     if (it.tryGet(MovingObjectComponent) != null) {
                         bodyType = BodyDef.BodyType.KinematicBody
                     }
+                    if (it.tryGet(RotatingObjectComponent) != null) {
+                        bodyType = BodyDef.BodyType.DynamicBody
+                    }
                     if (it.tryGet(CombinedBodyComponent) == null) {
                         it.body.set(
                             it.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction, trimSize),
                             it, categoryBits, maskBits, density, friction
                         )
+                    }
+                    if (it.tryGet(RotatingObjectComponent) != null) {
+                        val hookDef = BodyDef().apply {
+                            position.set(it.body.body.worldCenter)
+                        }
+                        val hook = world.createBody(hookDef)
+                        val jointDef = RevoluteJointDef().apply {
+                            initialize(hook, it.body.body, it.body.body.worldCenter)
+                            collideConnected = false
+                            enableLimit = false
+                            enableMotor = true
+                            motorSpeed = -it.rotatingObject.speed
+                            maxMotorTorque = 1000000f // Make the rotation not be affected by forces (such as bullets)
+                        }
+                        world.createJoint(jointDef)
                     }
                 }
             }

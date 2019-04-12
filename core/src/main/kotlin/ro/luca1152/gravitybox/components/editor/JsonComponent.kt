@@ -79,6 +79,9 @@ class JsonComponent : Component, Poolable {
                     if (tryGet(DestroyablePlatformComponent) != null) json.run {
                         writeValue("isDestroyable", true)
                     }
+                    if (tryGet(RotatingObjectComponent) != null) json.run {
+                        writeValue("isRotating", true)
+                    }
                 }
             }
         }

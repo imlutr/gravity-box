@@ -50,8 +50,9 @@ class ObjectPrototype {
     var type = ""
     var id = 0
     var position = PositionPrototype()
+    var movingTo = MovingToPrototype()
     var width = 0f
     var rotation = 0
     var isDestroyable = false
-    var movingTo = MovingToPrototype()
+    var isRotating = false
 }

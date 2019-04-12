@@ -34,9 +34,7 @@ import com.badlogic.gdx.utils.TimeUtils
 import ktx.app.KtxScreen
 import ktx.collections.contains
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.editor.editorObject
-import ro.luca1152.gravitybox.components.editor.input
-import ro.luca1152.gravitybox.components.editor.undoRedo
+import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.InputEntity
 import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
@@ -221,9 +219,11 @@ class LevelEditorScreen(
             if (isEditingNewLevel) {
                 uiStage.addActor(saveLevelBeforeCreationConfirmationPopUp)
             } else {
+                if (!isCurrentLevelDeleted) {
+                    levelEntity.map.saveMap()
+                }
                 isEditingNewLevel = true
                 isCurrentLevelDeleted = false
-                levelEntity.map.saveMap()
                 updateLevelIdToFirstUnused()
                 resetMapToInitialState()
             }
@@ -415,14 +415,15 @@ class LevelEditorScreen(
     }
 
     private fun removeAdditionalEntities() {
+        val entitiesToRemove = Array<Entity>()
         engine.getEntitiesFor(
-            Family.all(MapObjectComponent::class.java).exclude(
-                PlayerComponent::class.java,
-                FinishComponent::class.java
+            Family.one(
+                MapObjectComponent::class.java, DashedLineComponent::class.java, MockMapObjectComponent::class.java
+            ).exclude(
+                PlayerComponent::class.java, FinishComponent::class.java
             ).get()
-        ).forEach {
-            engine.removeEntity(it)
-        }
+        ).forEach { entitiesToRemove.add(it) }
+        entitiesToRemove.forEach { engine.removeEntity(it) }
     }
 
     private fun createButtonFromPaneRunnable(
@@ -478,12 +479,17 @@ class LevelEditorScreen(
             editorObject.isSelected = false
             polygon.update()
         }
+        val oldId = levelEntity.map.levelId
         levelEntity.run {
             map.run {
                 reset()
                 updateMapBounds()
+                levelId = oldId
             }
-            level.forceUpdateMap = true
+            level.run {
+                levelId = oldId
+                forceUpdateMap = true
+            }
         }
     }
 
@@ -538,6 +544,7 @@ class LevelEditorScreen(
             addSystem(ObjectSnappingSystem())
             addSystem(OverlayPositioningSystem())
             addSystem(RoundedPlatformsSystem())
+            addSystem(RotatingIndicatorSystem())
             addSystem(ColorSyncSystem())
             addSystem(DashedLineRenderingSystem())
             addSystem(ImageRenderingSystem())

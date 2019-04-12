@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pools
 import ktx.math.times
@@ -68,7 +69,12 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
     }
 
     private fun updatePosition(entity: Entity, moveBy: Vector2) {
-        entity.body.body.setLinearVelocity(moveBy.x, moveBy.y)
+        entity.body.body.run {
+            setLinearVelocity(
+                MathUtils.lerp(linearVelocity.x, moveBy.x, .2f),
+                MathUtils.lerp(linearVelocity.y, moveBy.y, .2f)
+            )
+        }
     }
 
     private fun updateDirection(entity: Entity) {

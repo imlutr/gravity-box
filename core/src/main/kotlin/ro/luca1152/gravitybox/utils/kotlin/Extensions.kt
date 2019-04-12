@@ -213,3 +213,7 @@ fun Entity.addToEngine(): Entity {
 }
 
 fun newEntity() = engine.createEntity()!!
+
+fun Color.isEqualWithoutAlphaTo(color: Color): Boolean {
+    return this.r == color.r && this.g == color.g && this.b == color.b
+}

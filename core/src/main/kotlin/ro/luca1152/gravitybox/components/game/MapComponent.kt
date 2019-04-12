@@ -32,9 +32,7 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.collections.sortBy
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
-import ro.luca1152.gravitybox.components.editor.editorObject
-import ro.luca1152.gravitybox.components.editor.json
+import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
@@ -181,7 +179,7 @@ class MapComponent : Component, Poolable {
         isLevelEditor: Boolean = false
     ) {
         destroyAllBodies()
-        removePlatforms()
+        removeObjects()
         createMap(mapFactory.id, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
@@ -189,9 +187,16 @@ class MapComponent : Component, Poolable {
         updateMapBounds()
     }
 
-    private fun removePlatforms(engine: PooledEngine = Injekt.get()) {
+    private fun removeObjects(engine: PooledEngine = Injekt.get()) {
         val entitiesToRemove = Array<Entity>()
-        engine.getEntitiesFor(Family.all(PlatformComponent::class.java).get()).forEach {
+        engine.getEntitiesFor(
+            Family.one(
+                PlatformComponent::class.java,
+                RotatingIndicatorComponent::class.java,
+                DashedLineComponent::class.java,
+                MockMapObjectComponent::class.java
+            ).get()
+        ).forEach {
             entitiesToRemove.add(it)
         }
         entitiesToRemove.forEach {
@@ -206,7 +211,6 @@ class MapComponent : Component, Poolable {
         paddingTop = padding.top.toFloat()
         paddingBottom = padding.bottom.toFloat()
     }
-
 
     private fun createPlayer(player: PlayerPrototype, playerEntity: Entity) {
         playerEntity.run {
@@ -251,10 +255,11 @@ class MapComponent : Component, Poolable {
             platform.width.pixelsToMeters,
             rotation = platform.rotation.toFloat(),
             isDestroyable = platform.isDestroyable,
+            isRotating = platform.isRotating,
             targetX = platform.movingTo.x.pixelsToMeters,
             targetY = platform.movingTo.y.pixelsToMeters
         )
-        if (isLevelEditor) {
+        if (isLevelEditor && platform.movingTo.x != Float.POSITIVE_INFINITY && platform.movingTo.y != Float.POSITIVE_INFINITY) {
             val mockPlatform = MovingMockPlatformEntity.createEntity(
                 newPlatform,
                 newPlatform.scene2D.centerX + 1f, newPlatform.scene2D.centerY + 1f,
@@ -266,6 +271,9 @@ class MapComponent : Component, Poolable {
             val dashedLine = DashedLineEntity.createEntity(newPlatform, mockPlatform)
             mockPlatform.linkedEntity.add("dashedLine", dashedLine)
             newPlatform.linkedEntity.add("dashedLine", dashedLine)
+        }
+        if (isLevelEditor && platform.isRotating) {
+            newPlatform.rotatingIndicator()
         }
     }
 
