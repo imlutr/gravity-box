@@ -254,7 +254,7 @@ class MapComponent : Component, Poolable {
             targetX = platform.movingTo.x.pixelsToMeters,
             targetY = platform.movingTo.y.pixelsToMeters
         )
-        if (isLevelEditor) {
+        if (isLevelEditor && platform.movingTo.x != Float.POSITIVE_INFINITY && platform.movingTo.y != Float.POSITIVE_INFINITY) {
             val mockPlatform = MovingMockPlatformEntity.createEntity(
                 newPlatform,
                 newPlatform.scene2D.centerX + 1f, newPlatform.scene2D.centerY + 1f,
