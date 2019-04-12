@@ -32,10 +32,7 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.collections.sortBy
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
-import ro.luca1152.gravitybox.components.editor.editorObject
-import ro.luca1152.gravitybox.components.editor.json
-import ro.luca1152.gravitybox.components.editor.rotatingIndicator
+import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
@@ -182,7 +179,7 @@ class MapComponent : Component, Poolable {
         isLevelEditor: Boolean = false
     ) {
         destroyAllBodies()
-        removePlatforms()
+        removeObjects()
         createMap(mapFactory.id, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
@@ -190,9 +187,16 @@ class MapComponent : Component, Poolable {
         updateMapBounds()
     }
 
-    private fun removePlatforms(engine: PooledEngine = Injekt.get()) {
+    private fun removeObjects(engine: PooledEngine = Injekt.get()) {
         val entitiesToRemove = Array<Entity>()
-        engine.getEntitiesFor(Family.all(PlatformComponent::class.java).get()).forEach {
+        engine.getEntitiesFor(
+            Family.one(
+                PlatformComponent::class.java,
+                RotatingIndicatorComponent::class.java,
+                DashedLineComponent::class.java,
+                MockMapObjectComponent::class.java
+            ).get()
+        ).forEach {
             entitiesToRemove.add(it)
         }
         entitiesToRemove.forEach {
