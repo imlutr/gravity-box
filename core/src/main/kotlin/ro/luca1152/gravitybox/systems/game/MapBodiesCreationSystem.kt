@@ -235,7 +235,7 @@ class MapBodiesCreationSystem : EntitySystem() {
                             collideConnected = false
                             enableLimit = false
                             enableMotor = true
-                            motorSpeed = it.rotatingObject.speed
+                            motorSpeed = -it.rotatingObject.speed
                             maxMotorTorque = 1000000f // Make the rotation not be affected by forces (such as bullets)
                         }
                         world.createJoint(jointDef)

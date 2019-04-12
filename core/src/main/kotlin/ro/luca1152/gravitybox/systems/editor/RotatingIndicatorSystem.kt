@@ -20,15 +20,15 @@ package ro.luca1152.gravitybox.systems.editor
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import ro.luca1152.gravitybox.components.editor.RotatingIndicatorComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.rotatingIndicator
-import ro.luca1152.gravitybox.components.game.RotatingObjectComponent
 import ro.luca1152.gravitybox.components.game.scene2D
 import ro.luca1152.gravitybox.systems.game.PhysicsSystem
 import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Sets the correct position and rotation of rotating indicators. */
-class RotatingIndicatorSystem : IteratingSystem(Family.all(RotatingObjectComponent::class.java).get()) {
+class RotatingIndicatorSystem : IteratingSystem(Family.all(RotatingIndicatorComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         entity.run {
             rotatingIndicator.indicatorImage.run {

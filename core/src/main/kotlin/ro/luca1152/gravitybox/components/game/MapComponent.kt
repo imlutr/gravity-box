@@ -35,6 +35,7 @@ import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.json
+import ro.luca1152.gravitybox.components.editor.rotatingIndicator
 import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
@@ -250,6 +251,7 @@ class MapComponent : Component, Poolable {
             platform.width.pixelsToMeters,
             rotation = platform.rotation.toFloat(),
             isDestroyable = platform.isDestroyable,
+            isRotating = platform.isRotating,
             targetX = platform.movingTo.x.pixelsToMeters,
             targetY = platform.movingTo.y.pixelsToMeters
         )
@@ -265,6 +267,9 @@ class MapComponent : Component, Poolable {
             val dashedLine = DashedLineEntity.createEntity(newPlatform, mockPlatform)
             mockPlatform.linkedEntity.add("dashedLine", dashedLine)
             newPlatform.linkedEntity.add("dashedLine", dashedLine)
+        }
+        if (isLevelEditor && platform.isRotating) {
+            newPlatform.rotatingIndicator()
         }
     }
 
