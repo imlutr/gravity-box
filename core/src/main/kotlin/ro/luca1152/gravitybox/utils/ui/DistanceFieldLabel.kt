@@ -82,7 +82,9 @@ class DistanceFieldLabel(
 
     override fun act(delta: Float) {
         super.act(delta)
-        color.setWithoutAlpha(Colors.gameColor)
+        if (color != Colors.uiDownColor) {
+            color.setWithoutAlpha(Colors.gameColor)
+        }
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
