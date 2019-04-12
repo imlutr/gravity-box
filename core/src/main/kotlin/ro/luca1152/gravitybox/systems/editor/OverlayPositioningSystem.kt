@@ -273,7 +273,7 @@ class OverlayPositioningSystem(
             }
         })
     }
-    private val rotationLabel = DistanceFieldLabel("", skin, "bold", 37f, Colors.uiDownColor).apply {
+    private val rotationLabel = DistanceFieldLabel("0°", skin, "bold", 37f, Colors.uiDownColor).apply {
         isVisible = false
     }
     private val horizontalPositionButton = ClickButton(

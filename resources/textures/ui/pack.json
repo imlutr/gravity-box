@@ -4,7 +4,7 @@
   paddingY: 2,
   maxWidth: 8192,
   maxHeight: 8192,
-  minHeight: 1024,
+  minHeight: 2048,
   filterMin: Linear,
   filterMag: Linear,
 }
