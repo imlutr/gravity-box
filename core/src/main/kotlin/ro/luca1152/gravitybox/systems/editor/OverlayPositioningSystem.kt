@@ -668,6 +668,13 @@ class OverlayPositioningSystem(
         return newAngle
     }
 
+    private lateinit var destroyableCheckbox: Checkbox
+    private lateinit var destroyableCheckboxLabel: DistanceFieldLabel
+    private lateinit var movingCheckbox: Checkbox
+    private lateinit var movingCheckboxLabel: DistanceFieldLabel
+    private lateinit var rotatingCheckbox: Checkbox
+    private lateinit var rotatingCheckboxLabel: DistanceFieldLabel
+
     private fun createSettingsPopUp() = PopUp(500f, 310f, skin).apply {
         widget.run {
             add(createDestroyableCheckbox()).padBottom(20f).expandX().left().row()
@@ -677,59 +684,74 @@ class OverlayPositioningSystem(
     }
 
     private fun createDestroyableCheckbox() = Table(skin).apply {
-        val checkbox = Checkbox(skin).apply {
+        destroyableCheckbox = Checkbox(skin).apply {
             isTicked = selectedMapObject!!.tryGet(DestroyablePlatformComponent) != null
             tickRunnable = Runnable {
                 val command = MakeObjectDestroyableCommand(selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
+                updateOverlaySettingsCheckboxes()
             }
             untickRunnable = Runnable {
                 val command = MakeObjectNonDestroyableCommand(selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
+                updateOverlaySettingsCheckboxes()
             }
         }
-        val label = DistanceFieldLabel("Destroyable", skin, "bold", 65f, Colors.gameColor)
-        add(checkbox).padRight(20f)
-        add(label)
+        destroyableCheckboxLabel = DistanceFieldLabel("Destroyable", skin, "bold", 65f, Colors.gameColor)
+        add(destroyableCheckbox).padRight(20f)
+        add(destroyableCheckboxLabel)
     }
 
     private fun createMovingCheckbox() = Table(skin).apply {
-        val checkbox = Checkbox(skin).apply {
+        movingCheckbox = Checkbox(skin).apply {
             isTicked = selectedMapObject!!.tryGet(MovingObjectComponent) != null
             tickRunnable = Runnable {
                 val command = MakeObjectMovingCommand(selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
+                updateOverlaySettingsCheckboxes()
             }
             untickRunnable = Runnable {
                 val command = MakeObjectNonMovingCommand(selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
+                updateOverlaySettingsCheckboxes()
             }
         }
-        val label = DistanceFieldLabel("Moving", skin, "bold", 65f, Colors.gameColor)
-        add(checkbox).padRight(20f)
-        add(label)
+        movingCheckboxLabel = DistanceFieldLabel("Moving", skin, "bold", 65f, Colors.gameColor)
+        add(movingCheckbox).padRight(20f)
+        add(movingCheckboxLabel)
     }
 
     private fun createRotatingCheckbox() = Table(skin).apply {
-        val checkbox = Checkbox(skin).apply {
+        rotatingCheckbox = Checkbox(skin).apply {
             isTicked = selectedMapObject!!.tryGet(RotatingObjectComponent) != null
             tickRunnable = Runnable {
                 val command = MakeObjectRotatingCommand(selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
+                updateOverlaySettingsCheckboxes()
             }
             untickRunnable = Runnable {
                 val command = MakeObjectNonRotatingCommand(selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
+                updateOverlaySettingsCheckboxes()
             }
         }
-        val label = DistanceFieldLabel("Rotating", skin, "bold", 65f, Colors.gameColor)
-        add(checkbox).padRight(20f)
-        add(label)
+        rotatingCheckboxLabel = DistanceFieldLabel("Rotating", skin, "bold", 65f, Colors.gameColor)
+        add(rotatingCheckbox).padRight(20f)
+        add(rotatingCheckboxLabel)
+    }
+
+    private fun updateOverlaySettingsCheckboxes() {
+        selectedMapObject?.run {
+            rotatingCheckbox.canBeTicked = tryGet(MovingObjectComponent) == null
+            rotatingCheckboxLabel.color.a = if (tryGet(MovingObjectComponent) == null) 1f else .3f
+            movingCheckbox.canBeTicked = tryGet(RotatingObjectComponent) == null
+            movingCheckboxLabel.color.a = if (tryGet(RotatingObjectComponent) == null) 1f else .3f
+        }
     }
 }
