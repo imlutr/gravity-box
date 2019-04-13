@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ktx.actors.plus
@@ -276,6 +277,7 @@ class OverlayPositioningSystem(
     private val rotationLabel = DistanceFieldLabel("0°", skin, "bold", 37f, Colors.uiDownColor).apply {
         isVisible = false
     }
+    private var horizontalPositionButtonTakesRotationIntoAccount = false
     private val horizontalPositionButton = ClickButton(
         skin,
         "small-round-button"
@@ -287,11 +289,13 @@ class OverlayPositioningSystem(
             private val scene2D
                 get() = (selectedMapObject as Entity).scene2D
             private var initialImageX = 0f
+            private var initialImageY = 0f
             private var initialMouseXInWorldCoords = 0f
 
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 super.touchDown(event, x, y, pointer, button)
                 initialImageX = scene2D.centerX
+                initialImageY = scene2D.centerY
                 initialMouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
                 return true
             }
@@ -303,13 +307,27 @@ class OverlayPositioningSystem(
                 selectedMapObject!!.editorObject.isDraggingHorizontally = true
 
                 val mouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
-                var newCenterX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
-                newCenterX = newCenterX.roundToNearest(.5f, .15f)
+                var newCenterX: Float
+                var newCenterY = initialImageY
+                if (horizontalPositionButtonTakesRotationIntoAccount) {
+                    newCenterX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords) *
+                            MathUtils.cosDeg(scene2D.rotation) * Math.signum(MathUtils.cosDeg(360f - scene2D.rotation))
+                    newCenterY = initialImageY + (mouseXInWorldCoords - initialMouseXInWorldCoords) *
+                            MathUtils.sinDeg(scene2D.rotation) * Math.signum(MathUtils.cosDeg(360f - scene2D.rotation))
+                    selectedMapObject!!.editorObject.isDraggingVertically = true
+                } else {
+                    selectedMapObject!!.editorObject.isDraggingVertically = false
+                    newCenterX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
+                    newCenterX = newCenterX.roundToNearest(.5f, .15f)
+                }
 
-                if (Math.abs(newCenterX - selectedMapObject!!.snap.snapCenterX) <= DRAG_SNAP_THRESHOLD) {
+                if (Math.abs(newCenterX - selectedMapObject!!.snap.snapCenterX) <= DRAG_SNAP_THRESHOLD &&
+                    Math.abs(newCenterY - selectedMapObject!!.snap.snapCenterY) <= DRAG_SNAP_THRESHOLD
+                ) {
                     return
                 } else {
                     scene2D.centerX = newCenterX
+                    scene2D.centerY = newCenterY
                 }
 
                 repositionOverlay()
@@ -319,13 +337,14 @@ class OverlayPositioningSystem(
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 selectedMapObject!!.editorObject.isDraggingHorizontally = false
+                selectedMapObject!!.editorObject.isDraggingVertically = false
                 selectedMapObject!!.snap.resetSnappedX()
                 if (scene2D.centerX != initialImageX)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         MoveCommand(
                             selectedMapObject!!,
                             scene2D.centerX - initialImageX,
-                            0f
+                            scene2D.centerY - initialImageY
                         )
                     )
                 selectedMapObject!!.tryGet(MovingObjectComponent)
@@ -337,7 +356,15 @@ class OverlayPositioningSystem(
                 }
             }
         })
+        addListener(object : ActorGestureListener() {
+            override fun tap(event: InputEvent?, x: Float, y: Float, count: Int, button: Int) {
+                if (count == 2) {
+                    horizontalPositionButtonTakesRotationIntoAccount = !horizontalPositionButtonTakesRotationIntoAccount
+                }
+            }
+        })
     }
+    private var verticalPositionButtonTakesRotationIntoAccount = false
     private val verticalPositionButton = ClickButton(skin, "small-round-button").apply {
         addIcon("small-vertical-arrow")
         setColors(Colors.gameColor, Colors.uiDownColor)
@@ -346,11 +373,13 @@ class OverlayPositioningSystem(
             private val scene2D
                 get() = (selectedMapObject as Entity).scene2D
             private var initialImageY = 0f
+            private var initialImageX = 0f
             private var initialMouseYInWorldCoords = 0f
 
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 super.touchDown(event, x, y, pointer, button)
                 initialImageY = scene2D.centerY
+                initialImageX = scene2D.centerX
                 initialMouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
                 return true
             }
@@ -362,20 +391,34 @@ class OverlayPositioningSystem(
                 selectedMapObject!!.editorObject.isDraggingVertically = true
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y
-                var newCenterY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
-                newCenterY = if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null ||
-                    (selectedMapObject as Entity).tryGet(DestroyablePlatformComponent) != null ||
-                    (selectedMapObject as Entity).tryGet(MockMapObjectComponent) != null
-                ) {
-                    newCenterY.roundToNearest(1f, .125f, .5f)
+                var newCenterY: Float
+                var newCenterX = initialImageX
+                if (verticalPositionButtonTakesRotationIntoAccount) {
+                    newCenterY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords) *
+                            MathUtils.cosDeg(scene2D.rotation) * Math.signum(MathUtils.cosDeg(360f - scene2D.rotation))
+                    newCenterX = initialImageX + (mouseYInWorldCoords - initialMouseYInWorldCoords) *
+                            MathUtils.sinDeg(scene2D.rotation) * Math.signum(MathUtils.sinDeg(360f - scene2D.rotation))
+                    selectedMapObject!!.editorObject.isDraggingHorizontally = true
                 } else {
-                    newCenterY.roundToNearest(.5f, .125f)
+                    selectedMapObject!!.editorObject.isDraggingHorizontally = false
+                    newCenterY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
+                    newCenterY = if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null ||
+                        (selectedMapObject as Entity).tryGet(DestroyablePlatformComponent) != null ||
+                        (selectedMapObject as Entity).tryGet(MockMapObjectComponent) != null
+                    ) {
+                        newCenterY.roundToNearest(1f, .125f, .5f)
+                    } else {
+                        newCenterY.roundToNearest(.5f, .125f)
+                    }
                 }
 
-                if (Math.abs(selectedMapObject!!.snap.snapCenterY - newCenterY) <= DRAG_SNAP_THRESHOLD) {
+                if (Math.abs(selectedMapObject!!.snap.snapCenterY - newCenterY) <= DRAG_SNAP_THRESHOLD &&
+                    Math.abs(selectedMapObject!!.snap.snapCenterX - newCenterX) <= DRAG_SNAP_THRESHOLD
+                ) {
                     return
                 } else {
                     scene2D.centerY = newCenterY
+                    scene2D.centerX = newCenterX
                 }
 
                 repositionOverlay()
@@ -385,6 +428,7 @@ class OverlayPositioningSystem(
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 selectedMapObject!!.editorObject.isDraggingVertically = false
+                selectedMapObject!!.editorObject.isDraggingHorizontally = false
                 selectedMapObject!!.snap.resetSnappedY()
                 if (scene2D.centerY != initialImageY)
                     undoRedoEntity.undoRedo.addExecutedCommand(
@@ -400,6 +444,13 @@ class OverlayPositioningSystem(
                     selectedMapObject!!.linkedEntity.get("platform").movingObject.moved(
                         selectedMapObject!!.linkedEntity.get("platform"), selectedMapObject
                     )
+                }
+            }
+        })
+        addListener(object : ActorGestureListener() {
+            override fun tap(event: InputEvent?, x: Float, y: Float, count: Int, button: Int) {
+                if (count == 2) {
+                    verticalPositionButtonTakesRotationIntoAccount = !verticalPositionButtonTakesRotationIntoAccount
                 }
             }
         })
@@ -590,11 +641,19 @@ class OverlayPositioningSystem(
                 overlayLevel1.width / 2f - horizontalPositionButton.width / 2f,
                 -height / 2f - scene2D.height.metersToPixels / 2f / gameCamera.zoom - buttonsPaddingX
             )
-            icon!!.rotation = 360f - scene2D.rotation
+            if (!horizontalPositionButtonTakesRotationIntoAccount) {
+                icon!!.rotation = 360f - scene2D.rotation
+            } else {
+                icon!!.rotation = 0f
+            }
         }
         verticalPositionButton.run {
             setPosition(rightArrowButton.x, rightArrowButton.y)
-            icon!!.rotation = 360f - scene2D.rotation
+            if (!verticalPositionButtonTakesRotationIntoAccount) {
+                icon!!.rotation = 360f - scene2D.rotation
+            } else {
+                icon!!.rotation = 0f
+            }
         }
         deleteButton.run {
             setPosition(leftArrowButton.x, verticalPositionButton.y)
