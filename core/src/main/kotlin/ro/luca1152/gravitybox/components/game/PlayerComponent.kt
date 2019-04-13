@@ -21,7 +21,8 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that the entity is a player. */
 class PlayerComponent : Component, Poolable {
@@ -45,3 +46,6 @@ class PlayerComponent : Component, Poolable {
 
 val Entity.player: PlayerComponent
     get() = PlayerComponent[this]
+
+fun Entity.player() =
+    add(createComponent<PlayerComponent>())!!

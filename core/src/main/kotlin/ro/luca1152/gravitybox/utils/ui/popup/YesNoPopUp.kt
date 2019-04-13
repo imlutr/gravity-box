@@ -23,7 +23,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import ro.luca1152.gravitybox.screens.Assets
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickTextButton
 import uy.kohesive.injekt.Injekt
@@ -48,7 +48,7 @@ open class YesNoPopUp(
         setPosition(-borderThickness, borderThickness / 2f)
         color = Colors.gameColor
     }
-    private val noButton = ClickTextButton("simple-button", skin, "NO", "bold", 80f).apply {
+    private val noButton = ClickTextButton("simple-button", skin, "NO", "bold", 75f, !noIsHighlighted).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
@@ -65,7 +65,7 @@ open class YesNoPopUp(
         setPosition(width / 2f - borderThickness, borderThickness / 2f)
         color = Colors.gameColor
     }
-    private val yesButton = ClickTextButton("simple-button", skin, "YES", "bold", 80f).apply {
+    private val yesButton = ClickTextButton("simple-button", skin, "YES", "bold", 75f, !yesIsHighlighted).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
@@ -94,5 +94,13 @@ open class YesNoPopUp(
             add(emptySpace).height(height - bottomHeight - 3 * borderThickness).padTop(borderThickness).row()
             add(bottomRow)
         }
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        topLine.color = Colors.gameColor
+        noButtonHighlight.color = Colors.gameColor
+        middleLine.color = Colors.gameColor
+        yesButtonHighlight.color = Colors.gameColor
     }
 }

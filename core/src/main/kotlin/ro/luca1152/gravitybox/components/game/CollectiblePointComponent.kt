@@ -15,17 +15,26 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.systems.game
+package ro.luca1152.gravitybox.components.game
 
+import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
-import com.badlogic.ashley.systems.IteratingSystem
-import ro.luca1152.gravitybox.components.game.PolygonComponent
-import ro.luca1152.gravitybox.components.game.polygon
+import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
-/** Syncs the [PolygonComponent] with its linked image. */
-class PolygonSyncSystem : IteratingSystem(Family.all(PolygonComponent::class.java).get()) {
-    override fun processEntity(entity: Entity, deltaTime: Float) {
-        entity.polygon.update()
+class CollectiblePointComponent : Component, Poolable {
+    var isCollected = false
+
+    override fun reset() {
+        isCollected = false
     }
+
+    companion object : ComponentResolver<CollectiblePointComponent>(CollectiblePointComponent::class.java)
 }
+
+val Entity.collectiblePoint: CollectiblePointComponent
+    get() = CollectiblePointComponent[this]
+
+fun Entity.collectiblePoint() =
+    add(createComponent<CollectiblePointComponent>())!!

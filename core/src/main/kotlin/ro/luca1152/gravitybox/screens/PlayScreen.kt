@@ -24,6 +24,7 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Align
 import ktx.app.KtxScreen
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
@@ -32,13 +33,16 @@ import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.clearScreen
 import ro.luca1152.gravitybox.utils.kotlin.setScreen
 import ro.luca1152.gravitybox.utils.ui.Colors
+import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
+import ro.luca1152.gravitybox.utils.ui.popup.PopUp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -69,8 +73,34 @@ class PlayScreen(
         })
     }
 
+    private val helpTextPopUp = PopUp(520f, 380f, skin).apply {
+        widget.run {
+            add(DistanceFieldLabel("HOW TO PLAY", skin, "extra-bold", 45f, Colors.gameColor)).row()
+            add(DistanceFieldLabel(
+                """
+                |Tap to shoot.
+                |Shoot at the walls or
+                |floor to move.
+                |The blinking object is the
+                |finish point.
+            """.trimMargin(), skin, "bold", 38f
+            ).apply {
+                setAlignment(Align.center, Align.center)
+            }).expand()
+        }
+    }
+
+    private val helpButton = ClickButton(skin, "small-button").apply {
+        addIcon("help-icon")
+        setColors(Colors.gameColor, Colors.uiDownColor)
+        addClickRunnable(Runnable {
+            uiStage.addActor(helpTextPopUp)
+        })
+    }
+
     private val bottomRow = Table().apply {
         add(backButton).expand().left()
+        add(helpButton).expand()
         add(restartButton).expand().right()
     }
 
@@ -82,8 +112,8 @@ class PlayScreen(
     }
 
     override fun show() {
-        createUI()
         createGame()
+        createUI()
     }
 
     private fun createGame() {
@@ -109,27 +139,32 @@ class PlayScreen(
     private fun addGameSystems() {
         engine.run {
             addSystem(MapLoadingSystem())
-            addSystem(PolygonSyncSystem())
             addSystem(MapBodiesCreationSystem())
             addSystem(CombinedBodiesCreationSystem())
+            addSystem(RoundedPlatformsSystem())
+            addSystem(ObjectMovementSystem())
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(ShootingSystem())
             addSystem(BulletCollisionSystem())
             addSystem(PlatformRemovalSystem())
             addSystem(OffScreenLevelRestartSystem())
+            addSystem(OffScreenBulletDeletionSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())
-            addSystem(LevelFinishSystem(restartLevelWhenFinished = false))
+            addSystem(PointsCollectionSystem())
             addSystem(LevelRestartSystem())
             addSystem(FinishPointColorSystem())
+            addSystem(ColorSchemeSystem())
             addSystem(SelectedObjectColorSystem())
-            addSystem(RoundedPlatformsSystem())
             addSystem(ColorSyncSystem())
+            addSystem(CanFinishLevelSystem())
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
+            addSystem(LevelFinishSystem(restartLevelWhenFinished = false))
 //            addSystem(PhysicsDebugRenderingSystem())
+            addSystem(DebugRenderingSystem())
         }
     }
 
@@ -138,16 +173,28 @@ class PlayScreen(
     }
 
     private fun createUI() {
-        uiStage.clear()
-        uiStage.addActor(rootTable)
-        inputMultiplexer.addProcessor(uiStage)
+        uiStage.run {
+            clear()
+            addActor(rootTable)
+        }
+        handleUiInput()
+    }
+
+    private fun handleUiInput() {
+        // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
+        inputMultiplexer.addProcessor(0, uiStage)
     }
 
     override fun render(delta: Float) {
+        updateHelpButtonVisibility()
         uiStage.act()
         clearScreen(Colors.bgColor)
         engine.update(delta)
         uiStage.draw()
+    }
+
+    private fun updateHelpButtonVisibility() {
+        helpButton.isVisible = levelEntity.level.levelId == 1
     }
 
     override fun resize(width: Int, height: Int) {

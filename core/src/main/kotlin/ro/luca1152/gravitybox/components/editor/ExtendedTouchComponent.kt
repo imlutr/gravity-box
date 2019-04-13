@@ -22,58 +22,41 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.components.game.ImageComponent
-import ro.luca1152.gravitybox.components.game.image
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.components.game.Scene2DComponent
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-/** Expands the touchable area of an entity. */
+/** Expands the isTouchable area of an entity. */
 class ExtendedTouchComponent(private val gameStage: GameStage = Injekt.get()) : Component, Poolable {
     private var extraWidth = 0f
     private var extraHeight = 0f
     var boundsImage = Image()
 
     fun set(linkedEntity: Entity, extraWidth: Float, extraHeight: Float) {
-        require(linkedEntity.tryGet(ImageComponent) != null)
-        { "The entity must have an ImageComponent so the [boundsImage] can be positioned." }
+        require(linkedEntity.tryGet(Scene2DComponent) != null)
+        { "The entity must have an Scene2DComponent so the extended touch image can be positioned." }
 
-        setExtraSize(extraWidth, extraHeight)
-        setSize(linkedEntity.image.width, linkedEntity.image.height)
-        setPosition(linkedEntity.image.centerX, linkedEntity.image.centerY)
+        this.extraWidth = extraWidth
+        this.extraHeight = extraHeight
+
         boundsImage.run {
             color = Color.CLEAR
             userObject = linkedEntity
         }
+
         gameStage.addActor(boundsImage)
     }
 
-    fun setPosition(centerX: Float, centerY: Float) {
-        require(boundsImage.width != 0f && boundsImage.height != 0f)
-        { "Setting the position based on the center coordinates requires the size to be set." }
-
+    fun updateFromScene2D(scene2D: Scene2DComponent) {
         boundsImage.run {
-            x = centerX - width / 2f
-            y = centerY - height / 2f
-        }
-    }
-
-    private fun setExtraSize(extraWidth: Float, extraHeight: Float) {
-        require(extraWidth >= 0f && extraHeight >= 0f)
-
-        this.extraWidth = extraWidth
-        this.extraHeight = extraHeight
-    }
-
-    /** Sets both the size and the origin. */
-    fun setSize(imageWidth: Float, imageHeight: Float) {
-        require(imageWidth != 0f && imageHeight != 0f)
-
-        boundsImage.run {
-            setSize(imageWidth + extraWidth, imageHeight + extraHeight)
+            setSize(scene2D.width + extraWidth, scene2D.height + extraHeight)
+            setPosition(scene2D.leftX - extraWidth / 2f, scene2D.bottomY - extraHeight / 2f)
             setOrigin(width / 2f, height / 2f)
+            rotation = scene2D.rotation
         }
     }
 
@@ -93,3 +76,8 @@ class ExtendedTouchComponent(private val gameStage: GameStage = Injekt.get()) : 
 
 val Entity.extendedTouch: ExtendedTouchComponent
     get() = ExtendedTouchComponent[this]
+
+fun Entity.extendedTouch(linkedEntity: Entity, extraWidth: Float, extraHeight: Float) =
+    add(createComponent<ExtendedTouchComponent>().apply {
+        set(linkedEntity, extraWidth, extraHeight)
+    })!!

@@ -20,14 +20,13 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.math.Vector3
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
-import ro.luca1152.gravitybox.components.game.image
 import ro.luca1152.gravitybox.components.game.map
+import ro.luca1152.gravitybox.components.game.scene2D
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.lerp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -40,8 +39,8 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
     private var initialCameraPosition = Vector3()
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
+        playerEntity = engine.getSingleton<PlayerComponent>()
         initialCameraZoom = gameCamera.zoom
         initialCameraPosition.set(gameCamera.position)
         gameCamera.zoom = 1f
@@ -49,7 +48,7 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
     }
 
     private fun instantlyCenterCameraOnPlayer() {
-        gameCamera.position.set(playerEntity.image.centerX, playerEntity.image.centerY, 0f)
+        gameCamera.position.set(playerEntity.scene2D.centerX, playerEntity.scene2D.centerY, 0f)
     }
 
     override fun update(deltaTime: Float) {
@@ -59,8 +58,8 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
 
     private fun smoothlyFollowPlayer() {
         gameCamera.position.lerp(
-            playerEntity.image.centerX,
-            playerEntity.image.centerY,
+            playerEntity.scene2D.centerX,
+            playerEntity.scene2D.centerY,
             progress = .15f
         )
     }
@@ -79,8 +78,9 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
         val cameraBottom = gameCamera.position.y - cameraHalfHeight
         val cameraTop = gameCamera.position.y + cameraHalfHeight
 
+
         // Clamp horizontal axis
-        if (mapWidth < gameCamera.viewportWidth - 4f) {
+        if (mapWidth < gameCamera.viewportWidth) {
             gameCamera.position.x = mapRight - mapWidth / 2f
         } else if (cameraLeft <= mapLeft && mapLeft + 2 * cameraHalfWidth < mapRight) {
             gameCamera.position.x = mapLeft + cameraHalfWidth
@@ -96,6 +96,7 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
         } else if (cameraTop >= mapTop && mapTop - 2 * cameraHalfHeight > mapBottom) {
             gameCamera.position.y = mapTop - cameraHalfHeight
         }
+
     }
 
     override fun removedFromEngine(engine: Engine) {

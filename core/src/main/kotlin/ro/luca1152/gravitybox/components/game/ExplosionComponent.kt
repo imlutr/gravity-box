@@ -18,8 +18,10 @@
 package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that the entity is an explosion (the circle that appears after a bullet collides with a platform). */
 class ExplosionComponent : Component, Poolable {
@@ -27,3 +29,6 @@ class ExplosionComponent : Component, Poolable {
 
     companion object : ComponentResolver<ExplosionComponent>(ExplosionComponent::class.java)
 }
+
+fun Entity.explosion() =
+    add(createComponent<ExplosionComponent>())!!

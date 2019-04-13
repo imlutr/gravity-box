@@ -19,13 +19,14 @@
 
 package ro.luca1152.gravitybox.entities.game
 
-import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.NinePatch
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.screens.Assets
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
+import ro.luca1152.gravitybox.utils.kotlin.addToEngine
+import ro.luca1152.gravitybox.utils.kotlin.newEntity
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -34,57 +35,53 @@ object PlatformEntity {
     const val PATCH_RIGHT = 9
     const val PATCH_TOP = 5
     const val PATCH_BOTTOM = 5
-    const val DEFAULT_ROTATION = 0f
-    const val DEFAULT_THICKNESS = .25f
+    const val ROTATION = 0f
+    const val HEIGHT = .25f
     val CATEGORY_BITS = EntityCategory.PLATFORM.bits
     val MASK_BITS = EntityCategory.OBSTACLE.bits
 
     fun createEntity(
-        id: Int, x: Float, y: Float,
-        width: Float, height: Float = DEFAULT_THICKNESS,
-        rotationInDeg: Float = DEFAULT_ROTATION,
-        engine: PooledEngine = Injekt.get(),
+        id: Int,
+        x: Float, y: Float,
+        width: Float,
+        rotation: Float = ROTATION,
+        isDestroyable: Boolean = false,
+        isRotating: Boolean = false,
+        targetX: Float = Float.POSITIVE_INFINITY, targetY: Float = Float.POSITIVE_INFINITY,
         manager: AssetManager = Injekt.get()
-    ) = engine.createEntity().apply {
-        add(engine.createComponent(MapObjectComponent::class.java)).run {
-            mapObject.set(id)
-        }
-        add(engine.createComponent(PlatformComponent::class.java))
-        add(engine.createComponent(ImageComponent::class.java)).run {
-            image.set(
+    ) = newEntity().apply {
+        mapObject(id)
+        if (isDestroyable) {
+            destroyablePlatform()
+            scene2D(x, y, width, HEIGHT, rotation)
+            destroyablePlatform.updateScene2D(scene2D)
+        } else {
+            platform()
+            scene2D(
                 NinePatch(
                     manager.get(Assets.tileset).findRegion("platform-0"),
                     PATCH_LEFT, PATCH_RIGHT,
                     PATCH_TOP, PATCH_BOTTOM
-                ),
-                x, y, width, height, rotationInDeg
-            )
-            image.img.userObject = this
-        }
-        add(engine.createComponent(PolygonComponent::class.java)).run {
-            polygon.set(image.img)
-        }
-        add(engine.createComponent(EditorObjectComponent::class.java))
-        add(engine.createComponent(SnapComponent::class.java))
-        add(engine.createComponent(BodyComponent::class.java))
-        add(engine.createComponent(ColorComponent::class.java)).run {
-            color.set(ColorType.DARK)
-        }
-        add(engine.createComponent(OverlayComponent::class.java)).run {
-            overlay.set(
-                showMovementButtons = true,
-                showRotationButton = true,
-                showResizingButtons = true,
-                showDeletionButton = true
+                ), x, y, width, HEIGHT, rotation
             )
         }
-        add(engine.createComponent(ExtendedTouchComponent::class.java)).run {
-            extendedTouch.set(this, 0f, 1f - height)
+        if (isRotating) {
+            rotatingObject()
         }
-        add(engine.createComponent(JsonComponent::class.java)).run {
-            json.setArrayObject(this)
+        if (targetX != Float.POSITIVE_INFINITY && targetY != Float.POSITIVE_INFINITY) {
+            movingObject(targetX, targetY)
         }
-
-        engine.addEntity(this)
-    }!!
+        polygon(scene2D)
+        editorObject()
+        snap()
+        body()
+        color(ColorType.DARK)
+        overlay(
+            showMovementButtons = true, showRotationButton = true, showDeletionButton = true,
+            showResizingButtons = true, showSettingsButton = true
+        )
+        extendedTouch(this, 0f, 1f - HEIGHT)
+        json(this)
+        addToEngine()
+    }
 }

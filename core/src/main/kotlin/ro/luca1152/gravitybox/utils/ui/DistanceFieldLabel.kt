@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
 
 class DistanceFieldLabel(
     text: CharSequence,
@@ -77,6 +78,13 @@ class DistanceFieldLabel(
     init {
         this.color = color
         setFontScale(fontSize / DEFAULT_FONT_SIZE)
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        if (color != Colors.uiDownColor) {
+            color.setWithoutAlpha(Colors.gameColor)
+        }
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {

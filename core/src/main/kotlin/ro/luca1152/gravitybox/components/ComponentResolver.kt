@@ -15,17 +15,17 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.assets
+@file:Suppress("PrivatePropertyName", "HasPlatformType")
 
-import com.badlogic.gdx.files.FileHandle
+package ro.luca1152.gravitybox.components
 
-/** Wrapper object for a string. */
-class Text {
-    var string: String = ""
 
-    constructor(byteArray: ByteArray) {
-        string = String(byteArray)
-    }
+import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.ComponentMapper
+import com.badlogic.ashley.core.Entity
 
-    constructor(file: FileHandle) : this(file.readBytes())
+/** Components with a companion object which extends this class can be referenced in an OOP  style.*/
+open class ComponentResolver<T : Component>(componentClass: Class<T>) {
+    private val MAPPER = ComponentMapper.getFor(componentClass)!!
+    operator fun get(entity: Entity) = MAPPER[entity]
 }

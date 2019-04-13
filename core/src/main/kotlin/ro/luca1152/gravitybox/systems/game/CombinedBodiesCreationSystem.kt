@@ -25,9 +25,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.utils.Pools
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -35,7 +36,7 @@ class CombinedBodiesCreationSystem : EntitySystem() {
     private lateinit var levelEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
     }
 
     override fun update(deltaTime: Float) {
@@ -107,8 +108,10 @@ class CombinedBodiesCreationSystem : EntitySystem() {
         val height = Math.abs(topmostY - bottommostY)
         val centerX = leftmostX + width / 2f
         val centerY = bottommostY + height / 2f
-        val bodyDef = BodyDef().apply {
+        val bodyDef = Pools.obtain(BodyDef::class.java).apply {
             type = BodyDef.BodyType.StaticBody
+            position.set(0f, 0f)
+            bullet = false
             fixedRotation = false
         }
         val polygonShape = PolygonShape().apply {
@@ -125,5 +128,6 @@ class CombinedBodiesCreationSystem : EntitySystem() {
             setTransform(centerX, centerY, 0f)
         }
         bodyEntity.body.set(body, bodyEntity, PlatformEntity.CATEGORY_BITS, PlatformEntity.MASK_BITS)
+        Pools.free(bodyDef)
     }
 }

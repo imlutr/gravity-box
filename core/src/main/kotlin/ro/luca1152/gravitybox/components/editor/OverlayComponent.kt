@@ -20,28 +20,31 @@ package ro.luca1152.gravitybox.components.editor
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Contains information regarding one entity's overlay. */
 class OverlayComponent : Component, Poolable {
     /**
-     * First level: move, rotate
-     * Second level: resize, delete
+     * First level: move, rotate, delete
+     * Second level: resize
      */
     var overlayLevel = 1
     var showMovementButtons = true
     var showRotationButton = true
     var showResizingButtons = true
     var showDeletionButton = true
+    var showSettingsButton = true
 
     fun set(
-        showMovementButtons: Boolean, showRotationButton: Boolean,
-        showResizingButtons: Boolean, showDeletionButton: Boolean
+        showMovementButtons: Boolean, showRotationButton: Boolean, showDeletionButton: Boolean,
+        showResizingButtons: Boolean, showSettingsButton: Boolean
     ) {
         this.showMovementButtons = showMovementButtons
         this.showRotationButton = showRotationButton
-        this.showResizingButtons = showResizingButtons
         this.showDeletionButton = showDeletionButton
+        this.showResizingButtons = showResizingButtons
+        this.showSettingsButton = showSettingsButton
     }
 
     override fun reset() {
@@ -49,6 +52,7 @@ class OverlayComponent : Component, Poolable {
         showRotationButton = true
         showResizingButtons = true
         showDeletionButton = true
+        showSettingsButton = true
         overlayLevel = 1
     }
 
@@ -57,3 +61,10 @@ class OverlayComponent : Component, Poolable {
 
 val Entity.overlay: OverlayComponent
     get() = OverlayComponent[this]
+
+fun Entity.overlay(
+    showMovementButtons: Boolean, showRotationButton: Boolean, showDeletionButton: Boolean,
+    showResizingButtons: Boolean, showSettingsButton: Boolean
+) = add(createComponent<OverlayComponent>().apply {
+    set(showMovementButtons, showRotationButton, showDeletionButton, showResizingButtons, showSettingsButton)
+})!!

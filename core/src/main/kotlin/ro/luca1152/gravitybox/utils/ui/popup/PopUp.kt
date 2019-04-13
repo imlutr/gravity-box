@@ -26,7 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.graphics.copy
-import ro.luca1152.gravitybox.screens.Assets
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
@@ -57,7 +57,7 @@ open class PopUp(
         setSize(width - 2 * borderThickness, height - 2 * borderThickness)
         color = Colors.bgColor
     }
-    val widget = Table().apply {
+    val widget = Table(skin).apply {
         setSize(width, height)
         setPosition(uiStage.viewport.worldWidth / 2f - width / 2f, uiStage.viewport.worldHeight / 2f - height / 2f)
         addActor(widgetOpaqueBackground.apply {
@@ -106,6 +106,14 @@ open class PopUp(
                 return true
             }
         })
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        screenTransparentBackground.color = Colors.bgColor
+        screenTransparentBackground.color.a = 0.4f
+        widgetFrame.color = Colors.gameColor
+        widgetOpaqueBackground.color = Colors.bgColor
     }
 
     private fun addActors() {

@@ -20,7 +20,8 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Contains level information. */
 class LevelComponent : Component, Poolable {
@@ -29,6 +30,9 @@ class LevelComponent : Component, Poolable {
     var forceUpdateMap = false
     var restartLevel = false
     var levelId = 1
+
+    /** True if every point (if any) was collected. */
+    var canFinish = true
 
     fun set(levelNumber: Int) {
         this.levelId = levelNumber
@@ -47,3 +51,8 @@ class LevelComponent : Component, Poolable {
 
 val Entity.level: LevelComponent
     get() = LevelComponent[this]
+
+fun Entity.level(levelNumber: Int) =
+    add(createComponent<LevelComponent>().apply {
+        set(levelNumber)
+    })!!

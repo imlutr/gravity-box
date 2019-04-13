@@ -23,12 +23,13 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.Color
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
 
-/** Syncs the [ImageComponent]'s color with the color scheme. */
-class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, ColorComponent::class.java).get()) {
+/** Syncs the [Scene2DComponent]'s color with the color scheme. */
+class ColorSyncSystem : IteratingSystem(Family.all(Scene2DComponent::class.java, ColorComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        entity.image.color.setWithoutAlpha(
+        entity.scene2D.color.setWithoutAlpha(
             when (entity.color.colorType) {
                 ColorType.LIGHT -> Colors.bgColor
                 ColorType.DARK -> Colors.gameColor
@@ -36,5 +37,8 @@ class ColorSyncSystem : IteratingSystem(Family.all(ImageComponent::class.java, C
                 else -> Color.RED
             }
         )
+        entity.tryGet(Scene2DComponent)?.group?.children?.forEach {
+            it.color.setWithoutAlpha(entity.scene2D.color)
+        }
     }
 }

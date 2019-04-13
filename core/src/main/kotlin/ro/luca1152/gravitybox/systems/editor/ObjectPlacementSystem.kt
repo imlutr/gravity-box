@@ -25,30 +25,48 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
 import ro.luca1152.gravitybox.components.editor.*
-import ro.luca1152.gravitybox.components.game.MapComponent
-import ro.luca1152.gravitybox.components.game.MapObjectComponent
-import ro.luca1152.gravitybox.components.game.map
+import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
+import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.screens.LevelEditorScreen
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Places objects at touch when the place tool is used. */
-class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+class ObjectPlacementSystem(
+    private val levelEditorScreen: LevelEditorScreen,
+    private val inputMultiplexer: InputMultiplexer = Injekt.get()
+) : EntitySystem() {
     private lateinit var undoRedoEntity: Entity
     private lateinit var inputEntity: Entity
     private lateinit var mapEntity: Entity
 
     private val inputAdapter = object : InputAdapter() {
+        lateinit var placedObject: Entity
+        var didPlaceObject = false
+
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            if (!placeToolIsUsed())
+            if (!placeToolIsUsed()) {
+                didPlaceObject = false
                 return false
+            }
 
             createPlatformAt(screenX, screenY)
+            didPlaceObject = true
 
             return true
+        }
+
+        override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+            return if (didPlaceObject) {
+                selectPlacedObject()
+                didPlaceObject = false
+                true
+            } else false
         }
 
         private fun placeToolIsUsed() =
@@ -59,21 +77,72 @@ class ObjectPlacementSystem(private val inputMultiplexer: InputMultiplexer = Inj
             val platformWidth = 1f
             val id = engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get())
                 .filter { !it.editorObject.isDeleted }.size
-            val platform = PlatformEntity.createEntity(
-                id,
-                MathUtils.floor(coords.x).toFloat() + .5f,
-                MathUtils.floor(coords.y).toFloat() + .5f,
-                platformWidth
-            )
+            placedObject = when (inputEntity.input.placeToolObjectType) {
+                PlatformComponent::class.java, DestroyablePlatformComponent::class.java, MovingObjectComponent::class.java -> {
+                    PlatformEntity.createEntity(
+                        id,
+                        MathUtils.floor(coords.x).toFloat() + .5f,
+                        MathUtils.floor(coords.y).toFloat() + .5f,
+                        platformWidth,
+                        isDestroyable = inputEntity.input.placeToolObjectType == DestroyablePlatformComponent::class.java
+                    )
+                }
+                CollectiblePointComponent::class.java -> {
+                    CollectiblePointEntity.createEntity(
+                        id,
+                        MathUtils.floor(coords.x).toFloat() + .5f,
+                        MathUtils.floor(coords.y).toFloat() + .5f,
+                        blinkEndlessly = false
+                    )
+                }
+                else -> error("placeToolObjectType was not recognized.")
+            }
+            placedObject.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
+
+            // Place the mock moving platform in the level editor
+
+            if (inputEntity.input.placeToolObjectType == MovingObjectComponent::class.java) {
+                val mockPlatform = MovingMockPlatformEntity.createEntity(
+                    placedObject,
+                    placedObject.scene2D.centerX + 1f, placedObject.scene2D.centerY + 1f,
+                    placedObject.scene2D.width, placedObject.scene2D.rotation
+                )
+                placedObject.linkedEntity("mockPlatform", mockPlatform)
+                placedObject.movingObject(mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
+            }
+
             mapEntity.map.updateRoundedPlatforms = true
-            undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(platform, mapEntity))
+            undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(placedObject, mapEntity))
+        }
+
+        private fun selectPlacedObject() {
+            deselectAllPlatforms()
+            placedObject.editorObject.isSelected = true
+            useMoveTool()
+        }
+
+        private fun deselectAllPlatforms() {
+            engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
+                it.editorObject.isSelected = false
+            }
+        }
+
+        private fun useMoveTool() {
+            levelEditorScreen.run {
+                placeToolButton.run {
+                    isToggled = false
+                    clickedOutsidePane()
+                }
+                moveToolButton.isToggled = true
+                inputEntity.input.toggledButton.set(moveToolButton)
+            }
         }
     }
 
     override fun addedToEngine(engine: Engine) {
-        undoRedoEntity = engine.getEntitiesFor(Family.all(UndoRedoComponent::class.java).get()).first()
-        inputEntity = engine.getEntitiesFor(Family.all(InputComponent::class.java).get()).first()
-        mapEntity = engine.getSingletonFor(Family.all(MapComponent::class.java).get())
+        undoRedoEntity = engine.getSingleton<UndoRedoComponent>()
+        inputEntity = engine.getSingleton<InputComponent>()
+        mapEntity = engine.getSingleton<MapComponent>()
         inputMultiplexer.addProcessor(inputAdapter)
     }
 

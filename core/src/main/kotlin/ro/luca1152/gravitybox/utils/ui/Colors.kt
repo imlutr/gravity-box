@@ -33,8 +33,9 @@ object Colors {
     var hue = 180
         set(value) {
             field = value
-            resetAllColors()
+            isDirty = true
         }
+    var isDirty = false
     var useDarkTheme = false
 
     var bgColor = Color()
@@ -45,16 +46,20 @@ object Colors {
         resetAllColors()
     }
 
+    fun updateAllColors() {
+        resetAllColors()
+    }
+
     fun resetAllColors() {
         LightTheme.resetAllColors(hue)
         DarkTheme.resetAllColors(hue)
         updateNamedColors()
     }
 
-    fun lerpTowardsDefaultColors() {
-        bgColor = bgColor.lerp(if (useDarkTheme) DarkTheme.game20 else LightTheme.game91, .1f)
-        gameColor = gameColor.lerp(if (useDarkTheme) DarkTheme.game95 else LightTheme.game57, .1f)
-        uiDownColor = uiDownColor.lerp(if (useDarkTheme) LightTheme.game29 else LightTheme.game29, .1f)
+    fun lerpTowardsDefaultColors(step: Float = .02f) {
+        bgColor = bgColor.lerp(if (useDarkTheme) DarkTheme.game20 else LightTheme.game91, step)
+        gameColor = gameColor.lerp(if (useDarkTheme) DarkTheme.game95 else LightTheme.game57, step)
+        uiDownColor = uiDownColor.lerp(if (useDarkTheme) LightTheme.game29 else LightTheme.game29, step)
     }
 
     private fun updateNamedColors() {

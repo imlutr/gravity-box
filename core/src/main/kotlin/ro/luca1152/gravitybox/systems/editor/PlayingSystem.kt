@@ -26,17 +26,14 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Array
-import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
-import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.screens.Assets
+import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
-import ro.luca1152.gravitybox.utils.kotlin.UIStage
-import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
-import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
+import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
@@ -85,19 +82,23 @@ class PlayingSystem(
     private lateinit var finishEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get()).apply {
+        levelEntity = engine.getSingleton<LevelComponent>().apply {
             level.forceUpdateMap = true
         }
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
-        finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
+        playerEntity = engine.getSingleton<PlayerComponent>()
+        finishEntity = engine.getSingleton<FinishComponent>()
         setOwnBox2DContactListener()
         makeFinishPointEndlesslyBlink()
+        makePointsEndlesslyBlink()
+        hideRotatingIndicators()
         hideLevelEditorUI()
+        hideMockObjects()
         deselectMapObject()
         removeAllSystems(includingThisSystem = false)
         addPlaySystems()
         showPlayUI()
         updateMapBounds()
+        makeEveryObjectOpaque()
     }
 
     private fun setOwnBox2DContactListener() {
@@ -105,13 +106,38 @@ class PlayingSystem(
     }
 
     private fun makeFinishPointEndlesslyBlink() {
-        finishEntity.run {
-            finish.addPermanentFadeInFadeOutActions(image)
+        if (levelEntity.level.canFinish) {
+            finishEntity.fadeInFadeOut(finishEntity.scene2D)
+        } else {
+            finishEntity.scene2D.color.a = FinishEntity.FINISH_BLOCKED_ALPHA
+        }
+    }
+
+    private fun makePointsEndlesslyBlink() {
+        engine.getEntitiesFor(Family.all(CollectiblePointComponent::class.java).get()).forEach {
+            if (it.tryGet(FadeInFadeOutComponent) == null) {
+                it.fadeInFadeOut(it.scene2D)
+            }
+        }
+    }
+
+    private fun hideRotatingIndicators() {
+        engine.getEntitiesFor(Family.all(RotatingIndicatorComponent::class.java).get()).forEach {
+            it.rotatingIndicator.indicatorImage.isVisible = false
         }
     }
 
     private fun hideLevelEditorUI() {
         levelEditorScreen.rootTable.isVisible = false
+    }
+
+    private fun hideMockObjects() {
+        engine.getEntitiesFor(Family.all(MockMapObjectComponent::class.java).get()).forEach {
+            it.scene2D.run {
+                isVisible = false
+                isTouchable = false
+            }
+        }
     }
 
     private fun deselectMapObject() {
@@ -137,27 +163,31 @@ class PlayingSystem(
 
     private fun addPlaySystems() {
         engine.run {
-            addSystem(PolygonSyncSystem())
             addSystem(MapBodiesCreationSystem())
             addSystem(CombinedBodiesCreationSystem())
+            addSystem(ObjectMovementSystem())
             addSystem(PhysicsSystem())
             addSystem(PhysicsSyncSystem())
+            addSystem(LevelRestartSystem())
             addSystem(ShootingSystem())
             addSystem(BulletCollisionSystem())
             addSystem(PlatformRemovalSystem())
             addSystem(OffScreenLevelRestartSystem())
+            addSystem(OffScreenBulletDeletionSystem())
             addSystem(KeyboardLevelRestartSystem())
             addSystem(LevelFinishDetectionSystem())
+            addSystem(PointsCollectionSystem())
             addSystem(LevelFinishSystem(restartLevelWhenFinished = true))
-            addSystem(LevelRestartSystem())
             addSystem(FinishPointColorSystem())
             addSystem(SelectedObjectColorSystem())
             addSystem(RoundedPlatformsSystem())
             addSystem(ColorSyncSystem())
+            addSystem(CanFinishLevelSystem())
             addSystem(PlayerCameraSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
 //            addSystem(PhysicsDebugRenderingSystem())
+            addSystem(DebugRenderingSystem())
         }
     }
 
@@ -169,17 +199,29 @@ class PlayingSystem(
         levelEntity.map.updateMapBounds()
     }
 
+    private fun makeEveryObjectOpaque() {
+        engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
+            it.scene2D.color.a = 1f
+        }
+    }
+
     override fun removedFromEngine(engine: Engine) {
         Colors.resetAllColors()
         hidePlayUI()
         showLevelEditorUI()
+        showMockObjects(engine)
         enableMoveTool()
         removePlayEntities(engine)
         resetEntitiesPosition(engine)
         removeFinishPointEndlessBlink()
+        removePointsEndlessBlink(engine)
+        showRotatingIndicators(engine)
         reselectMapObject()
         destroyAllBodies()
+        resetDestroyablePlatforms(engine)
+        resetCollectiblePoints(engine)
         levelEditorScreen.addGameSystems()
+        makeEveryObjectTransparent(engine)
     }
 
     private fun hidePlayUI() {
@@ -196,21 +238,35 @@ class PlayingSystem(
 
     private fun resetEntitiesPosition(engine: Engine) {
         engine.getEntitiesFor(
-            Family.all(ImageComponent::class.java, BodyComponent::class.java)
+            Family.all(Scene2DComponent::class.java, BodyComponent::class.java)
                 .exclude(CombinedBodyComponent::class.java).get()
         ).forEach {
-            it.image.run {
-                this.centerX = it.body.initialX
-                this.centerY = it.body.initialY
-                this.img.rotation = it.body.initialRotationRad * MathUtils.radiansToDegrees
+            it.scene2D.run {
+                centerX = it.body.initialX
+                centerY = it.body.initialY
+                rotation = it.body.initialRotationRad * MathUtils.radiansToDegrees
             }
         }
     }
 
     private fun removeFinishPointEndlessBlink() {
-        finishEntity.image.img.run {
+        finishEntity.scene2D.group.run {
             clearActions()
             color.a = 1f
+        }
+    }
+
+    private fun removePointsEndlessBlink(engine: Engine) {
+        engine.getEntitiesFor(Family.all(CollectiblePointComponent::class.java).get()).forEach {
+            if (it.tryGet(FadeInFadeOutComponent) != null) {
+                it.remove(FadeInFadeOutComponent::class.java)
+            }
+        }
+    }
+
+    private fun showRotatingIndicators(engine: Engine) {
+        engine.getEntitiesFor(Family.all(RotatingIndicatorComponent::class.java).get()).forEach {
+            it.rotatingIndicator.indicatorImage.isVisible = true
         }
     }
 
@@ -232,7 +288,43 @@ class PlayingSystem(
         levelEntity.map.destroyAllBodies()
     }
 
+    private fun resetDestroyablePlatforms(engine: Engine) {
+        engine.getEntitiesFor(Family.all(DestroyablePlatformComponent::class.java).get()).forEach {
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                it.scene2D.isVisible = true
+                it.destroyablePlatform.isRemoved = false
+                it.body()
+            }
+        }
+    }
+
+    private fun resetCollectiblePoints(engine: Engine) {
+        engine.getEntitiesFor(Family.all(CollectiblePointComponent::class.java).get()).forEach {
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                it.scene2D.isVisible = true
+                it.collectiblePoint.isCollected = false
+            }
+        }
+    }
+
     private fun showLevelEditorUI() {
         levelEditorScreen.rootTable.isVisible = true
+    }
+
+    private fun showMockObjects(engine: Engine) {
+        engine.getEntitiesFor(Family.all(MockMapObjectComponent::class.java).get()).forEach {
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                it.scene2D.run {
+                    isVisible = true
+                    isTouchable = true
+                }
+            }
+        }
+    }
+
+    private fun makeEveryObjectTransparent(engine: Engine) {
+        engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
+            it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
+        }
     }
 }

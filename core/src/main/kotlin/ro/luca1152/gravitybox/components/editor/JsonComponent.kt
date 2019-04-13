@@ -21,13 +21,14 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Translates the entity's information to JSON. */
 class JsonComponent : Component, Poolable {
-    private var parentEntity = Entity()
+    private var parentEntity: Entity? = null
     private var jsonObjectName = ""
     private var jsonWillBeInArray = false
 
@@ -48,22 +49,40 @@ class JsonComponent : Component, Poolable {
             json.writeObjectStart(jsonObjectName)
         }
         parentEntity.run {
-            if (tryGet(PlatformComponent) != null) json.run {
-                writeValue("type", "platform")
-            }
-            if (tryGet(MapObjectComponent) != null) json.run {
-                writeValue("id", mapObject.id)
-            }
-            if (tryGet(ImageComponent) != null) json.run {
-                writeObjectStart("position")
-                writeValue("x", image.centerX.metersToPixels)
-                writeValue("y", image.centerY.metersToPixels)
-                writeObjectEnd()
-
-                if (tryGet(PlatformComponent) != null) json.run {
-                    writeValue("width", image.width.metersToPixels)
+            this?.let {
+                when {
+                    tryGet(PlatformComponent) != null || tryGet(DestroyablePlatformComponent) != null -> {
+                        json.writeValue("type", "platform")
+                    }
+                    tryGet(CollectiblePointComponent) != null -> {
+                        json.writeValue("type", "point")
+                    }
                 }
-                writeValue("rotation", image.img.rotation.toInt())
+                if (tryGet(MapObjectComponent) != null) json.run {
+                    writeValue("id", mapObject.id)
+                }
+                if (tryGet(Scene2DComponent) != null) json.run {
+                    writeObjectStart("position")
+                    writeValue("x", scene2D.centerX.metersToPixels)
+                    writeValue("y", scene2D.centerY.metersToPixels)
+                    writeObjectEnd()
+                    if (tryGet(MovingObjectComponent) != null) json.run {
+                        writeObjectStart("movingTo")
+                        writeValue("x", movingObject.endPoint.x.metersToPixels)
+                        writeValue("y", movingObject.endPoint.y.metersToPixels)
+                        writeObjectEnd()
+                    }
+                    if (tryGet(PlatformComponent) != null || tryGet(DestroyablePlatformComponent) != null) json.run {
+                        writeValue("width", scene2D.width.metersToPixels)
+                    }
+                    writeValue("rotation", scene2D.rotation.toInt())
+                    if (tryGet(DestroyablePlatformComponent) != null) json.run {
+                        writeValue("isDestroyable", true)
+                    }
+                    if (tryGet(RotatingObjectComponent) != null) json.run {
+                        writeValue("isRotating", true)
+                    }
+                }
             }
         }
         json.writeObjectEnd()
@@ -72,7 +91,7 @@ class JsonComponent : Component, Poolable {
     override fun reset() {
         jsonObjectName = ""
         jsonWillBeInArray = false
-        parentEntity = Entity()
+        parentEntity = null
     }
 
     companion object : ComponentResolver<JsonComponent>(JsonComponent::class.java)
@@ -80,3 +99,16 @@ class JsonComponent : Component, Poolable {
 
 val Entity.json: JsonComponent
     get() = JsonComponent[this]
+
+fun Entity.json() =
+    add(createComponent<JsonComponent>())!!
+
+fun Entity.json(parentEntity: Entity, jsonObjectName: String) =
+    add(createComponent<JsonComponent>().apply {
+        setObject(parentEntity, jsonObjectName)
+    })!!
+
+fun Entity.json(parentEntity: Entity) =
+    add(createComponent<JsonComponent>().apply {
+        setArrayObject(parentEntity)
+    })!!

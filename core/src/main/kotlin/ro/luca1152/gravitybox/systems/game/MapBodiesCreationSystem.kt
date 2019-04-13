@@ -22,6 +22,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
@@ -30,8 +32,11 @@ import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 /** Creates Box2D bodies from entities. */
 class MapBodiesCreationSystem : EntitySystem() {
@@ -44,7 +49,7 @@ class MapBodiesCreationSystem : EntitySystem() {
         get() = levelEntity.level.forceUpdateMap || (levelEntity.map.levelId != levelEntity.level.levelId)
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
     }
 
     override fun update(deltaTime: Float) {
@@ -142,22 +147,22 @@ class MapBodiesCreationSystem : EntitySystem() {
         isCombinedHorizontally: Boolean = false, isCombinedVertically: Boolean = false
     ) {
         if (entityA.isCombined && !entityB.isCombined) {
-            entityB.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
-                combinedBody.set(entityA.combinedBody.newBodyEntity, isCombinedHorizontally, isCombinedVertically)
+            entityB.add(createComponent<CombinedBodyComponent>()).run {
+                combinedBody.set(entityA.combinedBody.newBodyEntity!!, isCombinedHorizontally, isCombinedVertically)
             }
             entityB.body.resetInitialState()
         } else if (entityB.isCombined && !entityA.isCombined) {
-            entityA.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
-                combinedBody.set(entityB.combinedBody.newBodyEntity, isCombinedHorizontally, isCombinedVertically)
+            entityA.add(createComponent<CombinedBodyComponent>()).run {
+                combinedBody.set(entityB.combinedBody.newBodyEntity!!, isCombinedHorizontally, isCombinedVertically)
             }
             entityA.body.resetInitialState()
         } else if (!entityA.isCombined && !entityB.isCombined) {
             val combinedBodyEntity = CombinedPlatformEntity.createEntity(isCombinedHorizontally, isCombinedVertically)
-            entityA.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
+            entityA.add(createComponent<CombinedBodyComponent>()).run {
                 combinedBody.set(combinedBodyEntity, isCombinedHorizontally, isCombinedVertically)
             }
             entityA.body.resetInitialState()
-            entityB.add(engine.createComponent(CombinedBodyComponent::class.java)).run {
+            entityB.add(createComponent<CombinedBodyComponent>()).run {
                 combinedBody.set(combinedBodyEntity, isCombinedHorizontally, isCombinedVertically)
             }
             entityB.body.resetInitialState()
@@ -178,8 +183,8 @@ class MapBodiesCreationSystem : EntitySystem() {
         }
     }
 
-    private fun createOtherBodies() {
-        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get())
+    private fun createOtherBodies(world: World = Injekt.get()) {
+        engine.getEntitiesFor(Family.all(MapObjectComponent::class.java, BodyComponent::class.java).get())
             .forEach {
                 if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
                     var bodyType = BodyDef.BodyType.StaticBody
@@ -189,7 +194,7 @@ class MapBodiesCreationSystem : EntitySystem() {
                     var friction = .2f
                     var trimSize = 0f
                     when {
-                        it.tryGet(PlatformComponent) != null -> {
+                        it.tryGet(PlatformComponent) != null || it.tryGet(DestroyablePlatformComponent) != null -> {
                             bodyType = BodyDef.BodyType.StaticBody
                             categoryBits = PlatformEntity.CATEGORY_BITS
                             maskBits = PlatformEntity.MASK_BITS
@@ -208,11 +213,32 @@ class MapBodiesCreationSystem : EntitySystem() {
                             maskBits = FinishEntity.MASK_BITS
                         }
                     }
+                    if (it.tryGet(MovingObjectComponent) != null) {
+                        bodyType = BodyDef.BodyType.KinematicBody
+                    }
+                    if (it.tryGet(RotatingObjectComponent) != null) {
+                        bodyType = BodyDef.BodyType.DynamicBody
+                    }
                     if (it.tryGet(CombinedBodyComponent) == null) {
                         it.body.set(
-                            it.image.imageToBox2DBody(bodyType, categoryBits, maskBits, density, friction, trimSize),
+                            it.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction, trimSize),
                             it, categoryBits, maskBits, density, friction
                         )
+                    }
+                    if (it.tryGet(RotatingObjectComponent) != null) {
+                        val hookDef = BodyDef().apply {
+                            position.set(it.body.body.worldCenter)
+                        }
+                        val hook = world.createBody(hookDef)
+                        val jointDef = RevoluteJointDef().apply {
+                            initialize(hook, it.body.body, it.body.body.worldCenter)
+                            collideConnected = false
+                            enableLimit = false
+                            enableMotor = true
+                            motorSpeed = -it.rotatingObject.speed
+                            maxMotorTorque = 1000000f // Make the rotation not be affected by forces (such as bullets)
+                        }
+                        world.createJoint(jointDef)
                     }
                 }
             }

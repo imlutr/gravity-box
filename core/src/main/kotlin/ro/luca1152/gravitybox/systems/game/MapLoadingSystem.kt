@@ -20,13 +20,12 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.utils.Json
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.assets.Text
-import ro.luca1152.gravitybox.utils.json.MapFactory
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.assets.json.MapFactory
+import ro.luca1152.gravitybox.utils.assets.loaders.Text
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -37,9 +36,9 @@ class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : Entit
     private lateinit var finishEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
-        finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
+        playerEntity = engine.getSingleton<PlayerComponent>()
+        finishEntity = engine.getSingleton<FinishComponent>()
     }
 
     override fun update(deltaTime: Float) {

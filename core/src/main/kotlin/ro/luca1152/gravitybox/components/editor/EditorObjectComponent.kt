@@ -20,7 +20,8 @@ package ro.luca1152.gravitybox.components.editor
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Contains information about level editor objects. */
 class EditorObjectComponent : Component, Poolable {
@@ -61,3 +62,6 @@ class EditorObjectComponent : Component, Poolable {
 
 val Entity.editorObject: EditorObjectComponent
     get() = EditorObjectComponent[this]
+
+fun Entity.editorObject() =
+    add(createComponent<EditorObjectComponent>())!!

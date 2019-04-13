@@ -34,8 +34,7 @@ import com.badlogic.gdx.utils.TimeUtils
 import ktx.app.KtxScreen
 import ktx.collections.contains
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.editor.editorObject
-import ro.luca1152.gravitybox.components.editor.undoRedo
+import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.InputEntity
 import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
@@ -45,15 +44,13 @@ import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.systems.editor.*
 import ro.luca1152.gravitybox.systems.game.*
-import ro.luca1152.gravitybox.utils.assets.Text
-import ro.luca1152.gravitybox.utils.json.MapFactory
+import ro.luca1152.gravitybox.utils.assets.Assets
+import ro.luca1152.gravitybox.utils.assets.json.MapFactory
+import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
-import ro.luca1152.gravitybox.utils.ui.button.ButtonType
-import ro.luca1152.gravitybox.utils.ui.button.ClickButton
-import ro.luca1152.gravitybox.utils.ui.button.ClickTextButton
-import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
+import ro.luca1152.gravitybox.utils.ui.button.*
 import ro.luca1152.gravitybox.utils.ui.popup.PopUp
 import ro.luca1152.gravitybox.utils.ui.popup.TextPopUp
 import ro.luca1152.gravitybox.utils.ui.popup.YesNoTextPopUp
@@ -74,6 +71,10 @@ class LevelEditorScreen(
     private val inputMultiplexer: InputMultiplexer = Injekt.get(),
     private val game: MyGame = Injekt.get()
 ) : KtxScreen {
+    companion object {
+        const val OBJECTS_COLOR_ALPHA = .85f
+    }
+
     private val skin = manager.get(Assets.uiSkin)
     private val toggledButton = Reference<ToggleButton>()
     private val undoButton = ClickButton(skin, "small-button").apply {
@@ -94,12 +95,26 @@ class LevelEditorScreen(
             undoRedoEntity.undoRedo.redo()
         })
     }
-    private val placeToolButton = ToggleButton(skin, "small-button").apply {
+    val placeToolButton = PaneButton(skin, "small-button").apply paneButton@{
         addIcon("platform-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
         setToggledButtonReference(this@LevelEditorScreen.toggledButton)
         type = ButtonType.PLACE_TOOL_BUTTON
         setOpaque(true)
+        addCellToPane(ClickButton(skin, "small-button").apply {
+            addIcon("platform-icon")
+            setColors(Colors.gameColor, Colors.uiDownColor)
+            setOpaque(true)
+            addClickRunnable(createButtonFromPaneRunnable(this@paneButton, this, PlatformComponent::class.java))
+        })
+        addCellToPane(ClickButton(skin, "small-button").apply {
+            addIcon("collectible-point-icon")
+            setColors(Colors.gameColor, Colors.uiDownColor)
+            setOpaque(true)
+            addClickRunnable(
+                createButtonFromPaneRunnable(this@paneButton, this, CollectiblePointComponent::class.java)
+            )
+        })
     }
     val moveToolButton = ToggleButton(skin, "small-button").apply {
         addIcon("move-icon")
@@ -208,9 +223,11 @@ class LevelEditorScreen(
             if (isEditingNewLevel) {
                 uiStage.addActor(saveLevelBeforeCreationConfirmationPopUp)
             } else {
+                if (!isCurrentLevelDeleted) {
+                    levelEntity.map.saveMap()
+                }
                 isEditingNewLevel = true
                 isCurrentLevelDeleted = false
-                levelEntity.map.saveMap()
                 updateLevelIdToFirstUnused()
                 resetMapToInitialState()
             }
@@ -241,27 +258,27 @@ class LevelEditorScreen(
         val right = DistanceFieldLabel("Right", skin, "bold", 65f, Colors.gameColor)
         val top = DistanceFieldLabel("Top", skin, "bold", 65f, Colors.gameColor)
         val bottom = DistanceFieldLabel("Bottom", skin, "bold", 65f, Colors.gameColor)
-        defaults().spaceBottom(32f)
+        defaults().padTop(7f).padBottom(7f)
         add(left).row()
         add(right).row()
         add(top).row()
         add(bottom)
     }
-    private val newButton = ClickTextButton("simple-button", skin, "New", "bold", 80f).apply {
+    private val newButton = ClickTextButton("simple-button", skin, "New", "bold", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(newLevelConfirmationPopUp)
         }
     }
-    private val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 80f).apply {
+    private val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(saveConfirmationPopUp)
         }
     }
-    private val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 80f).apply {
+    private val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
@@ -269,24 +286,25 @@ class LevelEditorScreen(
             uiStage.addActor(loadLevelPopUp)
         }
     }
-    private val cameraButton = ClickTextButton("simple-button", skin, "Camera", "bold", 80f).apply {
+    private val cameraButton = ClickTextButton("simple-button", skin, "Camera", "bold", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(createCameraPopUp())
         }
     }
-    private val playerButton = ClickTextButton("simple-button", skin, "Player", "bold", 80f).apply {
+    private val playerButton = ClickTextButton("simple-button", skin, "Player", "bold", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
-            gameCamera.position.set(playerEntity.image.centerX, playerEntity.image.centerY, 0f)
+            gameCamera.position.set(playerEntity.scene2D.centerX, playerEntity.scene2D.centerY, 0f)
             hideSettingsPopUp = true
         }
     }
     private val settingsPopUp = PopUp(450f, 510f, skin).apply {
         widget.run {
             val buttonsTable = Table(skin).apply {
+                defaults().padTop(-5f).padBottom(-5f)
                 add(newButton).growX().expandY().top().row()
                 add(saveButton).growX().expandY().top().row()
                 add(loadButton).growX().expandY().top().row()
@@ -380,14 +398,18 @@ class LevelEditorScreen(
         inputEntity = InputEntity.createEntity(toggledButton)
         undoRedoEntity = UndoRedoEntity.createEntity()
         levelEntity = LevelEntity.createEntity(getFirstUnusedLevelId())
-        finishEntity = FinishEntity.createEntity(1, blinkEndlessly = false)
-        playerEntity = PlayerEntity.createEntity(0)
+        finishEntity = FinishEntity.createEntity(1, blinkEndlessly = false).apply {
+            scene2D.color.a = OBJECTS_COLOR_ALPHA
+        }
+        playerEntity = PlayerEntity.createEntity(0).apply {
+            scene2D.color.a = OBJECTS_COLOR_ALPHA
+        }
     }
 
     private fun loadLastEditedLevel() {
         val lastEditedMapFile = getLastEditedMapFile()
         val mapFactory = getMapFactory(lastEditedMapFile.path())
-        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity)
+        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity, true)
         isEditingNewLevel = false
         centerCameraOnPlayer()
     }
@@ -395,22 +417,36 @@ class LevelEditorScreen(
     private fun resetMapToInitialState() {
         removeAdditionalEntities()
         undoRedoEntity.undoRedo.reset()
-        val platformEntity = PlatformEntity.createEntity(2, 0f, .5f, 4f)
+        val platformEntity = PlatformEntity.createEntity(2, 0f, .5f, 4f).apply {
+            scene2D.color.a = OBJECTS_COLOR_ALPHA
+        }
         repositionDefaultEntities(platformEntity)
         centerCameraOnPlatform(platformEntity)
         settingsPopUp.remove()
     }
 
     private fun removeAdditionalEntities() {
+        val entitiesToRemove = Array<Entity>()
         engine.getEntitiesFor(
-            Family.all(MapObjectComponent::class.java).exclude(
-                PlayerComponent::class.java,
-                FinishComponent::class.java
+            Family.one(
+                MapObjectComponent::class.java, DashedLineComponent::class.java, MockMapObjectComponent::class.java
+            ).exclude(
+                PlayerComponent::class.java, FinishComponent::class.java
             ).get()
-        ).forEach {
-            engine.removeEntity(it)
-        }
+        ).forEach { entitiesToRemove.add(it) }
+        entitiesToRemove.forEach { engine.removeEntity(it) }
     }
+
+    private fun createButtonFromPaneRunnable(
+        placeToolButton: PaneButton,
+        button: ClickButton,
+        objectType: Class<out Any>
+    ) =
+        Runnable {
+            placeToolButton.clickedOnButtonFromPane()
+            placeToolButton.icon!!.drawable = button.icon!!.drawable
+            inputEntity.input.placeToolObjectType = objectType
+        }
 
     private fun getLastEditedMapFile(): FileHandle {
         var minLastEditedTime = Long.MAX_VALUE
@@ -439,25 +475,30 @@ class LevelEditorScreen(
 
     private fun repositionDefaultEntities(platformEntity: Entity) {
         finishEntity.run {
-            image.run {
-                centerX = platformEntity.image.rightX - FinishEntity.WIDTH / 2f
-                centerY = platformEntity.image.topY + FinishEntity.HEIGHT / 2f
+            scene2D.run {
+                centerX = platformEntity.scene2D.rightX - FinishEntity.WIDTH / 2f
+                centerY = platformEntity.scene2D.topY + FinishEntity.HEIGHT / 2f
             }
             editorObject.isSelected = false
+            polygon.update()
         }
         playerEntity.run {
-            image.run {
-                centerX = platformEntity.image.leftX + PlayerEntity.WIDTH / 2f
-                centerY = platformEntity.image.topY + PlayerEntity.HEIGHT / 2f
+            scene2D.run {
+                centerX = platformEntity.scene2D.leftX + PlayerEntity.WIDTH / 2f
+                centerY = platformEntity.scene2D.topY + PlayerEntity.HEIGHT / 2f
             }
             editorObject.isSelected = false
+            polygon.update()
         }
+        val oldId = levelEntity.map.levelId
         levelEntity.run {
             map.run {
                 reset()
                 updateMapBounds()
+                levelId = oldId
             }
             level.run {
+                levelId = oldId
                 forceUpdateMap = true
             }
         }
@@ -482,14 +523,14 @@ class LevelEditorScreen(
     }
 
     private fun centerCameraOnPlatform(platformEntity: Entity) {
-        val platformPosition = platformEntity.body.body.worldCenter
+        val platformScene2D = platformEntity.scene2D
         val deltaY = 2f
-        gameCamera.position.set(platformPosition.x, platformPosition.y + deltaY, 0f)
+        gameCamera.position.set(platformScene2D.centerX, platformScene2D.centerY + deltaY, 0f)
     }
 
     private fun centerCameraOnPlayer() {
-        val playerImage = playerEntity.image
-        gameCamera.position.set(playerImage.centerX, playerImage.centerY, 0f)
+        val playerScene2D = playerEntity.scene2D
+        gameCamera.position.set(playerScene2D.centerX, playerScene2D.centerY, 0f)
     }
 
     private fun handleGameInput() {
@@ -503,19 +544,21 @@ class LevelEditorScreen(
         engine.run {
             addSystem(UndoRedoSystem())
             addSystem(SelectedObjectColorSystem())
-            addSystem(ColorSyncSystem())
-            addSystem(ObjectPlacementSystem())
+            addSystem(ObjectPlacementSystem(this@LevelEditorScreen))
+            addSystem(TapThroughObjectsSystem())
             addSystem(ZoomingSystem())
             addSystem(PanningSystem())
             addSystem(ObjectSelectionSystem())
             addSystem(UpdateGameCameraSystem())
             addSystem(OverlayCameraSyncSystem())
             addSystem(ExtendedTouchSyncSystem())
-            addSystem(PolygonSyncSystem())
             addSystem(GridRenderingSystem())
             addSystem(ObjectSnappingSystem())
-            addSystem(RoundedPlatformsSystem())
             addSystem(OverlayPositioningSystem())
+            addSystem(RoundedPlatformsSystem())
+            addSystem(RotatingIndicatorSystem())
+            addSystem(ColorSyncSystem())
+            addSystem(DashedLineRenderingSystem())
             addSystem(ImageRenderingSystem())
             addSystem(OverlayRenderingSystem())
             addSystem(DebugRenderingSystem())
@@ -600,7 +643,7 @@ class LevelEditorScreen(
                     textLabel.setText("Are you sure you want to load the level #${mapFactory.id}?")
                     uiStage.addActor(this)
                     yesClickRunnable = Runnable {
-                        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity)
+                        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity, true)
                         centerCameraOnPlayer()
                         hideSettingsPopUp = true
                         isEditingNewLevel = false
@@ -683,7 +726,7 @@ class LevelEditorScreen(
     }
 
     private fun createCameraPopUpRightColumn() = Table(skin).apply {
-        defaults().spaceBottom(20f)
+        defaults().padBottom(-10f)
         add(createMinusPaddingPlus("left")).growX().expand().row()
         add(createMinusPaddingPlus("right")).growX().expand().row()
         add(createMinusPaddingPlus("top")).growX().expand().row()
@@ -695,8 +738,8 @@ class LevelEditorScreen(
         widget.run {
             pad(40f)
             add(title).top().colspan(2).row()
-            add(cameraPopUpLeftColumn).left().padRight(28f)
-            add(createCameraPopUpRightColumn()).grow().right()
+            add(cameraPopUpLeftColumn).left().padRight(28f).padTop(5f)
+            add(createCameraPopUpRightColumn()).padBottom(10f).padTop(10f).grow().right()
         }
     }
 
@@ -758,6 +801,11 @@ class LevelEditorScreen(
     private fun grayOutButton(button: ClickButton) {
         button.run {
             setColors(Colors.gameColor, Colors.gameColor)
+            if (!button.isPressed) {
+                color = Colors.gameColor
+                icon?.color = Colors.gameColor
+            }
+            opaqueImage?.color = Colors.bgColor
             opaqueImage?.color?.a = 0f
             color.a = .3f
         }
@@ -766,6 +814,11 @@ class LevelEditorScreen(
     private fun resetButtonColor(button: ClickButton) {
         button.run {
             setColors(Colors.gameColor, Colors.uiDownColor)
+            if (!button.isPressed) {
+                color = Colors.gameColor
+                icon?.color = Colors.gameColor
+            }
+            opaqueImage?.color = Colors.bgColor
             opaqueImage?.color?.a = 1f
             color.a = 1f
         }

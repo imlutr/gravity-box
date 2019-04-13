@@ -32,7 +32,7 @@ class HorizontalSlidingPane(
     private val flingSpeedThreshold: Float = 600f,
     private val overScrollDistance: Float = 100f
 ) : Group() {
-    private val pages: Group = Group()
+    val pages: Group = Group()
 
     val pageCount
         get() = pages.children.size
@@ -87,7 +87,7 @@ class HorizontalSlidingPane(
 
     fun addPage(page: Actor) {
         pages.addActor(page.apply {
-            // If it's not touchable, the pane slides only if you pan on the buttons, and not on the whole area.
+            // If it's not isTouchable, the pane slides only if you pan on the buttons, and not on the whole area.
             touchable = Touchable.enabled
 
             setPosition(pageCount * pageWidth - pageWidth / 2f, -pageHeight / 2f)

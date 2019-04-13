@@ -29,10 +29,12 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.Pool
+import com.badlogic.gdx.utils.Pool.Poolable
+import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxGame
 import ktx.app.clearScreen
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.engine
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -46,7 +48,7 @@ fun Vector3.lerp(targetX: Float, targetY: Float, targetZ: Float = 0f, progress: 
 
 /** Used to compare a color that was linearly interpolated using lerp, resulting in imprecision. */
 fun Color.approxEqualTo(color: Color): Boolean {
-    return (Math.abs(this.r - color.r) <= 1 / 255f) && (Math.abs(this.g - color.g) <= 1 / 255f) && (Math.abs(this.b - color.b) <= 1 / 255f)
+    return (Math.abs(this.r - color.r) <= 3 / 255f) && (Math.abs(this.g - color.g) <= 3 / 255f) && (Math.abs(this.b - color.b) <= 3 / 255f)
 }
 
 fun Color.setWithoutAlpha(color: Color) {
@@ -90,8 +92,8 @@ fun Polygon.getRectangleCenter(): Vector2 {
     return Vector2((vertices[0] + vertices[4]) / 2f, (vertices[1] + vertices[5]) / 2f)
 }
 
-fun Engine.getNullableSingletonFor(family: Family): Entity? {
-    val entitiesFound = getEntitiesFor(family)
+inline fun <reified T : Component> Engine.getNullableSingleton(): Entity? {
+    val entitiesFound = getEntitiesFor(Family.all(T::class.java).get())
     check(entitiesFound.size() <= 1) { "A singleton can't be instantiated more than once." }
     return when (entitiesFound.size()) {
         1 -> entitiesFound.first()
@@ -99,15 +101,20 @@ fun Engine.getNullableSingletonFor(family: Family): Entity? {
     }
 }
 
-/**
- * Returns the first entity of [Engine.getEntitiesFor].
- * If there is more than one or no Entity found, [IllegalStateException] is thrown.
- */
-fun Engine.getSingletonFor(family: Family): Entity {
-    val entity = getNullableSingletonFor(family)
-    check(entity != null) { "No singleton found for the given Family. " }
+inline fun <reified T : Component> Engine.getSingleton(): Entity {
+    val entity = getNullableSingleton<T>()
+    check(entity != null) { "No singleton found for the given component." }
     return entity
 }
+
+inline fun <reified T : Component> createComponent(): T {
+    return engine.createComponent(T::class.java)
+}
+
+inline fun <reified T : Component> Entity.removeComponent() {
+    remove(T::class.java)
+}
+
 
 fun Engine.removeAllSystems(except: ArrayList<Class<out EntitySystem>> = ArrayList()) {
     val systemsToRemove = Array<EntitySystem>()
@@ -136,7 +143,7 @@ fun Engine.removeAndResetEntity(entity: Entity) {
     // Reset every component so you don't have to manually reset them for
     // each entity, such as calling world.destroyBody(entity.body.body).
     for (component in entity.components) {
-        if (component is Pool.Poolable)
+        if (component is Poolable)
             component.reset()
         entity.remove(component::class.java)
     }
@@ -165,14 +172,36 @@ fun Actor.hitAll(localX: Float, localY: Float, touchable: Boolean = false): Arra
     stage.actors.forEach { child ->
         if (child != this) {
             child.run {
-                val coords = this.parentToLocalCoordinates(this@hitAll.localToStageCoordinates(Vector2(localX, localY)))
+                val localPosition = Pools.obtain(Vector2::class.java).set(localX, localY)
+                val coords = this.parentToLocalCoordinates(this@hitAll.localToStageCoordinates(localPosition))
                 hit(coords.x, coords.y, touchable)?.let {
                     hitActors.add(it)
                 }
+                Pools.free(localPosition)
             }
         }
     }
     return hitActors
+}
+
+fun Stage.hitAll(stageX: Float, stageY: Float, touchable: Boolean = true): Array<Actor> {
+    val hitActors = Array<Actor>()
+    actors.forEach { child ->
+        child.run {
+            val localPosition = Pools.obtain(Vector2::class.java).set(stageX, stageY)
+            val coords = this.parentToLocalCoordinates(localPosition)
+            hit(coords.x, coords.y, touchable)?.let {
+                hitActors.add(it)
+            }
+            Pools.free(localPosition)
+        }
+    }
+    return hitActors
+}
+
+fun Stage.hitAllScreen(screenX: Int, screenY: Int, touchable: Boolean = true): Array<Actor> {
+    val stageCoords = screenToStageCoordinates(Vector2(screenX.toFloat(), screenY.toFloat()))
+    return hitAll(stageCoords.x, stageCoords.y, touchable)
 }
 
 val Polygon.leftmostX: Float
@@ -190,7 +219,7 @@ val Polygon.topmostY: Float
 fun Float.approximatelyEqualTo(fl: Float) = Math.abs(this - fl) <= 1e-5f
 
 inline fun <T> Iterable<T>.filterNullableSingleton(predicate: (T) -> Boolean): T? {
-    val filteredList = filterTo(ArrayList<T>(), predicate)
+    val filteredList = filterTo(ArrayList(), predicate)
     check(filteredList.size <= 1) { "A singleton can't be instantiated more than once" }
     return when {
         filteredList.size == 1 -> filteredList.first()
@@ -198,8 +227,13 @@ inline fun <T> Iterable<T>.filterNullableSingleton(predicate: (T) -> Boolean): T
     }
 }
 
-inline fun <T> Iterable<T>.filterSingleton(predicate: (T) -> Boolean): T {
-    val filteredElement = filterNullableSingleton(predicate)
-    check(filteredElement != null) { "A singleton can't be instantiated more than once" }
-    return filteredElement
+fun Entity.addToEngine(): Entity {
+    engine.addEntity(this)
+    return this
+}
+
+fun newEntity() = engine.createEntity()!!
+
+fun Color.isEqualWithoutAlphaTo(color: Color): Boolean {
+    return this.r == color.r && this.g == color.g && this.b == color.b
 }

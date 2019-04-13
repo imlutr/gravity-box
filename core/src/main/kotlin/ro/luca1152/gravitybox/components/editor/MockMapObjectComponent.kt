@@ -15,14 +15,20 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.json
+package ro.luca1152.gravitybox.components.editor
 
-/** Contains the structure of a map file. */
-class MapFactory {
-    var id = 0
-    var padding = PaddingPrototype()
-    var player = PlayerPrototype()
-    var finish = FinishPrototype()
-    var objects = ArrayList<ObjectPrototype>()
+import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
+/** Indicates that the entity is a mock map object (it doesn't have functionality, it is used only in the level editor). */
+class MockMapObjectComponent : Component, Poolable {
+    override fun reset() {}
+
+    companion object : ComponentResolver<MockMapObjectComponent>(MockMapObjectComponent::class.java)
 }
+
+fun Entity.mockMapObject() =
+    add(createComponent<MockMapObjectComponent>())!!

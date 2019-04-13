@@ -21,19 +21,14 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Contains a [Rectangle]. */
 class CollisionBoxComponent : Component, Poolable {
     val box = Rectangle()
     var width = 0f
     var height = 0f
-    var size = 0f // TODO: Remove this
-
-    fun set(size: Float) {
-        this.size = size
-        box.setSize(size)
-    }
 
     fun set(width: Float, height: Float) {
         this.width = width
@@ -52,3 +47,8 @@ class CollisionBoxComponent : Component, Poolable {
 
 val Entity.collisionBox: CollisionBoxComponent
     get() = CollisionBoxComponent[this]
+
+fun Entity.collisionBox(width: Float, height: Float) =
+    add(createComponent<CollisionBoxComponent>().apply {
+        set(width, height)
+    })!!

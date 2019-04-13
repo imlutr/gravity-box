@@ -21,8 +21,12 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
+import com.badlogic.gdx.physics.box2d.BodyDef
+import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
+import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.entities.game.PlatformEntity
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
@@ -31,7 +35,7 @@ class LevelRestartSystem : EntitySystem() {
     private lateinit var levelEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
-        levelEntity = engine.getSingletonFor(Family.all(LevelComponent::class.java).get())
+        levelEntity = engine.getSingleton<LevelComponent>()
     }
 
     override fun update(deltaTime: Float) {
@@ -41,15 +45,70 @@ class LevelRestartSystem : EntitySystem() {
     }
 
     private fun restartTheLevel() {
+        resetBodiesToInitialState()
+        resetMovingPlatforms()
+        resetDestroyablePlatforms()
+        resetCollectiblePoints()
+        removeBullets()
+        levelEntity.level.restartLevel = false
+    }
+
+    private fun removeBullets() {
         engine.getEntitiesFor(Family.all(BulletComponent::class.java).get()).forEach {
             engine.removeAndResetEntity(it)
         }
+    }
+
+    private fun resetDestroyablePlatforms() {
+        engine.getEntitiesFor(Family.all(DestroyablePlatformComponent::class.java).get()).forEach {
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                it.run {
+                    if (destroyablePlatform.isRemoved) {
+                        destroyablePlatform.isRemoved = false
+                        scene2D.isVisible = true
+                        val bodyType =
+                            if (tryGet(DestroyablePlatformComponent) == null) BodyDef.BodyType.StaticBody else BodyDef.BodyType.KinematicBody
+                        val categoryBits = PlatformEntity.CATEGORY_BITS
+                        val maskBits = PlatformEntity.MASK_BITS
+                        body(scene2D.toBody(bodyType, categoryBits, maskBits), categoryBits, maskBits)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun resetCollectiblePoints() {
+        engine.getEntitiesFor(Family.all(CollectiblePointComponent::class.java).get()).forEach {
+            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+                it.run {
+                    if (collectiblePoint.isCollected) {
+                        collectiblePoint.isCollected = false
+                        scene2D.isVisible = true
+                    }
+                }
+            }
+        }
+    }
+
+    private fun resetBodiesToInitialState() {
         engine.getEntitiesFor(Family.all(BodyComponent::class.java).exclude(CombinedBodyComponent::class.java).get())
             .forEach {
                 if (it.tryGet(BodyComponent) != null) {
                     it.body.resetToInitialState()
+                    it.scene2D.run {
+                        centerX = it.body.body.worldCenter.x
+                        centerY = it.body.body.worldCenter.y
+                    }
                 }
             }
-        levelEntity.level.restartLevel = false
+    }
+
+    private fun resetMovingPlatforms() {
+        engine.getEntitiesFor(Family.all(MovingObjectComponent::class.java).get()).forEach {
+            it.movingObject.run {
+                isMovingTowardsEndPoint = true
+                moved(it, it.linkedEntity.get("mockPlatform"))
+            }
+        }
     }
 }

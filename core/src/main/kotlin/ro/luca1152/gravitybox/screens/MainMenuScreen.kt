@@ -24,11 +24,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.app.KtxScreen
 import ro.luca1152.gravitybox.MyGame
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.clearScreen
 import ro.luca1152.gravitybox.utils.kotlin.setScreen
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
+import ro.luca1152.gravitybox.utils.ui.popup.TextPopUp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -65,10 +67,28 @@ class MainMenuScreen(
     private val rateButton = ClickButton(skin, "small-button").apply {
         addIcon("heart-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
+        addClickRunnable(Runnable {
+            uiStage.addActor(
+                TextPopUp(
+                    450f, 250f,
+                    "[TO DO]",
+                    skin, "bold", 50f, Colors.gameColor
+                )
+            )
+        })
     }
     private val settingsButton = ClickButton(skin, "small-button").apply {
         addIcon("settings-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
+        addClickRunnable(Runnable {
+            uiStage.addActor(
+                TextPopUp(
+                    450f, 250f,
+                    "[TO DO]",
+                    skin, "bold", 50f, Colors.gameColor
+                )
+            )
+        })
     }
     private val bottomRow = Table().apply {
         add(rateButton).expandX().left()
@@ -92,8 +112,13 @@ class MainMenuScreen(
     }
 
     override fun render(delta: Float) {
+        updateColors()
         uiStage.act()
         clearScreen(Colors.bgColor)
         uiStage.draw()
+    }
+
+    private fun updateColors() {
+        logoImage.color = Colors.gameColor
     }
 }

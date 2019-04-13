@@ -13,5 +13,3 @@ cache:
 
 script:
 - "./gradlew test"
-- "./gradlew desktop:distZip"
-- "./gradlew android:assembleRelease"

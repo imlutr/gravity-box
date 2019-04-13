@@ -102,5 +102,9 @@
       up: small-round-button,
       down: small-round-button
     }
+    checkbox: {
+      up: empty-checkbox,
+      down: empty-checkbox
+    }
   }
 }

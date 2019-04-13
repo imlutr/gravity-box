@@ -20,8 +20,9 @@ package ro.luca1152.gravitybox.components.editor
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Entities with this component will be snapped together when nearby. */
 class SnapComponent : Component, Poolable {
@@ -92,3 +93,6 @@ class SnapComponent : Component, Poolable {
 
 val Entity.snap: SnapComponent
     get() = SnapComponent[this]
+
+fun Entity.snap() =
+    add(createComponent<SnapComponent>())!!

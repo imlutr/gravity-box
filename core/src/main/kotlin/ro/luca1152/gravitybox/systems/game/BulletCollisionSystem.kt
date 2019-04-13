@@ -25,9 +25,10 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.utils.Pools
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.ExplosionImageEntity
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -35,14 +36,14 @@ import uy.kohesive.injekt.api.get
 
 /** Handles what happens when a bullet collides with a map object. */
 class BulletCollisionSystem(private val world: World = Injekt.get()) :
-    IteratingSystem(Family.all(BulletComponent::class.java, ImageComponent::class.java).get()) {
+    IteratingSystem(Family.all(BulletComponent::class.java).get()) {
     private lateinit var playerEntity: Entity
     private lateinit var finishEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         super.addedToEngine(engine)
-        playerEntity = engine.getSingletonFor(Family.all(PlayerComponent::class.java).get())
-        finishEntity = engine.getSingletonFor(Family.all(FinishComponent::class.java).get())
+        playerEntity = engine.getSingleton<PlayerComponent>()
+        finishEntity = engine.getSingleton<FinishComponent>()
     }
 
     override fun processEntity(bullet: Entity, deltaTime: Float) {
@@ -79,7 +80,7 @@ class BulletCollisionSystem(private val world: World = Injekt.get()) :
             return
 
         // Calculate the distance
-        val blastDir = applyPoint.cpy().sub(blastCenter)
+        val blastDir = Pools.obtain(Vector2::class.java).set(applyPoint).sub(blastCenter)
         val distance = blastDir.len()
 
         // Calculate the inverse distance
@@ -95,6 +96,7 @@ class BulletCollisionSystem(private val world: World = Injekt.get()) :
             playerEntity.body.body.worldCenter,
             true
         )
+        Pools.free(blastDir)
     }
 }
 

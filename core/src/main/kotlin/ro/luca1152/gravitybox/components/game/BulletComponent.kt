@@ -20,16 +20,17 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that the entity is a bullet. */
 class BulletComponent : Component, Poolable {
     var collidedWithPlatform = false
-    var collidedWith = Entity()
+    var collidedWith: Entity? = null
 
     override fun reset() {
         collidedWithPlatform = false
-        collidedWith = Entity()
+        collidedWith = null
     }
 
     companion object : ComponentResolver<BulletComponent>(BulletComponent::class.java) {
@@ -39,3 +40,6 @@ class BulletComponent : Component, Poolable {
 
 val Entity.bullet: BulletComponent
     get() = BulletComponent[this]
+
+fun Entity.bullet() =
+    add(createComponent<BulletComponent>())!!

@@ -18,31 +18,24 @@
 package ro.luca1152.gravitybox.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
-import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.assets.load
 import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.utils.assets.Text
-import ro.luca1152.gravitybox.utils.assets.TextLoader
+import ro.luca1152.gravitybox.utils.assets.Assets
+import ro.luca1152.gravitybox.utils.assets.loaders.Text
+import ro.luca1152.gravitybox.utils.assets.loaders.TextLoader
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.clearScreen
 import ro.luca1152.gravitybox.utils.kotlin.setScreen
 import ro.luca1152.gravitybox.utils.ui.Colors
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-
-object Assets {
-    val uiSkin = AssetDescriptor<Skin>("skins/uiskin.json", Skin::class.java)
-    val tileset = AssetDescriptor<TextureAtlas>("graphics/tileset.atlas", TextureAtlas::class.java)
-}
 
 class LoadingScreen(
     private val manager: AssetManager = Injekt.get(),
@@ -66,25 +59,19 @@ class LoadingScreen(
     }
 
     private fun loadMaps() {
+        manager.setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
         loadGameMaps()
-        loadEditorMaps()
     }
 
     private fun loadGameMaps() {
-        Gdx.files.internal("maps/game").list().forEach {
-            manager.run {
-                setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
-                load<Text>(it.path())
-            }
+        for (i in 1..MyGame.LEVELS_NUMBER) {
+            manager.load<Text>("maps/game/map-$i.json")
         }
     }
 
     private fun loadEditorMaps() {
         Gdx.files.local("maps/editor").list().forEach {
-            manager.run {
-                setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
-                load<Text>(it.path())
-            }
+            manager.load<Text>(it.path())
         }
     }
 
@@ -93,10 +80,17 @@ class LoadingScreen(
         clearScreen(Colors.bgColor)
     }
 
+    private var finishedLoadingOnce = false
+
     private fun update(delta: Float) {
         loadingAssetsTimer += delta
         uiStage.act()
         if (finishedLoadingAssets) {
+            if (!finishedLoadingOnce) {
+                finishedLoadingOnce = true
+                loadEditorMaps()
+                return
+            }
             logLoadingTime()
             addScreens()
             game.setScreen(TransitionScreen(MainMenuScreen::class.java, false))

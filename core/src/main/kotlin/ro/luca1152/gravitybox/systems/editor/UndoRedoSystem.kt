@@ -25,14 +25,14 @@ import ro.luca1152.gravitybox.components.editor.UndoRedoComponent
 import ro.luca1152.gravitybox.components.editor.undoRedo
 import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.components.game.map
-import ro.luca1152.gravitybox.utils.kotlin.getSingletonFor
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 class UndoRedoSystem : IteratingSystem(Family.all(UndoRedoComponent::class.java).get()) {
     private lateinit var mapEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         super.addedToEngine(engine)
-        mapEntity = engine.getSingletonFor(Family.all(MapComponent::class.java).get())
+        mapEntity = engine.getSingleton<MapComponent>()
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {

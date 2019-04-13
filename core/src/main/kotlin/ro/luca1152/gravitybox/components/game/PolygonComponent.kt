@@ -21,25 +21,21 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Pool.Poolable
-import ro.luca1152.gravitybox.utils.components.ComponentResolver
-import ro.luca1152.gravitybox.utils.kotlin.bottommostY
-import ro.luca1152.gravitybox.utils.kotlin.leftmostX
-import ro.luca1152.gravitybox.utils.kotlin.rightmostX
-import ro.luca1152.gravitybox.utils.kotlin.topmostY
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.*
 
 /** Contains a [Polygon]. */
 class PolygonComponent : Component, Poolable {
-    private var linkedImage = Image()
+    private lateinit var scene2D: Scene2DComponent
     var polygon = Polygon()
     var leftmostX = Float.POSITIVE_INFINITY
     var rightmostX = Float.NEGATIVE_INFINITY
     var bottommostY = Float.POSITIVE_INFINITY
     var topmostY = Float.NEGATIVE_INFINITY
 
-    fun set(linkedImage: Image) {
-        this.linkedImage = linkedImage
+    fun set(linkedImage: Scene2DComponent) {
+        this.scene2D = linkedImage
     }
 
     fun update() {
@@ -50,18 +46,18 @@ class PolygonComponent : Component, Poolable {
     private fun updatePolygon() {
         updateVertices()
         polygon.run {
-            setPosition(linkedImage.x, linkedImage.y)
-            setOrigin(linkedImage.originX, linkedImage.originY)
-            rotation = linkedImage.rotation
+            setPosition(scene2D.leftX, scene2D.bottomY)
+            setOrigin(scene2D.width / 2f, scene2D.height / 2f)
+            rotation = scene2D.rotation
         }
     }
 
     private fun updateVertices() {
         polygon.vertices = floatArrayOf(
             0f, 0f,
-            linkedImage.width, 0f,
-            linkedImage.width, linkedImage.height,
-            0f, linkedImage.height
+            scene2D.width, 0f,
+            scene2D.width, scene2D.height,
+            0f, scene2D.height
         )
     }
 
@@ -120,7 +116,6 @@ class PolygonComponent : Component, Poolable {
 
     override fun reset() {
         polygon = Polygon()
-        linkedImage = Image()
         resetBounds()
     }
 
@@ -129,3 +124,18 @@ class PolygonComponent : Component, Poolable {
 
 val Entity.polygon: PolygonComponent
     get() = PolygonComponent[this]
+
+fun Entity.polygon(scene2D: Scene2DComponent, update: Boolean = true) =
+    add(createComponent<PolygonComponent>().apply {
+        set(scene2D)
+        if (update) {
+            update()
+        }
+    })!!
+
+fun Entity.polygon(update: Boolean = true) =
+    add(createComponent<PolygonComponent>().apply {
+        if (update) {
+            update()
+        }
+    })!!
