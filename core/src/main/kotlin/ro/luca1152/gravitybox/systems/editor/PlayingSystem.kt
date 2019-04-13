@@ -98,6 +98,7 @@ class PlayingSystem(
         addPlaySystems()
         showPlayUI()
         updateMapBounds()
+        makeEveryObjectOpaque()
     }
 
     private fun setOwnBox2DContactListener() {
@@ -198,6 +199,12 @@ class PlayingSystem(
         levelEntity.map.updateMapBounds()
     }
 
+    private fun makeEveryObjectOpaque() {
+        engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
+            it.scene2D.color.a = 1f
+        }
+    }
+
     override fun removedFromEngine(engine: Engine) {
         Colors.resetAllColors()
         hidePlayUI()
@@ -214,6 +221,7 @@ class PlayingSystem(
         resetDestroyablePlatforms(engine)
         resetCollectiblePoints(engine)
         levelEditorScreen.addGameSystems()
+        makeEveryObjectTransparent(engine)
     }
 
     private fun hidePlayUI() {
@@ -311,6 +319,12 @@ class PlayingSystem(
                     isTouchable = true
                 }
             }
+        }
+    }
+
+    private fun makeEveryObjectTransparent(engine: Engine) {
+        engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
+            it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
         }
     }
 }

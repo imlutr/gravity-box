@@ -30,7 +30,6 @@ import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
-import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
@@ -40,8 +39,7 @@ import uy.kohesive.injekt.api.get
 /** Places objects at touch when the place tool is used. */
 class ObjectPlacementSystem(
     private val levelEditorScreen: LevelEditorScreen,
-    private val inputMultiplexer: InputMultiplexer = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get()
+    private val inputMultiplexer: InputMultiplexer = Injekt.get()
 ) : EntitySystem() {
     private lateinit var undoRedoEntity: Entity
     private lateinit var inputEntity: Entity
@@ -99,6 +97,7 @@ class ObjectPlacementSystem(
                 }
                 else -> error("placeToolObjectType was not recognized.")
             }
+            placedObject.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
 
             // Place the mock moving platform in the level editor
 

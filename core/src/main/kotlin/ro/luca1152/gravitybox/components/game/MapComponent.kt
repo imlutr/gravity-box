@@ -33,10 +33,12 @@ import com.badlogic.gdx.utils.TimeUtils
 import ktx.collections.sortBy
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
+import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
@@ -185,6 +187,15 @@ class MapComponent : Component, Poolable {
         createFinish(mapFactory.finish, finishEntity)
         createObjects(mapFactory.objects, isLevelEditor)
         updateMapBounds()
+        if (isLevelEditor) {
+            makeObjectsTransparent()
+        }
+    }
+
+    private fun makeObjectsTransparent() {
+        engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
+            it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
+        }
     }
 
     private fun removeObjects(engine: PooledEngine = Injekt.get()) {

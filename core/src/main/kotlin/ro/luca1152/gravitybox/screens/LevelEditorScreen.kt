@@ -71,6 +71,10 @@ class LevelEditorScreen(
     private val inputMultiplexer: InputMultiplexer = Injekt.get(),
     private val game: MyGame = Injekt.get()
 ) : KtxScreen {
+    companion object {
+        const val OBJECTS_COLOR_ALPHA = .85f
+    }
+
     private val skin = manager.get(Assets.uiSkin)
     private val toggledButton = Reference<ToggleButton>()
     private val undoButton = ClickButton(skin, "small-button").apply {
@@ -393,8 +397,12 @@ class LevelEditorScreen(
         inputEntity = InputEntity.createEntity(toggledButton)
         undoRedoEntity = UndoRedoEntity.createEntity()
         levelEntity = LevelEntity.createEntity(getFirstUnusedLevelId())
-        finishEntity = FinishEntity.createEntity(1, blinkEndlessly = false)
-        playerEntity = PlayerEntity.createEntity(0)
+        finishEntity = FinishEntity.createEntity(1, blinkEndlessly = false).apply {
+            scene2D.color.a = OBJECTS_COLOR_ALPHA
+        }
+        playerEntity = PlayerEntity.createEntity(0).apply {
+            scene2D.color.a = OBJECTS_COLOR_ALPHA
+        }
     }
 
     private fun loadLastEditedLevel() {
@@ -408,7 +416,9 @@ class LevelEditorScreen(
     private fun resetMapToInitialState() {
         removeAdditionalEntities()
         undoRedoEntity.undoRedo.reset()
-        val platformEntity = PlatformEntity.createEntity(2, 0f, .5f, 4f)
+        val platformEntity = PlatformEntity.createEntity(2, 0f, .5f, 4f).apply {
+            scene2D.color.a = OBJECTS_COLOR_ALPHA
+        }
         repositionDefaultEntities(platformEntity)
         centerCameraOnPlatform(platformEntity)
         settingsPopUp.remove()
