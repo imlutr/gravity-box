@@ -48,8 +48,10 @@ class ObjectSelectionSystem(
                 return false
 
             touchedActor = gameStage.hitScreen(screenX, screenY)
-            if (touchedActor == null)
+            if (touchedActor == null) {
+                selectedObject?.editorObject?.isSelected = false
                 return false
+            }
 
             // Return true so touchUp() will be called
             return true

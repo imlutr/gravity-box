@@ -91,7 +91,7 @@ class LevelEditorScreen(
             undoRedoEntity.undoRedo.redo()
         })
     }
-    private val placeToolButton = PaneButton(skin, "small-button").apply paneButton@{
+    val placeToolButton = PaneButton(skin, "small-button").apply paneButton@{
         addIcon("platform-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
         setToggledButtonReference(this@LevelEditorScreen.toggledButton)
@@ -533,7 +533,7 @@ class LevelEditorScreen(
         engine.run {
             addSystem(UndoRedoSystem())
             addSystem(SelectedObjectColorSystem())
-            addSystem(ObjectPlacementSystem())
+            addSystem(ObjectPlacementSystem(this@LevelEditorScreen))
             addSystem(ZoomingSystem())
             addSystem(PanningSystem())
             addSystem(ObjectSelectionSystem())
