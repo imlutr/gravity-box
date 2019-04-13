@@ -264,21 +264,21 @@ class LevelEditorScreen(
         add(top).row()
         add(bottom)
     }
-    private val newButton = ClickTextButton("simple-button", skin, "New", "bold", 80f).apply {
+    private val newButton = ClickTextButton("simple-button", skin, "New", "bold", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(newLevelConfirmationPopUp)
         }
     }
-    private val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 80f).apply {
+    private val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(saveConfirmationPopUp)
         }
     }
-    private val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 80f).apply {
+    private val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
@@ -286,14 +286,14 @@ class LevelEditorScreen(
             uiStage.addActor(loadLevelPopUp)
         }
     }
-    private val cameraButton = ClickTextButton("simple-button", skin, "Camera", "bold", 80f).apply {
+    private val cameraButton = ClickTextButton("simple-button", skin, "Camera", "bold", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(createCameraPopUp())
         }
     }
-    private val playerButton = ClickTextButton("simple-button", skin, "Player", "bold", 80f).apply {
+    private val playerButton = ClickTextButton("simple-button", skin, "Player", "bold", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
@@ -304,6 +304,7 @@ class LevelEditorScreen(
     private val settingsPopUp = PopUp(450f, 510f, skin).apply {
         widget.run {
             val buttonsTable = Table(skin).apply {
+                defaults().padTop(-5f).padBottom(-5f)
                 add(newButton).growX().expandY().top().row()
                 add(saveButton).growX().expandY().top().row()
                 add(loadButton).growX().expandY().top().row()
