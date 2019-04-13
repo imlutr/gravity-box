@@ -314,7 +314,9 @@ class OverlayPositioningSystem(
                             MathUtils.cosDeg(scene2D.rotation) * Math.signum(MathUtils.cosDeg(360f - scene2D.rotation))
                     newCenterY = initialImageY + (mouseXInWorldCoords - initialMouseXInWorldCoords) *
                             MathUtils.sinDeg(scene2D.rotation) * Math.signum(MathUtils.cosDeg(360f - scene2D.rotation))
+                    selectedMapObject!!.editorObject.isDraggingVertically = true
                 } else {
+                    selectedMapObject!!.editorObject.isDraggingVertically = false
                     newCenterX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
                     newCenterX = newCenterX.roundToNearest(.5f, .15f)
                 }
@@ -335,6 +337,7 @@ class OverlayPositioningSystem(
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 selectedMapObject!!.editorObject.isDraggingHorizontally = false
+                selectedMapObject!!.editorObject.isDraggingVertically = false
                 selectedMapObject!!.snap.resetSnappedX()
                 if (scene2D.centerX != initialImageX)
                     undoRedoEntity.undoRedo.addExecutedCommand(
@@ -395,7 +398,9 @@ class OverlayPositioningSystem(
                             MathUtils.cosDeg(scene2D.rotation) * Math.signum(MathUtils.cosDeg(360f - scene2D.rotation))
                     newCenterX = initialImageX + (mouseYInWorldCoords - initialMouseYInWorldCoords) *
                             MathUtils.sinDeg(scene2D.rotation) * Math.signum(MathUtils.sinDeg(360f - scene2D.rotation))
+                    selectedMapObject!!.editorObject.isDraggingHorizontally = true
                 } else {
+                    selectedMapObject!!.editorObject.isDraggingHorizontally = false
                     newCenterY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
                     newCenterY = if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null ||
                         (selectedMapObject as Entity).tryGet(DestroyablePlatformComponent) != null ||
@@ -423,6 +428,7 @@ class OverlayPositioningSystem(
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 selectedMapObject!!.editorObject.isDraggingVertically = false
+                selectedMapObject!!.editorObject.isDraggingHorizontally = false
                 selectedMapObject!!.snap.resetSnappedY()
                 if (scene2D.centerY != initialImageY)
                     undoRedoEntity.undoRedo.addExecutedCommand(

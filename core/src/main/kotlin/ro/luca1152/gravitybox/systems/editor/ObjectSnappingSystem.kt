@@ -89,6 +89,12 @@ class ObjectSnappingSystem : EntitySystem() {
         if (!selectedObject!!.editorObject.isDragging) {
             return
         }
+
+        // The object was dragged diagonally, as its movement took into account the its rotation
+        if (selectedObject!!.editorObject.isDraggingVertically && selectedObject!!.editorObject.isDraggingHorizontally) {
+            return
+        }
+
         snapObjectX()
         snapObjectY()
     }
