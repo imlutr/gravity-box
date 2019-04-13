@@ -258,7 +258,7 @@ class LevelEditorScreen(
         val right = DistanceFieldLabel("Right", skin, "bold", 65f, Colors.gameColor)
         val top = DistanceFieldLabel("Top", skin, "bold", 65f, Colors.gameColor)
         val bottom = DistanceFieldLabel("Bottom", skin, "bold", 65f, Colors.gameColor)
-        defaults().spaceBottom(32f)
+        defaults().padTop(7f).padBottom(7f)
         add(left).row()
         add(right).row()
         add(top).row()
@@ -726,7 +726,7 @@ class LevelEditorScreen(
     }
 
     private fun createCameraPopUpRightColumn() = Table(skin).apply {
-        defaults().spaceBottom(20f)
+        defaults().padBottom(-10f)
         add(createMinusPaddingPlus("left")).growX().expand().row()
         add(createMinusPaddingPlus("right")).growX().expand().row()
         add(createMinusPaddingPlus("top")).growX().expand().row()
@@ -738,8 +738,8 @@ class LevelEditorScreen(
         widget.run {
             pad(40f)
             add(title).top().colspan(2).row()
-            add(cameraPopUpLeftColumn).left().padRight(28f)
-            add(createCameraPopUpRightColumn()).grow().right()
+            add(cameraPopUpLeftColumn).left().padRight(28f).padTop(5f)
+            add(createCameraPopUpRightColumn()).padBottom(10f).padTop(10f).grow().right()
         }
     }
 
