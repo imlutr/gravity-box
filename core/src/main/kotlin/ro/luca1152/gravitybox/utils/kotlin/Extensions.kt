@@ -184,6 +184,26 @@ fun Actor.hitAll(localX: Float, localY: Float, touchable: Boolean = false): Arra
     return hitActors
 }
 
+fun Stage.hitAll(stageX: Float, stageY: Float, touchable: Boolean = true): Array<Actor> {
+    val hitActors = Array<Actor>()
+    actors.forEach { child ->
+        child.run {
+            val localPosition = Pools.obtain(Vector2::class.java).set(stageX, stageY)
+            val coords = this.parentToLocalCoordinates(localPosition)
+            hit(coords.x, coords.y, touchable)?.let {
+                hitActors.add(it)
+            }
+            Pools.free(localPosition)
+        }
+    }
+    return hitActors
+}
+
+fun Stage.hitAllScreen(screenX: Int, screenY: Int, touchable: Boolean = true): Array<Actor> {
+    val stageCoords = screenToStageCoordinates(Vector2(screenX.toFloat(), screenY.toFloat()))
+    return hitAll(stageCoords.x, stageCoords.y, touchable)
+}
+
 val Polygon.leftmostX: Float
     get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 0 }.sorted().first()
 
