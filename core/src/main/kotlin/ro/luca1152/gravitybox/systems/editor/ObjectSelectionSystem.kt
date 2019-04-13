@@ -21,8 +21,8 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
-import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.scenes.scene2d.Actor
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
@@ -40,7 +40,7 @@ class ObjectSelectionSystem(
     private lateinit var inputEntity: Entity
     var selectedObject: Entity? = null
 
-    private val inputAdapter = object : InputAdapter() {
+    private val inputAdapter = object : GestureDetector(GestureAdapter()) {
         var touchedActor: Actor? = null
 
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {

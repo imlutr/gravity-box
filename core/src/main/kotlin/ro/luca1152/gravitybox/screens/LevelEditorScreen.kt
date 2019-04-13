@@ -545,6 +545,7 @@ class LevelEditorScreen(
             addSystem(UndoRedoSystem())
             addSystem(SelectedObjectColorSystem())
             addSystem(ObjectPlacementSystem(this@LevelEditorScreen))
+            addSystem(TapThroughObjectsSystem())
             addSystem(ZoomingSystem())
             addSystem(PanningSystem())
             addSystem(ObjectSelectionSystem())
