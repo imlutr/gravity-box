@@ -27,7 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
-import ro.luca1152.gravitybox.utils.kotlin.hitScreen
+import ro.luca1152.gravitybox.utils.kotlin.hitAllScreen
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -41,14 +41,16 @@ class ObjectSelectionSystem(
     var selectedObject: Entity? = null
 
     private val inputAdapter = object : GestureDetector(GestureAdapter()) {
-        var touchedActor: Actor? = null
+        lateinit var touchedActors: List<Actor>
 
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
             if (!moveToolIsSelected())
                 return false
 
-            touchedActor = gameStage.hitScreen(screenX, screenY)
-            if (touchedActor == null) {
+            touchedActors =
+                gameStage.hitAllScreen(screenX, screenY).filter { isMapObject(it) }.distinctBy { it.userObject }
+                    .sortedBy { it.zIndex }
+            if (touchedActors.isEmpty()) {
                 selectedObject?.editorObject?.isSelected = false
                 return false
             }
@@ -58,27 +60,21 @@ class ObjectSelectionSystem(
         }
 
         override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            if (inputEntity.input.isPanning || inputEntity.input.isZooming)
+            if (inputEntity.input.isPanning || inputEntity.input.isZooming) {
                 return true
+            }
 
-            if (!isMapObject(touchedActor)) {
+            if (!touchedActors.any { it.userObject == selectedObject }) {
                 selectedObject?.editorObject?.isSelected = false
-                return true
-            }
-
-            val touchedObject = (touchedActor!!.userObject) as Entity
-            if (selectedObject != null && touchedObject != selectedObject) {
-                selectedObject!!.editorObject.isSelected = false
-            }
-
-            if (touchedObject.editorObject.isSelected) {
+                if (touchedActors.isNotEmpty()) {
+                    (touchedActors.first().userObject as Entity).run {
+                        overlay.overlayLevel = 1
+                        editorObject.isSelected = true
+                    }
+                }
+            } else {
                 if (selectedObject!!.overlay.overlayLevel == 1) selectedObject!!.overlay.overlayLevel = 2
                 else selectedObject!!.overlay.overlayLevel = 1
-            } else {
-                touchedObject.run {
-                    editorObject.isSelected = true
-                    overlay.overlayLevel = 1
-                }
             }
 
             return true
