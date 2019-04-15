@@ -106,5 +106,9 @@
       up: white-button
       down: white-button
     }
+    menu-button: {
+      up: menu-icon
+      down: menu-icon
+    }
   }
 }

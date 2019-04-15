@@ -52,16 +52,26 @@ class PlayScreen(
     private lateinit var levelEntity: Entity
     private val skin = manager.get(Assets.uiSkin)
 
+    private val menuButton = ClickButton(skin, "menu-button").apply {
+        val opacity = .4f
+        setColors(Colors.gameColor.cpy(), Colors.uiDownColor.cpy())
+        color.a = opacity
+        upColor.a = opacity
+        downColor.a = opacity
+        addClickRunnable(Runnable {
+        })
+    }
+
     private val restartButton = ClickButton(skin, "white-button").apply {
         addIcon("restart-icon")
-        setColors(Colors.gameColor, Colors.uiDownColor)
         addClickRunnable(Runnable {
             levelEntity.level.restartLevel = true
         })
     }
 
     private val bottomRow = Table().apply {
-        add(restartButton).expand().right()
+        add(menuButton).expand().padLeft(restartButton.prefWidth)
+        add(restartButton).right()
     }
 
     private val rootTable = Table().apply {
