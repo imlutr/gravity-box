@@ -138,10 +138,10 @@ class LevelEditorScreen(
     ).apply {
         yesClickRunnable = Runnable {
             levelEntity.map.saveMap()
-            game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
+            game.setScreen(TransitionScreen(PlayScreen::class.java))
         }
         noClickRunnable = Runnable {
-            game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
+            game.setScreen(TransitionScreen(PlayScreen::class.java))
         }
     }
     private val backButton = ClickButton(skin, "small-button").apply {
@@ -159,13 +159,13 @@ class LevelEditorScreen(
                     }
                 } else {
                     Runnable {
-                        game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
+                        game.setScreen(TransitionScreen(PlayScreen::class.java))
                     }
                 }
             } else {
                 Runnable {
                     levelEntity.map.saveMap()
-                    game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
+                    game.setScreen(TransitionScreen(PlayScreen::class.java))
                 }
             }
         })

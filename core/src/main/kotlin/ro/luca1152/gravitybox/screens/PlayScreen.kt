@@ -38,7 +38,6 @@ import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.clearScreen
-import ro.luca1152.gravitybox.utils.kotlin.setScreen
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
@@ -57,13 +56,6 @@ class PlayScreen(
 ) : KtxScreen {
     private lateinit var levelEntity: Entity
     private val skin = manager.get(Assets.uiSkin)
-    private val backButton = ClickButton(skin, "small-button").apply {
-        addIcon("back-icon")
-        setColors(Colors.gameColor, Colors.uiDownColor)
-        addClickRunnable(Runnable {
-            game.setScreen(TransitionScreen(LevelSelectorScreen::class.java))
-        })
-    }
 
     private val restartButton = ClickButton(skin, "small-button").apply {
         addIcon("redo-icon")
@@ -99,8 +91,7 @@ class PlayScreen(
     }
 
     private val bottomRow = Table().apply {
-        add(backButton).expand().left()
-        add(helpButton).expand()
+        add(helpButton).expand().left()
         add(restartButton).expand().right()
     }
 
@@ -128,7 +119,7 @@ class PlayScreen(
     }
 
     private fun createGameEntities() {
-        levelEntity = LevelEntity.createEntity(LevelSelectorScreen.chosenLevel).apply {
+        levelEntity = LevelEntity.createEntity(1).apply {
             level.loadMap = true
             level.forceUpdateMap = true
         }
