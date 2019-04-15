@@ -512,8 +512,8 @@
      inkscape:bbox-nodes="true"
      inkscape:bbox-paths="true"
      inkscape:current-layer="layer1"
-     inkscape:cx="7868.2363"
-     inkscape:cy="-739.41119"
+     inkscape:cx="7651.0164"
+     inkscape:cy="-929.69925"
      inkscape:document-units="px"
      inkscape:measure-end="3774.09,-659.996"
      inkscape:measure-start="3774.27,-645.147"
@@ -535,7 +535,7 @@
      inkscape:window-width="1920"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:zoom="0.5">
+     inkscape:zoom="1.4142136">
     <inkscape:grid
        empcolor="#7a1919"
        empopacity="0.25098039"
@@ -3726,6 +3726,7 @@
 
 
 
+
 &gt;&gt;&gt;&gt;&gt;&gt;&gt; destroyable-platforms
   <g
    id="g2001"
@@ -4143,21 +4144,20 @@
      width="190.5" />
 </g>
 <g
-   transform="translate(-1.0088047,355.89555)"
-   id="g2126-6">
+   id="g2104">
   <path
      inkscape:connector-curvature="0"
      id="path2093-7"
-     d="m 2020.2943,152.77111 h 11.8294"
-     style="fill:none;stroke:#549191;stroke-width:0.79374999;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.6" />
+     d="m 2019.2855,508.66666 h 11.8294"
+     style="fill:none;stroke:#549191;stroke-width:1.0583334;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.6" />
   <path
-     style="fill:none;stroke:#549191;stroke-width:0.79374999;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.6"
-     d="m 2020.2943,157.00452 h 11.8294"
+     style="fill:none;stroke:#549191;stroke-width:1.0583334;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.6"
+     d="m 2019.2855,512.90007 h 11.8294"
      id="path2095-5"
      inkscape:connector-curvature="0" />
   <path
-     style="fill:none;stroke:#549191;stroke-width:0.79374999;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.6"
-     d="m 2020.2943,161.23794 h 11.8294"
+     style="fill:none;stroke:#549191;stroke-width:1.0583334;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.6"
+     d="m 2019.2855,517.13349 h 11.8294"
      id="path2095-3-3"
      inkscape:connector-curvature="0" />
 </g>
@@ -4490,5 +4490,8 @@
        sodipodi:open="true" />
   </g>
 </g>
+<g
+   id="g3145-2"
+   transform="translate(-11.345544,36.108352)" />
 </g>
 </svg>

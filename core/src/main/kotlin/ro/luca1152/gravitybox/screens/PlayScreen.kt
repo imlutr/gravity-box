@@ -24,9 +24,7 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.utils.Align
 import ktx.app.KtxScreen
-import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
@@ -39,15 +37,12 @@ import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.clearScreen
 import ro.luca1152.gravitybox.utils.ui.Colors
-import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
-import ro.luca1152.gravitybox.utils.ui.popup.PopUp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(
     manager: AssetManager = Injekt.get(),
-    private val game: MyGame = Injekt.get(),
     private val engine: PooledEngine = Injekt.get(),
     private val gameViewport: GameViewport = Injekt.get(),
     private val world: World = Injekt.get(),
@@ -65,33 +60,7 @@ class PlayScreen(
         })
     }
 
-    private val helpTextPopUp = PopUp(520f, 380f, skin).apply {
-        widget.run {
-            add(DistanceFieldLabel("HOW TO PLAY", skin, "extra-bold", 45f, Colors.gameColor)).row()
-            add(DistanceFieldLabel(
-                """
-                |Tap to shoot.
-                |Shoot at the walls or
-                |floor to move.
-                |The blinking object is the
-                |finish point.
-            """.trimMargin(), skin, "bold", 38f
-            ).apply {
-                setAlignment(Align.center, Align.center)
-            }).expand()
-        }
-    }
-
-    private val helpButton = ClickButton(skin, "small-button").apply {
-        addIcon("help-icon")
-        setColors(Colors.gameColor, Colors.uiDownColor)
-        addClickRunnable(Runnable {
-            uiStage.addActor(helpTextPopUp)
-        })
-    }
-
     private val bottomRow = Table().apply {
-        add(helpButton).expand().left()
         add(restartButton).expand().right()
     }
 
@@ -177,15 +146,10 @@ class PlayScreen(
     }
 
     override fun render(delta: Float) {
-        updateHelpButtonVisibility()
         uiStage.act()
         clearScreen(Colors.bgColor)
         engine.update(delta)
         uiStage.draw()
-    }
-
-    private fun updateHelpButtonVisibility() {
-        helpButton.isVisible = levelEntity.level.levelId == 1
     }
 
     override fun resize(width: Int, height: Int) {

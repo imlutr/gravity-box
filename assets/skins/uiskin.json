@@ -90,10 +90,6 @@
   ButtonStyle: {
     simple-button: {
     }
-    big-button: {
-      up: big-button,
-      down: big-button
-    }
     small-button: {
       up: small-button,
       down: small-button
@@ -105,6 +101,10 @@
     checkbox: {
       up: empty-checkbox,
       down: empty-checkbox
+    }
+    white-button: {
+      up: white-button
+      down: white-button
     }
   }
 }
