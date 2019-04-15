@@ -25,6 +25,7 @@ import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.components.game.scene2D
+import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.lerp
@@ -32,7 +33,10 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 /** Makes the game [gameCamera] follow the [playerEntity]. */
-class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
+class PlayerCameraSystem(
+    private val playScreen: PlayScreen? = null,
+    private val gameCamera: GameCamera = Injekt.get()
+) : EntitySystem() {
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
     private var initialCameraZoom = 1f
@@ -90,11 +94,11 @@ class PlayerCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : En
 
         // Clamp vertical axis
         if (mapHeight < gameCamera.viewportHeight - 5f) {
-            gameCamera.position.y = mapTop - mapHeight / 2f
+            gameCamera.position.y = mapTop - mapHeight / 2f - (playScreen?.shiftCameraYBy ?: 0f)
         } else if (cameraBottom <= mapBottom) {
-            gameCamera.position.y = mapBottom + cameraHalfHeight
+            gameCamera.position.y = mapBottom + cameraHalfHeight - (playScreen?.shiftCameraYBy ?: 0f)
         } else if (cameraTop >= mapTop && mapTop - 2 * cameraHalfHeight > mapBottom) {
-            gameCamera.position.y = mapTop - cameraHalfHeight
+            gameCamera.position.y = mapTop - cameraHalfHeight - (playScreen?.shiftCameraYBy ?: 0f)
         }
 
     }

@@ -48,35 +48,42 @@ button
   index: -1
 checkbox-x-icon
   rotate: false
-  xy: 3626, 722
+  xy: 3614, 640
   size: 30, 30
   orig: 30, 30
   offset: 0, 0
   index: -1
 collectible-point-icon
   rotate: false
-  xy: 3490, 576
+  xy: 3540, 567
   size: 70, 70
   orig: 70, 70
   offset: 0, 0
   index: -1
 destroyable-platform-icon
   rotate: false
-  xy: 3405, 545
+  xy: 3405, 540
   size: 85, 22
   orig: 85, 22
   offset: 0, 0
   index: -1
 empty-checkbox
   rotate: false
-  xy: 3985, 967
+  xy: 3161, 146
   size: 61, 61
   orig: 61, 61
   offset: 0, 0
   index: -1
+empty-white-button
+  rotate: false
+  xy: 3405, 564
+  size: 82, 82
+  orig: 82, 82
+  offset: 0, 0
+  index: -1
 erase-icon
   rotate: false
-  xy: 3294, 451
+  xy: 3541, 712
   size: 76, 84
   orig: 76, 84
   offset: 0, 0
@@ -109,37 +116,65 @@ extra-light-italic
   orig: 1024, 512
   offset: 0, 0
   index: -1
+full-gray-button
+  rotate: false
+  xy: 3080, 211
+  size: 83, 83
+  orig: 83, 83
+  offset: 0, 0
+  index: -1
 full-star
   rotate: false
-  xy: 3492, 546
+  xy: 3195, 55
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
   index: -1
+full-white-button
+  rotate: false
+  xy: 3080, 130
+  size: 79, 79
+  orig: 79, 79
+  offset: 0, 0
+  index: -1
+github-icon
+  rotate: false
+  xy: 3723, 888
+  size: 36, 43
+  orig: 36, 43
+  offset: 0, 0
+  index: -1
 heart-icon
   rotate: false
-  xy: 3912, 965
-  size: 71, 63
-  orig: 71, 63
+  xy: 3408, 503
+  size: 40, 35
+  orig: 40, 35
   offset: 0, 0
   index: -1
 heart-icon-empty
   rotate: false
-  xy: 3541, 721
+  xy: 3837, 953
   size: 83, 75
   orig: 83, 75
   offset: 0, 0
   index: -1
 help-icon
   rotate: false
-  xy: 3562, 568
+  xy: 3489, 568
   size: 49, 78
   orig: 49, 78
   offset: 0, 0
   index: -1
+leaderboards-icon
+  rotate: false
+  xy: 3223, 210
+  size: 40, 37
+  orig: 40, 37
+  offset: 0, 0
+  index: -1
 left-arrow-icon
   rotate: false
-  xy: 3626, 754
+  xy: 4075, 986
   size: 27, 42
   orig: 27, 42
   offset: 0, 0
@@ -167,28 +202,35 @@ menu-icon
   index: -1
 move-icon
   rotate: false
-  xy: 3752, 949
+  xy: 3080, 49
   size: 79, 79
   orig: 79, 79
   offset: 0, 0
   index: -1
 moving-platform-icon
   rotate: false
-  xy: 3674, 910
+  xy: 3080, 26
   size: 85, 21
   orig: 85, 21
   offset: 0, 0
   index: -1
+no-ads-icon
+  rotate: false
+  xy: 3161, 85
+  size: 59, 59
+  orig: 59, 59
+  offset: 0, 0
+  index: -1
 pencil-icon
   rotate: false
-  xy: 3833, 950
+  xy: 3922, 950
   size: 77, 78
   orig: 77, 78
   offset: 0, 0
   index: -1
 platform-icon
   rotate: false
-  xy: 3674, 887
+  xy: 3080, 3
   size: 85, 21
   orig: 85, 21
   offset: 0, 0
@@ -202,7 +244,7 @@ play-button-empty
   index: -1
 play-icon
   rotate: false
-  xy: 3080, 126
+  xy: 3218, 349
   size: 75, 83
   orig: 75, 83
   offset: 0, 0
@@ -218,7 +260,7 @@ pop-up-frame
   index: -1
 redo-icon
   rotate: false
-  xy: 3218, 351
+  xy: 4001, 947
   size: 72, 81
   orig: 72, 81
   offset: 0, 0
@@ -239,21 +281,21 @@ regular-italic
   index: -1
 restart-icon
   rotate: false
-  xy: 4048, 983
+  xy: 3223, 249
   size: 40, 45
   orig: 40, 45
   offset: 0, 0
   index: -1
 right-arrow-icon
   rotate: false
-  xy: 3372, 444
+  xy: 3379, 493
   size: 27, 42
   orig: 27, 42
   offset: 0, 0
   index: -1
 rotating-platform-indicator
   rotate: false
-  xy: 3372, 488
+  xy: 3619, 749
   size: 30, 47
   orig: 30, 47
   offset: 0, 0
@@ -274,7 +316,7 @@ semi-bold-italic
   index: -1
 settings-icon
   rotate: false
-  xy: 3405, 569
+  xy: 3752, 951
   size: 83, 77
   orig: 83, 77
   offset: 0, 0
@@ -297,79 +339,86 @@ small-button-inside
   index: -1
 small-horizontal-arrow
   rotate: false
-  xy: 3185, 183
+  xy: 3492, 542
   size: 38, 24
   orig: 38, 24
   offset: 0, 0
   index: -1
 small-left-arrow-icon
   rotate: false
-  xy: 3271, 311
+  xy: 3614, 672
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
   index: -1
 small-minus-icon
   rotate: false
-  xy: 3912, 955
+  xy: 3295, 359
   size: 42, 8
   orig: 42, 8
   offset: 0, 0
   index: -1
 small-plus-icon
   rotate: false
-  xy: 3223, 254
+  xy: 3224, 166
   size: 42, 42
   orig: 42, 42
   offset: 0, 0
   index: -1
 small-right-arrow-icon
   rotate: false
-  xy: 3157, 169
+  xy: 3379, 453
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
   index: -1
 small-rotate-icon
   rotate: false
-  xy: 3223, 217
+  xy: 3619, 712
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
   index: -1
 small-round-button
   rotate: false
-  xy: 3541, 648
+  xy: 3541, 639
   size: 71, 71
   orig: 71, 71
   offset: 0, 0
   index: -1
 small-round-button-inside
   rotate: false
-  xy: 3218, 298
+  xy: 3218, 296
   size: 51, 51
   orig: 51, 51
   offset: 0, 0
   index: -1
 small-settings-icon
   rotate: false
-  xy: 3080, 6
+  xy: 3450, 503
   size: 38, 35
   orig: 38, 35
   offset: 0, 0
   index: -1
 small-vertical-arrow
   rotate: false
-  xy: 3157, 129
+  xy: 4075, 946
   size: 24, 38
   orig: 24, 38
   offset: 0, 0
   index: -1
 small-x-icon
   rotate: false
-  xy: 3120, 9
+  xy: 3161, 51
   size: 32, 32
   orig: 32, 32
+  offset: 0, 0
+  index: -1
+sounds-and-music-icon
+  rotate: false
+  xy: 3674, 884
+  size: 47, 47
+  orig: 47, 47
   offset: 0, 0
   index: -1
 trash-can-icon
@@ -381,14 +430,14 @@ trash-can-icon
   index: -1
 undo-icon
   rotate: false
-  xy: 3080, 43
+  xy: 3295, 369
   size: 72, 81
   orig: 72, 81
   offset: 0, 0
   index: -1
 white-button
   rotate: false
-  xy: 3080, 211
+  xy: 3294, 452
   size: 83, 83
   orig: 83, 83
   offset: 0, 0

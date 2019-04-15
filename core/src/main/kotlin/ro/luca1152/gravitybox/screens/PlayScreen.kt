@@ -22,10 +22,22 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
+import ktx.graphics.copy
 import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
@@ -34,6 +46,7 @@ import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
+import ro.luca1152.gravitybox.utils.kotlin.UICamera
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.clearScreen
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -50,8 +63,12 @@ class PlayScreen(
     private val uiStage: UIStage = Injekt.get()
 ) : KtxScreen {
     private lateinit var levelEntity: Entity
+    private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, UICamera), Injekt.get())
+    private val padTopBottom = 38f
+    private val padLeftRight = 43f
+    private val bottomGrayStripHeight = 128f
     private val skin = manager.get(Assets.uiSkin)
-
+    var shiftCameraYBy = 0f
     private val menuButton = ClickButton(skin, "menu-button").apply {
         val opacity = .4f
         setColors(Colors.gameColor.cpy(), Colors.uiDownColor.cpy())
@@ -59,26 +76,111 @@ class PlayScreen(
         upColor.a = opacity
         downColor.a = opacity
         addClickRunnable(Runnable {
+            addAction(Actions.sequence(
+                Actions.run {
+                    restartButton.addAction(
+                        Actions.moveTo(uiStage.viewport.worldWidth, 0f, .3f, Interpolation.pow3In)
+                    )
+                },
+                Actions.delay(.2f),
+                Actions.parallel(
+                    Actions.moveTo(x, bottomGrayStripHeight, .3f, Interpolation.pow3In),
+                    Actions.fadeOut(.3f, Interpolation.pow3In),
+                    Actions.run {
+                        showMenuOverlay()
+                    }
+                )
+            ))
         })
     }
-
-    private val restartButton = ClickButton(skin, "white-button").apply {
+    private val restartButton = ClickButton(skin, "color-button").apply {
         addIcon("restart-icon")
         addClickRunnable(Runnable {
             levelEntity.level.restartLevel = true
         })
     }
-
     private val bottomRow = Table().apply {
         add(menuButton).expand().padLeft(restartButton.prefWidth)
         add(restartButton).right()
     }
-
     private val rootTable = Table().apply {
         setFillParent(true)
-        padLeft(43f).padRight(43f)
-        padBottom(38f).padTop(38f)
+        padLeft(padLeftRight).padRight(padLeftRight)
+        padBottom(padTopBottom).padTop(padTopBottom)
         add(bottomRow).expand().fillX().bottom()
+    }
+    private val githubButton = ImageButton(skin, "github-button").apply {
+        addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                println("clicked github")
+            }
+        })
+    }
+    private val topPartImage = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
+        width = 720f
+        height = 1280f
+        color = Color.WHITE.copy(alpha = 0f)
+        addListener(object : ClickListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                return if (bottomGrayStrip.y != 0f) false else super.touchDown(event, x, y, pointer, button)
+            }
+
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                println("clicked top")
+            }
+        })
+    }
+    private val topPart = Table(skin).apply {
+        addActor(topPartImage)
+        add(githubButton).expand().top().right().padRight(-githubButton.prefWidth).padTop(padTopBottom).row()
+    }
+    private val heartButton = ImageButton(skin, "heart-button")
+    private val audioButton = ImageButton(skin, "sounds-and-music-button")
+    private val leaderboardsButton = ImageButton(skin, "leaderboards-button")
+    private val noAdsButton = ImageButton(skin, "no-ads-button")
+    private val bottomGrayStrip = Table(skin).apply {
+        background(TextureRegionDrawable(manager.get(Assets.tileset).findRegion("pixel")))
+        color = skin.getColor("gray")
+        val leftPart = Table(skin).apply {
+            add(heartButton)
+        }
+        val middlePart = Table(skin).apply {
+            add(audioButton).padRight(46f)
+            add(leaderboardsButton)
+        }
+        val rightPart = Table(skin).apply {
+            add(noAdsButton)
+        }
+        add(leftPart).padLeft(padLeftRight).expand().left()
+        add(middlePart).expand()
+        add(rightPart).padRight(padLeftRight).expand().right()
+    }
+    private val rootOverlayTable = Table().apply {
+        setFillParent(true)
+        add(topPart).expand().fill().row()
+        add(bottomGrayStrip).fillX().height(bottomGrayStripHeight).bottom().padBottom(-128f)
+        debug()
+    }
+
+    private fun showMenuOverlay() {
+        githubButton.run {
+            addAction(Actions.moveTo(x - padLeftRight - prefWidth, y, .3f, Interpolation.pow3In))
+        }
+        bottomGrayStrip.run {
+            addAction(
+                Actions.sequence(
+                    Actions.moveTo(0f, 0f, .3f, Interpolation.pow3In)
+                )
+            )
+        }
+        topPartImage.addAction(
+            Actions.parallel(
+                Actions.moveTo(0f, bottomGrayStripHeight, .3f, Interpolation.pow3In),
+                Actions.color(Colors.bgColor.copy(alpha = .4f), .5f, Interpolation.pow3In)
+            )
+        )
     }
 
     override fun show() {
@@ -129,7 +231,7 @@ class PlayScreen(
             addSystem(SelectedObjectColorSystem())
             addSystem(ColorSyncSystem())
             addSystem(CanFinishLevelSystem())
-            addSystem(PlayerCameraSystem())
+            addSystem(PlayerCameraSystem(this@PlayScreen))
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
             addSystem(LevelFinishSystem(restartLevelWhenFinished = false))
@@ -147,19 +249,27 @@ class PlayScreen(
             clear()
             addActor(rootTable)
         }
+        menuOverlayStage.run {
+            clear()
+            addActor(rootOverlayTable)
+        }
         handleUiInput()
     }
 
     private fun handleUiInput() {
         // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
         inputMultiplexer.addProcessor(0, uiStage)
+        inputMultiplexer.addProcessor(1, menuOverlayStage)
     }
 
     override fun render(delta: Float) {
+        shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
+        menuOverlayStage.act()
         clearScreen(Colors.bgColor)
         engine.update(delta)
         uiStage.draw()
+        menuOverlayStage.draw()
     }
 
     override fun resize(width: Int, height: Int) {
