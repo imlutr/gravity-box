@@ -56,16 +56,21 @@ abstract class Button(
     private fun syncColors() {
         // TODO: use downColor and upColor instead of referencing colors directly
         val isToggled = if (userObject == null) false else userObject as Boolean
-        when (isPressed || isToggled) {
-            true -> {
-                color.setWithoutAlpha(Colors.uiDownColor)
-                icon?.color?.setWithoutAlpha(Colors.uiDownColor)
-                opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
-            }
-            false -> {
-                color.setWithoutAlpha(Colors.gameColor)
-                icon?.color?.setWithoutAlpha(Colors.gameColor)
-                opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
+        if (styleName == "white-button") {
+            color.setWithoutAlpha(Colors.gameColor)
+            icon?.color?.setWithoutAlpha(Colors.bgColor)
+        } else {
+            when (isPressed || isToggled) {
+                true -> {
+                    color.setWithoutAlpha(Colors.uiDownColor)
+                    icon?.color?.setWithoutAlpha(Colors.uiDownColor)
+                    opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
+                }
+                false -> {
+                    color.setWithoutAlpha(Colors.gameColor)
+                    icon?.color?.setWithoutAlpha(Colors.gameColor)
+                    opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
+                }
             }
         }
     }

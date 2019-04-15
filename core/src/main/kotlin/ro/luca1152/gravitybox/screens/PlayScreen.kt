@@ -52,8 +52,8 @@ class PlayScreen(
     private lateinit var levelEntity: Entity
     private val skin = manager.get(Assets.uiSkin)
 
-    private val restartButton = ClickButton(skin, "small-button").apply {
-        addIcon("redo-icon")
+    private val restartButton = ClickButton(skin, "white-button").apply {
+        addIcon("restart-icon")
         setColors(Colors.gameColor, Colors.uiDownColor)
         addClickRunnable(Runnable {
             levelEntity.level.restartLevel = true
@@ -66,8 +66,8 @@ class PlayScreen(
 
     private val rootTable = Table().apply {
         setFillParent(true)
-        padLeft(62f).padRight(62f)
-        padBottom(110f).padTop(110f)
+        padLeft(43f).padRight(43f)
+        padBottom(38f).padTop(38f)
         add(bottomRow).expand().fillX().bottom()
     }
 
