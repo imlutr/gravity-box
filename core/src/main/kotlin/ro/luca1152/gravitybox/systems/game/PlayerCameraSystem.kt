@@ -52,7 +52,11 @@ class PlayerCameraSystem(
     }
 
     private fun instantlyCenterCameraOnPlayer() {
-        gameCamera.position.set(playerEntity.scene2D.centerX, playerEntity.scene2D.centerY, 0f)
+        gameCamera.position.set(
+            playerEntity.scene2D.centerX,
+            playerEntity.scene2D.centerY - (playScreen?.shiftCameraYBy ?: 0f),
+            0f
+        )
     }
 
     override fun update(deltaTime: Float) {
@@ -63,7 +67,7 @@ class PlayerCameraSystem(
     private fun smoothlyFollowPlayer() {
         gameCamera.position.lerp(
             playerEntity.scene2D.centerX,
-            playerEntity.scene2D.centerY,
+            playerEntity.scene2D.centerY - (playScreen?.shiftCameraYBy ?: 0f),
             progress = .15f
         )
     }
@@ -93,11 +97,13 @@ class PlayerCameraSystem(
         }
 
         // Clamp vertical axis
-        if (mapHeight < gameCamera.viewportHeight - 5f) {
+        if (mapHeight + (playScreen?.shiftCameraYBy ?: 0f) < gameCamera.viewportHeight - 5f) {
             gameCamera.position.y = mapTop - mapHeight / 2f - (playScreen?.shiftCameraYBy ?: 0f)
-        } else if (cameraBottom <= mapBottom) {
+        } else if (cameraBottom + (playScreen?.shiftCameraYBy ?: 0f) <= mapBottom) {
             gameCamera.position.y = mapBottom + cameraHalfHeight - (playScreen?.shiftCameraYBy ?: 0f)
-        } else if (cameraTop >= mapTop && mapTop - 2 * cameraHalfHeight > mapBottom) {
+        } else if (cameraTop + (playScreen?.shiftCameraYBy
+                ?: 0f) >= mapTop && mapTop - 2 * cameraHalfHeight > mapBottom
+        ) {
             gameCamera.position.y = mapTop - cameraHalfHeight - (playScreen?.shiftCameraYBy ?: 0f)
         }
 
