@@ -62,6 +62,8 @@ object Colors {
         bgColor = bgColor.lerp(if (useDarkTheme) DarkTheme.game20 else LightTheme.game91, step)
         gameColor = gameColor.lerp(if (useDarkTheme) DarkTheme.game95 else LightTheme.game57, step)
         uiDownColor = uiDownColor.lerp(if (useDarkTheme) LightTheme.game29 else LightTheme.game29, step)
+        uiGray.set(LightTheme.ui54)
+        uiWhite.set(LightTheme.ui95)
     }
 
     private fun updateNamedColors() {

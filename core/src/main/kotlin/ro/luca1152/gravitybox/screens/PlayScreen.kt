@@ -149,15 +149,22 @@ class PlayScreen(
         addIcon("no-ads-icon")
     }
     private val bottomGrayStrip = Table(skin).apply {
-        val grayImage = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
-            width = uiStage.viewport.worldWidth
-            height = bottomGrayStripHeight
-            color = Colors.uiGray
-            addListener(object : ClickListener() {
-                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                    return true
-                }
-            })
+        val grayImage = object : Image(manager.get(Assets.tileset).findRegion("pixel")) {
+            init {
+                width = uiStage.viewport.worldWidth
+                height = bottomGrayStripHeight
+                color = Colors.uiGray
+                addListener(object : ClickListener() {
+                    override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                        return true
+                    }
+                })
+            }
+
+            override fun act(delta: Float) {
+                super.act(delta)
+                color = Colors.uiGray
+            }
         }
         addActor(grayImage)
         val leftPart = Table(skin).apply {
