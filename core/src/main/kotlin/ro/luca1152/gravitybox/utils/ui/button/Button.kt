@@ -56,18 +56,27 @@ abstract class Button(
     private fun syncColors() {
         // TODO: use downColor and upColor instead of referencing colors directly
         val isToggled = if (userObject == null) false else userObject as Boolean
-        if (styleName == "color-button") {
-            icon?.color?.setWithoutAlpha(Colors.bgColor)
-            when (isPressed || isToggled) {
-                true -> {
-                    color.setWithoutAlpha(Colors.uiDownColor)
+        when (styleName) {
+            "color-round-button" -> {
+                when (isPressed || isToggled) {
+                    true -> color.setWithoutAlpha(Colors.uiDownColor)
+                    false -> color.setWithoutAlpha(Colors.gameColor)
                 }
-                false -> {
-                    color.setWithoutAlpha(Colors.gameColor)
-                }
+                icon?.color?.setWithoutAlpha(Colors.bgColor)
             }
-        } else {
-            when (isPressed || isToggled) {
+            "empty-round-button" -> {
+                color.set(Colors.uiWhite)
+                icon?.color?.set(Colors.uiWhite)
+            }
+            "white-full-round-button" -> {
+                color.set(Colors.uiWhite)
+                icon?.color?.set(Colors.uiGray)
+            }
+            "gray-full-round-button" -> {
+                color.set(Colors.uiGray)
+                icon?.color?.set(Colors.uiWhite)
+            }
+            else -> when (isPressed || isToggled) {
                 true -> {
                     color.setWithoutAlpha(Colors.uiDownColor)
                     icon?.color?.setWithoutAlpha(Colors.uiDownColor)

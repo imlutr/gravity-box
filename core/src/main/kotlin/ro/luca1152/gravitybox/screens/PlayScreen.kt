@@ -29,7 +29,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -93,7 +92,7 @@ class PlayScreen(
             ))
         })
     }
-    private val restartButton = ClickButton(skin, "color-button").apply {
+    private val restartButton = ClickButton(skin, "color-round-button").apply {
         addIcon("restart-icon")
         addClickRunnable(Runnable {
             levelEntity.level.restartLevel = true
@@ -109,7 +108,8 @@ class PlayScreen(
         padBottom(padTopBottom).padTop(padTopBottom)
         add(bottomRow).expand().fillX().bottom()
     }
-    private val githubButton = ImageButton(skin, "github-button").apply {
+    private val githubButton = ClickButton(skin, "gray-full-round-button").apply {
+        addIcon("github-icon")
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
@@ -136,13 +136,21 @@ class PlayScreen(
         addActor(topPartImage)
         add(githubButton).expand().top().right().padRight(-githubButton.prefWidth).padTop(padTopBottom).row()
     }
-    private val heartButton = ImageButton(skin, "heart-button")
-    private val audioButton = ImageButton(skin, "sounds-and-music-button")
-    private val leaderboardsButton = ImageButton(skin, "leaderboards-button")
-    private val noAdsButton = ImageButton(skin, "no-ads-button")
+    private val heartButton = ClickButton(skin, "empty-round-button").apply {
+        addIcon("heart-icon")
+    }
+    private val audioButton = ClickButton(skin, "white-full-round-button").apply {
+        addIcon("sounds-and-music-icon")
+    }
+    private val leaderboardsButton = ClickButton(skin, "empty-round-button").apply {
+        addIcon("leaderboards-icon")
+    }
+    private val noAdsButton = ClickButton(skin, "empty-round-button").apply {
+        addIcon("no-ads-icon")
+    }
     private val bottomGrayStrip = Table(skin).apply {
         background(TextureRegionDrawable(manager.get(Assets.tileset).findRegion("pixel")))
-        color = skin.getColor("gray")
+        color = Colors.uiGray
         val leftPart = Table(skin).apply {
             add(heartButton)
         }

@@ -105,57 +105,25 @@
       up: empty-checkbox
       down: empty-checkbox
     }
-    color-button: {
-      up: white-button
-      down: white-button
+    color-round-button: {
+      up: full-round-button
+      down: full-round-button
+    }
+    white-full-round-button: {
+      up: full-round-button
+      down: full-round-button
+    }
+    gray-full-round-button: {
+      up: full-round-button
+      down: full-round-button
+    }
+    empty-round-button: {
+      up: empty-round-button
+      down: empty-round-button
     }
     menu-button: {
       up: menu-icon
       down: menu-icon
-    }
-    full-gray-button: {
-      up: full-gray-button
-      down: full-gray-button
-    }
-    full-white-button: {
-      up: full-white-button
-      down: full-white-button
-    }
-    empty-white-button: {
-      up: empty-white-button
-      down: empty-white-button
-    }
-  }
-  ImageButtonStyle: {
-    github-button: {
-      up: full-gray-button
-      down: full-gray-button
-      imageUp: github-icon
-      imageDown: github-icon
-    }
-    heart-button: {
-      up: empty-white-button
-      down: empty-white-button
-      imageUp: heart-icon
-      imageDown: heart-icon
-    }
-    sounds-and-music-button: {
-      up: full-white-button
-      down: full-white-button
-      imageUp: sounds-and-music-icon
-      imageDown: sounds-and-music-icon
-    }
-    leaderboards-button: {
-      up: empty-white-button
-      down: empty-white-button
-      imageUp: leaderboards-icon
-      imageDown: leaderboards-icon
-    }
-    no-ads-button: {
-      up: empty-white-button
-      down: empty-white-button
-      imageUp: no-ads-icon
-      imageDown: no-ads-icon
     }
   }
 }
