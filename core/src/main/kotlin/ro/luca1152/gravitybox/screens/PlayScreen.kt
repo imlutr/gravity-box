@@ -44,10 +44,7 @@ import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
-import ro.luca1152.gravitybox.utils.kotlin.GameViewport
-import ro.luca1152.gravitybox.utils.kotlin.UICamera
-import ro.luca1152.gravitybox.utils.kotlin.UIStage
-import ro.luca1152.gravitybox.utils.kotlin.clearScreen
+import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
@@ -82,6 +79,7 @@ class PlayScreen(
                         Actions.moveTo(uiStage.viewport.worldWidth, 0f, .2f, Interpolation.pow3In)
                     )
                 },
+                Actions.delay(.1f),
                 Actions.parallel(
                     Actions.moveTo(x, bottomGrayStripHeight, .2f, Interpolation.pow3In),
                     Actions.fadeOut(.2f, Interpolation.pow3In),
@@ -117,20 +115,29 @@ class PlayScreen(
             }
         })
     }
-    private val topPartImage = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
-        width = 720f
-        height = 1280f
-        color = Color.WHITE.copy(alpha = 0f)
-        addListener(object : ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                return if (bottomGrayStrip.y != 0f) false else super.touchDown(event, x, y, pointer, button)
-            }
+    private val topPartImage = object : Image(manager.get(Assets.tileset).findRegion("pixel")) {
+        init {
+            width = 720f
+            height = 1280f
+            color = Color.WHITE.copy(alpha = 0f)
+            addListener(object : ClickListener() {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    return if (bottomGrayStrip.y != 0f) false else super.touchDown(event, x, y, pointer, button)
+                }
 
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
-                hideMenuOverlay()
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    hideMenuOverlay()
+                }
+            })
+        }
+
+        override fun act(delta: Float) {
+            super.act(delta)
+            if (color.a != 0f && !hasActions()) {
+                color.setWithoutAlpha(Colors.bgColor)
             }
-        })
+        }
     }
     private val topPart = Table(skin).apply {
         addActor(topPartImage)
