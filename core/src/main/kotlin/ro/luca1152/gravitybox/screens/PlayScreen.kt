@@ -32,7 +32,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.graphics.copy
@@ -150,8 +149,17 @@ class PlayScreen(
         addIcon("no-ads-icon")
     }
     private val bottomGrayStrip = Table(skin).apply {
-        background(TextureRegionDrawable(manager.get(Assets.tileset).findRegion("pixel")))
-        color = Colors.uiGray
+        val grayImage = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
+            width = uiStage.viewport.worldWidth
+            height = bottomGrayStripHeight
+            color = Colors.uiGray
+            addListener(object : ClickListener() {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    return true
+                }
+            })
+        }
+        addActor(grayImage)
         val leftPart = Table(skin).apply {
             add(heartButton)
         }
