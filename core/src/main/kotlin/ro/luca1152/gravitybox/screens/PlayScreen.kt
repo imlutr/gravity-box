@@ -46,6 +46,7 @@ import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
+import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -139,9 +140,21 @@ class PlayScreen(
             }
         }
     }
+    private val leftButton = ClickButton(skin, "left-button").apply {
+    }
+    private val rightButton = ClickButton(skin, "right-button").apply {
+    }
+    private val levelLabel = DistanceFieldLabel("#1", skin, "semi-bold", 37f, Colors.gameColor)
+    private val leftLevelRightTable = Table(skin).apply {
+        add(leftButton).padRight(102f)
+        add(levelLabel).padRight(102f)
+        add(rightButton)
+        addAction(Actions.fadeOut(0f))
+    }
     private val topPart = Table(skin).apply {
         addActor(topPartImage)
         add(githubButton).expand().top().right().padRight(-githubButton.prefWidth).padTop(padTopBottom).row()
+        add(leftLevelRightTable).expand().bottom()
     }
     private val heartButton = ClickButton(skin, "empty-round-button").apply {
         addIcon("heart-icon")
@@ -208,6 +221,16 @@ class PlayScreen(
                 Actions.color(Colors.bgColor.copy(alpha = .4f), .3f)
             )
         )
+        leftLevelRightTable.run {
+            addAction(
+                Actions.sequence(
+                    Actions.parallel(
+                        Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
+                        Actions.fadeIn(.2f, Interpolation.pow3In)
+                    )
+                )
+            )
+        }
     }
 
     private fun hideMenuOverlay() {
@@ -248,13 +271,24 @@ class PlayScreen(
                 Actions.delay(.1f),
                 Actions.parallel(
                     Actions.moveTo(menuButton.x, 0f, .2f, Interpolation.pow3In),
-                    Actions.fadeIn(.3f, Interpolation.pow3In)
+                    Actions.fadeIn(.2f, Interpolation.pow3In)
                 ),
                 Actions.run {
                     menuButton.touchable = Touchable.enabled
                 }
             )
         )
+        leftLevelRightTable.run {
+            addAction(
+                Actions.sequence(
+                    Actions.delay(.1f),
+                    Actions.parallel(
+                        Actions.moveTo(x, 0f, .2f, Interpolation.pow3In),
+                        Actions.fadeOut(.2f, Interpolation.pow3In)
+                    )
+                )
+            )
+        }
     }
 
     override fun show() {

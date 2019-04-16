@@ -172,6 +172,13 @@ left-arrow-icon
   orig: 27, 42
   offset: 0, 0
   index: -1
+left-button
+  rotate: false
+  xy: 3265, 254
+  size: 19, 35
+  orig: 19, 35
+  offset: 0, 0
+  index: -1
 light
   rotate: false
   xy: 2054, 1031
@@ -284,6 +291,13 @@ right-arrow-icon
   xy: 3153, 2
   size: 27, 42
   orig: 27, 42
+  offset: 0, 0
+  index: -1
+right-button
+  rotate: false
+  xy: 3573, 548
+  size: 19, 35
+  orig: 19, 35
   offset: 0, 0
   index: -1
 rotating-platform-indicator

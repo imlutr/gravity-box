@@ -125,5 +125,13 @@
       up: menu-icon
       down: menu-icon
     }
+    left-button: {
+      up: left-button
+      down: left-button
+    }
+    right-button: {
+      up: right-button
+      down: right-button
+    }
   }
 }
