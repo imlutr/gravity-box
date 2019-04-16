@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -77,6 +78,7 @@ class PlayScreen(
         addClickRunnable(Runnable {
             addAction(Actions.sequence(
                 Actions.run {
+                    touchable = Touchable.disabled
                     restartButton.addAction(
                         Actions.moveTo(uiStage.viewport.worldWidth, 0f, .3f, Interpolation.pow3In)
                     )
@@ -128,7 +130,7 @@ class PlayScreen(
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                println("clicked top")
+                hideMenuOverlay()
             }
         })
     }
@@ -169,7 +171,6 @@ class PlayScreen(
         setFillParent(true)
         add(topPart).expand().fill().row()
         add(bottomGrayStrip).fillX().height(bottomGrayStripHeight).bottom().padBottom(-128f)
-        debug()
     }
 
     private fun showMenuOverlay() {
@@ -177,16 +178,60 @@ class PlayScreen(
             addAction(Actions.moveTo(x - padLeftRight - prefWidth, y, .3f, Interpolation.pow3In))
         }
         bottomGrayStrip.run {
-            addAction(
-                Actions.sequence(
-                    Actions.moveTo(0f, 0f, .3f, Interpolation.pow3In)
-                )
-            )
+            addAction(Actions.moveTo(0f, 0f, .3f, Interpolation.pow3In))
         }
+        topPartImage.touchable = Touchable.enabled
         topPartImage.addAction(
             Actions.parallel(
                 Actions.moveTo(0f, bottomGrayStripHeight, .3f, Interpolation.pow3In),
-                Actions.color(Colors.bgColor.copy(alpha = .4f), .5f, Interpolation.pow3In)
+                Actions.color(Colors.bgColor.copy(alpha = .4f), .4f, Interpolation.pow3In)
+            )
+        )
+    }
+
+    private fun hideMenuOverlay() {
+        githubButton.run {
+            addAction(Actions.moveTo(x + padLeftRight + prefWidth, y, .3f, Interpolation.pow3In))
+        }
+        bottomGrayStrip.run {
+            addAction(
+                Actions.sequence(
+                    Actions.delay(.3f),
+                    Actions.moveTo(0f, -bottomGrayStripHeight, .3f, Interpolation.pow3In)
+                )
+            )
+        }
+        topPartImage.touchable = Touchable.disabled
+        topPartImage.addAction(
+            Actions.sequence(
+                Actions.delay(.3f),
+                Actions.parallel(
+                    Actions.moveTo(0f, 0f, .3f, Interpolation.pow3In),
+                    Actions.color(Color.WHITE.copy(alpha = 0f), .5f, Interpolation.pow3In)
+                )
+            )
+        )
+        restartButton.run {
+            addAction(
+                Actions.sequence(
+                    Actions.delay(.3f),
+                    Actions.moveTo(
+                        uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth,
+                        y, .3f, Interpolation.pow3In
+                    )
+                )
+            )
+        }
+        menuButton.addAction(
+            Actions.sequence(
+                Actions.delay(.3f),
+                Actions.parallel(
+                    Actions.moveTo(menuButton.x, 0f, .3f, Interpolation.pow3In),
+                    Actions.fadeIn(.3f, Interpolation.pow3In)
+                ),
+                Actions.run {
+                    menuButton.touchable = Touchable.enabled
+                }
             )
         )
     }
