@@ -24,6 +24,7 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -37,6 +38,7 @@ import ktx.app.KtxScreen
 import ktx.graphics.copy
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
@@ -142,8 +144,32 @@ class PlayScreen(
         }
     }
     private val leftButton = ClickButton(skin, "left-button").apply {
+        addClickRunnable(Runnable {
+            // The button is touchable
+            if (color.a == 1f) {
+                levelEntity.level.run {
+                    levelId--
+                    loadMap = true
+                    forceUpdateMap = true
+                }
+                levelEntity.map.updateRoundedPlatforms = true
+                Colors.hue = MathUtils.random(0, 360)
+            }
+        })
     }
     private val rightButton = ClickButton(skin, "right-button").apply {
+        addClickRunnable(Runnable {
+            // The button is touchable
+            if (color.a == 1f) {
+                levelEntity.level.run {
+                    levelId++
+                    loadMap = true
+                    forceUpdateMap = true
+                }
+                levelEntity.map.updateRoundedPlatforms = true
+                Colors.hue = MathUtils.random(0, 360)
+            }
+        })
     }
     private val levelLabel = DistanceFieldLabel("#1", skin, "semi-bold", 37f, Colors.gameColor)
     private val leftLevelRightTable = Table(skin).apply {
@@ -373,6 +399,7 @@ class PlayScreen(
 
     override fun render(delta: Float) {
         updateLeftRightButtons()
+        updateLevelLabel()
         shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
         menuOverlayStage.act()
@@ -393,6 +420,16 @@ class PlayScreen(
             makeButtonUntouchable(rightButton)
         } else {
             makeButtonTouchable(rightButton)
+        }
+    }
+
+    private fun updateLevelLabel() {
+        if (!levelLabel.textEquals("#${levelEntity.level.levelId}")) {
+            levelLabel.run {
+                setText("#${levelEntity.level.levelId}")
+                layout()
+            }
+            rootOverlayTable.setLayoutEnabled(false)
         }
     }
 
