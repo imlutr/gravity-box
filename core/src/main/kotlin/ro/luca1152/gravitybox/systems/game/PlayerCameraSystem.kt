@@ -60,7 +60,12 @@ class PlayerCameraSystem(
     }
 
     override fun update(deltaTime: Float) {
-        smoothlyFollowPlayer()
+        if (levelEntity.map.forceCenterCameraOnPlayer) {
+            instantlyCenterCameraOnPlayer()
+            levelEntity.map.forceCenterCameraOnPlayer = false
+        } else {
+            smoothlyFollowPlayer()
+        }
         keepCameraWithinBounds()
     }
 

@@ -152,7 +152,10 @@ class PlayScreen(
                     loadMap = true
                     forceUpdateMap = true
                 }
-                levelEntity.map.updateRoundedPlatforms = true
+                levelEntity.map.run {
+                    updateRoundedPlatforms = true
+                    forceCenterCameraOnPlayer = true
+                }
                 Colors.hue = MathUtils.random(0, 360)
             }
         })
@@ -166,7 +169,10 @@ class PlayScreen(
                     loadMap = true
                     forceUpdateMap = true
                 }
-                levelEntity.map.updateRoundedPlatforms = true
+                levelEntity.map.run {
+                    updateRoundedPlatforms = true
+                    forceCenterCameraOnPlayer = true
+                }
                 Colors.hue = MathUtils.random(0, 360)
             }
         })
