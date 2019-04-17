@@ -35,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.graphics.copy
+import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.entities.game.FinishEntity
@@ -371,6 +372,7 @@ class PlayScreen(
     }
 
     override fun render(delta: Float) {
+        updateLeftRightButtons()
         shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
         menuOverlayStage.act()
@@ -378,6 +380,37 @@ class PlayScreen(
         engine.update(delta)
         uiStage.draw()
         menuOverlayStage.draw()
+    }
+
+    private fun updateLeftRightButtons() {
+        if (levelEntity.level.levelId == 1) {
+            makeButtonUntouchable(leftButton)
+        } else {
+            makeButtonTouchable(leftButton)
+        }
+
+        if (levelEntity.level.levelId == MyGame.LEVELS_NUMBER) {
+            makeButtonUntouchable(rightButton)
+        } else {
+            makeButtonTouchable(rightButton)
+        }
+    }
+
+    private fun makeButtonUntouchable(button: ClickButton) {
+        button.run {
+            syncColorsWithColorScheme = false
+            color.set(Colors.gameColor)
+            color.a = .3f
+            downColor = color
+            upColor = color
+        }
+    }
+
+    private fun makeButtonTouchable(button: ClickButton) {
+        button.run {
+            syncColorsWithColorScheme = true
+            color.a = 1f
+        }
     }
 
     override fun resize(width: Int, height: Int) {
