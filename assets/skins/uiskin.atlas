@@ -125,7 +125,7 @@ full-round-button
   index: -1
 full-star
   rotate: false
-  xy: 3541, 555
+  xy: 3307, 304
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -139,7 +139,7 @@ github-icon
   index: -1
 heart-icon
   rotate: false
-  xy: 3292, 347
+  xy: 3613, 681
   size: 40, 35
   orig: 40, 35
   offset: 0, 0
@@ -160,7 +160,7 @@ help-icon
   index: -1
 leaderboards-icon
   rotate: false
-  xy: 3334, 345
+  xy: 3378, 454
   size: 40, 37
   orig: 40, 37
   offset: 0, 0
@@ -174,9 +174,9 @@ left-arrow-icon
   index: -1
 left-button
   rotate: false
-  xy: 3265, 254
-  size: 19, 35
-  orig: 19, 35
+  xy: 3216, 229
+  size: 50, 60
+  orig: 50, 60
   offset: 0, 0
   index: -1
 light
@@ -209,7 +209,7 @@ move-icon
   index: -1
 moving-platform-icon
   rotate: false
-  xy: 3292, 407
+  xy: 3541, 562
   size: 85, 21
   orig: 85, 21
   offset: 0, 0
@@ -230,7 +230,7 @@ pencil-icon
   index: -1
 platform-icon
   rotate: false
-  xy: 3292, 384
+  xy: 3990, 935
   size: 85, 21
   orig: 85, 21
   offset: 0, 0
@@ -295,9 +295,9 @@ right-arrow-icon
   index: -1
 right-button
   rotate: false
-  xy: 3573, 548
-  size: 19, 35
-  orig: 19, 35
+  xy: 3292, 368
+  size: 50, 60
+  orig: 50, 60
   offset: 0, 0
   index: -1
 rotating-platform-indicator
@@ -360,7 +360,7 @@ small-left-arrow-icon
   index: -1
 small-minus-icon
   rotate: false
-  xy: 3990, 948
+  xy: 3216, 219
   size: 42, 8
   orig: 42, 8
   offset: 0, 0
@@ -374,14 +374,14 @@ small-plus-icon
   index: -1
 small-right-arrow-icon
   rotate: false
-  xy: 3379, 382
+  xy: 3279, 312
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
   index: -1
 small-rotate-icon
   rotate: false
-  xy: 3216, 205
+  xy: 3604, 607
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
@@ -402,28 +402,28 @@ small-round-button-inside
   index: -1
 small-settings-icon
   rotate: false
-  xy: 3378, 456
+  xy: 3613, 644
   size: 38, 35
   orig: 38, 35
   offset: 0, 0
   index: -1
 small-vertical-arrow
   rotate: false
-  xy: 3376, 342
+  xy: 3268, 251
   size: 24, 38
   orig: 24, 38
   offset: 0, 0
   index: -1
 small-x-icon
   rotate: false
-  xy: 3381, 422
+  xy: 3307, 334
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 sounds-and-music-icon
   rotate: false
-  xy: 3216, 242
+  xy: 3344, 381
   size: 47, 47
   orig: 47, 47
   offset: 0, 0
