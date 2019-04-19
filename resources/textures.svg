@@ -512,8 +512,8 @@
      inkscape:bbox-nodes="true"
      inkscape:bbox-paths="true"
      inkscape:current-layer="layer1"
-     inkscape:cx="10626.126"
-     inkscape:cy="-253.86328"
+     inkscape:cx="10099.992"
+     inkscape:cy="-638.80017"
      inkscape:document-units="px"
      inkscape:measure-end="3774.09,-659.996"
      inkscape:measure-start="3774.27,-645.147"
@@ -535,7 +535,7 @@
      inkscape:window-width="1920"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:zoom="0.35355339">
+     inkscape:zoom="1.4142136">
     <inkscape:grid
        empcolor="#7a1919"
        empopacity="0.25098039"
@@ -4730,56 +4730,48 @@
      y="353.5495"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;line-height:9.26041698px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;word-spacing:0px;text-anchor:middle;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332"
      id="tspan6358">visibility would really help!</tspan></text>
-<g
-   id="g6990"
-   transform="translate(-7.6342773e-5,40.725964)">
-  <rect
-     ry="9.6293926"
-     y="323.4075"
-     x="2400.2864"
-     height="19.258785"
-     width="130.36125"
-     id="rect6362"
-     style="opacity:1;vector-effect:none;fill:#0081d5;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal" />
-  <text
-     inkscape:transform-center-y="1.3229167"
-     inkscape:transform-center-x="5.0270835"
-     id="text6893"
-     y="335.55148"
+<rect
+   style="opacity:1;vector-effect:none;fill:#0081d5;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal"
+   id="rect6362"
+   width="130.36125"
+   height="19.258785"
+   x="2400.2864"
+   y="364.13345"
+   ry="9.6293926" />
+<text
+   xml:space="preserve"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   x="2465.6292"
+   y="376.27744"
+   id="text6893"
+   inkscape:transform-center-x="5.0270835"
+   inkscape:transform-center-y="1.3229167"><tspan
+     sodipodi:role="line"
+     id="tspan6891"
      x="2465.6292"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     xml:space="preserve"><tspan
-       style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-       y="335.55148"
-       x="2465.6292"
-       id="tspan6891"
-       sodipodi:role="line">Visit repository on GitHub</tspan></text>
-</g>
-<g
-   id="g6985"
-   transform="translate(-0.28059392,43.965363)">
-  <rect
-     ry="9.6293926"
-     y="347.89355"
-     x="2400.5669"
-     height="19.258785"
-     width="130.36125"
-     id="rect6362-3"
-     style="opacity:1;vector-effect:none;fill:#637484;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal" />
-  <text
-     inkscape:transform-center-y="1.3229167"
-     inkscape:transform-center-x="5.0270835"
-     id="text6893-6"
-     y="360.02802"
-     x="2465.3118"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     xml:space="preserve"><tspan
-       style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-       y="360.02802"
-       x="2465.3118"
-       id="tspan6891-7"
-       sodipodi:role="line">Maybe later</tspan></text>
-</g>
+     y="376.27744"
+     style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Visit repository on GitHub</tspan></text>
+<rect
+   style="opacity:1;vector-effect:none;fill:#637484;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal"
+   id="rect6362-3"
+   width="130.36125"
+   height="19.258785"
+   x="2400.2864"
+   y="391.85892"
+   ry="9.6293926" />
+<text
+   xml:space="preserve"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   x="2465.0312"
+   y="403.99338"
+   id="text6893-6"
+   inkscape:transform-center-x="5.0270835"
+   inkscape:transform-center-y="1.3229167"><tspan
+     sodipodi:role="line"
+     id="tspan6891-7"
+     x="2465.0312"
+     y="403.99338"
+     style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Maybe later</tspan></text>
 <g
    transform="translate(440.26651,1.24e-5)"
    id="g2315-5">
@@ -5048,196 +5040,176 @@
      x="2684.8584"
      id="tspan6891-7-9"
      sodipodi:role="line">No Thanks :(</tspan></text>
-<g
-   id="g8129"
-   transform="translate(0.9457042,3.5235251)">
-  <rect
-     style="opacity:1;vector-effect:none;fill:#00bed6;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal"
-     id="rect6362-3-6-6-9"
-     width="130.36125"
-     height="19.258785"
-     x="2619.1677"
-     y="321.79492"
-     ry="9.6293926" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     x="2645.0188"
-     y="334.78189"
-     id="text6893-6-8-6-5"
-     inkscape:transform-center-x="5.0270835"
-     inkscape:transform-center-y="1.3229167"><tspan
-       sodipodi:role="line"
-       id="tspan6891-7-9-4-0"
-       x="2645.0188"
-       y="334.78189"
-       style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Coffee</tspan></text>
-  <text
-     inkscape:transform-center-y="1.3229167"
-     inkscape:transform-center-x="5.0270835"
-     id="text7892"
-     y="334.78189"
-     x="2725.3711"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     xml:space="preserve"><tspan
-       style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-       y="334.78189"
-       x="2725.3711"
-       id="tspan7890"
-       sodipodi:role="line">$1.99</tspan></text>
-</g>
-<g
-   id="g8102"
-   transform="translate(0.94570412,6.1790918)">
-  <rect
-     style="opacity:1;vector-effect:none;fill:#cf00d6;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal"
-     id="rect6362-3-6-6-9-1"
-     width="130.36125"
-     height="19.258785"
-     x="2619.1677"
-     y="346.86481"
-     ry="9.6293926" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     x="2631.3389"
-     y="359.85175"
-     id="text6893-6-8-6-5-7"
-     inkscape:transform-center-x="5.0270835"
-     inkscape:transform-center-y="1.3229167"><tspan
-       sodipodi:role="line"
-       id="tspan6891-7-9-4-0-2"
-       x="2631.3389"
-       y="359.85175"
-       style="font-size:9.52499866px;text-align:start;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Ice Cream (best)</tspan></text>
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     x="2725.3711"
-     y="359.85175"
-     id="text6893-6-8-6-5-4-7"
-     inkscape:transform-center-x="5.0270835"
-     inkscape:transform-center-y="1.3229167"><tspan
-       sodipodi:role="line"
-       id="tspan6891-7-9-4-0-8-2"
-       x="2725.3711"
-       y="359.85175"
-       style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">$4.99</tspan></text>
-</g>
-<g
-   id="g8095"
-   transform="translate(0.94570412,5.4670742)">
-  <rect
-     style="opacity:1;vector-effect:none;fill:#18b2e6;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal"
-     id="rect6362-3-6-6-9-1-1"
-     width="130.36125"
-     height="19.258785"
-     x="2619.1677"
-     y="375.30228"
-     ry="9.6293926" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     x="2631.3389"
-     y="388.28922"
-     id="text6893-6-8-6-5-7-0"
-     inkscape:transform-center-x="5.0270835"
-     inkscape:transform-center-y="1.3229167"><tspan
-       sodipodi:role="line"
-       id="tspan6891-7-9-4-0-2-6"
-       x="2631.3389"
-       y="388.28922"
-       style="font-size:9.52499866px;text-align:start;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Muffin</tspan></text>
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     x="2725.3711"
-     y="388.28922"
-     id="text6893-6-8-6-5-4-7-1"
-     inkscape:transform-center-x="5.0270835"
-     inkscape:transform-center-y="1.3229167"><tspan
-       sodipodi:role="line"
-       id="tspan6891-7-9-4-0-8-2-5"
-       x="2725.3711"
-       y="388.28922"
-       style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">$7.49</tspan></text>
-</g>
-<g
-   id="g8088"
-   transform="translate(0.94570412,6.6259368)">
-  <rect
-     style="opacity:1;vector-effect:none;fill:#189ae6;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal"
-     id="rect6362-3-6-6-9-1-1-4"
-     width="130.36125"
-     height="19.258785"
-     x="2619.1677"
-     y="401.86887"
-     ry="9.6293926" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     x="2631.3389"
-     y="414.8558"
-     id="text6893-6-8-6-5-7-0-9"
-     inkscape:transform-center-x="5.0270835"
-     inkscape:transform-center-y="1.3229167"><tspan
-       sodipodi:role="line"
-       id="tspan6891-7-9-4-0-2-6-0"
-       x="2631.3389"
-       y="414.8558"
-       style="font-size:9.52499866px;text-align:start;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Pizza</tspan></text>
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     x="2722.5154"
-     y="414.8558"
-     id="text6893-6-8-6-5-4-7-1-9"
-     inkscape:transform-center-x="5.0270835"
-     inkscape:transform-center-y="1.3229167"><tspan
-       sodipodi:role="line"
-       id="tspan6891-7-9-4-0-8-2-5-1"
-       x="2722.5154"
-       y="414.8558"
-       style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">$12.49</tspan></text>
-</g>
-<g
-   id="g8081"
-   transform="translate(0.94570412,8.9073275)">
-  <rect
-     style="opacity:1;vector-effect:none;fill:#0081d5;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal"
-     id="rect6362-3-6-6-9-1-1-4-7"
-     width="130.36125"
-     height="19.258785"
-     x="2619.1677"
-     y="427.31293"
-     ry="9.6293926" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     x="2631.7483"
-     y="440.29987"
-     id="text6893-6-8-6-5-7-0-9-1"
-     inkscape:transform-center-x="5.0270835"
-     inkscape:transform-center-y="1.3229167"><tspan
-       sodipodi:role="line"
-       id="tspan6891-7-9-4-0-2-6-0-1"
-       x="2631.7483"
-       y="440.29987"
-       style="font-size:9.52499866px;text-align:start;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Sushi</tspan></text>
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-     x="2722.5154"
-     y="440.29987"
-     id="text6893-6-8-6-5-4-7-1-9-5"
-     inkscape:transform-center-x="5.0270835"
-     inkscape:transform-center-y="1.3229167"><tspan
-       sodipodi:role="line"
-       id="tspan6891-7-9-4-0-8-2-5-1-9"
-       x="2722.5154"
-       y="440.29987"
-       style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">$24.99</tspan></text>
-</g>
+<rect
+   ry="9.6293926"
+   y="325.31845"
+   x="2620.1135"
+   height="19.258785"
+   width="130.36125"
+   id="rect6362-3-6-6-9"
+   style="opacity:1;vector-effect:none;fill:#00bed6;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal" />
+<text
+   inkscape:transform-center-y="1.3229167"
+   inkscape:transform-center-x="5.0270835"
+   id="text6893-6-8-6-5"
+   y="338.30542"
+   x="2645.9646"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   xml:space="preserve"><tspan
+     style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+     y="338.30542"
+     x="2645.9646"
+     id="tspan6891-7-9-4-0"
+     sodipodi:role="line">Coffee</tspan></text>
+<text
+   xml:space="preserve"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   x="2726.3169"
+   y="338.30542"
+   id="text7892"
+   inkscape:transform-center-x="5.0270835"
+   inkscape:transform-center-y="1.3229167"><tspan
+     sodipodi:role="line"
+     id="tspan7890"
+     x="2726.3169"
+     y="338.30542"
+     style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">$1.99</tspan></text>
+<rect
+   ry="9.6293926"
+   y="353.04388"
+   x="2620.1135"
+   height="19.258785"
+   width="130.36125"
+   id="rect6362-3-6-6-9-1"
+   style="opacity:1;vector-effect:none;fill:#cf00d6;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal" />
+<text
+   inkscape:transform-center-y="1.3229167"
+   inkscape:transform-center-x="5.0270835"
+   id="text6893-6-8-6-5-7"
+   y="366.03082"
+   x="2632.2847"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   xml:space="preserve"><tspan
+     style="font-size:9.52499866px;text-align:start;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+     y="366.03082"
+     x="2632.2847"
+     id="tspan6891-7-9-4-0-2"
+     sodipodi:role="line">Ice Cream (best)</tspan></text>
+<text
+   inkscape:transform-center-y="1.3229167"
+   inkscape:transform-center-x="5.0270835"
+   id="text6893-6-8-6-5-4-7"
+   y="366.03082"
+   x="2726.3169"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   xml:space="preserve"><tspan
+     style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+     y="366.03082"
+     x="2726.3169"
+     id="tspan6891-7-9-4-0-8-2"
+     sodipodi:role="line">$4.99</tspan></text>
+<rect
+   ry="9.6293926"
+   y="380.76935"
+   x="2620.1135"
+   height="19.258785"
+   width="130.36125"
+   id="rect6362-3-6-6-9-1-1"
+   style="opacity:1;vector-effect:none;fill:#18b2e6;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal" />
+<text
+   inkscape:transform-center-y="1.3229167"
+   inkscape:transform-center-x="5.0270835"
+   id="text6893-6-8-6-5-7-0"
+   y="393.75629"
+   x="2632.2847"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   xml:space="preserve"><tspan
+     style="font-size:9.52499866px;text-align:start;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+     y="393.75629"
+     x="2632.2847"
+     id="tspan6891-7-9-4-0-2-6"
+     sodipodi:role="line">Muffin</tspan></text>
+<text
+   inkscape:transform-center-y="1.3229167"
+   inkscape:transform-center-x="5.0270835"
+   id="text6893-6-8-6-5-4-7-1"
+   y="393.75629"
+   x="2726.3169"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   xml:space="preserve"><tspan
+     style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+     y="393.75629"
+     x="2726.3169"
+     id="tspan6891-7-9-4-0-8-2-5"
+     sodipodi:role="line">$7.49</tspan></text>
+<rect
+   ry="9.6293926"
+   y="408.49481"
+   x="2620.1135"
+   height="19.258785"
+   width="130.36125"
+   id="rect6362-3-6-6-9-1-1-4"
+   style="opacity:1;vector-effect:none;fill:#189ae6;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal" />
+<text
+   inkscape:transform-center-y="1.3229167"
+   inkscape:transform-center-x="5.0270835"
+   id="text6893-6-8-6-5-7-0-9"
+   y="421.48175"
+   x="2632.2847"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   xml:space="preserve"><tspan
+     style="font-size:9.52499866px;text-align:start;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+     y="421.48175"
+     x="2632.2847"
+     id="tspan6891-7-9-4-0-2-6-0"
+     sodipodi:role="line">Pizza</tspan></text>
+<text
+   inkscape:transform-center-y="1.3229167"
+   inkscape:transform-center-x="5.0270835"
+   id="text6893-6-8-6-5-4-7-1-9"
+   y="421.48175"
+   x="2723.4612"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   xml:space="preserve"><tspan
+     style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+     y="421.48175"
+     x="2723.4612"
+     id="tspan6891-7-9-4-0-8-2-5-1"
+     sodipodi:role="line">$12.49</tspan></text>
+<rect
+   ry="9.6293926"
+   y="436.22025"
+   x="2620.1135"
+   height="19.258785"
+   width="130.36125"
+   id="rect6362-3-6-6-9-1-1-4-7"
+   style="opacity:1;vector-effect:none;fill:#0081d5;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal" />
+<text
+   inkscape:transform-center-y="1.3229167"
+   inkscape:transform-center-x="5.0270835"
+   id="text6893-6-8-6-5-7-0-9-1"
+   y="449.20718"
+   x="2632.6941"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   xml:space="preserve"><tspan
+     style="font-size:9.52499866px;text-align:start;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+     y="449.20718"
+     x="2632.6941"
+     id="tspan6891-7-9-4-0-2-6-0-1"
+     sodipodi:role="line">Sushi</tspan></text>
+<text
+   inkscape:transform-center-y="1.3229167"
+   inkscape:transform-center-x="5.0270835"
+   id="text6893-6-8-6-5-4-7-1-9-5"
+   y="449.20718"
+   x="2723.4612"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   xml:space="preserve"><tspan
+     style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+     y="449.20718"
+     x="2723.4612"
+     id="tspan6891-7-9-4-0-8-2-5-1-9"
+     sodipodi:role="line">$24.99</tspan></text>
 <g
    transform="translate(660.39985,1.24e-5)"
    id="g2315-5-7">
@@ -5424,97 +5396,81 @@
    width="0.39687499"
    id="rect7640-4"
    style="opacity:1;vector-effect:none;fill:#637484;fill-opacity:0.84444424;stroke:none;stroke-width:1.05833328;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal" />
-<g
-   id="g9031"
-   transform="translate(8.6962884e-6,40.528037)">
-  <rect
-     ry="5.1749139"
-     y="264.65469"
-     x="2826.6248"
-     height="119.19477"
-     width="158.77872"
-     id="rect2373-05"
-     style="opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:0.72777776;stroke:none;stroke-width:0.74596727;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:5.82083321px;line-height:9.26041698px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+<rect
+   style="opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:0.72777776;stroke:none;stroke-width:0.74596727;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal"
+   id="rect2373-05"
+   width="158.77872"
+   height="119.19477"
+   x="2826.6248"
+   y="305.18274"
+   ry="5.1749139" />
+<text
+   id="text2492-7-4"
+   y="322.49908"
+   x="2906.1797"
+   style="font-style:normal;font-weight:normal;font-size:5.82083321px;line-height:9.26041698px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   xml:space="preserve"><tspan
+     id="tspan7576-6"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;line-height:9.26041698px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;word-spacing:0px;text-anchor:middle;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332"
+     y="322.49908"
      x="2906.1797"
-     y="281.97104"
-     id="text2492-7-4"><tspan
-       sodipodi:role="line"
-       x="2906.1797"
-       y="281.97104"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;line-height:9.26041698px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;word-spacing:0px;text-anchor:middle;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332"
-       id="tspan7576-6">Would you like to rate the game</tspan><tspan
-       id="tspan8931"
-       sodipodi:role="line"
-       x="2906.1797"
-       y="292.01685"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;line-height:9.26041698px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;word-spacing:0px;text-anchor:middle;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332">or give feedback?</tspan><tspan
-       id="tspan8933"
-       sodipodi:role="line"
-       x="2906.1797"
-       y="301.27728"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;line-height:9.26041698px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;word-spacing:0px;text-anchor:middle;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332" /><tspan
-       id="tspan8935"
-       sodipodi:role="line"
-       x="2906.1797"
-       y="311.32309"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;line-height:9.26041698px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;word-spacing:0px;text-anchor:middle;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332">(I actually read every review)</tspan></text>
-  <g
-     transform="translate(0,-4.7625002)"
-     id="g9014">
-    <g
-       id="g6990-4"
-       transform="translate(442.833,5.6628697)">
-      <rect
-         ry="9.6293926"
-         y="323.4075"
-         x="2400.2864"
-         height="19.258785"
-         width="130.36125"
-         id="rect6362-30"
-         style="opacity:1;vector-effect:none;fill:#0081d5;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal" />
-      <text
-         inkscape:transform-center-y="1.3229167"
-         inkscape:transform-center-x="5.0270835"
-         id="text6893-3"
-         y="335.55148"
-         x="2465.6292"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         xml:space="preserve"><tspan
-           style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-           y="335.55148"
-           x="2465.6292"
-           id="tspan6891-0"
-           sodipodi:role="line">Rate the game</tspan></text>
-    </g>
-    <g
-       id="g6985-9"
-       transform="translate(442.55248,8.9022682)">
-      <rect
-         ry="9.6293926"
-         y="347.89355"
-         x="2400.5669"
-         height="19.258785"
-         width="130.36125"
-         id="rect6362-3-2"
-         style="opacity:1;vector-effect:none;fill:#637484;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal" />
-      <text
-         inkscape:transform-center-y="1.3229167"
-         inkscape:transform-center-x="5.0270835"
-         id="text6893-6-5"
-         y="360.02802"
-         x="2465.3118"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         xml:space="preserve"><tspan
-           style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
-           y="360.02802"
-           x="2465.3118"
-           id="tspan6891-7-4"
-           sodipodi:role="line">Maybe later</tspan></text>
-    </g>
-  </g>
-</g>
+     sodipodi:role="line">Would you like to rate the game</tspan><tspan
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;line-height:9.26041698px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;word-spacing:0px;text-anchor:middle;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332"
+     y="332.54489"
+     x="2906.1797"
+     sodipodi:role="line"
+     id="tspan8931">or give feedback?</tspan><tspan
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;line-height:9.26041698px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;word-spacing:0px;text-anchor:middle;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332"
+     y="341.80533"
+     x="2906.1797"
+     sodipodi:role="line"
+     id="tspan8933" /><tspan
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;line-height:9.26041698px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;word-spacing:0px;text-anchor:middle;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332"
+     y="351.85114"
+     x="2906.1797"
+     sodipodi:role="line"
+     id="tspan8935">(I actually read every review)</tspan></text>
+<rect
+   style="opacity:1;vector-effect:none;fill:#0081d5;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal"
+   id="rect6362-30"
+   width="130.36125"
+   height="19.258785"
+   x="2843.1194"
+   y="364.83591"
+   ry="9.6293926" />
+<text
+   xml:space="preserve"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   x="2908.4622"
+   y="376.97989"
+   id="text6893-3"
+   inkscape:transform-center-x="5.0270835"
+   inkscape:transform-center-y="1.3229167"><tspan
+     sodipodi:role="line"
+     id="tspan6891-0"
+     x="2908.4622"
+     y="376.97989"
+     style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Rate the game</tspan></text>
+<rect
+   style="opacity:1;vector-effect:none;fill:#637484;fill-opacity:1;stroke:none;stroke-width:1.06349778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67843137;paint-order:normal"
+   id="rect6362-3-2"
+   width="130.36125"
+   height="19.258785"
+   x="2843.1194"
+   y="392.56137"
+   ry="9.6293926" />
+<text
+   xml:space="preserve"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   x="2907.8643"
+   y="404.69583"
+   id="text6893-6-5"
+   inkscape:transform-center-x="5.0270835"
+   inkscape:transform-center-y="1.3229167"><tspan
+     sodipodi:role="line"
+     id="tspan6891-7-4"
+     x="2907.8643"
+     y="404.69583"
+     style="font-size:9.52499866px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Maybe later</tspan></text>
 </g>
 </svg>

@@ -301,8 +301,82 @@ class PlayScreen(
     private val leaderboardsButton = ClickButton(skin, "empty-round-button").apply {
         addIcon("leaderboards-icon")
     }
+    private val noAdsPopUp = NewPopUp(600f, 970f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            """
+            This game is powered by a
+            team of 1 (and open-source
+            contributors)!
+
+            Any amount below will support
+            the development & REMOVE
+            ADS! <3
+        """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val coffeeButton = Button(skin, "long-button").apply {
+            val coffeeText = DistanceFieldLabel("Coffee", skin, "regular", 36f, Color.WHITE)
+            val priceText = DistanceFieldLabel("$1.99", skin, "regular", 36f, Color.WHITE)
+            add(coffeeText).padLeft(47f).expand().left()
+            add(priceText).padRight(47f).expand().right()
+            color.set(0 / 255f, 190 / 255f, 214 / 255f, 1f)
+        }
+        val iceCreamButton = Button(skin, "long-button").apply {
+            val iceCreamText = DistanceFieldLabel("Ice Cream (best)", skin, "regular", 36f, Color.WHITE)
+            val priceText = DistanceFieldLabel("$4.99", skin, "regular", 36f, Color.WHITE)
+            add(iceCreamText).padLeft(47f).expand().left()
+            add(priceText).padRight(47f).expand().right()
+            color.set(207 / 255f, 0 / 255f, 214 / 255f, 1f)
+        }
+        val muffinButton = Button(skin, "long-button").apply {
+            val muffinText = DistanceFieldLabel("Muffin", skin, "regular", 36f, Color.WHITE)
+            val priceText = DistanceFieldLabel("$7.49", skin, "regular", 36f, Color.WHITE)
+            add(muffinText).padLeft(47f).expand().left()
+            add(priceText).padRight(47f).expand().right()
+            color.set(24 / 255f, 178 / 255f, 230 / 255f, 1f)
+        }
+        val pizzaButton = Button(skin, "long-button").apply {
+            val pizzaText = DistanceFieldLabel("Pizza", skin, "regular", 36f, Color.WHITE)
+            val priceText = DistanceFieldLabel("$12.49", skin, "regular", 36f, Color.WHITE)
+            add(pizzaText).padLeft(47f).expand().left()
+            add(priceText).padRight(47f).expand().right()
+            color.set(24 / 255f, 154 / 255f, 230 / 255f, 1f)
+        }
+        val sushiButton = Button(skin, "long-button").apply {
+            val sushiText = DistanceFieldLabel("Sushi", skin, "regular", 36f, Color.WHITE)
+            val priceText = DistanceFieldLabel("$24.99", skin, "regular", 36f, Color.WHITE)
+            add(sushiText).padLeft(47f).expand().left()
+            add(priceText).padRight(47f).expand().right()
+            color.set(0 / 255f, 125 / 255f, 213 / 255f, 1f)
+        }
+        val noThanksButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel("No Thanks :(", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).expand().top().row()
+            add(coffeeButton).width(492f).expand().row()
+            add(iceCreamButton).width(492f).expand().row()
+            add(muffinButton).width(492f).expand().row()
+            add(pizzaButton).width(492f).expand().row()
+            add(sushiButton).width(492f).expand().row()
+            add(noThanksButton).width(492f).expand().row()
+        }
+    }
     private val noAdsButton = ClickButton(skin, "empty-round-button").apply {
         addIcon("no-ads-icon")
+        addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                stage.addActor(noAdsPopUp)
+            }
+        })
     }
     private val bottomGrayStrip = Table(skin).apply {
         val grayImage = object : Image(manager.get(Assets.tileset).findRegion("pixel")) {
