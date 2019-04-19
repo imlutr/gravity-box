@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
@@ -35,7 +34,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.graphics.copy
@@ -125,9 +123,7 @@ class PlayScreen(
             the GitHub repository, as the
             visibility would really help!
             """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
-        ).apply {
-            setAlignment(Align.center, Align.center)
-        }
+        )
         val visitGithubButton = Button(skin, "long-button").apply {
             val buttonText = DistanceFieldLabel(
                 "Visit repository on GitHub",
@@ -259,8 +255,45 @@ class PlayScreen(
         add(githubButton).expand().top().right().padRight(-githubButton.prefWidth).padTop(padTopBottom).row()
         add(leftLevelRightTable).expand().bottom()
     }
+    private val heartPopUp = NewPopUp(600f, 450f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            """
+            Would you like to rate the game
+            or give feedback?
+
+            (I actually read every review)
+        """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val rateButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel("Rate the game", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
+        }
+        val maybeLaterButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel("Maybe later", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).expand().top().row()
+            add(rateButton).width(492f).expand().row()
+            add(maybeLaterButton).width(492f).expand().bottom().row()
+        }
+    }
     private val heartButton = ClickButton(skin, "empty-round-button").apply {
         addIcon("heart-icon")
+        addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                stage.addActor(heartPopUp)
+            }
+        })
     }
     private val audioButton = ClickButton(skin, "white-full-round-button").apply {
         addIcon("sounds-and-music-icon")
@@ -507,7 +540,6 @@ class PlayScreen(
             }
             rootOverlayTable.setLayoutEnabled(false)
         }
-        val a = Group()
     }
 
     private fun makeButtonUntouchable(button: ClickButton) {
