@@ -75,14 +75,19 @@ class DistanceFieldLabel(
         private const val DEFAULT_FONT_SIZE = 32f
     }
 
+    var syncColorsWithColorScheme = true
+
     init {
         this.color = color
         setFontScale(fontSize / DEFAULT_FONT_SIZE)
+        if (this.color != Colors.gameColor && this.color != Colors.bgColor) {
+            syncColorsWithColorScheme = false
+        }
     }
 
     override fun act(delta: Float) {
         super.act(delta)
-        if (color != Colors.uiDownColor) {
+        if (syncColorsWithColorScheme && color != Colors.uiDownColor) {
             color.setWithoutAlpha(Colors.gameColor)
         }
     }

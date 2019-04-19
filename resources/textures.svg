@@ -512,8 +512,8 @@
      inkscape:bbox-nodes="true"
      inkscape:bbox-paths="true"
      inkscape:current-layer="layer1"
-     inkscape:cx="9014.9955"
-     inkscape:cy="395.59349"
+     inkscape:cx="10626.126"
+     inkscape:cy="-253.86328"
      inkscape:document-units="px"
      inkscape:measure-end="3774.09,-659.996"
      inkscape:measure-start="3774.27,-645.147"
@@ -524,7 +524,7 @@
      inkscape:snap-bbox="true"
      inkscape:snap-bbox-edge-midpoints="true"
      inkscape:snap-bbox-midpoints="true"
-     inkscape:snap-global="false"
+     inkscape:snap-global="true"
      inkscape:snap-intersection-paths="true"
      inkscape:snap-midpoints="false"
      inkscape:snap-nodes="true"
@@ -535,7 +535,7 @@
      inkscape:window-width="1920"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:zoom="0.25">
+     inkscape:zoom="0.35355339">
     <inkscape:grid
        empcolor="#7a1919"
        empopacity="0.25098039"

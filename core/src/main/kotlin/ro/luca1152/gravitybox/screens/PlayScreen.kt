@@ -31,9 +31,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.graphics.copy
@@ -52,6 +54,7 @@ import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
+import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -112,12 +115,60 @@ class PlayScreen(
         padBottom(padTopBottom).padTop(padTopBottom)
         add(bottomRow).expand().fillX().bottom()
     }
+    private val githubPopUp = NewPopUp(600f, 508f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            """
+            This game is fully open-source!
+
+            If you want to support the
+            development, consider starring
+            the GitHub repository, as the
+            visibility would really help!
+            """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        ).apply {
+            setAlignment(Align.center, Align.center)
+        }
+        val visitGithubButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(
+                "Visit repository on GitHub",
+                skin, "regular", 36f, Color.WHITE
+            )
+            add(buttonText)
+            color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    Gdx.net.openURI("https://github.com/Luca1152/gravity-box")
+                    this@popup.remove()
+                }
+            })
+        }
+        val maybeLaterButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(
+                "Maybe later",
+                skin, "regular", 36f, Color.WHITE
+            )
+            add(buttonText)
+            color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.remove()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(33f).expand().top().row()
+            add(visitGithubButton).width(492f).padBottom(32f).row()
+            add(maybeLaterButton).width(492f).expand().bottom().row()
+        }
+    }
     private val githubButton = ClickButton(skin, "gray-full-round-button").apply {
         addIcon("github-icon")
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                println("clicked github")
+                stage.addActor(githubPopUp)
             }
         })
     }

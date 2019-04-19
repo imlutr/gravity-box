@@ -1,6 +1,6 @@
 {
   Color: {
-    gray: { r: 0.454, g: 0.494, b: 0.494 }
+    text-gold: { r: 0.819, g: 0.647, b: 0.180 }
   }
   BitmapFont: {
     extra-light: {
@@ -132,6 +132,10 @@
     right-button: {
       up: right-button
       down: right-button
+    }
+    long-button: {
+      up: long-button
+      down: long-button
     }
   }
 }
