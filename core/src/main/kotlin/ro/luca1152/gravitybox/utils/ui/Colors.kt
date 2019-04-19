@@ -41,6 +41,8 @@ object Colors {
     var bgColor = Color()
     var gameColor = Color()
     var uiDownColor = Color()
+    var uiGray = Color()
+    var uiWhite = Color()
 
     init {
         resetAllColors()
@@ -60,18 +62,24 @@ object Colors {
         bgColor = bgColor.lerp(if (useDarkTheme) DarkTheme.game20 else LightTheme.game91, step)
         gameColor = gameColor.lerp(if (useDarkTheme) DarkTheme.game95 else LightTheme.game57, step)
         uiDownColor = uiDownColor.lerp(if (useDarkTheme) LightTheme.game29 else LightTheme.game29, step)
+        uiGray = uiGray.lerp(LightTheme.ui54, step)
+        uiWhite = uiWhite.lerp(LightTheme.ui95, step)
     }
 
     private fun updateNamedColors() {
         bgColor = if (useDarkTheme) DarkTheme.game20.cpy() else LightTheme.game91.cpy()
         gameColor = if (useDarkTheme) DarkTheme.game95.cpy() else LightTheme.game57.cpy()
         uiDownColor = if (useDarkTheme) LightTheme.game29.cpy() else LightTheme.game29.cpy()
+        uiGray = LightTheme.ui54.cpy()
+        uiWhite = LightTheme.ui95.cpy()
     }
 
     object LightTheme {
         var game91 = generateGame91Color(hue)
         var game57 = generateGame57Color(hue)
         var game29 = generateGame29Color(hue)
+        var ui54 = generateUI54Color(hue)
+        var ui95 = generateUI95Color(hue)
 
         private fun generateGame91Color(hue: Int) =
             Color().fromHsv(hue.toFloat(), 10f / 100f, 91f / 100f).apply { a = 1f }!!
@@ -82,10 +90,18 @@ object Colors {
         private fun generateGame29Color(hue: Int) =
             Color().fromHsv(hue.toFloat(), 55f / 100f, 29f / 100f).apply { a = 1f }!!
 
+        private fun generateUI54Color(hue: Int) =
+            Color().fromHsv(hue.toFloat(), 26 / 100f, 54 / 100f).apply { a = 1f }!!
+
+        private fun generateUI95Color(hue: Int) =
+            Color().fromHsv(hue.toFloat(), 10 / 100f, 95 / 100f).apply { a = 1f }!!
+
         fun resetAllColors(hue: Int) {
             game91 = generateGame91Color(hue)
             game57 = generateGame57Color(hue)
             game29 = generateGame29Color(hue)
+            ui54 = generateUI54Color(hue)
+            ui95 = generateUI95Color(hue)
         }
     }
 
