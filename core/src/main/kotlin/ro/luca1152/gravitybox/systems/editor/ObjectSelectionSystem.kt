@@ -51,7 +51,6 @@ class ObjectSelectionSystem(
                 gameStage.hitAllScreen(screenX, screenY).filter { isMapObject(it) }.distinctBy { it.userObject }
                     .sortedBy { it.zIndex }
             if (touchedActors.isEmpty()) {
-                selectedObject?.editorObject?.isSelected = false
                 return false
             }
 
