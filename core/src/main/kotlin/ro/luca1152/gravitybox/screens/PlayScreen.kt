@@ -20,6 +20,8 @@ package ro.luca1152.gravitybox.screens
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
@@ -58,6 +60,7 @@ import uy.kohesive.injekt.api.get
 
 class PlayScreen(
     manager: AssetManager = Injekt.get(),
+    game: MyGame = Injekt.get(),
     private val engine: PooledEngine = Injekt.get(),
     private val gameViewport: GameViewport = Injekt.get(),
     private val world: World = Injekt.get(),
@@ -72,6 +75,17 @@ class PlayScreen(
     private val bottomGrayStripHeight = 128f
     private val skin = manager.get(Assets.uiSkin)
     var shiftCameraYBy = 0f
+    private val levelEditorKeyListener = object : InputAdapter() {
+        override fun keyDown(keycode: Int): Boolean {
+            if (keycode == Input.Keys.N && (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)
+                        || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))
+            ) {
+                game.setScreen(TransitionScreen(LevelEditorScreen::class.java, false))
+                return true
+            }
+            return false
+        }
+    }
     private val menuButton = ClickButton(skin, "menu-button").apply {
         addClickRunnable(Runnable {
             addAction(Actions.sequence(
@@ -590,6 +604,7 @@ class PlayScreen(
         // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
         inputMultiplexer.addProcessor(0, uiStage)
         inputMultiplexer.addProcessor(1, menuOverlayStage)
+        inputMultiplexer.addProcessor(levelEditorKeyListener)
     }
 
     override fun render(delta: Float) {
