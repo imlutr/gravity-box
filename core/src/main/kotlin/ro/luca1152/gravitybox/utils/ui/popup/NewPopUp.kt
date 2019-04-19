@@ -21,6 +21,8 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -63,5 +65,31 @@ class NewPopUp(
     init {
         addActor(touchableImage)
         addActor(widget)
+    }
+
+    fun hide() {
+        addAction(
+            Actions.sequence(
+                Actions.fadeOut(.15f),
+                Actions.removeActor(),
+                Actions.fadeIn(0f)
+            )
+        )
+    }
+
+    private fun show() {
+        addAction(
+            Actions.sequence(
+                Actions.fadeOut(0f),
+                Actions.fadeIn(.15f)
+            )
+        )
+    }
+
+    override fun setStage(stage: Stage?) {
+        super.setStage(stage)
+        if (stage != null) {
+            show()
+        }
     }
 }

@@ -153,7 +153,7 @@ class PlayScreen(
             addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
-                    this@popup.remove()
+                    this@popup.hide()
                 }
             })
         }
