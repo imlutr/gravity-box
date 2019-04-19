@@ -29,7 +29,7 @@ import ro.luca1152.gravitybox.utils.ui.Colors
 /** My own extension of the [Button] class. */
 abstract class Button(
     skin: Skin,
-    private val styleName: String
+    var styleName: String
 ) : Button(skin, styleName) {
     var icon: Image? = null
     var iconCell: Cell<Image>? = null
@@ -56,16 +56,37 @@ abstract class Button(
     private fun syncColors() {
         // TODO: use downColor and upColor instead of referencing colors directly
         val isToggled = if (userObject == null) false else userObject as Boolean
-        when (isPressed || isToggled) {
-            true -> {
-                color.setWithoutAlpha(Colors.uiDownColor)
-                icon?.color?.setWithoutAlpha(Colors.uiDownColor)
-                opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
+        when (styleName) {
+            "color-round-button" -> {
+                when (isPressed || isToggled) {
+                    true -> color.setWithoutAlpha(Colors.uiDownColor)
+                    false -> color.setWithoutAlpha(Colors.gameColor)
+                }
+                icon?.color?.setWithoutAlpha(Colors.bgColor)
             }
-            false -> {
-                color.setWithoutAlpha(Colors.gameColor)
-                icon?.color?.setWithoutAlpha(Colors.gameColor)
-                opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
+            "empty-round-button" -> {
+                color.set(Colors.uiWhite)
+                icon?.color?.set(Colors.uiWhite)
+            }
+            "white-full-round-button" -> {
+                color.set(Colors.uiWhite)
+                icon?.color?.set(Colors.uiGray)
+            }
+            "gray-full-round-button" -> {
+                color.set(Colors.uiGray)
+                icon?.color?.set(Colors.uiWhite)
+            }
+            else -> when (isPressed || isToggled) {
+                true -> {
+                    color.setWithoutAlpha(Colors.uiDownColor)
+                    icon?.color?.setWithoutAlpha(Colors.uiDownColor)
+                    opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
+                }
+                false -> {
+                    color.setWithoutAlpha(Colors.gameColor)
+                    icon?.color?.setWithoutAlpha(Colors.gameColor)
+                    opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
+                }
             }
         }
     }

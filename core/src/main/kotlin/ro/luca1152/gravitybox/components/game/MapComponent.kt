@@ -74,6 +74,7 @@ class MapComponent : Component, Poolable {
     var mapBottom = Float.POSITIVE_INFINITY
     var mapTop = Float.NEGATIVE_INFINITY
     var updateRoundedPlatforms = true
+    var forceCenterCameraOnPlayer = false
     var paddingLeft = 2f
     var paddingRight = 2f
     var paddingTop = 5f
@@ -332,6 +333,7 @@ class MapComponent : Component, Poolable {
         paddingTop = 5f
         paddingBottom = 5f
         updateRoundedPlatforms = true
+        forceCenterCameraOnPlayer = false
     }
 
     fun destroyAllBodies(world: World = Injekt.get()) {

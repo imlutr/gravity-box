@@ -93,7 +93,7 @@ class LoadingScreen(
             }
             logLoadingTime()
             addScreens()
-            game.setScreen(TransitionScreen(MainMenuScreen::class.java, false))
+            game.setScreen(TransitionScreen(PlayScreen::class.java, false))
         }
     }
 
@@ -109,9 +109,7 @@ class LoadingScreen(
      */
     private fun addScreens() {
         game.run {
-            addScreen(MainMenuScreen())
             addScreen(LevelEditorScreen())
-            addScreen(LevelSelectorScreen())
             addScreen(PlayScreen())
         }
     }

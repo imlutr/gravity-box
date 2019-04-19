@@ -1,4 +1,7 @@
 {
+  Color: {
+    text-gold: { r: 0.819, g: 0.647, b: 0.180 }
+  }
   BitmapFont: {
     extra-light: {
       file: extra-light.fnt
@@ -90,21 +93,49 @@
   ButtonStyle: {
     simple-button: {
     }
-    big-button: {
-      up: big-button,
-      down: big-button
-    }
     small-button: {
       up: small-button,
       down: small-button
     }
     small-round-button: {
-      up: small-round-button,
+      up: small-round-button
       down: small-round-button
     }
     checkbox: {
-      up: empty-checkbox,
+      up: empty-checkbox
       down: empty-checkbox
+    }
+    color-round-button: {
+      up: full-round-button
+      down: full-round-button
+    }
+    white-full-round-button: {
+      up: full-round-button
+      down: full-round-button
+    }
+    gray-full-round-button: {
+      up: full-round-button
+      down: full-round-button
+    }
+    empty-round-button: {
+      up: empty-round-button
+      down: empty-round-button
+    }
+    menu-button: {
+      up: menu-icon
+      down: menu-icon
+    }
+    left-button: {
+      up: left-button
+      down: left-button
+    }
+    right-button: {
+      up: right-button
+      down: right-button
+    }
+    long-button: {
+      up: long-button
+      down: long-button
     }
   }
 }
