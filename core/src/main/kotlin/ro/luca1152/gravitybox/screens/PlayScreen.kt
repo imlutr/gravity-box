@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
@@ -60,7 +61,8 @@ class PlayScreen(
     private val gameViewport: GameViewport = Injekt.get(),
     private val world: World = Injekt.get(),
     private val inputMultiplexer: InputMultiplexer = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get()
+    private val uiStage: UIStage = Injekt.get(),
+    private val gameStage: GameStage = Injekt.get()
 ) : KtxScreen {
     private lateinit var levelEntity: Entity
     private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, UICamera), Injekt.get())
@@ -147,16 +149,25 @@ class PlayScreen(
         addClickRunnable(Runnable {
             // The button is touchable
             if (color.a == 1f) {
-                levelEntity.level.run {
-                    levelId--
-                    loadMap = true
-                    forceUpdateMap = true
-                }
-                levelEntity.map.run {
-                    updateRoundedPlatforms = true
-                    forceCenterCameraOnPlayer = true
-                }
-                Colors.hue = MathUtils.random(0, 360)
+                gameStage.addAction(
+                    Actions.sequence(
+                        Actions.fadeOut(.3f),
+                        Actions.run {
+                            levelEntity.level.run {
+                                levelId--
+                                loadMap = true
+                                forceUpdateMap = true
+                            }
+                            levelEntity.map.run {
+                                updateRoundedPlatforms = true
+                                forceCenterCameraOnPlayer = true
+                            }
+                            Colors.hue = MathUtils.random(0, 360)
+                        },
+                        Actions.fadeIn(.3f)
+                    )
+                )
+
             }
         })
     }
@@ -164,16 +175,24 @@ class PlayScreen(
         addClickRunnable(Runnable {
             // The button is touchable
             if (color.a == 1f) {
-                levelEntity.level.run {
-                    levelId++
-                    loadMap = true
-                    forceUpdateMap = true
-                }
-                levelEntity.map.run {
-                    updateRoundedPlatforms = true
-                    forceCenterCameraOnPlayer = true
-                }
-                Colors.hue = MathUtils.random(0, 360)
+                gameStage.addAction(
+                    Actions.sequence(
+                        Actions.fadeOut(.3f),
+                        Actions.run {
+                            levelEntity.level.run {
+                                levelId++
+                                loadMap = true
+                                forceUpdateMap = true
+                            }
+                            levelEntity.map.run {
+                                updateRoundedPlatforms = true
+                                forceCenterCameraOnPlayer = true
+                            }
+                            Colors.hue = MathUtils.random(0, 360)
+                        },
+                        Actions.fadeIn(.3f)
+                    )
+                )
             }
         })
     }
@@ -437,6 +456,7 @@ class PlayScreen(
             }
             rootOverlayTable.setLayoutEnabled(false)
         }
+        val a = Group()
     }
 
     private fun makeButtonUntouchable(button: ClickButton) {
