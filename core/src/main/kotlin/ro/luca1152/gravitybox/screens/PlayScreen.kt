@@ -198,7 +198,7 @@ class PlayScreen(
             if (color.a == 1f) {
                 gameStage.addAction(
                     Actions.sequence(
-                        Actions.fadeOut(.3f),
+                        Actions.fadeOut(.2f),
                         Actions.run {
                             levelEntity.level.run {
                                 levelId--
@@ -211,7 +211,7 @@ class PlayScreen(
                             }
                             Colors.hue = MathUtils.random(0, 360)
                         },
-                        Actions.fadeIn(.3f)
+                        Actions.fadeIn(.2f)
                     )
                 )
 
@@ -224,7 +224,7 @@ class PlayScreen(
             if (color.a == 1f) {
                 gameStage.addAction(
                     Actions.sequence(
-                        Actions.fadeOut(.3f),
+                        Actions.fadeOut(.2f),
                         Actions.run {
                             levelEntity.level.run {
                                 levelId++
@@ -237,7 +237,7 @@ class PlayScreen(
                             }
                             Colors.hue = MathUtils.random(0, 360)
                         },
-                        Actions.fadeIn(.3f)
+                        Actions.fadeIn(.2f)
                     )
                 )
             }
