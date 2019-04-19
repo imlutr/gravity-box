@@ -73,11 +73,6 @@ class PlayScreen(
     private val skin = manager.get(Assets.uiSkin)
     var shiftCameraYBy = 0f
     private val menuButton = ClickButton(skin, "menu-button").apply {
-        val opacity = .4f
-        setColors(Colors.gameColor.cpy(), Colors.uiDownColor.cpy())
-        color.a = opacity
-        upColor.a = opacity
-        downColor.a = opacity
         addClickRunnable(Runnable {
             addAction(Actions.sequence(
                 Actions.run {
