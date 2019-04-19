@@ -29,7 +29,7 @@ import ro.luca1152.gravitybox.utils.ui.Colors
 /** My own extension of the [Button] class. */
 abstract class Button(
     skin: Skin,
-    private val styleName: String
+    var styleName: String
 ) : Button(skin, styleName) {
     var icon: Image? = null
     var iconCell: Cell<Image>? = null

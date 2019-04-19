@@ -1,6 +1,6 @@
 
 uiskin.png
-size: 4106,2058
+size: 4108,2058
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -48,7 +48,7 @@ button
   index: -1
 checkbox-x-icon
   rotate: false
-  xy: 3165, 126
+  xy: 3545, 617
   size: 30, 30
   orig: 30, 30
   offset: 0, 0
@@ -125,7 +125,7 @@ full-round-button
   index: -1
 full-star
   rotate: false
-  xy: 3585, 619
+  xy: 3545, 587
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -160,7 +160,7 @@ help-icon
   index: -1
 leaderboards-icon
   rotate: false
-  xy: 3883, 911
+  xy: 3884, 911
   size: 40, 37
   orig: 40, 37
   offset: 0, 0
@@ -223,11 +223,25 @@ moving-platform-icon
   orig: 85, 21
   offset: 0, 0
   index: -1
+music-icon
+  rotate: false
+  xy: 3846, 909
+  size: 36, 40
+  orig: 36, 40
+  offset: 0, 0
+  index: -1
 no-ads-icon
   rotate: false
   xy: 3213, 276
   size: 59, 59
   orig: 59, 59
+  offset: 0, 0
+  index: -1
+no-sounds-icon
+  rotate: false
+  xy: 3926, 917
+  size: 38, 31
+  orig: 38, 31
   offset: 0, 0
   index: -1
 pencil-icon
@@ -364,14 +378,14 @@ small-button-inside
   index: -1
 small-horizontal-arrow
   rotate: false
-  xy: 3545, 623
+  xy: 4042, 917
   size: 38, 24
   orig: 38, 24
   offset: 0, 0
   index: -1
 small-left-arrow-icon
   rotate: false
-  xy: 3811, 830
+  xy: 3517, 608
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
@@ -392,14 +406,14 @@ small-plus-icon
   index: -1
 small-right-arrow-icon
   rotate: false
-  xy: 3517, 608
+  xy: 3517, 568
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
   index: -1
 small-rotate-icon
   rotate: false
-  xy: 3846, 914
+  xy: 3811, 833
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
@@ -427,14 +441,14 @@ small-settings-icon
   index: -1
 small-vertical-arrow
   rotate: false
-  xy: 3517, 568
+  xy: 4082, 903
   size: 24, 38
   orig: 24, 38
   offset: 0, 0
   index: -1
 small-x-icon
   rotate: false
-  xy: 3925, 916
+  xy: 4008, 911
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -444,6 +458,13 @@ sounds-and-music-icon
   xy: 3614, 662
   size: 47, 47
   orig: 47, 47
+  offset: 0, 0
+  index: -1
+sounds-icon
+  rotate: false
+  xy: 3966, 912
+  size: 40, 31
+  orig: 40, 31
   offset: 0, 0
   index: -1
 trash-can-icon

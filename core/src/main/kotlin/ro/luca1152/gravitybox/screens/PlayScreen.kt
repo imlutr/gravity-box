@@ -214,7 +214,6 @@ class PlayScreen(
                         Actions.fadeIn(.2f)
                     )
                 )
-
             }
         })
     }
@@ -296,7 +295,25 @@ class PlayScreen(
         })
     }
     private val audioButton = ClickButton(skin, "white-full-round-button").apply {
-        addIcon("sounds-and-music-icon")
+        val order = arrayListOf("sounds-and-music-icon", "music-icon", "sounds-icon", "no-sounds-icon")
+        var current = order.first()
+        fun getNextIcon() =
+            if (order.indexOf(current) == order.size - 1) order.first() else order[order.indexOf(current) + 1]
+        addIcon(current)
+        addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                current = getNextIcon()
+
+                icon!!.remove()
+                iconCell!!.reset()
+                addIcon(current)
+                layout()
+
+                styleName = if (current == "no-sounds-icon") "empty-round-button" else "white-full-round-button"
+                style = skin.get(styleName, Button.ButtonStyle::class.java)
+            }
+        })
     }
     private val leaderboardsButton = ClickButton(skin, "empty-round-button").apply {
         addIcon("leaderboards-icon")
@@ -590,6 +607,7 @@ class PlayScreen(
         engine.update(delta)
         uiStage.draw()
         menuOverlayStage.draw()
+        rootOverlayTable.setLayoutEnabled(false)
     }
 
     private fun updateLeftRightButtons() {
