@@ -130,7 +130,7 @@ class PlayScreen(
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
                     Gdx.net.openURI("https://github.com/Luca1152/gravity-box")
-                    this@popup.remove()
+                    this@popup.hide()
                 }
             })
         }
