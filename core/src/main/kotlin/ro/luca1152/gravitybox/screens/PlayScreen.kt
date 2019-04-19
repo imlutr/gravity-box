@@ -20,8 +20,6 @@ package ro.luca1152.gravitybox.screens
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
@@ -75,17 +73,6 @@ class PlayScreen(
     private val bottomGrayStripHeight = 128f
     private val skin = manager.get(Assets.uiSkin)
     var shiftCameraYBy = 0f
-    private val levelEditorKeyListener = object : InputAdapter() {
-        override fun keyDown(keycode: Int): Boolean {
-            if (keycode == Input.Keys.N && (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)
-                        || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))
-            ) {
-                game.setScreen(TransitionScreen(LevelEditorScreen::class.java, false))
-                return true
-            }
-            return false
-        }
-    }
     private val menuButton = ClickButton(skin, "menu-button").apply {
         addClickRunnable(Runnable {
             addAction(Actions.sequence(
@@ -177,6 +164,15 @@ class PlayScreen(
             }
         })
     }
+    private val levelEditorButton = ClickButton(skin, "gray-full-round-button").apply {
+        addIcon("level-editor-icon")
+        addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                game.setScreen(TransitionScreen(LevelEditorScreen::class.java, false))
+            }
+        })
+    }
     private val topPartImage = object : Image(manager.get(Assets.tileset).findRegion("pixel")) {
         init {
             width = 720f
@@ -258,9 +254,13 @@ class PlayScreen(
         add(rightButton)
         addAction(Actions.fadeOut(0f))
     }
+    private val topTable = Table(skin).apply {
+        add(levelEditorButton).expand().top().left().padLeft(-levelEditorButton.prefWidth)
+        add(githubButton).expand().top().right().padRight(-githubButton.prefWidth)
+    }
     private val topPart = Table(skin).apply {
         addActor(topPartImage)
-        add(githubButton).expand().top().right().padRight(-githubButton.prefWidth).padTop(padTopBottom).row()
+        add(topTable).grow().top().padTop(padTopBottom).row()
         add(leftLevelRightTable).expand().bottom()
     }
     private val heartPopUp = NewPopUp(600f, 450f, skin).apply popup@{
@@ -447,6 +447,9 @@ class PlayScreen(
         githubButton.run {
             addAction(Actions.moveTo(x - padLeftRight - prefWidth, y, .2f, Interpolation.pow3In))
         }
+        levelEditorButton.run {
+            addAction(Actions.moveTo(x + padLeftRight + prefWidth, y, .2f, Interpolation.pow3In))
+        }
         bottomGrayStrip.run {
             addAction(Actions.moveTo(0f, 0f, .2f, Interpolation.pow3In))
         }
@@ -472,6 +475,9 @@ class PlayScreen(
     private fun hideMenuOverlay() {
         githubButton.run {
             addAction(Actions.moveTo(x + padLeftRight + prefWidth, y, .2f, Interpolation.pow3In))
+        }
+        levelEditorButton.run {
+            addAction(Actions.moveTo(x - padLeftRight - prefWidth, y, .2f, Interpolation.pow3In))
         }
         bottomGrayStrip.run {
             addAction(
@@ -604,7 +610,6 @@ class PlayScreen(
         // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
         inputMultiplexer.addProcessor(0, uiStage)
         inputMultiplexer.addProcessor(1, menuOverlayStage)
-        inputMultiplexer.addProcessor(levelEditorKeyListener)
     }
 
     override fun render(delta: Float) {

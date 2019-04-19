@@ -1,6 +1,6 @@
 
 uiskin.png
-size: 4108,2058
+size: 4106,2058
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -48,7 +48,7 @@ button
   index: -1
 checkbox-x-icon
   rotate: false
-  xy: 3545, 617
+  xy: 3165, 126
   size: 30, 30
   orig: 30, 30
   offset: 0, 0
@@ -125,7 +125,7 @@ full-round-button
   index: -1
 full-star
   rotate: false
-  xy: 3545, 587
+  xy: 3585, 619
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -160,7 +160,7 @@ help-icon
   index: -1
 leaderboards-icon
   rotate: false
-  xy: 3884, 911
+  xy: 3966, 906
   size: 40, 37
   orig: 40, 37
   offset: 0, 0
@@ -177,6 +177,13 @@ left-button
   xy: 3419, 438
   size: 50, 60
   orig: 50, 60
+  offset: 0, 0
+  index: -1
+level-editor-icon
+  rotate: false
+  xy: 3884, 908
+  size: 40, 40
+  orig: 40, 40
   offset: 0, 0
   index: -1
 light
@@ -378,7 +385,7 @@ small-button-inside
   index: -1
 small-horizontal-arrow
   rotate: false
-  xy: 4042, 917
+  xy: 3545, 623
   size: 38, 24
   orig: 38, 24
   offset: 0, 0
@@ -441,7 +448,7 @@ small-settings-icon
   index: -1
 small-vertical-arrow
   rotate: false
-  xy: 4082, 903
+  xy: 3545, 583
   size: 24, 38
   orig: 24, 38
   offset: 0, 0
@@ -462,7 +469,7 @@ sounds-and-music-icon
   index: -1
 sounds-icon
   rotate: false
-  xy: 3966, 912
+  xy: 4042, 910
   size: 40, 31
   orig: 40, 31
   offset: 0, 0
