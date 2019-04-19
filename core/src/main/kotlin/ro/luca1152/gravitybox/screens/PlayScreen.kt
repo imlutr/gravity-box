@@ -164,12 +164,47 @@ class PlayScreen(
             }
         })
     }
+    private val levelEditorPopUp = NewPopUp(600f, 400f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            """
+            Do you want to go to the level
+            editor?
+        """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val yesButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel("Go to the level editor", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    game.setScreen(TransitionScreen(LevelEditorScreen::class.java, false))
+                }
+            })
+        }
+        val maybeLaterButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel("Maybe later", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).expand().row()
+            add(yesButton).width(492f).expand().row()
+            add(maybeLaterButton).width(492f).expand().row()
+        }
+    }
     private val levelEditorButton = ClickButton(skin, "gray-full-round-button").apply {
         addIcon("level-editor-icon")
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                game.setScreen(TransitionScreen(LevelEditorScreen::class.java, false))
+                stage.addActor(levelEditorPopUp)
             }
         })
     }
