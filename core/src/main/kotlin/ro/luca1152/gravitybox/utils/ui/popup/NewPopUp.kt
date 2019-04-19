@@ -60,6 +60,11 @@ class NewPopUp(
         setSize(width, height)
         setPosition(720f / 2f - width / 2f, 1280f / 2f - height / 2f)
         pad(38f)
+        addListener(object : ClickListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                return true
+            }
+        })
     }
 
     init {
