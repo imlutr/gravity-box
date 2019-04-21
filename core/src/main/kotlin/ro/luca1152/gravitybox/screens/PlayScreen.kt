@@ -25,7 +25,6 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -250,7 +249,6 @@ class PlayScreen(
                                 updateRoundedPlatforms = true
                                 forceCenterCameraOnPlayer = true
                             }
-                            Colors.hue = MathUtils.random(0, 360)
                         },
                         Actions.fadeIn(.2f)
                     )
@@ -275,7 +273,6 @@ class PlayScreen(
                                 updateRoundedPlatforms = true
                                 forceCenterCameraOnPlayer = true
                             }
-                            Colors.hue = MathUtils.random(0, 360)
                         },
                         Actions.fadeIn(.2f)
                     )
@@ -630,7 +627,7 @@ class PlayScreen(
             addSystem(PlayerCameraSystem(this@PlayScreen))
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
-            addSystem(LevelFinishSystem(restartLevelWhenFinished = false))
+            addSystem(LevelFinishSystem())
 //            addSystem(PhysicsDebugRenderingSystem())
             addSystem(DebugRenderingSystem())
         }

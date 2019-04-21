@@ -63,7 +63,7 @@ class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : Entit
         // Only when the game first starts, after the splash screen
         if (!loadedAnyMap) {
             Colors.updateAllColors()
-            loadedAnyMap = false
+            loadedAnyMap = true
         }
     }
 }
