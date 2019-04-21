@@ -658,14 +658,17 @@ class PlayScreen(
         inputMultiplexer.addProcessor(1, menuOverlayStage)
     }
 
+    private var loadedAnyMap = false
+
     override fun render(delta: Float) {
         updateLeftRightButtons()
         updateLevelLabel()
         shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
         menuOverlayStage.act()
-        clearScreen(Colors.bgColor)
+        clearScreen(if (loadedAnyMap) Colors.bgColor else Color.BLACK)
         engine.update(delta)
+        loadedAnyMap = true
         uiStage.draw()
         menuOverlayStage.draw()
         rootOverlayTable.setLayoutEnabled(false)

@@ -26,6 +26,7 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.assets.json.MapFactory
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.ui.Colors
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -34,6 +35,7 @@ class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : Entit
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
     private lateinit var finishEntity: Entity
+    private var loadedAnyMap = false
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
@@ -53,6 +55,15 @@ class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : Entit
         levelEntity.run {
             level.loadMap = false
             map.loadMap(mapFactory, playerEntity, finishEntity)
+        }
+        initializeColorScheme()
+    }
+
+    private fun initializeColorScheme() {
+        // Only when the game first starts, after the splash screen
+        if (!loadedAnyMap) {
+            Colors.updateAllColors()
+            loadedAnyMap = false
         }
     }
 }
