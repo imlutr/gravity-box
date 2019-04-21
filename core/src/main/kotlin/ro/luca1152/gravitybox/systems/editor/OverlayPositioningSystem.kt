@@ -274,7 +274,7 @@ class OverlayPositioningSystem(
             }
         })
     }
-    private val rotationLabel = DistanceFieldLabel("0°", skin, "bold", 37f, Colors.uiDownColor).apply {
+    private val rotationLabel = DistanceFieldLabel("0°", skin, "regular", 37f, Colors.uiDownColor).apply {
         isVisible = false
     }
     private var horizontalPositionButtonTakesRotationIntoAccount = false
@@ -758,7 +758,7 @@ class OverlayPositioningSystem(
                 updateOverlaySettingsCheckboxes()
             }
         }
-        destroyableCheckboxLabel = DistanceFieldLabel("Destroyable", skin, "bold", 65f, Colors.gameColor)
+        destroyableCheckboxLabel = DistanceFieldLabel("Destroyable", skin, "regular", 65f, Colors.gameColor)
         add(destroyableCheckbox).padRight(20f)
         add(destroyableCheckboxLabel)
     }
@@ -779,7 +779,7 @@ class OverlayPositioningSystem(
                 updateOverlaySettingsCheckboxes()
             }
         }
-        movingCheckboxLabel = DistanceFieldLabel("Moving", skin, "bold", 65f, Colors.gameColor)
+        movingCheckboxLabel = DistanceFieldLabel("Moving", skin, "regular", 65f, Colors.gameColor)
         add(movingCheckbox).padRight(20f)
         add(movingCheckboxLabel)
     }
@@ -800,7 +800,7 @@ class OverlayPositioningSystem(
                 updateOverlaySettingsCheckboxes()
             }
         }
-        rotatingCheckboxLabel = DistanceFieldLabel("Rotating", skin, "bold", 65f, Colors.gameColor)
+        rotatingCheckboxLabel = DistanceFieldLabel("Rotating", skin, "regular", 65f, Colors.gameColor)
         add(rotatingCheckbox).padRight(20f)
         add(rotatingCheckboxLabel)
     }
