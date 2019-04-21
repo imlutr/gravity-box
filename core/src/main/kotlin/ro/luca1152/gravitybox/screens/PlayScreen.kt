@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
+import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
@@ -311,6 +312,16 @@ class PlayScreen(
             val buttonText = DistanceFieldLabel("Rate the game", skin, "regular", 36f, Color.WHITE)
             add(buttonText)
             color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    when (Gdx.app.type) {
+                        Application.ApplicationType.Android -> Gdx.net.openURI("market://details?id=ro.luca1152.gravitybox")
+                        else -> Gdx.net.openURI("https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox")
+                    }
+                    this@popup.hide()
+                }
+            })
         }
         val maybeLaterButton = Button(skin, "long-button").apply {
             val buttonText = DistanceFieldLabel("Maybe later", skin, "regular", 36f, Color.WHITE)
