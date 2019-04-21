@@ -6,10 +6,16 @@
     regular: {
       file: regular.fnt
     }
+    semi-bold: {
+      file: semi-bold.fnt
+    }
   }
   LabelStyle: {
     regular: {
       font: regular
+    }
+    semi-bold: {
+      font: semi-bold
     }
   }
   ButtonStyle: {

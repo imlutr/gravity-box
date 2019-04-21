@@ -282,7 +282,7 @@ class PlayScreen(
             }
         })
     }
-    private val levelLabel = DistanceFieldLabel("#1", skin, "regular", 37f, Colors.gameColor)
+    private val levelLabel = DistanceFieldLabel("#1", skin, "semi-bold", 37f, Colors.gameColor)
     private val leftLevelRightTable = Table(skin).apply {
         add(leftButton).padRight(102f)
         add(levelLabel).padRight(102f)
