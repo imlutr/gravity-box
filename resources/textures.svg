@@ -512,8 +512,8 @@
      inkscape:bbox-nodes="true"
      inkscape:bbox-paths="true"
      inkscape:current-layer="layer1"
-     inkscape:cx="-990.37539"
-     inkscape:cy="-1880.6419"
+     inkscape:cx="2136.2055"
+     inkscape:cy="-1837.2296"
      inkscape:document-units="px"
      inkscape:measure-end="3774.09,-659.996"
      inkscape:measure-start="3774.27,-645.147"
@@ -535,7 +535,7 @@
      inkscape:window-width="1920"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:zoom="0.72949223"
+     inkscape:zoom="0.36474612"
      inkscape:snap-object-midpoints="true">
     <inkscape:grid
        empcolor="#7a1919"
@@ -3690,6 +3690,7 @@
 
 
 
+
 &gt;&gt;&gt;&gt;&gt;&gt;&gt; destroyable-platforms
   <g
    id="g2001"
@@ -5912,5 +5913,24 @@
        inkscape:export-ydpi="95" />
   </g>
 </g>
+<rect
+   style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:10.92071629;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+   height="338.66666"
+   id="rect951-3-6-7-3-36"
+   ry="0"
+   width="190.5"
+   x="490.77078"
+   y="618.79572" />
+<text
+   xml:space="preserve"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.82083321px;line-height:55.85353851px;font-family:Nunito;-inkscape-font-specification:Nunito;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   x="585.83813"
+   y="791.85968"
+   id="text2660"><tspan
+     sodipodi:role="line"
+     id="tspan2658"
+     x="587.82251"
+     y="791.85968"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:Nunito;-inkscape-font-specification:Nunito;letter-spacing:3.96875px;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">GRAVITY BOX</tspan></text>
 </g>
 </svg>

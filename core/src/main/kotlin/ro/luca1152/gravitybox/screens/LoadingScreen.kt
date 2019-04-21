@@ -21,9 +21,11 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
+import ktx.app.clearScreen
 import ktx.assets.load
 import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
@@ -31,22 +33,30 @@ import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.assets.loaders.TextLoader
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
-import ro.luca1152.gravitybox.utils.kotlin.clearScreen
+import ro.luca1152.gravitybox.utils.kotlin.UIViewport
 import ro.luca1152.gravitybox.utils.kotlin.setScreen
-import ro.luca1152.gravitybox.utils.ui.Colors
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class LoadingScreen(
     private val manager: AssetManager = Injekt.get(),
     private val game: MyGame = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get()
+    private val uiStage: UIStage = Injekt.get(),
+    private val uiViewport: UIViewport = Injekt.get()
 ) : KtxScreen {
     private var loadingAssetsTimer = 0f
     private val finishedLoadingAssets
         get() = manager.update()
 
+    private val gravityBoxText = Image(Texture(Gdx.files.internal("graphics/gravity-box-text.png")).apply {
+        setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+    }).apply {
+        x = uiViewport.worldWidth / 2f - prefWidth / 2f
+        y = uiViewport.worldHeight / 2f - prefHeight / 2f
+    }
+
     override fun show() {
+        uiStage.addActor(gravityBoxText)
         loadGraphics()
         loadMaps()
     }
@@ -77,7 +87,8 @@ class LoadingScreen(
 
     override fun render(delta: Float) {
         update(delta)
-        clearScreen(Colors.bgColor)
+        clearScreen(0f, 0f, 0f, 1f)
+        uiStage.draw()
     }
 
     private var finishedLoadingOnce = false
@@ -93,7 +104,13 @@ class LoadingScreen(
             }
             logLoadingTime()
             addScreens()
-            game.setScreen(TransitionScreen(PlayScreen::class.java, false))
+            game.setScreen(
+                TransitionScreen(
+                    PlayScreen::class.java,
+                    fadeOutCurrentScreen = false,
+                    clearScreenWithBlack = true
+                )
+            )
         }
     }
 
