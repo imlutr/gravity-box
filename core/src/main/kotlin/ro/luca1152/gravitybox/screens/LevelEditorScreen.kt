@@ -127,13 +127,13 @@ class LevelEditorScreen(
     private val leaveConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to go back to the main menu?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     )
     private val saveBeforeLeavingPopUp = YesNoTextPopUp(
         550f, 350f,
         "Do you want to save the current level?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     ).apply {
         yesClickRunnable = Runnable {
@@ -184,7 +184,7 @@ class LevelEditorScreen(
     private val saveConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to save the level?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor,
         yesIsHighlighted = true
     ).apply {
@@ -198,25 +198,25 @@ class LevelEditorScreen(
     private val levelSavedTextPopUp = TextPopUp(
         450f, 250f,
         "Level saved successfully.",
-        skin, "bold", 50f, Colors.gameColor
+        skin, "regular", 50f, Colors.gameColor
     )
     private val deleteConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to delete the level #[x]?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     )
     private val loadConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to load the level #[x]?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     )
     private var loadLevelPopUp = PopUp(0f, 0f, skin)
     private val newLevelConfirmationPopUp = YesNoTextPopUp(
         520f, 400f,
         "Are you sure you want to create a new level?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     ).apply {
         yesClickRunnable = Runnable {
@@ -236,7 +236,7 @@ class LevelEditorScreen(
     private val saveLevelBeforeCreationConfirmationPopUp = YesNoTextPopUp(
         550f, 350f,
         "Do you want to save the current level?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     ).apply {
         yesClickRunnable = Runnable {
@@ -254,31 +254,31 @@ class LevelEditorScreen(
         }
     }
     private val cameraPopUpLeftColumn = Table(skin).apply {
-        val left = DistanceFieldLabel("Left", skin, "bold", 65f, Colors.gameColor)
-        val right = DistanceFieldLabel("Right", skin, "bold", 65f, Colors.gameColor)
-        val top = DistanceFieldLabel("Top", skin, "bold", 65f, Colors.gameColor)
-        val bottom = DistanceFieldLabel("Bottom", skin, "bold", 65f, Colors.gameColor)
+        val left = DistanceFieldLabel("Left", skin, "regular", 65f, Colors.gameColor)
+        val right = DistanceFieldLabel("Right", skin, "regular", 65f, Colors.gameColor)
+        val top = DistanceFieldLabel("Top", skin, "regular", 65f, Colors.gameColor)
+        val bottom = DistanceFieldLabel("Bottom", skin, "regular", 65f, Colors.gameColor)
         defaults().padTop(7f).padBottom(7f)
         add(left).row()
         add(right).row()
         add(top).row()
         add(bottom)
     }
-    private val newButton = ClickTextButton("simple-button", skin, "New", "bold", 75f).apply {
+    private val newButton = ClickTextButton("simple-button", skin, "New", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(newLevelConfirmationPopUp)
         }
     }
-    private val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 75f).apply {
+    private val saveButton = ClickTextButton("simple-button", skin, "Save", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(saveConfirmationPopUp)
         }
     }
-    private val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 75f).apply {
+    private val loadButton = ClickTextButton("simple-button", skin, "Load", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
@@ -286,14 +286,14 @@ class LevelEditorScreen(
             uiStage.addActor(loadLevelPopUp)
         }
     }
-    private val cameraButton = ClickTextButton("simple-button", skin, "Camera", "bold", 75f).apply {
+    private val cameraButton = ClickTextButton("simple-button", skin, "Camera", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(createCameraPopUp())
         }
     }
-    private val playerButton = ClickTextButton("simple-button", skin, "Player", "bold", 75f).apply {
+    private val playerButton = ClickTextButton("simple-button", skin, "Player", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
@@ -614,11 +614,11 @@ class LevelEditorScreen(
 
     private fun createLoadLevelRowLeft(mapFactory: MapFactory, lastEditedString: String) = Table(skin).apply {
         val levelIdLabel = DistanceFieldLabel(
-            "Level #${mapFactory.id}", skin, "bold",
+            "Level #${mapFactory.id}", skin, "regular",
             57f, Colors.gameColor
         )
         val lastEditedLabel = DistanceFieldLabel(
-            lastEditedString, skin, "extra-bold",
+            lastEditedString, skin, "regular",
             37f, Colors.gameColor
         )
         add(levelIdLabel).grow().left().row()
@@ -701,7 +701,7 @@ class LevelEditorScreen(
 
     private fun createMinusPaddingPlus(paddingName: String) = Table(skin).apply {
         val paddingValueLabel =
-            DistanceFieldLabel("${getPaddingFromName(paddingName)}", skin, "bold", 65f, Colors.gameColor)
+            DistanceFieldLabel("${getPaddingFromName(paddingName)}", skin, "regular", 65f, Colors.gameColor)
         val minusButton = ClickButton(skin, "small-round-button").apply {
             addIcon("small-minus-icon")
             setColors(Colors.gameColor, Colors.uiDownColor)
@@ -734,7 +734,7 @@ class LevelEditorScreen(
     }
 
     private fun createCameraPopUp() = PopUp(590f, 530f, skin).apply {
-        val title = DistanceFieldLabel("Padding", skin, "bold", 70f, Colors.gameColor)
+        val title = DistanceFieldLabel("Padding", skin, "regular", 70f, Colors.gameColor)
         widget.run {
             pad(40f)
             add(title).top().colspan(2).row()
