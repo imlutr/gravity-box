@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.app.KtxScreen
 import ro.luca1152.gravitybox.MyGame
@@ -31,6 +32,7 @@ import uy.kohesive.injekt.api.get
 class TransitionScreen(
     private val nextScreen: Class<out KtxScreen>,
     private val fadeOutCurrentScreen: Boolean = true,
+    private val clearScreenWithBlack: Boolean = false,
     private val game: MyGame = Injekt.get(),
     private val uiStage: UIStage = Injekt.get(),
     private val gameStage: GameStage = Injekt.get(),
@@ -64,7 +66,7 @@ class TransitionScreen(
 
     override fun render(delta: Float) {
         update()
-        clearScreen(Colors.bgColor)
+        clearScreen(if (clearScreenWithBlack) Color.BLACK else Colors.bgColor)
         if (!transitionScreenIsHidden && currentScreen !is TransitionScreen) {
             currentScreen.render(delta)
         } else if (currentScreen is TransitionScreen) {

@@ -104,7 +104,13 @@ class LoadingScreen(
             }
             logLoadingTime()
             addScreens()
-            game.setScreen(TransitionScreen(PlayScreen::class.java, false))
+            game.setScreen(
+                TransitionScreen(
+                    PlayScreen::class.java,
+                    fadeOutCurrentScreen = false,
+                    clearScreenWithBlack = true
+                )
+            )
         }
     }
 
