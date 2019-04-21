@@ -23,8 +23,8 @@ import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
 
 object LevelEntity {
-    fun createEntity(levelId: Int = 0) = newEntity()
+    fun createEntity(levelId: Int = 0, hue: Int = 180) = newEntity()
         .level(levelId)
-        .map(levelId)
+        .map(levelId, hue)
         .addToEngine()
 }

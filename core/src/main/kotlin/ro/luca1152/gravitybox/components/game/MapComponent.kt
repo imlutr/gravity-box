@@ -43,6 +43,7 @@ import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
+import ro.luca1152.gravitybox.utils.ui.Colors
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.StringWriter
@@ -69,6 +70,7 @@ class MapComponent : Component, Poolable {
     }
 
     var levelId = 1
+    var hue = 180
     var mapLeft = Float.POSITIVE_INFINITY
     var mapRight = Float.NEGATIVE_INFINITY
     var mapBottom = Float.POSITIVE_INFINITY
@@ -80,8 +82,9 @@ class MapComponent : Component, Poolable {
     var paddingTop = 5f
     var paddingBottom = 5f
 
-    fun set(levelId: Int) {
+    fun set(levelId: Int, hue: Int) {
         this.levelId = levelId
+        this.hue = hue
     }
 
     fun updateMapBounds(engine: PooledEngine = Injekt.get()) {
@@ -183,7 +186,7 @@ class MapComponent : Component, Poolable {
     ) {
         destroyAllBodies()
         removeObjects()
-        createMap(mapFactory.id, mapFactory.padding)
+        createMap(mapFactory.id, mapFactory.hue, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
         createObjects(mapFactory.objects, isLevelEditor)
@@ -216,8 +219,14 @@ class MapComponent : Component, Poolable {
         }
     }
 
-    private fun createMap(id: Int, padding: PaddingPrototype) {
+    private fun createMap(id: Int, hue: Int, padding: PaddingPrototype) {
         levelId = id
+
+        this.hue = hue
+        Colors.hue = hue
+        Colors.LightTheme.resetAllColors(Colors.hue)
+        Colors.DarkTheme.resetAllColors(Colors.hue)
+
         paddingLeft = padding.left.toFloat()
         paddingRight = padding.right.toFloat()
         paddingTop = padding.top.toFloat()
@@ -324,6 +333,7 @@ class MapComponent : Component, Poolable {
     override fun reset() {
         destroyAllBodies()
         levelId = 1
+        hue = 180
         mapLeft = Float.POSITIVE_INFINITY
         mapRight = Float.NEGATIVE_INFINITY
         mapBottom = Float.POSITIVE_INFINITY
@@ -348,7 +358,7 @@ class MapComponent : Component, Poolable {
 val Entity.map: MapComponent
     get() = MapComponent[this]
 
-fun Entity.map(levelId: Int) =
+fun Entity.map(levelId: Int, hue: Int) =
     add(createComponent<MapComponent>().apply {
-        set(levelId)
+        set(levelId, hue)
     })!!
