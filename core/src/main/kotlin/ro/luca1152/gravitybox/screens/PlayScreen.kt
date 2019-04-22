@@ -332,6 +332,11 @@ class PlayScreen(
                         Application.ApplicationType.Android -> Gdx.net.openURI("market://details?id=ro.luca1152.gravitybox")
                         else -> Gdx.net.openURI("https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox")
                     }
+                    preferences.run {
+                        putBoolean("didRateGame", true)
+                        flush()
+                    }
+                    makeHeartButtonFull()
                     this@popup.hide()
                 }
             })
@@ -353,7 +358,10 @@ class PlayScreen(
             add(maybeLaterButton).width(492f).expand().bottom().row()
         }
     }
-    private val heartButton = ClickButton(skin, "empty-round-button").apply {
+    private val heartButton = ClickButton(
+        skin,
+        if (preferences.getBoolean("didRateGame")) "white-full-round-button" else "empty-round-button"
+    ).apply {
         addIcon("heart-icon")
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -516,6 +524,11 @@ class PlayScreen(
                         Application.ApplicationType.Android -> Gdx.net.openURI("market://details?id=ro.luca1152.gravitybox")
                         else -> Gdx.net.openURI("https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox")
                     }
+                    preferences.run {
+                        putBoolean("didRateGame", true)
+                        flush()
+                    }
+                    makeHeartButtonFull()
                     this@popup.hide()
                 }
             })
@@ -708,6 +721,13 @@ class PlayScreen(
 
     private fun handleAllInput() {
         Gdx.input.inputProcessor = inputMultiplexer
+    }
+
+    private fun makeHeartButtonFull() {
+        heartButton.run {
+            styleName = "white-full-round-button"
+            style = skin.get(styleName, Button.ButtonStyle::class.java)
+        }
     }
 
     private fun createUI() {
