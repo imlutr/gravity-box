@@ -39,12 +39,10 @@ class TransitionScreen(
     private val overlayStage: OverlayStage = Injekt.get(),
     private val engine: PooledEngine = Injekt.get()
 ) : KtxScreen {
-    companion object {
-        private const val FADE_DURATION = .5f
-    }
-
-    private var transitionScreenIsHidden = false
+    private val previousScreen = game.shownScreen
     private var currentScreen = game.shownScreen
+    private val fadeDuration = .5f
+    private var transitionScreenIsHidden = false
     private val finishedFadingOut
         get() = uiStage.root.actions.size == 0
 
@@ -52,15 +50,14 @@ class TransitionScreen(
         if (currentScreen !is TransitionScreen) {
             Gdx.input.inputProcessor = null
             fadeOutEverything()
-            game.transitionOldScreen = currentScreen
         }
     }
 
     private fun fadeOutEverything() {
         if (fadeOutCurrentScreen) {
-            uiStage.addAction(Actions.fadeOut(FADE_DURATION))
-            gameStage.addAction(Actions.fadeOut(FADE_DURATION))
-            overlayStage.addAction(Actions.fadeOut(FADE_DURATION))
+            uiStage.addAction(Actions.fadeOut(fadeDuration))
+            gameStage.addAction(Actions.fadeOut(fadeDuration))
+            overlayStage.addAction(Actions.fadeOut(fadeDuration))
         }
     }
 
@@ -70,30 +67,34 @@ class TransitionScreen(
         if (!transitionScreenIsHidden && currentScreen !is TransitionScreen) {
             currentScreen.render(delta)
         } else if (currentScreen is TransitionScreen) {
-            game.transitionOldScreen!!.render(delta)
+            previousScreen.render(delta)
         }
     }
 
     private fun update() {
         Colors.lerpTowardsDefaultColors(.1f)
         if (finishedFadingOut || !fadeOutCurrentScreen) {
-            Colors.resetAllColors()
-            uiStage.clear()
-            gameStage.clear()
-            overlayStage.clear()
-            engine.clear()
+            cleanUp()
             game.setScreen(nextScreen)
             fadeInEverything()
         }
+    }
+
+    private fun cleanUp() {
+        uiStage.clear()
+        gameStage.clear()
+        overlayStage.clear()
+        engine.clear()
+        Colors.resetAllColors()
     }
 
     private fun fadeInEverything() {
         uiStage.addAction(Actions.fadeOut(0f))
         gameStage.addAction(Actions.fadeOut(0f))
         overlayStage.addAction(Actions.fadeOut(0f))
-        uiStage.addAction(Actions.fadeIn(FADE_DURATION))
-        gameStage.addAction(Actions.fadeIn(FADE_DURATION))
-        overlayStage.addAction(Actions.fadeIn(FADE_DURATION))
+        uiStage.addAction(Actions.fadeIn(fadeDuration))
+        gameStage.addAction(Actions.fadeIn(fadeDuration))
+        overlayStage.addAction(Actions.fadeIn(fadeDuration))
     }
 
     override fun hide() {

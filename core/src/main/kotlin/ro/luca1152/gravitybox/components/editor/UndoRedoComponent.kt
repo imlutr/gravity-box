@@ -25,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Pool.Poolable
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
@@ -305,7 +304,10 @@ class ResizeCommand(
     }
 }
 
-class MakeObjectDestroyableCommand(override val affectedEntity: Entity) : Command() {
+class MakeObjectDestroyableCommand(
+    override val affectedEntity: Entity,
+    engine: PooledEngine = Injekt.get()
+) : Command() {
     private val mapEntity: Entity = engine.getSingleton<LevelComponent>()
 
     override fun execute() {
@@ -337,7 +339,10 @@ class MakeObjectNonDestroyableCommand(override val affectedEntity: Entity) : Com
     }
 }
 
-class MakeObjectMovingCommand(override val affectedEntity: Entity) : Command() {
+class MakeObjectMovingCommand(
+    override val affectedEntity: Entity,
+    private val engine: PooledEngine = Injekt.get()
+) : Command() {
     override fun execute() {
         affectedEntity.run {
             movingObject(scene2D.centerX + 1f, scene2D.centerY + 1f)

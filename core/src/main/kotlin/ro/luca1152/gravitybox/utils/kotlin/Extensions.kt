@@ -34,7 +34,6 @@ import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxGame
 import ktx.app.clearScreen
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -70,11 +69,6 @@ fun screenToWorldCoordinates(screenX: Int, screenY: Int, gameCamera: GameCamera 
     return coords
 }
 
-fun Stage.hitScreen(screenX: Int, screenY: Int, touchable: Boolean = true): Actor? {
-    val stageCoords = screenToStageCoordinates(Vector2(screenX.toFloat(), screenY.toFloat()))
-    return hit(stageCoords.x, stageCoords.y, touchable)
-}
-
 fun Float.roundToNearest(nearest: Float, threshold: Float, startingValue: Float = 0f): Float {
     val valueRoundedDown = MathUtils.floor(this / nearest) * nearest
     val valueRoundedUp = MathUtils.ceil(this / nearest) * nearest
@@ -107,6 +101,7 @@ inline fun <reified T : Component> Engine.getSingleton(): Entity {
     return entity
 }
 
+val engine = Injekt.get<PooledEngine>()
 inline fun <reified T : Component> createComponent(): T {
     return engine.createComponent(T::class.java)
 }
@@ -227,13 +222,9 @@ inline fun <T> Iterable<T>.filterNullableSingleton(predicate: (T) -> Boolean): T
     }
 }
 
-fun Entity.addToEngine(): Entity {
+fun Entity.addToEngine(engine: PooledEngine = Injekt.get()): Entity {
     engine.addEntity(this)
     return this
 }
 
-fun newEntity() = engine.createEntity()!!
-
-fun Color.isEqualWithoutAlphaTo(color: Color): Boolean {
-    return this.r == color.r && this.g == color.g && this.b == color.b
-}
+fun newEntity() = Injekt.get<PooledEngine>().createEntity()!!

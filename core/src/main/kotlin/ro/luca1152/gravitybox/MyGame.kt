@@ -18,6 +18,7 @@
 package ro.luca1152.gravitybox
 
 import com.badlogic.ashley.core.PooledEngine
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
@@ -41,8 +42,6 @@ class MyGame : KtxGame<Screen>() {
         const val LEVELS_NUMBER = 9
     }
 
-    var transitionOldScreen: Screen? = null
-
     override fun create() {
         Box2D.init()
         initializeDependencyInjection()
@@ -55,19 +54,20 @@ class MyGame : KtxGame<Screen>() {
             addSingleton(this@MyGame)
             addSingleton(SpriteBatch() as Batch)
             addSingleton(AssetManager())
+            addSingleton(InputMultiplexer())
+            addSingleton(PooledEngine())
+            addSingleton(ShapeRenderer())
+            addSingleton(Gdx.app.getPreferences("Gravity Box by Luca1152"))
+            addSingleton(World(Vector2(0f, MapComponent.GRAVITY), true))
             addSingleton(GameCamera)
             addSingleton(GameStage)
             addSingleton(GameViewport)
-            addSingleton(InputMultiplexer())
-            addSingleton(engine)
-            addSingleton(ShapeRenderer())
             addSingleton(OverlayCamera)
             addSingleton(OverlayViewport)
             addSingleton(OverlayStage)
             addSingleton(UICamera)
             addSingleton(UIStage)
             addSingleton(UIViewport)
-            addSingleton(World(Vector2(0f, MapComponent.GRAVITY), true))
         }
     }
 
@@ -85,5 +85,3 @@ class MyGame : KtxGame<Screen>() {
         }
     }
 }
-
-val engine = PooledEngine()
