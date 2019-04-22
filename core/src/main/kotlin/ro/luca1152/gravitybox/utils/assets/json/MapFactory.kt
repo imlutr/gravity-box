@@ -25,5 +25,4 @@ class MapFactory {
     var player = PlayerPrototype()
     var finish = FinishPrototype()
     var objects = ArrayList<ObjectPrototype>()
-
 }

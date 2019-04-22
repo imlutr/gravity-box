@@ -57,11 +57,17 @@ class JsonComponent : Component, Poolable {
                     tryGet(CollectiblePointComponent) != null -> {
                         json.writeValue("type", "point")
                     }
+                    tryGet(TextComponent) != null -> {
+                        json.writeValue("type", "text")
+                    }
                 }
                 if (tryGet(MapObjectComponent) != null) json.run {
                     writeValue("id", mapObject.id)
                 }
                 if (tryGet(Scene2DComponent) != null) json.run {
+                    if (tryGet(TextComponent) != null) json.run {
+                        writeValue("string", text.string)
+                    }
                     writeObjectStart("position")
                     writeValue("x", scene2D.centerX.metersToPixels)
                     writeValue("y", scene2D.centerY.metersToPixels)

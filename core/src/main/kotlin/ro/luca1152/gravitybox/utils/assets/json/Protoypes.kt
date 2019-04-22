@@ -49,6 +49,7 @@ class MovingToPrototype {
 class ObjectPrototype {
     var type = ""
     var id = 0
+    var string = ""
     var position = PositionPrototype()
     var movingTo = MovingToPrototype()
     var width = 0f
