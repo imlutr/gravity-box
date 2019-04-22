@@ -50,6 +50,7 @@ class ObjectSelectionSystem(
             touchedActors =
                 gameStage.hitAllScreen(screenX, screenY).filter { isMapObject(it) }.distinctBy { it.userObject }
                     .sortedBy { it.zIndex }
+
             if (touchedActors.isEmpty()) {
                 return false
             }

@@ -53,6 +53,7 @@ import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
 import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(
@@ -663,6 +664,7 @@ class PlayScreen(
     }
 
     override fun show() {
+        Injekt.addSingleton(skin)
         createGame()
         createUI()
     }
@@ -757,17 +759,25 @@ class PlayScreen(
     private var loadedAnyMap = false
 
     override fun render(delta: Float) {
+        update()
+        draw(delta)
+        loadedAnyMap = true
+        rootOverlayTable.setLayoutEnabled(false)
+    }
+
+    private fun update() {
         updateLeftRightButtons()
         updateLevelLabel()
         shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
         menuOverlayStage.act()
+    }
+
+    private fun draw(delta: Float) {
         clearScreen(if (loadedAnyMap) Colors.bgColor else Color.BLACK)
         engine.update(delta)
-        loadedAnyMap = true
         uiStage.draw()
         menuOverlayStage.draw()
-        rootOverlayTable.setLayoutEnabled(false)
     }
 
     private fun updateLeftRightButtons() {

@@ -37,6 +37,7 @@ import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
+import ro.luca1152.gravitybox.entities.game.TextEntity
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
@@ -125,7 +126,7 @@ class MapComponent : Component, Poolable {
                         finishPoint = it
                     }
                     it.tryGet(PlatformComponent) != null || it.tryGet(DestroyablePlatformComponent) != null ||
-                            it.tryGet(CollectiblePointComponent) != null -> {
+                            it.tryGet(CollectiblePointComponent) != null || it.tryGet(TextComponent) != null -> {
                         objects.add(it)
                     }
                 }
@@ -263,6 +264,7 @@ class MapComponent : Component, Poolable {
             when {
                 it.type == "platform" -> createPlatform(it, isLevelEditor)
                 it.type == "point" -> createPoint(it)
+                it.type == "text" -> createText(it)
             }
         }
     }
@@ -303,6 +305,15 @@ class MapComponent : Component, Poolable {
             point.position.x.pixelsToMeters,
             point.position.y.pixelsToMeters,
             point.rotation.toFloat()
+        )
+    }
+
+    private fun createText(text: ObjectPrototype) {
+        TextEntity.createEntity(
+            text.id,
+            text.string,
+            text.position.x,
+            text.position.y
         )
     }
 
