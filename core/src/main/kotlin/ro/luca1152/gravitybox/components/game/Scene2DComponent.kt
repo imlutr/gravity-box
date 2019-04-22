@@ -41,6 +41,7 @@ import ro.luca1152.gravitybox.utils.kotlin.getRectangleCenter
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+@Suppress("MemberVisibilityCanBePrivate")
 class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Component, Poolable {
     val group = object : Group() {
         // The default implementation of Group's hit() is to return the children

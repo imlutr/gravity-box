@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.entities.game
 
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -24,7 +25,6 @@ import ro.luca1152.gravitybox.components.game.ColorType
 import ro.luca1152.gravitybox.components.game.color
 import ro.luca1152.gravitybox.components.game.explosion
 import ro.luca1152.gravitybox.components.game.scene2D
-import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
@@ -35,7 +35,8 @@ import uy.kohesive.injekt.api.get
 object ExplosionImageEntity {
     fun createEntity(
         x: Float, y: Float,
-        manager: AssetManager = Injekt.get()
+        manager: AssetManager = Injekt.get(),
+        engine: PooledEngine = Injekt.get()
     ) = newEntity()
         .explosion()
         .scene2D(manager.get(Assets.tileset).findRegion("circle"), x, y)

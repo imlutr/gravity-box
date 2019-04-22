@@ -19,9 +19,7 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
-import com.badlogic.gdx.Application
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.*
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
@@ -37,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.graphics.copy
+import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
@@ -64,7 +63,8 @@ class PlayScreen(
     private val world: World = Injekt.get(),
     private val inputMultiplexer: InputMultiplexer = Injekt.get(),
     private val uiStage: UIStage = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get()
+    private val gameStage: GameStage = Injekt.get(),
+    private val preferences: Preferences = Injekt.get()
 ) : KtxScreen {
     private lateinit var levelEntity: Entity
     private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, UICamera), Injekt.get())
@@ -73,6 +73,19 @@ class PlayScreen(
     private val bottomGrayStripHeight = 128f
     private val skin = manager.get(Assets.uiSkin)
     var shiftCameraYBy = 0f
+    private val clearPreferencesListener = object : InputAdapter() {
+        override fun keyDown(keycode: Int): Boolean {
+            if (keycode == Input.Keys.F5 && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                preferences.run {
+                    clear()
+                    flush()
+                }
+                info { "Cleared all preferences." }
+                return true
+            }
+            return false
+        }
+    }
     private val menuButton = ClickButton(skin, "menu-button").apply {
         addClickRunnable(Runnable {
             addAction(Actions.sequence(
@@ -280,7 +293,10 @@ class PlayScreen(
             }
         })
     }
-    private val levelLabel = DistanceFieldLabel("#1", skin, "semi-bold", 37f, Colors.gameColor)
+    private val levelLabel = DistanceFieldLabel(
+        "#${preferences.getInteger("highestFinishedLevel", 0) + 1}",
+        skin, "semi-bold", 37f, Colors.gameColor
+    )
     private val leftLevelRightTable = Table(skin).apply {
         add(leftButton).padRight(102f)
         add(levelLabel).padRight(102f)
@@ -316,6 +332,11 @@ class PlayScreen(
                         Application.ApplicationType.Android -> Gdx.net.openURI("market://details?id=ro.luca1152.gravitybox")
                         else -> Gdx.net.openURI("https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox")
                     }
+                    preferences.run {
+                        putBoolean("didRateGame", true)
+                        flush()
+                    }
+                    makeHeartButtonFull()
                     this@popup.hide()
                 }
             })
@@ -337,7 +358,10 @@ class PlayScreen(
             add(maybeLaterButton).width(492f).expand().bottom().row()
         }
     }
-    private val heartButton = ClickButton(skin, "empty-round-button").apply {
+    private val heartButton = ClickButton(
+        skin,
+        if (preferences.getBoolean("didRateGame")) "white-full-round-button" else "empty-round-button"
+    ).apply {
         addIcon("heart-icon")
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -480,6 +504,68 @@ class PlayScreen(
         add(middlePart).expand()
         add(rightPart).padRight(padLeftRight).expand().right()
     }
+    val rateGamePromptPopUp = NewPopUp(600f, 570f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            """
+            Would you like to rate the game
+            or give feedback?
+
+            (I actually read every review)
+        """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val rateButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel("Rate the game", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    when (Gdx.app.type) {
+                        Application.ApplicationType.Android -> Gdx.net.openURI("market://details?id=ro.luca1152.gravitybox")
+                        else -> Gdx.net.openURI("https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox")
+                    }
+                    preferences.run {
+                        putBoolean("didRateGame", true)
+                        flush()
+                    }
+                    makeHeartButtonFull()
+                    this@popup.hide()
+                }
+            })
+        }
+        val maybeLaterButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel("Maybe later", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        val neverButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel("Never :(", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    preferences.run {
+                        putBoolean("neverPromptUserToRate", true)
+                        flush()
+                    }
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).expand().top().row()
+            add(rateButton).width(492f).expand().row()
+            add(maybeLaterButton).width(492f).expand().row()
+            add(neverButton).width(492f).expand().row()
+        }
+    }
     private val rootOverlayTable = Table().apply {
         setFillParent(true)
         add(topPart).expand().fill().row()
@@ -593,7 +679,7 @@ class PlayScreen(
     }
 
     private fun createGameEntities() {
-        levelEntity = LevelEntity.createEntity(1).apply {
+        levelEntity = LevelEntity.createEntity(preferences.getInteger("highestFinishedLevel", 0) + 1).apply {
             level.loadMap = true
             level.forceUpdateMap = true
         }
@@ -627,7 +713,7 @@ class PlayScreen(
             addSystem(PlayerCameraSystem(this@PlayScreen))
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
-            addSystem(LevelFinishSystem())
+            addSystem(LevelFinishSystem(playScreen = this@PlayScreen))
 //            addSystem(PhysicsDebugRenderingSystem())
             addSystem(DebugRenderingSystem())
         }
@@ -635,6 +721,13 @@ class PlayScreen(
 
     private fun handleAllInput() {
         Gdx.input.inputProcessor = inputMultiplexer
+    }
+
+    private fun makeHeartButtonFull() {
+        heartButton.run {
+            styleName = "white-full-round-button"
+            style = skin.get(styleName, Button.ButtonStyle::class.java)
+        }
     }
 
     private fun createUI() {
@@ -653,6 +746,7 @@ class PlayScreen(
         // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
         inputMultiplexer.addProcessor(0, uiStage)
         inputMultiplexer.addProcessor(1, menuOverlayStage)
+        inputMultiplexer.addProcessor(2, clearPreferencesListener)
     }
 
     private var loadedAnyMap = false
@@ -678,7 +772,11 @@ class PlayScreen(
             makeButtonTouchable(leftButton)
         }
 
-        if (levelEntity.level.levelId == MyGame.LEVELS_NUMBER) {
+        if (levelEntity.level.levelId == Math.min(
+                MyGame.LEVELS_NUMBER,
+                preferences.getInteger("highestFinishedLevel", 0) + 1
+            )
+        ) {
             makeButtonUntouchable(rightButton)
         } else {
             makeButtonTouchable(rightButton)

@@ -33,7 +33,6 @@ import com.badlogic.gdx.utils.TimeUtils
 import ktx.collections.sortBy
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.*
-import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
@@ -196,7 +195,7 @@ class MapComponent : Component, Poolable {
         }
     }
 
-    private fun makeObjectsTransparent() {
+    private fun makeObjectsTransparent(engine: PooledEngine = Injekt.get()) {
         engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
             it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
         }

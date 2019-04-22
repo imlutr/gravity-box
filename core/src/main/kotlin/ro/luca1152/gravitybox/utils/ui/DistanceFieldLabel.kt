@@ -76,7 +76,7 @@ class DistanceFieldLabel(
         private const val DEFAULT_FONT_SIZE = 32f
     }
 
-    var syncColorsWithColorScheme = true
+    private var syncColorsWithColorScheme = true
 
     init {
         this.color = color
