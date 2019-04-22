@@ -18,9 +18,9 @@
 package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import ro.luca1152.gravitybox.components.editor.json
+import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.kotlin.OverlayStage
+import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
@@ -33,7 +33,7 @@ object TextEntity {
         string: String,
         x: Float, y: Float,
         skin: Skin = Injekt.get(),
-        overlayStage: OverlayStage = Injekt.get()
+        gameStage: GameStage = Injekt.get()
     ) = newEntity().apply {
         mapObject(id)
         text(string)
@@ -43,13 +43,25 @@ object TextEntity {
                 val label = DistanceFieldLabel(text.string, skin, "regular", 37f).apply {
                     setSize(prefWidth, prefHeight)
                 }
+                setScale(1 / PPM)
                 addActor(label)
-                setSize(label.width, label.height)
+                setSize(label.width.pixelsToMeters, label.height.pixelsToMeters)
             }
-            centerX = x
-            centerY = y
-            overlayStage.addActor(group)
+            centerX = x.pixelsToMeters
+            centerY = y.pixelsToMeters
+            gameStage.addActor(group)
         }
+        // Can't get the scene2D size to work properly (it is too small), so this is a workaround, as there wouldn't
+        // be a a need for extended touch, normally
+        extendedTouch(this, scene2D.width, scene2D.height)
+
+        polygon(scene2D)
+        snap()
+        editorObject()
+        overlay(
+            showMovementButtons = true, showRotationButton = false,
+            showDeletionButton = true, showResizingButtons = false, showSettingsButton = false
+        )
         color(ColorType.DARK)
         json(this, "text")
         addToEngine()

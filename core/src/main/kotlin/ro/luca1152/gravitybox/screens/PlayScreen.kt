@@ -43,8 +43,6 @@ import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
-import ro.luca1152.gravitybox.systems.editor.OverlayCameraSyncSystem
-import ro.luca1152.gravitybox.systems.editor.OverlayRenderingSystem
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
@@ -67,7 +65,6 @@ class PlayScreen(
     private val inputMultiplexer: InputMultiplexer = Injekt.get(),
     private val uiStage: UIStage = Injekt.get(),
     private val gameStage: GameStage = Injekt.get(),
-    private val overlayStage: OverlayStage = Injekt.get(),
     private val preferences: Preferences = Injekt.get()
 ) : KtxScreen {
     private lateinit var levelEntity: Entity
@@ -722,9 +719,7 @@ class PlayScreen(
             addSystem(CanFinishLevelSystem())
             addSystem(PlayerCameraSystem(this@PlayScreen))
             addSystem(UpdateGameCameraSystem())
-            addSystem(OverlayCameraSyncSystem())
             addSystem(ImageRenderingSystem())
-            addSystem(OverlayRenderingSystem())
             addSystem(LevelFinishSystem(playScreen = this@PlayScreen))
 //            addSystem(PhysicsDebugRenderingSystem())
             addSystem(DebugRenderingSystem())
