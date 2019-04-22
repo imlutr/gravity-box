@@ -105,6 +105,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                 }
             }
         }
+        levelEntity.map.collectedPointsCount = 0
     }
 
     private fun resetBodiesToInitialState() {

@@ -74,12 +74,18 @@ class MapComponent : Component, Poolable {
 
     var levelId = 1
     var hue = 180
+
+    var pointsCount = 0
+    var collectedPointsCount = 0
+
     var mapLeft = Float.POSITIVE_INFINITY
     var mapRight = Float.NEGATIVE_INFINITY
     var mapBottom = Float.POSITIVE_INFINITY
     var mapTop = Float.NEGATIVE_INFINITY
+
     var updateRoundedPlatforms = true
     var forceCenterCameraOnPlayer = false
+
     var paddingLeft = 2f
     var paddingRight = 2f
     var paddingTop = 5f
@@ -192,6 +198,7 @@ class MapComponent : Component, Poolable {
         finishEntity: Entity,
         isLevelEditor: Boolean = false
     ) {
+        resetPoints()
         destroyAllBodies()
         removeObjects()
         createMap(mapFactory.id, mapFactory.hue, mapFactory.padding)
@@ -202,6 +209,11 @@ class MapComponent : Component, Poolable {
         if (isLevelEditor) {
             makeObjectsTransparent()
         }
+    }
+
+    private fun resetPoints() {
+        collectedPointsCount = 0
+        pointsCount = 0
     }
 
     private fun makeObjectsTransparent() {
@@ -313,6 +325,7 @@ class MapComponent : Component, Poolable {
     }
 
     private fun createPoint(context: Context, point: ObjectPrototype) {
+        pointsCount++
         CollectiblePointEntity.createEntity(
             context,
             point.id,
@@ -356,6 +369,8 @@ class MapComponent : Component, Poolable {
         destroyAllBodies()
         levelId = 1
         hue = 180
+        pointsCount = 0
+        collectedPointsCount = 0
         mapLeft = Float.POSITIVE_INFINITY
         mapRight = Float.NEGATIVE_INFINITY
         mapBottom = Float.POSITIVE_INFINITY

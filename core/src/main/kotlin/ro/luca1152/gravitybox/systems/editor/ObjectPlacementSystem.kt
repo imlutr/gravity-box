@@ -42,6 +42,7 @@ class ObjectPlacementSystem(
 ) : EntitySystem() {
     private val inputMultiplexer: InputMultiplexer = context.inject()
 
+    private lateinit var levelEntity: Entity
     private lateinit var undoRedoEntity: Entity
     private lateinit var inputEntity: Entity
     private lateinit var mapEntity: Entity
@@ -89,6 +90,7 @@ class ObjectPlacementSystem(
                     )
                 }
                 CollectiblePointComponent::class.java -> {
+                    levelEntity.map.pointsCount++
                     CollectiblePointEntity.createEntity(
                         context, id,
                         MathUtils.floor(coords.x).toFloat() + .5f,
@@ -101,7 +103,6 @@ class ObjectPlacementSystem(
             placedObject.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
 
             // Place the mock moving platform in the level editor
-
             if (inputEntity.input.placeToolObjectType == MovingObjectComponent::class.java) {
                 val mockPlatform = MovingMockPlatformEntity.createEntity(
                     context, placedObject,
@@ -141,6 +142,7 @@ class ObjectPlacementSystem(
     }
 
     override fun addedToEngine(engine: Engine) {
+        levelEntity = engine.getSingleton<LevelComponent>()
         undoRedoEntity = engine.getSingleton<UndoRedoComponent>()
         inputEntity = engine.getSingleton<InputComponent>()
         mapEntity = engine.getSingleton<MapComponent>()

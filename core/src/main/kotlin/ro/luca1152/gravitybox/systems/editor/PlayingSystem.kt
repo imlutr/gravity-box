@@ -100,6 +100,11 @@ class PlayingSystem(
         showPlayUI()
         updateMapBounds()
         makeEveryObjectOpaque()
+        resetCollectedPointsCount()
+    }
+
+    private fun resetCollectedPointsCount() {
+        levelEntity.map.collectedPointsCount = 0
     }
 
     private fun setOwnBox2DContactListener() {
@@ -223,6 +228,7 @@ class PlayingSystem(
         resetCollectiblePoints(engine)
         levelEditorScreen.addGameSystems()
         makeEveryObjectTransparent(engine)
+        resetCollectedPointsCount()
     }
 
     private fun hidePlayUI() {

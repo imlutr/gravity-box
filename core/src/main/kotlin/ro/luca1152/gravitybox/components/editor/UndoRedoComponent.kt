@@ -185,6 +185,9 @@ class AddCommand(
                     it.mapObject.id++
             }
         }
+        affectedEntity.tryGet(CollectiblePointComponent)?.run {
+            mapEntity.map.pointsCount++
+        }
         mapEntity.map.updateRoundedPlatforms = true
     }
 
@@ -221,6 +224,9 @@ class AddCommand(
         }
         affectedEntity.tryGet(MockMapObjectComponent)?.run {
             MakeObjectNonMovingCommand(context, affectedEntity.linkedEntity.get("platform")).execute()
+        }
+        affectedEntity.tryGet(CollectiblePointComponent)?.run {
+            mapEntity.map.pointsCount--
         }
         mapEntity.map.updateRoundedPlatforms = true
     }
