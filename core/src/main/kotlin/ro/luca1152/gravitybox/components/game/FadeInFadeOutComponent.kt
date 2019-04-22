@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -61,7 +62,11 @@ class FadeInFadeOutComponent : Component, Poolable {
     companion object : ComponentResolver<FadeInFadeOutComponent>(FadeInFadeOutComponent::class.java)
 }
 
-fun Entity.fadeInFadeOut(scene2D: Scene2DComponent, delayBeforeStarting: Float = 0f) =
-    add(createComponent<FadeInFadeOutComponent>().apply {
+fun Entity.fadeInFadeOut(
+    context: Context,
+    scene2D: Scene2DComponent,
+    delayBeforeStarting: Float = 0f
+) =
+    add(createComponent<FadeInFadeOutComponent>(context).apply {
         set(scene2D, delayBeforeStarting)
     })!!

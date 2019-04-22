@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
@@ -106,15 +107,15 @@ class JsonComponent : Component, Poolable {
 val Entity.json: JsonComponent
     get() = JsonComponent[this]
 
-fun Entity.json() =
-    add(createComponent<JsonComponent>())!!
+fun Entity.json(context: Context) =
+    add(createComponent<JsonComponent>(context))!!
 
-fun Entity.json(parentEntity: Entity, jsonObjectName: String) =
-    add(createComponent<JsonComponent>().apply {
+fun Entity.json(context: Context, parentEntity: Entity, jsonObjectName: String) =
+    add(createComponent<JsonComponent>(context).apply {
         setObject(parentEntity, jsonObjectName)
     })!!
 
-fun Entity.json(parentEntity: Entity) =
-    add(createComponent<JsonComponent>().apply {
+fun Entity.json(context: Context, parentEntity: Entity) =
+    add(createComponent<JsonComponent>(context).apply {
         setArrayObject(parentEntity)
     })!!

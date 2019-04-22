@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType.StaticBody
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.components.editor.overlay
@@ -28,8 +29,6 @@ import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 object FinishEntity {
     const val WIDTH = 2f
@@ -40,29 +39,31 @@ object FinishEntity {
     val MASK_BITS = EntityCategory.FINISH.bits
 
     fun createEntity(
+        context: Context,
         id: Int = 0, x: Float = 0f, y: Float = 0f,
-        blinkEndlessly: Boolean = true,
-        manager: AssetManager = Injekt.get()
-    ) = newEntity().apply {
-        mapObject(id)
-        scene2D()
-        scene2D(manager.get(Assets.tileset).findRegion("finish"), x, y, WIDTH, HEIGHT)
-        polygon(scene2D)
-        editorObject()
-        snap()
-        finish()
+        blinkEndlessly: Boolean = true
+    ) = newEntity(context).apply {
+        val manager: AssetManager = context.inject()
+        mapObject(context, id)
+        scene2D(context)
+        scene2D(context, manager.get(Assets.tileset).findRegion("finish"), x, y, WIDTH, HEIGHT)
+        polygon(context, scene2D)
+        editorObject(context)
+        snap(context)
+        finish(context)
         if (blinkEndlessly) {
             // Delay the effect so it starts after transitioning to the PlayScreen
-            fadeInFadeOut(scene2D, .25f)
+            fadeInFadeOut(context, scene2D, .25f)
         }
-        body(scene2D.toBody(StaticBody, CATEGORY_BITS, MASK_BITS), CATEGORY_BITS, MASK_BITS)
-        collisionBox(WIDTH, HEIGHT)
-        color(ColorType.DARK)
+        body(context, scene2D.toBody(context, StaticBody, CATEGORY_BITS, MASK_BITS), CATEGORY_BITS, MASK_BITS)
+        collisionBox(context, WIDTH, HEIGHT)
+        color(context, ColorType.DARK)
         overlay(
+            context,
             showMovementButtons = true, showRotationButton = true, showDeletionButton = false,
             showResizingButtons = false, showSettingsButton = false
         )
-        json(this, "finish")
-        addToEngine()
+        json(context, this, "finish")
+        addToEngine(context)
     }
 }

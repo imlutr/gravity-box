@@ -22,6 +22,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.*
 
@@ -125,17 +126,22 @@ class PolygonComponent : Component, Poolable {
 val Entity.polygon: PolygonComponent
     get() = PolygonComponent[this]
 
-fun Entity.polygon(scene2D: Scene2DComponent, update: Boolean = true) =
-    add(createComponent<PolygonComponent>().apply {
-        set(scene2D)
-        if (update) {
-            update()
-        }
-    })!!
+fun Entity.polygon(
+    context: Context,
+    scene2D: Scene2DComponent,
+    update: Boolean = true
+) = add(createComponent<PolygonComponent>(context).apply {
+    set(scene2D)
+    if (update) {
+        update()
+    }
+})!!
 
-fun Entity.polygon(update: Boolean = true) =
-    add(createComponent<PolygonComponent>().apply {
-        if (update) {
-            update()
-        }
-    })!!
+fun Entity.polygon(
+    context: Context,
+    update: Boolean = true
+) = add(createComponent<PolygonComponent>(context).apply {
+    if (update) {
+        update()
+    }
+})!!

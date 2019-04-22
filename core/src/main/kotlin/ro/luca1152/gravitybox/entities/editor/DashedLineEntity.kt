@@ -18,6 +18,7 @@
 package ro.luca1152.gravitybox.entities.editor
 
 import com.badlogic.ashley.core.Entity
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
 import ro.luca1152.gravitybox.components.editor.dashedLine
 import ro.luca1152.gravitybox.components.game.DestroyablePlatformComponent
@@ -30,14 +31,16 @@ import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 object DashedLineEntity {
     fun createEntity(
+        context: Context,
         platformEntity: Entity, mockPlatformEntity: Entity
-    ) = newEntity().apply {
+    ) = newEntity(context).apply {
         dashedLine(
+            context,
             platformEntity.scene2D.centerX, platformEntity.scene2D.centerY,
             mockPlatformEntity.scene2D.centerX, mockPlatformEntity.scene2D.centerY
         )
-        linkedEntity()
-        addToEngine()
+        linkedEntity(context)
+        addToEngine(context)
         linkedEntity.apply {
             require(
                 platformEntity.tryGet(PlatformComponent) != null || platformEntity.tryGet(DestroyablePlatformComponent) != null

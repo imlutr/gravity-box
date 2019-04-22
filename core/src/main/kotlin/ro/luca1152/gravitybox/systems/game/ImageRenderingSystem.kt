@@ -18,12 +18,13 @@
 package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.ashley.core.EntitySystem
+import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Renders every ImageComponent. */
-class ImageRenderingSystem(private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
+class ImageRenderingSystem(context: Context) : EntitySystem() {
+    private val gameStage: GameStage = context.inject()
+
     override fun update(deltaTime: Float) {
         gameStage.act()
         gameStage.draw()

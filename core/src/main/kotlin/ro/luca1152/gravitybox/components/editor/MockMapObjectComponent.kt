@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.components.editor
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -30,5 +31,5 @@ class MockMapObjectComponent : Component, Poolable {
     companion object : ComponentResolver<MockMapObjectComponent>(MockMapObjectComponent::class.java)
 }
 
-fun Entity.mockMapObject() =
-    add(createComponent<MockMapObjectComponent>())!!
+fun Entity.mockMapObject(context: Context) =
+    add(createComponent<MockMapObjectComponent>(context))!!

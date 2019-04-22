@@ -29,12 +29,10 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.kotlin.*
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.addSingleton
-import uy.kohesive.injekt.api.get
 
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
@@ -42,46 +40,39 @@ class MyGame : KtxGame<Screen>() {
         const val LEVELS_NUMBER = 9
     }
 
+    private val context = Context()
+
     override fun create() {
         Box2D.init()
         initializeDependencyInjection()
-        addScreen(LoadingScreen())
+        addScreen(LoadingScreen(context))
         setScreen<LoadingScreen>()
     }
 
     private fun initializeDependencyInjection() {
-        Injekt.run {
-            addSingleton(this@MyGame)
-            addSingleton(SpriteBatch() as Batch)
-            addSingleton(AssetManager())
-            addSingleton(InputMultiplexer())
-            addSingleton(PooledEngine())
-            addSingleton(ShapeRenderer())
-            addSingleton(Gdx.app.getPreferences("Gravity Box by Luca1152"))
-            addSingleton(World(Vector2(0f, MapComponent.GRAVITY), true))
-            addSingleton(GameCamera)
-            addSingleton(GameStage)
-            addSingleton(GameViewport)
-            addSingleton(OverlayCamera)
-            addSingleton(OverlayViewport)
-            addSingleton(OverlayStage)
-            addSingleton(UICamera)
-            addSingleton(UIStage)
-            addSingleton(UIViewport)
+        context.register {
+            bindSingleton(this@MyGame)
+            bindSingleton(SpriteBatch() as Batch)
+            bindSingleton(AssetManager())
+            bindSingleton(InputMultiplexer())
+            bindSingleton(PooledEngine())
+            bindSingleton(ShapeRenderer())
+            bindSingleton(Gdx.app.getPreferences("Gravity Box by Luca1152"))
+            bindSingleton(World(Vector2(0f, MapComponent.GRAVITY), true))
+            bindSingleton(GameCamera())
+            bindSingleton(GameViewport(context))
+            bindSingleton(GameStage(context))
+            bindSingleton(OverlayCamera())
+            bindSingleton(OverlayViewport(context))
+            bindSingleton(OverlayStage(context))
+            bindSingleton(UICamera())
+            bindSingleton(UIViewport(context))
+            bindSingleton(UIStage(context))
         }
     }
 
     override fun dispose() {
         super.dispose() // Disposes every screen
-        disposeHeavyInjectedObjects()
-    }
-
-    private fun disposeHeavyInjectedObjects() {
-        Injekt.run {
-            get<Batch>().dispose()
-            get<AssetManager>().dispose()
-            get<ShapeRenderer>().dispose()
-            get<World>().dispose()
-        }
+        context.dispose()
     }
 }

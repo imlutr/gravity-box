@@ -23,18 +23,18 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickTextButton
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 open class YesNoPopUp(
+    context: Context,
     width: Float, height: Float,
     skin: Skin,
-    yesIsHighlighted: Boolean = false, noIsHighlighted: Boolean = false,
-    manager: AssetManager = Injekt.get()
-) : PopUp(width, height, skin) {
+    yesIsHighlighted: Boolean = false, noIsHighlighted: Boolean = false
+) : PopUp(context, width, height, skin) {
+    private val manager: AssetManager = context.inject()
     val emptySpace = Table()
     var yesClickRunnable: Runnable? = null
     var noClickRunnable: Runnable? = null

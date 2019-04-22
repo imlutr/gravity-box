@@ -20,17 +20,19 @@ package ro.luca1152.gravitybox.utils.ui.popup
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
+import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 class YesNoTextPopUp(
+    context: Context,
     width: Float, height: Float,
     text: CharSequence,
     skin: Skin, fontName: String,
     textSize: Float,
     textColor: Color = Color.WHITE,
     yesIsHighlighted: Boolean = false, noIsHighlighted: Boolean = false
-) : YesNoPopUp(width, height, skin, yesIsHighlighted, noIsHighlighted) {
+) : YesNoPopUp(context, width, height, skin, yesIsHighlighted, noIsHighlighted) {
     val textLabel = DistanceFieldLabel(text, skin, fontName, textSize, textColor).apply {
         setWrap(true)
         setAlignment(Align.center, Align.center)

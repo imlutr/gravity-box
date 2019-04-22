@@ -18,6 +18,7 @@
 package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.gdx.assets.AssetManager
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.components.editor.overlay
@@ -27,8 +28,6 @@ import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 object PlayerEntity {
     const val WIDTH = 1f
@@ -39,23 +38,25 @@ object PlayerEntity {
     const val DENSITY = 1.15f
 
     fun createEntity(
-        id: Int = 0, x: Float = 0f, y: Float = 0f,
-        manager: AssetManager = Injekt.get()
-    ) = newEntity().apply {
-        mapObject(id)
+        context: Context,
+        id: Int = 0, x: Float = 0f, y: Float = 0f
+    ) = newEntity(context).apply {
+        val manager: AssetManager = context.inject()
+        mapObject(context, id)
         overlay(
+            context,
             showMovementButtons = true, showRotationButton = true, showDeletionButton = false,
             showResizingButtons = false, showSettingsButton = false
         )
-        player()
-        scene2D(manager.get(Assets.tileset).findRegion("player"), x, y, WIDTH, HEIGHT)
-        polygon(scene2D)
-        editorObject()
-        snap()
-        body()
-        collisionBox(WIDTH, HEIGHT)
-        color(ColorType.DARK)
-        json(this, "player")
-        addToEngine()
+        player(context)
+        scene2D(context, manager.get(Assets.tileset).findRegion("player"), x, y, WIDTH, HEIGHT)
+        polygon(context, scene2D)
+        editorObject(context)
+        snap(context)
+        body(context)
+        collisionBox(context, WIDTH, HEIGHT)
+        color(context, ColorType.DARK)
+        json(context, this, "player")
+        addToEngine(context)
     }
 }

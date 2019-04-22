@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pools
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.DashedLineComponent
 import ro.luca1152.gravitybox.components.editor.dashedLine
 import ro.luca1152.gravitybox.components.game.linkedEntity
@@ -33,14 +34,12 @@ import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.components.game.scene2D
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.ui.Colors
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
-class DashedLineRenderingSystem(
-    private val shapeRenderer: ShapeRenderer = Injekt.get(),
-    private val batch: Batch = Injekt.get(),
-    private val gameCamera: GameCamera = Injekt.get()
-) : IteratingSystem(Family.all(DashedLineComponent::class.java).get()) {
+class DashedLineRenderingSystem(context: Context) : IteratingSystem(Family.all(DashedLineComponent::class.java).get()) {
+    private val shapeRenderer: ShapeRenderer = context.inject()
+    private val batch: Batch = context.inject()
+    private val gameCamera: GameCamera = context.inject()
+
     companion object {
         const val COLOR_ALPHA = .4f
         val DASH_WIDTH = 10f.pixelsToMeters

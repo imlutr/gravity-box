@@ -33,9 +33,8 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxGame
 import ktx.app.clearScreen
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Linearly interpolates to the target values. */
 fun Vector3.lerp(targetX: Float, targetY: Float, targetZ: Float = 0f, progress: Float): Vector3 {
@@ -63,7 +62,8 @@ val World.bodies: Array<Body>
         return bodyArray
     }
 
-fun screenToWorldCoordinates(screenX: Int, screenY: Int, gameCamera: GameCamera = Injekt.get()): Vector3 {
+fun screenToWorldCoordinates(context: Context, screenX: Int, screenY: Int): Vector3 {
+    val gameCamera: GameCamera = context.inject()
     val coords = Vector3(screenX.toFloat(), screenY.toFloat(), 0f)
     gameCamera.unproject(coords)
     return coords
@@ -101,8 +101,8 @@ inline fun <reified T : Component> Engine.getSingleton(): Entity {
     return entity
 }
 
-val engine = Injekt.get<PooledEngine>()
-inline fun <reified T : Component> createComponent(): T {
+inline fun <reified T : Component> createComponent(context: Context): T {
+    val engine: PooledEngine = context.inject()
     return engine.createComponent(T::class.java)
 }
 
@@ -222,9 +222,11 @@ inline fun <T> Iterable<T>.filterNullableSingleton(predicate: (T) -> Boolean): T
     }
 }
 
-fun Entity.addToEngine(engine: PooledEngine = Injekt.get()): Entity {
+fun Entity.addToEngine(context: Context): Entity {
+    val engine: PooledEngine = context.inject()
+
     engine.addEntity(this)
     return this
 }
 
-fun newEntity() = Injekt.get<PooledEngine>().createEntity()!!
+fun newEntity(context: Context) = context.inject<PooledEngine>().createEntity()!!

@@ -18,12 +18,13 @@
 package ro.luca1152.gravitybox.systems.editor
 
 import com.badlogic.ashley.core.EntitySystem
+import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.kotlin.OverlayStage
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Renders every the overlay. */
-class OverlayRenderingSystem(private val overlayStage: OverlayStage = Injekt.get()) : EntitySystem() {
+class OverlayRenderingSystem(context: Context) : EntitySystem() {
+    private val overlayStage: OverlayStage = context.inject()
+
     override fun update(deltaTime: Float) {
         overlayStage.act()
         overlayStage.draw()

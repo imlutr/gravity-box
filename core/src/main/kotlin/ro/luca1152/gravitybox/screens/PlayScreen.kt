@@ -30,11 +30,13 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.graphics.copy
+import ktx.inject.Context
 import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
@@ -52,23 +54,21 @@ import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.addSingleton
-import uy.kohesive.injekt.api.get
 
-class PlayScreen(
-    manager: AssetManager = Injekt.get(),
-    game: MyGame = Injekt.get(),
-    private val engine: PooledEngine = Injekt.get(),
-    private val gameViewport: GameViewport = Injekt.get(),
-    private val world: World = Injekt.get(),
-    private val inputMultiplexer: InputMultiplexer = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get(),
-    private val preferences: Preferences = Injekt.get()
-) : KtxScreen {
+class PlayScreen(private val context: Context) : KtxScreen {
+    private val manager: AssetManager = context.inject()
+    private val game: MyGame = context.inject()
+    private val engine: PooledEngine = context.inject()
+    private val gameViewport: GameViewport = context.inject()
+    private val world: World = context.inject()
+    private val inputMultiplexer: InputMultiplexer = context.inject()
+    private val uiStage: UIStage = context.inject()
+    private val uiCamera: UICamera = context.inject()
+    private val gameStage: GameStage = context.inject()
+    private val preferences: Preferences = context.inject()
+
     private lateinit var levelEntity: Entity
-    private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, UICamera), Injekt.get())
+    private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, uiCamera), context.inject())
     private val padTopBottom = 38f
     private val padLeftRight = 43f
     private val bottomGrayStripHeight = 128f
@@ -123,7 +123,7 @@ class PlayScreen(
         padBottom(padTopBottom).padTop(padTopBottom)
         add(bottomRow).expand().fillX().bottom()
     }
-    private val githubPopUp = NewPopUp(600f, 508f, skin).apply popup@{
+    private val githubPopUp = NewPopUp(context, 600f, 508f, skin).apply popup@{
         val text = DistanceFieldLabel(
             """
             This game is fully open-source!
@@ -178,7 +178,7 @@ class PlayScreen(
             }
         })
     }
-    private val levelEditorPopUp = NewPopUp(600f, 400f, skin).apply popup@{
+    private val levelEditorPopUp = NewPopUp(context, 600f, 400f, skin).apply popup@{
         val text = DistanceFieldLabel(
             """
             Do you want to go to the level
@@ -192,7 +192,7 @@ class PlayScreen(
             addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
-                    game.setScreen(TransitionScreen(LevelEditorScreen::class.java, false))
+                    game.setScreen(TransitionScreen(context, LevelEditorScreen::class.java, false))
                 }
             })
         }
@@ -313,7 +313,7 @@ class PlayScreen(
         add(topTable).grow().top().padTop(padTopBottom).row()
         add(leftLevelRightTable).expand().bottom()
     }
-    private val heartPopUp = NewPopUp(600f, 450f, skin).apply popup@{
+    private val heartPopUp = NewPopUp(context, 600f, 450f, skin).apply popup@{
         val text = DistanceFieldLabel(
             """
             Would you like to rate the game
@@ -395,7 +395,7 @@ class PlayScreen(
     private val leaderboardsButton = ClickButton(skin, "empty-round-button").apply {
         addIcon("leaderboards-icon")
     }
-    private val noAdsPopUp = NewPopUp(600f, 970f, skin).apply popup@{
+    private val noAdsPopUp = NewPopUp(context, 600f, 970f, skin).apply popup@{
         val text = DistanceFieldLabel(
             """
             This game is powered by a
@@ -505,7 +505,7 @@ class PlayScreen(
         add(middlePart).expand()
         add(rightPart).padRight(padLeftRight).expand().right()
     }
-    val rateGamePromptPopUp = NewPopUp(600f, 570f, skin).apply popup@{
+    val rateGamePromptPopUp = NewPopUp(context, 600f, 570f, skin).apply popup@{
         val text = DistanceFieldLabel(
             """
             Would you like to rate the game
@@ -664,7 +664,7 @@ class PlayScreen(
     }
 
     override fun show() {
-        Injekt.addSingleton(skin)
+        context.register { if (!contains<Skin>()) bindSingleton(skin) }
         createGame()
         createUI()
     }
@@ -682,6 +682,7 @@ class PlayScreen(
 
     private fun createGameEntities() {
         levelEntity = LevelEntity.createEntity(
+            context,
             Math.min(
                 preferences.getInteger("highestFinishedLevel", 0) + 1,
                 MyGame.LEVELS_NUMBER
@@ -690,39 +691,39 @@ class PlayScreen(
             level.loadMap = true
             level.forceUpdateMap = true
         }
-        PlayerEntity.createEntity()
-        FinishEntity.createEntity()
+        PlayerEntity.createEntity(context)
+        FinishEntity.createEntity(context)
     }
 
     private fun addGameSystems() {
         engine.run {
-            addSystem(MapLoadingSystem())
-            addSystem(MapBodiesCreationSystem())
-            addSystem(CombinedBodiesCreationSystem())
-            addSystem(RoundedPlatformsSystem())
+            addSystem(MapLoadingSystem(context))
+            addSystem(MapBodiesCreationSystem(context))
+            addSystem(CombinedBodiesCreationSystem(context))
+            addSystem(RoundedPlatformsSystem(context))
             addSystem(ObjectMovementSystem())
-            addSystem(PhysicsSystem())
+            addSystem(PhysicsSystem(context))
             addSystem(PhysicsSyncSystem())
-            addSystem(ShootingSystem())
-            addSystem(BulletCollisionSystem())
+            addSystem(ShootingSystem(context))
+            addSystem(BulletCollisionSystem(context))
             addSystem(PlatformRemovalSystem())
             addSystem(OffScreenLevelRestartSystem())
-            addSystem(OffScreenBulletDeletionSystem())
-            addSystem(KeyboardLevelRestartSystem())
+            addSystem(OffScreenBulletDeletionSystem(context))
+            addSystem(KeyboardLevelRestartSystem(context))
             addSystem(LevelFinishDetectionSystem())
             addSystem(PointsCollectionSystem())
-            addSystem(LevelRestartSystem())
+            addSystem(LevelRestartSystem(context))
             addSystem(FinishPointColorSystem())
             addSystem(ColorSchemeSystem())
             addSystem(SelectedObjectColorSystem())
             addSystem(ColorSyncSystem())
-            addSystem(CanFinishLevelSystem())
-            addSystem(PlayerCameraSystem(this@PlayScreen))
-            addSystem(UpdateGameCameraSystem())
-            addSystem(ImageRenderingSystem())
-            addSystem(LevelFinishSystem(playScreen = this@PlayScreen))
+            addSystem(CanFinishLevelSystem(context))
+            addSystem(PlayerCameraSystem(context, this@PlayScreen))
+            addSystem(UpdateGameCameraSystem(context))
+            addSystem(ImageRenderingSystem(context))
+            addSystem(LevelFinishSystem(context, playScreen = this@PlayScreen))
 //            addSystem(PhysicsDebugRenderingSystem())
-            addSystem(DebugRenderingSystem())
+            addSystem(DebugRenderingSystem(context))
         }
     }
 

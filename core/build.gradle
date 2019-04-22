@@ -23,7 +23,7 @@ dependencies {
     api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
     api "com.badlogicgames.ashley:ashley:$ashleyVersion"
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    api "uy.kohesive.injekt:injekt-core:1.16.1"
+    api "io.github.libktx:ktx-inject:$ktxVersion"
     api "io.github.libktx:ktx-actors:$ktxVersion"
     api "io.github.libktx:ktx-app:$ktxVersion"
     api "io.github.libktx:ktx-assets:$ktxVersion"

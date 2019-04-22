@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.JsonWriter
 import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.collections.sortBy
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
@@ -44,8 +45,6 @@ import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.*
@@ -69,6 +68,10 @@ class MapComponent : Component, Poolable {
         const val GRAVITY = -25f
     }
 
+    private lateinit var engine: PooledEngine
+    private lateinit var manager: AssetManager
+    private lateinit var world: World
+
     var levelId = 1
     var hue = 180
     var mapLeft = Float.POSITIVE_INFINITY
@@ -82,12 +85,16 @@ class MapComponent : Component, Poolable {
     var paddingTop = 5f
     var paddingBottom = 5f
 
-    fun set(levelId: Int, hue: Int) {
+    fun set(context: Context, levelId: Int, hue: Int) {
+        engine = context.inject()
+        manager = context.inject()
+        world = context.inject()
+
         this.levelId = levelId
         this.hue = hue
     }
 
-    fun updateMapBounds(engine: PooledEngine = Injekt.get()) {
+    fun updateMapBounds() {
         mapLeft = Float.POSITIVE_INFINITY
         mapRight = Float.NEGATIVE_INFINITY
         mapBottom = Float.POSITIVE_INFINITY
@@ -110,7 +117,7 @@ class MapComponent : Component, Poolable {
         writeJsonToFile(json, forceSave)
     }
 
-    private fun getJsonFromMap(engine: PooledEngine = Injekt.get()): Json {
+    private fun getJsonFromMap(): Json {
         var player: Entity? = null
         var finishPoint: Entity? = null
         val objects = Array<Entity>()
@@ -179,6 +186,7 @@ class MapComponent : Component, Poolable {
     }
 
     fun loadMap(
+        context: Context,
         mapFactory: MapFactory,
         playerEntity: Entity,
         finishEntity: Entity,
@@ -189,20 +197,20 @@ class MapComponent : Component, Poolable {
         createMap(mapFactory.id, mapFactory.hue, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
-        createObjects(mapFactory.objects, isLevelEditor)
+        createObjects(context, mapFactory.objects, isLevelEditor)
         updateMapBounds()
         if (isLevelEditor) {
             makeObjectsTransparent()
         }
     }
 
-    private fun makeObjectsTransparent(engine: PooledEngine = Injekt.get()) {
+    private fun makeObjectsTransparent() {
         engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
             it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
         }
     }
 
-    private fun removeObjects(engine: PooledEngine = Injekt.get()) {
+    private fun removeObjects() {
         val entitiesToRemove = Array<Entity>()
         engine.getEntitiesFor(
             Family.one(
@@ -259,18 +267,23 @@ class MapComponent : Component, Poolable {
         }
     }
 
-    private fun createObjects(objects: ArrayList<ObjectPrototype>, isLevelEditor: Boolean) {
+    private fun createObjects(
+        context: Context,
+        objects: ArrayList<ObjectPrototype>,
+        isLevelEditor: Boolean
+    ) {
         objects.forEach {
             when {
-                it.type == "platform" -> createPlatform(it, isLevelEditor)
-                it.type == "point" -> createPoint(it)
-                it.type == "text" -> createText(it)
+                it.type == "platform" -> createPlatform(context, it, isLevelEditor)
+                it.type == "point" -> createPoint(context, it)
+                it.type == "text" -> createText(context, it)
             }
         }
     }
 
-    private fun createPlatform(platform: ObjectPrototype, isLevelEditor: Boolean) {
+    private fun createPlatform(context: Context, platform: ObjectPrototype, isLevelEditor: Boolean) {
         val newPlatform = PlatformEntity.createEntity(
+            context,
             platform.id,
             platform.position.x.pixelsToMeters,
             platform.position.y.pixelsToMeters,
@@ -283,24 +296,25 @@ class MapComponent : Component, Poolable {
         )
         if (isLevelEditor && platform.movingTo.x != Float.POSITIVE_INFINITY && platform.movingTo.y != Float.POSITIVE_INFINITY) {
             val mockPlatform = MovingMockPlatformEntity.createEntity(
-                newPlatform,
+                context, newPlatform,
                 newPlatform.scene2D.centerX + 1f, newPlatform.scene2D.centerY + 1f,
                 newPlatform.scene2D.width, newPlatform.scene2D.rotation
             )
-            newPlatform.linkedEntity("mockPlatform", mockPlatform)
-            newPlatform.movingObject(mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
+            newPlatform.linkedEntity(context, "mockPlatform", mockPlatform)
+            newPlatform.movingObject(context, mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
 
-            val dashedLine = DashedLineEntity.createEntity(newPlatform, mockPlatform)
+            val dashedLine = DashedLineEntity.createEntity(context, newPlatform, mockPlatform)
             mockPlatform.linkedEntity.add("dashedLine", dashedLine)
             newPlatform.linkedEntity.add("dashedLine", dashedLine)
         }
         if (isLevelEditor && platform.isRotating) {
-            newPlatform.rotatingIndicator()
+            newPlatform.rotatingIndicator(context)
         }
     }
 
-    private fun createPoint(point: ObjectPrototype) {
+    private fun createPoint(context: Context, point: ObjectPrototype) {
         CollectiblePointEntity.createEntity(
+            context,
             point.id,
             point.position.x.pixelsToMeters,
             point.position.y.pixelsToMeters,
@@ -308,8 +322,9 @@ class MapComponent : Component, Poolable {
         )
     }
 
-    private fun createText(text: ObjectPrototype) {
+    private fun createText(context: Context, text: ObjectPrototype) {
         TextEntity.createEntity(
+            context,
             text.id,
             text.string,
             text.position.x,
@@ -317,10 +332,7 @@ class MapComponent : Component, Poolable {
         )
     }
 
-    private fun getMapFileNameForId(
-        mapId: Int,
-        manager: AssetManager = Injekt.get()
-    ): String {
+    private fun getMapFileNameForId(mapId: Int): String {
         Gdx.files.local("maps/editor").list().forEach {
             val jsonData = if (manager.isLoaded(it.path())) {
                 manager.get<Text>(it.path()).string
@@ -356,7 +368,7 @@ class MapComponent : Component, Poolable {
         forceCenterCameraOnPlayer = false
     }
 
-    fun destroyAllBodies(world: World = Injekt.get()) {
+    fun destroyAllBodies() {
         val bodiesToRemove = Array<Body>()
         world.getBodies(bodiesToRemove)
         bodiesToRemove.forEach {
@@ -368,7 +380,7 @@ class MapComponent : Component, Poolable {
 val Entity.map: MapComponent
     get() = MapComponent[this]
 
-fun Entity.map(levelId: Int, hue: Int) =
-    add(createComponent<MapComponent>().apply {
-        set(levelId, hue)
+fun Entity.map(context: Context, levelId: Int, hue: Int) =
+    add(createComponent<MapComponent>(context).apply {
+        set(context, levelId, hue)
     })!!

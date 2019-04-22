@@ -24,14 +24,15 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.bodies
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Contains a Box2D body. */
-class BodyComponent(private val world: World = Injekt.get()) : Component, Poolable {
+class BodyComponent : Component, Poolable {
+    private lateinit var world: World
+
     // The properties of the body at the moment of its creation. Changing these values does NOT affect the body.
     var bodyType = BodyDef.BodyType.StaticBody
     var density = 1f
@@ -48,6 +49,7 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
         get() = ::body.isInitialized
 
     fun set(
+        context: Context,
         body: Body,
         userData: Entity,
         categoryBits: Short,
@@ -55,6 +57,7 @@ class BodyComponent(private val world: World = Injekt.get()) : Component, Poolab
         density: Float = 1f,
         friction: Float = .2f
     ) {
+        world = context.inject()
         this.body = body
         body.userData = userData
 
@@ -108,18 +111,19 @@ val Entity.body: BodyComponent
 
 
 fun Entity.body(
+    context: Context,
     body: Body,
     categoryBits: Short,
     maskBits: Short,
     density: Float = 1f,
     friction: Float = .2f
-) = add(createComponent<BodyComponent>().apply {
-    set(body, this@body, categoryBits, maskBits, density, friction)
+) = add(createComponent<BodyComponent>(context).apply {
+    set(context, body, this@body, categoryBits, maskBits, density, friction)
     body.userData = this@body
 })!!
 
-fun Entity.body() =
-    add(createComponent<BodyComponent>())!!
+fun Entity.body(context: Context) =
+    add(createComponent<BodyComponent>(context))!!
 
 val Float.toRadians
     get() = this * MathUtils.degreesToRadians

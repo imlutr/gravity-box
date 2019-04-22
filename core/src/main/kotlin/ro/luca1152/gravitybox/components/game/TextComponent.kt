@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -40,7 +41,7 @@ class TextComponent : Component, Poolable {
 val Entity.text: TextComponent
     get() = TextComponent[this]
 
-fun Entity.text(string: String = ""): Entity =
-    add(createComponent<TextComponent>().apply {
+fun Entity.text(context: Context, string: String = ""): Entity =
+    add(createComponent<TextComponent>(context).apply {
         set(string)
     })

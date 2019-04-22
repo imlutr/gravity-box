@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.components.editor
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.PlatformComponent
 import ro.luca1152.gravitybox.utils.kotlin.Reference
@@ -50,7 +51,7 @@ class InputComponent : Component, Poolable {
 val Entity.input: InputComponent
     get() = InputComponent[this]
 
-fun Entity.input(toggledButton: Reference<ToggleButton>) =
-    add(createComponent<InputComponent>().apply {
+fun Entity.input(context: Context, toggledButton: Reference<ToggleButton>) =
+    add(createComponent<InputComponent>(context).apply {
         set(toggledButton)
     })!!

@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -56,10 +57,11 @@ val Entity.combinedBody: CombinedBodyComponent
     get() = CombinedBodyComponent[this]
 
 fun Entity.combinedBody(
+    context: Context,
     newBodyEntity: Entity,
     isCombinedHorizontally: Boolean = false,
     isCombinedVertically: Boolean = false,
     entityContainsBody: Boolean = false
-) = add(createComponent<CombinedBodyComponent>().apply {
+) = add(createComponent<CombinedBodyComponent>(context).apply {
     set(newBodyEntity, isCombinedHorizontally, isCombinedVertically, entityContainsBody)
 })!!

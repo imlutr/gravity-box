@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ktx.math.minus
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
@@ -90,7 +91,8 @@ val Entity.movingObject: MovingObjectComponent
     get() = MovingObjectComponent[this]
 
 fun Entity.movingObject(
+    context: Context,
     targetX: Float, targetY: Float
-) = add(createComponent<MovingObjectComponent>().apply {
+) = add(createComponent<MovingObjectComponent>(context).apply {
     set(this@movingObject, targetX, targetY)
 })!!

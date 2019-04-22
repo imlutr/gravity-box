@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -49,7 +50,7 @@ enum class ColorType {
 val Entity.color: ColorComponent
     get() = ColorComponent[this]
 
-fun Entity.color(colorType: ColorType) =
-    add(createComponent<ColorComponent>().apply {
+fun Entity.color(context: Context, colorType: ColorType) =
+    add(createComponent<ColorComponent>(context).apply {
         set(colorType)
     })!!

@@ -24,30 +24,31 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxInputAdapter
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.BulletComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.body
 import ro.luca1152.gravitybox.entities.game.BulletEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Shoots bullet when the screen is touched. */
-class ShootingSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+class ShootingSystem(private val context: Context) : EntitySystem() {
+    private val inputMultiplexer: InputMultiplexer = context.inject()
+
     private lateinit var playerEntity: Entity
+
     private val inputAdapter = object : KtxInputAdapter {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            val worldCoordinates = screenToWorldCoordinates(screenX, screenY)
+            val worldCoordinates = screenToWorldCoordinates(context, screenX, screenY)
             createBullet(worldCoordinates.x, worldCoordinates.y)
-
             return true
         }
     }
 
     private fun createBullet(worldX: Float, worldY: Float) {
         val playerPosition = Pools.obtain(Vector2::class.java).set(playerEntity.body.body.worldCenter)
-        val bullet = BulletEntity.createEntity(playerPosition.x, playerPosition.y)
+        val bullet = BulletEntity.createEntity(context, playerPosition.x, playerPosition.y)
         val velocity = Pools.obtain(Vector2::class.java).set(playerPosition)
         velocity.sub(worldX, worldY)
         velocity.nor()

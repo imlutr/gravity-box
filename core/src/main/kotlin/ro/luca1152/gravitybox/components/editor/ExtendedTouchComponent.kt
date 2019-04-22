@@ -22,32 +22,31 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.Scene2DComponent
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Expands the isTouchable area of an entity. */
-class ExtendedTouchComponent(private val gameStage: GameStage = Injekt.get()) : Component, Poolable {
+class ExtendedTouchComponent : Component, Poolable {
     private var extraWidth = 0f
     private var extraHeight = 0f
     var boundsImage = Image()
 
-    fun set(linkedEntity: Entity, extraWidth: Float, extraHeight: Float) {
+    fun set(context: Context, linkedEntity: Entity, extraWidth: Float, extraHeight: Float) {
         require(linkedEntity.tryGet(Scene2DComponent) != null)
         { "The entity must have an Scene2DComponent so the extended touch image can be positioned." }
 
+        val gameStage = context.inject<GameStage>()
+
         this.extraWidth = extraWidth
         this.extraHeight = extraHeight
-
         boundsImage.run {
             color = Color.CLEAR
             userObject = linkedEntity
         }
-
         gameStage.addActor(boundsImage)
     }
 
@@ -77,7 +76,11 @@ class ExtendedTouchComponent(private val gameStage: GameStage = Injekt.get()) : 
 val Entity.extendedTouch: ExtendedTouchComponent
     get() = ExtendedTouchComponent[this]
 
-fun Entity.extendedTouch(linkedEntity: Entity, extraWidth: Float, extraHeight: Float) =
-    add(createComponent<ExtendedTouchComponent>().apply {
-        set(linkedEntity, extraWidth, extraHeight)
+fun Entity.extendedTouch(
+    context: Context,
+    linkedEntity: Entity,
+    extraWidth: Float, extraHeight: Float
+) =
+    add(createComponent<ExtendedTouchComponent>(context).apply {
+        set(context, linkedEntity, extraWidth, extraHeight)
     })!!

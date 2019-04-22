@@ -26,19 +26,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.graphics.copy
+import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 open class PopUp(
+    context: Context,
     width: Float, height: Float,
-    skin: Skin,
-    manager: AssetManager = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get()
+    skin: Skin
 ) : Group() {
+    private val manager: AssetManager = context.inject()
+    private val uiStage: UIStage = context.inject()
+
     val borderThickness = 14f
     private val screenTransparentBackground = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         setSize(uiStage.viewport.worldWidth, uiStage.viewport.worldHeight)

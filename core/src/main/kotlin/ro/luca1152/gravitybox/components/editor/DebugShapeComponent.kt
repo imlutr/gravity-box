@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -55,5 +56,5 @@ class DebugShapeComponent : Component, Poolable {
 val Entity.debugShape: DebugShapeComponent
     get() = DebugShapeComponent[this]
 
-fun Entity.debugShape() =
-    add(createComponent<DebugShapeComponent>())!!
+fun Entity.debugShape(context: Context) =
+    add(createComponent<DebugShapeComponent>(context))!!

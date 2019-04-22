@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.components.editor
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -53,8 +54,9 @@ val Entity.dashedLine: DashedLineComponent
     get() = DashedLineComponent[this]
 
 fun Entity.dashedLine(
+    context: Context,
     startX: Float, startY: Float,
     endX: Float, endY: Float
-) = add(createComponent<DashedLineComponent>().apply {
+) = add(createComponent<DashedLineComponent>(context).apply {
     set(startX, startY, endX, endY)
 })!!

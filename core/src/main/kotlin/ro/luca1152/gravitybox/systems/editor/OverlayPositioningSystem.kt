@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import ktx.actors.plus
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.game.*
@@ -41,19 +42,17 @@ import ro.luca1152.gravitybox.utils.ui.button.Button
 import ro.luca1152.gravitybox.utils.ui.button.Checkbox
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.popup.PopUp
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Positions the overlay. */
-class OverlayPositioningSystem(
-    private val skin: Skin = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get(),
-    private val gameCamera: GameCamera = Injekt.get(),
-    private val overlayCamera: OverlayCamera = Injekt.get(),
-    private val overlayStage: OverlayStage = Injekt.get(),
-    private val engine: PooledEngine = Injekt.get()
-) : EntitySystem() {
+class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
+    private val skin: Skin = context.inject()
+    private val uiStage: UIStage = context.inject()
+    private val gameStage: GameStage = context.inject()
+    private val gameCamera: GameCamera = context.inject()
+    private val overlayCamera: OverlayCamera = context.inject()
+    private val overlayStage: OverlayStage = context.inject()
+    private val engine: PooledEngine = context.inject()
+
     private lateinit var mapEntity: Entity
     private val leftArrowButton: ClickButton = ClickButton(
         skin,
@@ -99,6 +98,7 @@ class OverlayPositioningSystem(
                 if (scene2D.width != initialImageWidth || scene2D.height != initialImageHeight)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         ResizeCommand(
+                            context,
                             selectedMapObject!!,
                             scene2D.width - initialImageWidth, scene2D.height - initialImageHeight,
                             scene2D.centerX - initialImageX, scene2D.centerY - initialImageY
@@ -150,6 +150,7 @@ class OverlayPositioningSystem(
                 if (scene2D.width != initialImageWidth || scene2D.height != initialImageHeight)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         ResizeCommand(
+                            context,
                             selectedMapObject!!,
                             scene2D.width - initialImageWidth, scene2D.height - initialImageHeight,
                             scene2D.centerX - initialImageX, scene2D.centerY - initialImageY
@@ -168,7 +169,7 @@ class OverlayPositioningSystem(
         setColors(Colors.gameColor, Colors.uiDownColor)
         setOpaque(true)
         addClickRunnable(Runnable {
-            val deleteCommand = DeleteCommand(selectedMapObject!!, mapEntity)
+            val deleteCommand = DeleteCommand(context, selectedMapObject!!, mapEntity)
             deleteCommand.execute()
             undoRedoEntity.undoRedo.addExecutedCommand(deleteCommand)
         })
@@ -195,7 +196,7 @@ class OverlayPositioningSystem(
                 mapEntity.map.updateRoundedPlatforms = true
                 selectedMapObject!!.editorObject.isRotating = true
 
-                val mouseCoords = screenToWorldCoordinates(Gdx.input.x, Gdx.input.y)
+                val mouseCoords = screenToWorldCoordinates(context, Gdx.input.x, Gdx.input.y)
                 var newRotation = toPositiveAngle(
                     MathUtils.atan2(
                         mouseCoords.y - scene2d.centerY,
@@ -574,7 +575,7 @@ class OverlayPositioningSystem(
             centerX = position.x
             centerY = position.y
             if (isDestroyablePlatform) {
-                linkedMapObject.destroyablePlatform.updateScene2D(scene2D)
+                linkedMapObject.destroyablePlatform.updateScene2D(context, scene2D)
             }
         }
 
@@ -734,7 +735,7 @@ class OverlayPositioningSystem(
     private lateinit var rotatingCheckbox: Checkbox
     private lateinit var rotatingCheckboxLabel: DistanceFieldLabel
 
-    private fun createSettingsPopUp() = PopUp(500f, 310f, skin).apply {
+    private fun createSettingsPopUp() = PopUp(context, 500f, 310f, skin).apply {
         widget.run {
             add(createDestroyableCheckbox()).padBottom(20f).expandX().left().row()
             add(createMovingCheckbox()).padBottom(20f).expandX().left().row()
@@ -746,13 +747,13 @@ class OverlayPositioningSystem(
         destroyableCheckbox = Checkbox(skin).apply {
             isTicked = selectedMapObject!!.tryGet(DestroyablePlatformComponent) != null
             tickRunnable = Runnable {
-                val command = MakeObjectDestroyableCommand(selectedMapObject!!)
+                val command = MakeObjectDestroyableCommand(context, selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
                 updateOverlaySettingsCheckboxes()
             }
             untickRunnable = Runnable {
-                val command = MakeObjectNonDestroyableCommand(selectedMapObject!!)
+                val command = MakeObjectNonDestroyableCommand(context, selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
                 updateOverlaySettingsCheckboxes()
@@ -767,13 +768,13 @@ class OverlayPositioningSystem(
         movingCheckbox = Checkbox(skin).apply {
             isTicked = selectedMapObject!!.tryGet(MovingObjectComponent) != null
             tickRunnable = Runnable {
-                val command = MakeObjectMovingCommand(selectedMapObject!!)
+                val command = MakeObjectMovingCommand(context, selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
                 updateOverlaySettingsCheckboxes()
             }
             untickRunnable = Runnable {
-                val command = MakeObjectNonMovingCommand(selectedMapObject!!)
+                val command = MakeObjectNonMovingCommand(context, selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
                 updateOverlaySettingsCheckboxes()
@@ -788,13 +789,13 @@ class OverlayPositioningSystem(
         rotatingCheckbox = Checkbox(skin).apply {
             isTicked = selectedMapObject!!.tryGet(RotatingObjectComponent) != null
             tickRunnable = Runnable {
-                val command = MakeObjectRotatingCommand(selectedMapObject!!)
+                val command = MakeObjectRotatingCommand(context, selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
                 updateOverlaySettingsCheckboxes()
             }
             untickRunnable = Runnable {
-                val command = MakeObjectNonRotatingCommand(selectedMapObject!!)
+                val command = MakeObjectNonRotatingCommand(context, selectedMapObject!!)
                 undoRedoEntity.undoRedo.addExecutedCommand(command)
                 command.execute()
                 updateOverlaySettingsCheckboxes()

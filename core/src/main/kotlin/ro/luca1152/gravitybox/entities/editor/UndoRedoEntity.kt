@@ -17,12 +17,13 @@
 
 package ro.luca1152.gravitybox.entities.editor
 
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.undoRedo
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
 
 object UndoRedoEntity {
-    fun createEntity() = newEntity()
-        .undoRedo()
-        .addToEngine()
+    fun createEntity(context: Context) = newEntity(context)
+        .undoRedo(context)
+        .addToEngine(context)
 }

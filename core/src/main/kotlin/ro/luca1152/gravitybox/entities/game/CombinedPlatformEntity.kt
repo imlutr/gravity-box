@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.entities.game
 
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.body
 import ro.luca1152.gravitybox.components.game.combinedBody
@@ -27,14 +28,15 @@ import ro.luca1152.gravitybox.utils.kotlin.newEntity
 
 object CombinedPlatformEntity {
     fun createEntity(
+        context: Context,
         isCombinedHorizontally: Boolean = false,
         isCombinedVertically: Boolean = false
-    ) = newEntity().apply {
-        body()
-        combinedBody(this, isCombinedHorizontally, isCombinedVertically, true)
-        platform()
-        editorObject()
-        polygon(false)
-        addToEngine()
+    ) = newEntity(context).apply {
+        body(context)
+        combinedBody(context, this, isCombinedHorizontally, isCombinedVertically, true)
+        platform(context)
+        editorObject(context)
+        polygon(context, false)
+        addToEngine(context)
     }
 }

@@ -24,6 +24,7 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import ktx.inject.Context
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.screens.PlayScreen
@@ -32,17 +33,17 @@ import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.ui.Colors
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Handles what happens when a level is finished. */
 class LevelFinishSystem(
+    context: Context,
     private val restartLevelWhenFinished: Boolean = false,
-    private val playScreen: PlayScreen? = null,
-    private val preferences: Preferences = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get()
+    private val playScreen: PlayScreen? = null
 ) : EntitySystem() {
+    private val preferences: Preferences = context.inject()
+    private val uiStage: UIStage = context.inject()
+    private val gameStage: GameStage = context.inject()
+
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
 
