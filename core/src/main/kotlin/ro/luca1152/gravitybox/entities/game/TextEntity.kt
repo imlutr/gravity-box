@@ -63,7 +63,7 @@ object TextEntity {
             showDeletionButton = true, showResizingButtons = false, showSettingsButton = false
         )
         color(ColorType.DARK)
-        json(this, "text")
+        json(this)
         addToEngine()
     }
 }

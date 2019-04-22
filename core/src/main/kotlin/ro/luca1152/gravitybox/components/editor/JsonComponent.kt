@@ -48,7 +48,6 @@ class JsonComponent : Component, Poolable {
         } else {
             json.writeObjectStart(jsonObjectName)
         }
-        println(parentEntity?.tryGet(TextComponent))
         parentEntity.run {
             this?.let {
                 when {
@@ -60,7 +59,6 @@ class JsonComponent : Component, Poolable {
                     }
                     tryGet(TextComponent) != null -> {
                         json.writeValue("type", "text")
-                        println("muh text")
                     }
                 }
                 if (tryGet(MapObjectComponent) != null) json.run {

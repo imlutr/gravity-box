@@ -126,7 +126,7 @@ class MapComponent : Component, Poolable {
                         finishPoint = it
                     }
                     it.tryGet(PlatformComponent) != null || it.tryGet(DestroyablePlatformComponent) != null ||
-                            it.tryGet(CollectiblePointComponent) != null -> {
+                            it.tryGet(CollectiblePointComponent) != null || it.tryGet(TextComponent) != null -> {
                         objects.add(it)
                     }
                 }
