@@ -23,22 +23,20 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Adds an indicator which shows that the object is a rotating one. */
 class RotatingIndicatorComponent : Component, Poolable {
     var indicatorImage = Image()
 
-    fun set(
-        gameStage: GameStage = Injekt.get(),
-        manager: AssetManager = Injekt.get()
-    ) {
+    fun set(context: Context) {
+        val gameStage: GameStage = context.inject()
+        val manager: AssetManager = context.inject()
         indicatorImage = Image(manager.get(Assets.uiSkin).getDrawable("rotating-platform-indicator")).apply {
             setSize(prefWidth.pixelsToMeters, prefHeight.pixelsToMeters)
             setOrigin(width / 2f, height / 2f)
@@ -58,7 +56,7 @@ class RotatingIndicatorComponent : Component, Poolable {
 val Entity.rotatingIndicator: RotatingIndicatorComponent
     get() = RotatingIndicatorComponent[this]
 
-fun Entity.rotatingIndicator() =
-    add(createComponent<RotatingIndicatorComponent>().apply {
-        set()
+fun Entity.rotatingIndicator(context: Context) =
+    add(createComponent<RotatingIndicatorComponent>(context).apply {
+        set(context)
     })!!

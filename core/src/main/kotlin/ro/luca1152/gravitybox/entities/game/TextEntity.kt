@@ -18,26 +18,26 @@
 package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 object TextEntity {
     fun createEntity(
+        context: Context,
         id: Int,
         string: String,
-        x: Float, y: Float,
-        skin: Skin = Injekt.get(),
-        gameStage: GameStage = Injekt.get()
-    ) = newEntity().apply {
-        mapObject(id)
-        text(string)
-        scene2D()
+        x: Float, y: Float
+    ) = newEntity(context).apply {
+        val skin: Skin = context.inject()
+        val gameStage: GameStage = context.inject()
+        mapObject(context, id)
+        text(context, string)
+        scene2D(context)
         scene2D.run {
             group.run {
                 val label = DistanceFieldLabel(text.string, skin, "regular", 37f).apply {
@@ -53,17 +53,18 @@ object TextEntity {
         }
         // Can't get the scene2D size to work properly (it is too small), so this is a workaround, as there wouldn't
         // be a a need for extended touch, normally
-        extendedTouch(this, scene2D.width, scene2D.height)
+        extendedTouch(context, this, scene2D.width, scene2D.height)
 
-        polygon(scene2D)
-        snap()
-        editorObject()
+        polygon(context, scene2D)
+        snap(context)
+        editorObject(context)
         overlay(
+            context,
             showMovementButtons = true, showRotationButton = false,
             showDeletionButton = true, showResizingButtons = false, showSettingsButton = false
         )
-        color(ColorType.DARK)
-        json(this)
-        addToEngine()
+        color(context, ColorType.DARK)
+        json(context, this)
+        addToEngine(context)
     }
 }

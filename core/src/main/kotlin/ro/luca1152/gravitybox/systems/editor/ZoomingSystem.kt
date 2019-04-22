@@ -27,18 +27,17 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.InputComponent
 import ro.luca1152.gravitybox.components.editor.input
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Handles zoom gestures. */
-class ZoomingSystem(
-    private val gameCamera: GameCamera = Injekt.get(),
-    private val inputMultiplexer: InputMultiplexer = Injekt.get()
-) : EntitySystem() {
+class ZoomingSystem(context: Context) : EntitySystem() {
+    private val gameCamera: GameCamera = context.inject()
+    private val inputMultiplexer: InputMultiplexer = context.inject()
+
     private lateinit var inputEntity: Entity
 
     companion object {

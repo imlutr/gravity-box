@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox.entities.editor
 
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.input
 import ro.luca1152.gravitybox.utils.kotlin.Reference
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
@@ -24,7 +25,10 @@ import ro.luca1152.gravitybox.utils.kotlin.newEntity
 import ro.luca1152.gravitybox.utils.ui.button.ToggleButton
 
 object InputEntity {
-    fun createEntity(toggledButton: Reference<ToggleButton>) = newEntity()
-        .input(toggledButton)
-        .addToEngine()
+    fun createEntity(
+        context: Context,
+        toggledButton: Reference<ToggleButton>
+    ) = newEntity(context)
+        .input(context, toggledButton)
+        .addToEngine(context)
 }

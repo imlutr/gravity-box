@@ -21,11 +21,10 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Indicates that the entity is a destroyable platform. */
 class DestroyablePlatformComponent : Component, Poolable {
@@ -38,9 +37,11 @@ class DestroyablePlatformComponent : Component, Poolable {
     }
 
     fun updateScene2D(
-        scene2D: Scene2DComponent,
-        manager: AssetManager = Injekt.get()
+        context: Context,
+        scene2D: Scene2DComponent
     ) {
+        val manager: AssetManager = context.inject()
+
         val oldWidth = scene2D.width
         val oldCenterY = scene2D.centerY
         val oldCenterX = scene2D.centerX
@@ -52,6 +53,7 @@ class DestroyablePlatformComponent : Component, Poolable {
             scene2D.run {
                 width += 5.33f.pixelsToMeters / 2f
                 addImage(
+                    context,
                     manager.get(Assets.tileset).findRegion("platform-dot"),
                     appendWidth = true, appendHeight = !appendedHeight
                 ).run {
@@ -73,8 +75,8 @@ class DestroyablePlatformComponent : Component, Poolable {
     companion object : ComponentResolver<DestroyablePlatformComponent>(DestroyablePlatformComponent::class.java)
 }
 
-fun Entity.destroyablePlatform() =
-    add(createComponent<DestroyablePlatformComponent>())!!
+fun Entity.destroyablePlatform(context: Context) =
+    add(createComponent<DestroyablePlatformComponent>(context))!!
 
 val Entity.destroyablePlatform: DestroyablePlatformComponent
     get() = DestroyablePlatformComponent[this]

@@ -20,14 +20,13 @@ package ro.luca1152.gravitybox.entities.editor
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.NinePatch
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /**
  * An object placed in the level editor which indicates the target position of a moving platform.
@@ -35,29 +34,32 @@ import uy.kohesive.injekt.api.get
  */
 object MovingMockPlatformEntity {
     fun createEntity(
+        context: Context,
         realPlatform: Entity,
         x: Float, y: Float,
-        width: Float, rotation: Float,
-        manager: AssetManager = Injekt.get()
-    ) = newEntity().apply {
+        width: Float, rotation: Float
+    ) = newEntity(context).apply {
+        val manager: AssetManager = context.inject()
         scene2D(
+            context,
             NinePatch(
                 manager.get(Assets.tileset).findRegion("moving-platform"),
                 PlatformEntity.PATCH_LEFT, PlatformEntity.PATCH_RIGHT,
                 PlatformEntity.PATCH_TOP, PlatformEntity.PATCH_BOTTOM
             ), x, y, width, PlatformEntity.HEIGHT, rotation
         )
-        polygon(scene2D)
-        editorObject()
-        mockMapObject()
-        linkedEntity("platform", realPlatform)
-        snap()
-        color(ColorType.DARK)
+        polygon(context, scene2D)
+        editorObject(context)
+        mockMapObject(context)
+        linkedEntity(context, "platform", realPlatform)
+        snap(context)
+        color(context, ColorType.DARK)
         overlay(
+            context,
             showMovementButtons = true, showRotationButton = false, showDeletionButton = true,
             showResizingButtons = false, showSettingsButton = false
         )
-        extendedTouch(this, 0f, 1f - PlatformEntity.HEIGHT)
-        addToEngine()
+        extendedTouch(context, this, 0f, 1f - PlatformEntity.HEIGHT)
+        addToEngine(context)
     }
 }

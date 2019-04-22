@@ -24,6 +24,7 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
@@ -32,11 +33,11 @@ import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Handles what happens when a level is marked as to be restarted. */
-class LevelRestartSystem(private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
+class LevelRestartSystem(private val context: Context) : EntitySystem() {
+    private val gameStage: GameStage = context.inject()
+
     private lateinit var levelEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
@@ -86,7 +87,7 @@ class LevelRestartSystem(private val gameStage: GameStage = Injekt.get()) : Enti
                             if (tryGet(DestroyablePlatformComponent) == null) BodyDef.BodyType.StaticBody else BodyDef.BodyType.KinematicBody
                         val categoryBits = PlatformEntity.CATEGORY_BITS
                         val maskBits = PlatformEntity.MASK_BITS
-                        body(scene2D.toBody(bodyType, categoryBits, maskBits), categoryBits, maskBits)
+                        body(context, scene2D.toBody(context, bodyType, categoryBits, maskBits), categoryBits, maskBits)
                     }
                 }
             }
@@ -104,6 +105,7 @@ class LevelRestartSystem(private val gameStage: GameStage = Injekt.get()) : Enti
                 }
             }
         }
+        levelEntity.map.collectedPointsCount = 0
     }
 
     private fun resetBodiesToInitialState() {

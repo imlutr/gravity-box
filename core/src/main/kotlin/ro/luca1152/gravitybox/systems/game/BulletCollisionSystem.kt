@@ -26,17 +26,17 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pools
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.ExplosionImageEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 
 /** Handles what happens when a bullet collides with a map object. */
-class BulletCollisionSystem(private val world: World = Injekt.get()) :
+class BulletCollisionSystem(private val context: Context) :
     IteratingSystem(Family.all(BulletComponent::class.java).get()) {
+    private val world: World = context.inject()
     private lateinit var playerEntity: Entity
     private lateinit var finishEntity: Entity
 
@@ -49,7 +49,7 @@ class BulletCollisionSystem(private val world: World = Injekt.get()) :
     override fun processEntity(bullet: Entity, deltaTime: Float) {
         if (bullet.bullet.collidedWithPlatform) {
             val bulletPosition = bullet.body.body.worldCenter
-            ExplosionImageEntity.createEntity(bulletPosition.x, bulletPosition.y)
+            ExplosionImageEntity.createEntity(context, bulletPosition.x, bulletPosition.y)
             applyBlastImpulse(bullet.body.body)
             engine.removeAndResetEntity(bullet)
         }

@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Array
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
@@ -34,13 +35,12 @@ import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.hitAll
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Sets the according texture to platforms so they are correctly rounded. */
-class RoundedPlatformsSystem(
-    private val manager: AssetManager = Injekt.get()
-) : IteratingSystem(Family.all(PlatformComponent::class.java, Scene2DComponent::class.java).get()) {
+class RoundedPlatformsSystem(private val context: Context) :
+    IteratingSystem(Family.all(PlatformComponent::class.java, Scene2DComponent::class.java).get()) {
+    private val manager: AssetManager = context.inject()
+
     private lateinit var mapEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
@@ -101,6 +101,7 @@ class RoundedPlatformsSystem(
             val oldCenterY = centerY
             clearChildren()
             addNinePatch(
+                context,
                 NinePatch(
                     manager.get(Assets.tileset).findRegion("platform-$bitmask"),
                     PlatformEntity.PATCH_LEFT,

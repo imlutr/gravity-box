@@ -24,19 +24,18 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.scenes.scene2d.Actor
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
 import ro.luca1152.gravitybox.utils.kotlin.hitAllScreen
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Selects touched map objects. */
-class ObjectSelectionSystem(
-    private val inputMultiplexer: InputMultiplexer = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get()
-) : EntitySystem() {
+class ObjectSelectionSystem(context: Context) : EntitySystem() {
+    private val inputMultiplexer: InputMultiplexer = context.inject()
+    private val gameStage: GameStage = context.inject()
+
     private lateinit var inputEntity: Entity
     var selectedObject: Entity? = null
 

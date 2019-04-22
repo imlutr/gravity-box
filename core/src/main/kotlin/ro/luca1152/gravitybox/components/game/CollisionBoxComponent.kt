@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -48,7 +49,9 @@ class CollisionBoxComponent : Component, Poolable {
 val Entity.collisionBox: CollisionBoxComponent
     get() = CollisionBoxComponent[this]
 
-fun Entity.collisionBox(width: Float, height: Float) =
-    add(createComponent<CollisionBoxComponent>().apply {
-        set(width, height)
-    })!!
+fun Entity.collisionBox(
+    context: Context,
+    width: Float, height: Float
+) = add(createComponent<CollisionBoxComponent>(context).apply {
+    set(width, height)
+})!!

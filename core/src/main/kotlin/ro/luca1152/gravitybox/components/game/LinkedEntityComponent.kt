@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.ObjectMap
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -52,10 +53,14 @@ class LinkedEntityComponent : Component, Poolable {
 val Entity.linkedEntity: LinkedEntityComponent
     get() = LinkedEntityComponent[this]
 
-fun Entity.linkedEntity(key: String, entity: Entity) =
-    add(createComponent<LinkedEntityComponent>().apply {
+fun Entity.linkedEntity(
+    context: Context,
+    key: String,
+    entity: Entity
+) =
+    add(createComponent<LinkedEntityComponent>(context).apply {
         add(key, entity)
     })!!
 
-fun Entity.linkedEntity() =
-    add(createComponent<LinkedEntityComponent>())!!
+fun Entity.linkedEntity(context: Context) =
+    add(createComponent<LinkedEntityComponent>(context))!!

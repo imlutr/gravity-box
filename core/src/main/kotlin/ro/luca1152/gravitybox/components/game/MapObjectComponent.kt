@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -41,7 +42,7 @@ class MapObjectComponent : Component, Poolable {
 val Entity.mapObject: MapObjectComponent
     get() = MapObjectComponent[this]
 
-fun Entity.mapObject(id: Int) =
-    add(createComponent<MapObjectComponent>().apply {
+fun Entity.mapObject(context: Context, id: Int) =
+    add(createComponent<MapObjectComponent>(context).apply {
         set(id)
     })!!

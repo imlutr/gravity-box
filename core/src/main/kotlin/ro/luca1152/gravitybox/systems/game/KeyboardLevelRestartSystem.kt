@@ -23,15 +23,15 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import ktx.app.KtxInputAdapter
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Marks the level as to be restarted when the key 'R' is pressed. */
-class KeyboardLevelRestartSystem(private val inputMultiplexer: InputMultiplexer = Injekt.get()) : EntitySystem() {
+class KeyboardLevelRestartSystem(context: Context) : EntitySystem() {
+    private val inputMultiplexer: InputMultiplexer = context.inject()
     private lateinit var playerEntity: Entity
     private lateinit var levelEntity: Entity
     private val inputAdapter = object : KtxInputAdapter {

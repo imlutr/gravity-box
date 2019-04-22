@@ -26,19 +26,18 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.DebugShapeComponent
 import ro.luca1152.gravitybox.components.editor.debugShape
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Renders debug shapes. */
-class DebugRenderingSystem(
-    private val shapeRenderer: ShapeRenderer = Injekt.get(),
-    private val gameViewport: GameViewport = Injekt.get(),
-    private val gameCamera: GameCamera = Injekt.get()
-) : IteratingSystem(Family.all(DebugShapeComponent::class.java).get()) {
+class DebugRenderingSystem(context: Context) : IteratingSystem(Family.all(DebugShapeComponent::class.java).get()) {
+    private val shapeRenderer: ShapeRenderer = context.inject()
+    private val gameViewport: GameViewport = context.inject()
+    private val gameCamera: GameCamera = context.inject()
+
     init {
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl20.glLineWidth(3f)

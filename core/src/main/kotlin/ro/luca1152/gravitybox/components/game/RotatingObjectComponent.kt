@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -39,5 +40,5 @@ class RotatingObjectComponent : Component, Poolable {
 val Entity.rotatingObject: RotatingObjectComponent
     get() = RotatingObjectComponent[this]
 
-fun Entity.rotatingObject() =
-    add(createComponent<RotatingObjectComponent>())!!
+fun Entity.rotatingObject(context: Context) =
+    add(createComponent<RotatingObjectComponent>(context))!!

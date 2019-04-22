@@ -24,6 +24,7 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.MathUtils
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
@@ -33,14 +34,15 @@ import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Places objects at touch when the place tool is used. */
 class ObjectPlacementSystem(
-    private val levelEditorScreen: LevelEditorScreen,
-    private val inputMultiplexer: InputMultiplexer = Injekt.get()
+    private val context: Context,
+    private val levelEditorScreen: LevelEditorScreen
 ) : EntitySystem() {
+    private val inputMultiplexer: InputMultiplexer = context.inject()
+
+    private lateinit var levelEntity: Entity
     private lateinit var undoRedoEntity: Entity
     private lateinit var inputEntity: Entity
     private lateinit var mapEntity: Entity
@@ -73,14 +75,14 @@ class ObjectPlacementSystem(
             inputEntity.input.toggledButton.get()?.type == ButtonType.PLACE_TOOL_BUTTON
 
         private fun createPlatformAt(screenX: Int, screenY: Int) {
-            val coords = screenToWorldCoordinates(screenX, screenY)
+            val coords = screenToWorldCoordinates(context, screenX, screenY)
             val platformWidth = 1f
             val id = engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get())
                 .filter { !it.editorObject.isDeleted }.size
             placedObject = when (inputEntity.input.placeToolObjectType) {
                 PlatformComponent::class.java, DestroyablePlatformComponent::class.java, MovingObjectComponent::class.java -> {
                     PlatformEntity.createEntity(
-                        id,
+                        context, id,
                         MathUtils.floor(coords.x).toFloat() + .5f,
                         MathUtils.floor(coords.y).toFloat() + .5f,
                         platformWidth,
@@ -88,8 +90,9 @@ class ObjectPlacementSystem(
                     )
                 }
                 CollectiblePointComponent::class.java -> {
+                    levelEntity.map.pointsCount++
                     CollectiblePointEntity.createEntity(
-                        id,
+                        context, id,
                         MathUtils.floor(coords.x).toFloat() + .5f,
                         MathUtils.floor(coords.y).toFloat() + .5f,
                         blinkEndlessly = false
@@ -100,19 +103,18 @@ class ObjectPlacementSystem(
             placedObject.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
 
             // Place the mock moving platform in the level editor
-
             if (inputEntity.input.placeToolObjectType == MovingObjectComponent::class.java) {
                 val mockPlatform = MovingMockPlatformEntity.createEntity(
-                    placedObject,
+                    context, placedObject,
                     placedObject.scene2D.centerX + 1f, placedObject.scene2D.centerY + 1f,
                     placedObject.scene2D.width, placedObject.scene2D.rotation
                 )
-                placedObject.linkedEntity("mockPlatform", mockPlatform)
-                placedObject.movingObject(mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
+                placedObject.linkedEntity(context, "mockPlatform", mockPlatform)
+                placedObject.movingObject(context, mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
             }
 
             mapEntity.map.updateRoundedPlatforms = true
-            undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(placedObject, mapEntity))
+            undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(context, placedObject, mapEntity))
         }
 
         private fun selectPlacedObject() {
@@ -140,6 +142,7 @@ class ObjectPlacementSystem(
     }
 
     override fun addedToEngine(engine: Engine) {
+        levelEntity = engine.getSingleton<LevelComponent>()
         undoRedoEntity = engine.getSingleton<UndoRedoComponent>()
         inputEntity = engine.getSingleton<InputComponent>()
         mapEntity = engine.getSingleton<MapComponent>()

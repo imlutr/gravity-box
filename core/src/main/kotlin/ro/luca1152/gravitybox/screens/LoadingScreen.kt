@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.app.KtxScreen
 import ktx.assets.load
+import ktx.inject.Context
 import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.assets.Assets
@@ -35,15 +36,13 @@ import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.UIViewport
 import ro.luca1152.gravitybox.utils.kotlin.clearScreen
 import ro.luca1152.gravitybox.utils.kotlin.setScreen
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
-class LoadingScreen(
-    private val manager: AssetManager = Injekt.get(),
-    private val game: MyGame = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get(),
-    private val uiViewport: UIViewport = Injekt.get()
-) : KtxScreen {
+class LoadingScreen(private val context: Context) : KtxScreen {
+    private val manager: AssetManager = context.inject()
+    private val game: MyGame = context.inject()
+    private val uiStage: UIStage = context.inject()
+    private val uiViewport: UIViewport = context.inject()
+
     private var loadingAssetsTimer = 0f
     private var loadedEditorMaps = false
     private val finishedLoadingAssets
@@ -115,14 +114,14 @@ class LoadingScreen(
     // may use assets, such as [Skin]s or [Texture]s, that are loaded here.
     private fun addScreens() {
         game.run {
-            addScreen(LevelEditorScreen())
-            addScreen(PlayScreen())
+            addScreen(LevelEditorScreen(context))
+            addScreen(PlayScreen(context))
         }
     }
 
     private fun showPlayScreen() {
         game.setScreen(
-            TransitionScreen(PlayScreen::class.java, fadeOutCurrentScreen = false, clearScreenWithBlack = true)
+            TransitionScreen(context, PlayScreen::class.java, fadeOutCurrentScreen = false, clearScreenWithBlack = true)
         )
     }
 }

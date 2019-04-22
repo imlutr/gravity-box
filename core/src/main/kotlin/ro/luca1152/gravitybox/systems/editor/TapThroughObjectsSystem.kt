@@ -24,20 +24,19 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.scenes.scene2d.Actor
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.MapObjectComponent
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.hitAllScreen
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Allows tapping through objects at long press. */
-class TapThroughObjectsSystem(
-    private val inputMultiplexer: InputMultiplexer = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get()
-) : EntitySystem() {
+class TapThroughObjectsSystem(context: Context) : EntitySystem() {
+    private val inputMultiplexer: InputMultiplexer = context.inject()
+    private val gameStage: GameStage = context.inject()
+
     private val gestureListener = object : GestureDetector(GestureAdapter()) {
         init {
             setLongPressSeconds(.75f)
