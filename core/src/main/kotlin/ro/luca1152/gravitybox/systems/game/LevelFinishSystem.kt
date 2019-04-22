@@ -21,14 +21,20 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
+import com.badlogic.gdx.Preferences
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.ui.Colors
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 /** Handles what happens when a level is finished. */
-class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) : EntitySystem() {
+class LevelFinishSystem(
+    private val restartLevelWhenFinished: Boolean = false,
+    private val preferences: Preferences = Injekt.get()
+) : EntitySystem() {
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
 
@@ -57,6 +63,11 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
             levelEntity.level.restartLevel = true
         else {
             deleteEntities()
+            preferences.run {
+                val previousHigh = getInteger("highestFinishedLevel", 0)
+                putInteger("highestFinishedLevel", Math.max(previousHigh, levelEntity.level.levelId))
+                flush()
+            }
             levelEntity.level.run {
                 levelId = Math.min(levelId + 1, MyGame.LEVELS_NUMBER)
                 loadMap = true

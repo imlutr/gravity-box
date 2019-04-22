@@ -22,6 +22,7 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
@@ -64,7 +65,8 @@ class PlayScreen(
     private val world: World = Injekt.get(),
     private val inputMultiplexer: InputMultiplexer = Injekt.get(),
     private val uiStage: UIStage = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get()
+    private val gameStage: GameStage = Injekt.get(),
+    private val preferences: Preferences = Injekt.get()
 ) : KtxScreen {
     private lateinit var levelEntity: Entity
     private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, UICamera), Injekt.get())
@@ -280,7 +282,10 @@ class PlayScreen(
             }
         })
     }
-    private val levelLabel = DistanceFieldLabel("#1", skin, "semi-bold", 37f, Colors.gameColor)
+    private val levelLabel = DistanceFieldLabel(
+        "#${preferences.getInteger("highestFinishedLevel", 0) + 1}",
+        skin, "semi-bold", 37f, Colors.gameColor
+    )
     private val leftLevelRightTable = Table(skin).apply {
         add(leftButton).padRight(102f)
         add(levelLabel).padRight(102f)
@@ -593,7 +598,7 @@ class PlayScreen(
     }
 
     private fun createGameEntities() {
-        levelEntity = LevelEntity.createEntity(1).apply {
+        levelEntity = LevelEntity.createEntity(preferences.getInteger("highestFinishedLevel", 0) + 1).apply {
             level.loadMap = true
             level.forceUpdateMap = true
         }
@@ -678,7 +683,11 @@ class PlayScreen(
             makeButtonTouchable(leftButton)
         }
 
-        if (levelEntity.level.levelId == MyGame.LEVELS_NUMBER) {
+        if (levelEntity.level.levelId == Math.min(
+                MyGame.LEVELS_NUMBER,
+                preferences.getInteger("highestFinishedLevel", 0) + 1
+            )
+        ) {
             makeButtonUntouchable(rightButton)
         } else {
             makeButtonTouchable(rightButton)
