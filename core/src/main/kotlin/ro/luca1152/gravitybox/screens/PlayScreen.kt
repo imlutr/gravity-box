@@ -19,10 +19,7 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
-import com.badlogic.gdx.Application
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.InputMultiplexer
-import com.badlogic.gdx.Preferences
+import com.badlogic.gdx.*
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
@@ -38,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.graphics.copy
+import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
@@ -75,6 +73,19 @@ class PlayScreen(
     private val bottomGrayStripHeight = 128f
     private val skin = manager.get(Assets.uiSkin)
     var shiftCameraYBy = 0f
+    private val clearPreferencesListener = object : InputAdapter() {
+        override fun keyDown(keycode: Int): Boolean {
+            if (keycode == Input.Keys.F5 && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                preferences.run {
+                    clear()
+                    flush()
+                }
+                info { "Cleared all preferences." }
+                return true
+            }
+            return false
+        }
+    }
     private val menuButton = ClickButton(skin, "menu-button").apply {
         addClickRunnable(Runnable {
             addAction(Actions.sequence(
@@ -715,6 +726,7 @@ class PlayScreen(
         // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
         inputMultiplexer.addProcessor(0, uiStage)
         inputMultiplexer.addProcessor(1, menuOverlayStage)
+        inputMultiplexer.addProcessor(2, clearPreferencesListener)
     }
 
     private var loadedAnyMap = false
