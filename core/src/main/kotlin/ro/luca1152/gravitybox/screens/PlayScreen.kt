@@ -485,6 +485,63 @@ class PlayScreen(
         add(middlePart).expand()
         add(rightPart).padRight(padLeftRight).expand().right()
     }
+    val rateGamePromptPopUp = NewPopUp(600f, 570f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            """
+            Would you like to rate the game
+            or give feedback?
+
+            (I actually read every review)
+        """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val rateButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel("Rate the game", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    when (Gdx.app.type) {
+                        Application.ApplicationType.Android -> Gdx.net.openURI("market://details?id=ro.luca1152.gravitybox")
+                        else -> Gdx.net.openURI("https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox")
+                    }
+                    this@popup.hide()
+                }
+            })
+        }
+        val maybeLaterButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel("Maybe later", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        val neverButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel("Never :(", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    preferences.run {
+                        putBoolean("neverPromptUserToRate", true)
+                        flush()
+                    }
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).expand().top().row()
+            add(rateButton).width(492f).expand().row()
+            add(maybeLaterButton).width(492f).expand().row()
+            add(neverButton).width(492f).expand().row()
+        }
+    }
     private val rootOverlayTable = Table().apply {
         setFillParent(true)
         add(topPart).expand().fill().row()
@@ -632,7 +689,7 @@ class PlayScreen(
             addSystem(PlayerCameraSystem(this@PlayScreen))
             addSystem(UpdateGameCameraSystem())
             addSystem(ImageRenderingSystem())
-            addSystem(LevelFinishSystem())
+            addSystem(LevelFinishSystem(playScreen = this@PlayScreen))
 //            addSystem(PhysicsDebugRenderingSystem())
             addSystem(DebugRenderingSystem())
         }

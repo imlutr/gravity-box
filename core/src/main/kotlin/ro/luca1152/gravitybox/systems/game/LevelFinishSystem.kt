@@ -22,8 +22,11 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Preferences
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.screens.PlayScreen
+import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -33,7 +36,9 @@ import uy.kohesive.injekt.api.get
 /** Handles what happens when a level is finished. */
 class LevelFinishSystem(
     private val restartLevelWhenFinished: Boolean = false,
-    private val preferences: Preferences = Injekt.get()
+    private val playScreen: PlayScreen? = null,
+    private val preferences: Preferences = Injekt.get(),
+    private val uiStage: UIStage = Injekt.get()
 ) : EntitySystem() {
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
@@ -55,6 +60,7 @@ class LevelFinishSystem(
     override fun update(deltaTime: Float) {
         if (!levelIsFinished)
             return
+        promptUserToRate()
         handleLevelFinish()
     }
 
@@ -76,6 +82,20 @@ class LevelFinishSystem(
             levelEntity.map.run {
                 updateRoundedPlatforms = true
             }
+        }
+    }
+
+    private fun promptUserToRate() {
+        if (playScreen == null) return
+        if (preferences.getBoolean("neverPromptUserToRate", false)) return
+        if (preferences.getInteger("promptUserToRateAfterFinishingLevel", 3) != levelEntity.level.levelId) return
+        uiStage.addAction(Actions.sequence(
+            Actions.delay(.25f),
+            Actions.run { uiStage.addActor(playScreen.rateGamePromptPopUp) }
+        ))
+        preferences.run {
+            val oldValue = preferences.getInteger("promptUserToRateAfterFinishingLevel", 3)
+            putInteger("promptUserToRateAfterFinishingLevel", oldValue + 4)
         }
     }
 
