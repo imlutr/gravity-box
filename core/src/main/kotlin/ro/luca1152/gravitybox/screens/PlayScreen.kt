@@ -294,7 +294,7 @@ class PlayScreen(
         })
     }
     private val levelLabel = DistanceFieldLabel(
-        "#${preferences.getInteger("highestFinishedLevel", 0) + 1}",
+        "#${Math.min(preferences.getInteger("highestFinishedLevel", 0) + 1, MyGame.LEVELS_NUMBER)}",
         skin, "semi-bold", 37f, Colors.gameColor
     )
     private val leftLevelRightTable = Table(skin).apply {
@@ -679,7 +679,12 @@ class PlayScreen(
     }
 
     private fun createGameEntities() {
-        levelEntity = LevelEntity.createEntity(preferences.getInteger("highestFinishedLevel", 0) + 1).apply {
+        levelEntity = LevelEntity.createEntity(
+            Math.min(
+                preferences.getInteger("highestFinishedLevel", 0) + 1,
+                MyGame.LEVELS_NUMBER
+            )
+        ).apply {
             level.loadMap = true
             level.forceUpdateMap = true
         }
