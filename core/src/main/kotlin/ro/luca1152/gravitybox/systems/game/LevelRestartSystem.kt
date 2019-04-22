@@ -21,17 +21,22 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
+import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 /** Handles what happens when a level is marked as to be restarted. */
-class LevelRestartSystem : EntitySystem() {
+class LevelRestartSystem(private val gameStage: GameStage = Injekt.get()) : EntitySystem() {
     private lateinit var levelEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
@@ -45,12 +50,21 @@ class LevelRestartSystem : EntitySystem() {
     }
 
     private fun restartTheLevel() {
-        resetBodiesToInitialState()
-        resetMovingPlatforms()
-        resetDestroyablePlatforms()
-        resetCollectiblePoints()
-        removeBullets()
         levelEntity.level.restartLevel = false
+        gameStage.addAction(
+            Actions.sequence(
+                Actions.fadeOut(.25f, Interpolation.pow3In),
+                Actions.run {
+                    resetBodiesToInitialState()
+                    resetMovingPlatforms()
+                    resetDestroyablePlatforms()
+                    resetCollectiblePoints()
+                    removeBullets()
+                    levelEntity.map.forceCenterCameraOnPlayer = true
+                },
+                Actions.fadeIn(.25f, Interpolation.pow3In)
+            )
+        )
     }
 
     private fun removeBullets() {
