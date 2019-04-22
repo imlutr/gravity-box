@@ -43,6 +43,8 @@ import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
+import ro.luca1152.gravitybox.systems.editor.OverlayCameraSyncSystem
+import ro.luca1152.gravitybox.systems.editor.OverlayRenderingSystem
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
@@ -53,6 +55,7 @@ import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
 import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.get
 
 class PlayScreen(
@@ -64,6 +67,7 @@ class PlayScreen(
     private val inputMultiplexer: InputMultiplexer = Injekt.get(),
     private val uiStage: UIStage = Injekt.get(),
     private val gameStage: GameStage = Injekt.get(),
+    private val overlayStage: OverlayStage = Injekt.get(),
     private val preferences: Preferences = Injekt.get()
 ) : KtxScreen {
     private lateinit var levelEntity: Entity
@@ -663,6 +667,7 @@ class PlayScreen(
     }
 
     override fun show() {
+        Injekt.addSingleton(skin)
         createGame()
         createUI()
     }
@@ -717,7 +722,9 @@ class PlayScreen(
             addSystem(CanFinishLevelSystem())
             addSystem(PlayerCameraSystem(this@PlayScreen))
             addSystem(UpdateGameCameraSystem())
+            addSystem(OverlayCameraSyncSystem())
             addSystem(ImageRenderingSystem())
+            addSystem(OverlayRenderingSystem())
             addSystem(LevelFinishSystem(playScreen = this@PlayScreen))
 //            addSystem(PhysicsDebugRenderingSystem())
             addSystem(DebugRenderingSystem())
@@ -757,17 +764,25 @@ class PlayScreen(
     private var loadedAnyMap = false
 
     override fun render(delta: Float) {
+        update()
+        draw(delta)
+        loadedAnyMap = true
+        rootOverlayTable.setLayoutEnabled(false)
+    }
+
+    private fun update() {
         updateLeftRightButtons()
         updateLevelLabel()
         shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
         menuOverlayStage.act()
+    }
+
+    private fun draw(delta: Float) {
         clearScreen(if (loadedAnyMap) Colors.bgColor else Color.BLACK)
         engine.update(delta)
-        loadedAnyMap = true
         uiStage.draw()
         menuOverlayStage.draw()
-        rootOverlayTable.setLayoutEnabled(false)
     }
 
     private fun updateLeftRightButtons() {
