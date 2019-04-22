@@ -62,7 +62,7 @@ class ColorSchemeSystem : EntitySystem() {
     }
 
     private fun lerpColors() {
-        Colors.lerpTowardsDefaultColors()
+        Colors.lerpTowardsDefaultColors(.015f)
         if (Colors.uiDownColor.approxEqualTo(Colors.LightTheme.game29)) {
             Colors.isDirty = false
             generatedNewColors = false
