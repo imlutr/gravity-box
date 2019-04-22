@@ -74,6 +74,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val bottomGrayStripHeight = 128f
     private val skin = manager.get(Assets.uiSkin)
     var shiftCameraYBy = 0f
+    private var shouldUpdateLevelLabel = false
+    private var isChangingLevel = false
     private val clearPreferencesListener = object : InputAdapter() {
         override fun keyDown(keycode: Int): Boolean {
             if (keycode == Input.Keys.F5 && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
@@ -249,11 +251,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val leftButton = ClickButton(skin, "left-button").apply {
         addClickRunnable(Runnable {
             // The button is touchable
-            if (color.a == 1f) {
+            if (color.a == 1f && !isChangingLevel) {
                 gameStage.addAction(
                     Actions.sequence(
+                        Actions.run { isChangingLevel = true },
                         Actions.fadeOut(.2f),
                         Actions.run {
+                            shouldUpdateLevelLabel = true
                             levelEntity.level.run {
                                 levelId--
                                 loadMap = true
@@ -264,7 +268,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
                                 forceCenterCameraOnPlayer = true
                             }
                         },
-                        Actions.fadeIn(.2f)
+                        Actions.fadeIn(.2f),
+                        Actions.run { isChangingLevel = false }
                     )
                 )
             }
@@ -273,11 +278,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val rightButton = ClickButton(skin, "right-button").apply {
         addClickRunnable(Runnable {
             // The button is touchable
-            if (color.a == 1f) {
+            if (color.a == 1f && !isChangingLevel) {
                 gameStage.addAction(
                     Actions.sequence(
+                        Actions.run { isChangingLevel = true },
                         Actions.fadeOut(.2f),
                         Actions.run {
+                            shouldUpdateLevelLabel = true
                             levelEntity.level.run {
                                 levelId++
                                 loadMap = true
@@ -288,7 +295,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
                                 forceCenterCameraOnPlayer = true
                             }
                         },
-                        Actions.fadeIn(.2f)
+                        Actions.fadeIn(.2f),
+                        Actions.run { isChangingLevel = false }
                     )
                 )
             }
@@ -800,12 +808,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateLevelLabel() {
-        if (!levelLabel.textEquals("#${levelEntity.level.levelId}")) {
+        if (shouldUpdateLevelLabel) {
             levelLabel.run {
                 setText("#${levelEntity.level.levelId}")
                 layout()
             }
             rootOverlayTable.setLayoutEnabled(false)
+            shouldUpdateLevelLabel = false
         }
     }
 
