@@ -22,10 +22,12 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Preferences
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.screens.PlayScreen
+import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
@@ -38,7 +40,8 @@ class LevelFinishSystem(
     private val restartLevelWhenFinished: Boolean = false,
     private val playScreen: PlayScreen? = null,
     private val preferences: Preferences = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get()
+    private val uiStage: UIStage = Injekt.get(),
+    private val gameStage: GameStage = Injekt.get()
 ) : EntitySystem() {
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
@@ -68,20 +71,29 @@ class LevelFinishSystem(
         if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
         else {
-            deleteEntities()
-            preferences.run {
-                val previousHigh = getInteger("highestFinishedLevel", 0)
-                putInteger("highestFinishedLevel", Math.max(previousHigh, levelEntity.level.levelId))
-                flush()
-            }
-            levelEntity.level.run {
-                levelId = Math.min(levelId + 1, MyGame.LEVELS_NUMBER)
-                loadMap = true
-                forceUpdateMap = true
-            }
-            levelEntity.map.run {
-                updateRoundedPlatforms = true
-            }
+            gameStage.addAction(
+                Actions.sequence(
+                    Actions.fadeOut(0f),
+                    Actions.run {
+                        deleteEntities()
+                        preferences.run {
+                            val previousHigh = getInteger("highestFinishedLevel", 0)
+                            putInteger("highestFinishedLevel", Math.max(previousHigh, levelEntity.level.levelId))
+                            flush()
+                        }
+                        levelEntity.level.run {
+                            levelId = Math.min(levelId + 1, MyGame.LEVELS_NUMBER)
+                            loadMap = true
+                            forceUpdateMap = true
+                        }
+                        levelEntity.map.run {
+                            updateRoundedPlatforms = true
+                            forceCenterCameraOnPlayer = true
+                        }
+                    },
+                    Actions.fadeIn(.25f, Interpolation.pow3In)
+                )
+            )
         }
     }
 
