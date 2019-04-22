@@ -89,6 +89,7 @@ class LevelFinishSystem(
         if (playScreen == null) return
         if (preferences.getBoolean("neverPromptUserToRate", false)) return
         if (preferences.getInteger("promptUserToRateAfterFinishingLevel", 3) != levelEntity.level.levelId) return
+        if (preferences.getBoolean("didRateGame", false)) return
         uiStage.addAction(Actions.sequence(
             Actions.delay(.25f),
             Actions.run { uiStage.addActor(playScreen.rateGamePromptPopUp) }
