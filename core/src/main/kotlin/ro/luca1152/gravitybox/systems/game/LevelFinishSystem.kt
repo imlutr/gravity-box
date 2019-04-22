@@ -68,11 +68,14 @@ class LevelFinishSystem(
     }
 
     private fun handleLevelFinish() {
+        if (levelEntity.level.isRestarting) return
+
         if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
         else {
             gameStage.addAction(
                 Actions.sequence(
+                    Actions.run { levelEntity.level.isRestarting = true },
                     Actions.fadeOut(0f),
                     Actions.run {
                         deleteEntities()
@@ -91,7 +94,8 @@ class LevelFinishSystem(
                             forceCenterCameraOnPlayer = true
                         }
                     },
-                    Actions.fadeIn(.25f, Interpolation.pow3In)
+                    Actions.fadeIn(.25f, Interpolation.pow3In),
+                    Actions.run { levelEntity.level.isRestarting = false }
                 )
             )
         }
