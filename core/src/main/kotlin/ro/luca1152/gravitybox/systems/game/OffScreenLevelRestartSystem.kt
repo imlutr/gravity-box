@@ -36,7 +36,7 @@ class OffScreenLevelRestartSystem : EntitySystem() {
     }
 
     override fun update(deltaTime: Float) {
-        if (playerIsOffScreen) {
+        if (playerIsOffScreen && !levelEntity.level.isRestarting) {
             levelEntity.level.restartLevel = true
         }
     }

@@ -29,6 +29,7 @@ class LevelComponent : Component, Poolable {
     var createCombinedBodies = false
     var forceUpdateMap = false
     var restartLevel = false
+    var isRestarting = false
     var levelId = 1
 
     /** True if every point (if any) was collected. */
@@ -43,6 +44,7 @@ class LevelComponent : Component, Poolable {
         createCombinedBodies = false
         forceUpdateMap = false
         restartLevel = false
+        isRestarting = false
         levelId = 1
     }
 

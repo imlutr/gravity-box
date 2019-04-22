@@ -53,6 +53,7 @@ class LevelRestartSystem(private val gameStage: GameStage = Injekt.get()) : Enti
         levelEntity.level.restartLevel = false
         gameStage.addAction(
             Actions.sequence(
+                Actions.run { levelEntity.level.isRestarting = true },
                 Actions.fadeOut(.25f, Interpolation.pow3In),
                 Actions.run {
                     resetBodiesToInitialState()
@@ -62,7 +63,8 @@ class LevelRestartSystem(private val gameStage: GameStage = Injekt.get()) : Enti
                     removeBullets()
                     levelEntity.map.forceCenterCameraOnPlayer = true
                 },
-                Actions.fadeIn(.25f, Interpolation.pow3In)
+                Actions.fadeIn(.25f, Interpolation.pow3In),
+                Actions.run { levelEntity.level.isRestarting = false }
             )
         )
     }
