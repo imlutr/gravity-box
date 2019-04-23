@@ -208,6 +208,7 @@ class MapComponent : Component, Poolable {
         updateMapBounds()
         if (isLevelEditor) {
             makeObjectsTransparent()
+            updateRoundedPlatforms = true
         }
     }
 
