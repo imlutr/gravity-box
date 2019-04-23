@@ -331,7 +331,10 @@ class PlayingSystem(
 
     private fun makeEveryObjectTransparent(engine: Engine) {
         engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
-            it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
+            // ??? There is (rarely) a crash here because scene2D is null...
+            if (it.tryGet(Scene2DComponent) != null) {
+                it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
+            }
         }
     }
 }
