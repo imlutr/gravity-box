@@ -112,7 +112,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val restartButton = ClickButton(skin, "color-round-button").apply {
         addIcon("restart-icon")
         addClickRunnable(Runnable {
-            levelEntity.level.restartLevel = true
+            if (!levelEntity.level.isRestarting) {
+                levelEntity.level.restartLevel = true
+            }
         })
     }
     private val bottomRow = Table().apply {
