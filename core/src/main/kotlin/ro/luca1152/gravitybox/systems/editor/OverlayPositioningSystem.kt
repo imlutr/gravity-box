@@ -319,10 +319,13 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 } else {
                     selectedMapObject!!.editorObject.isDraggingVertically = false
                     newCenterX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords)
-                    newCenterX = newCenterX.roundToNearest(.5f, .15f)
+                    if (selectedMapObject!!.tryGet(SnapComponent) != null) {
+                        newCenterX = newCenterX.roundToNearest(.5f, .15f)
+                    }
                 }
 
-                if (Math.abs(newCenterX - selectedMapObject!!.snap.snapCenterX) <= DRAG_SNAP_THRESHOLD &&
+                if (selectedMapObject!!.tryGet(SnapComponent) != null &&
+                    Math.abs(newCenterX - selectedMapObject!!.snap.snapCenterX) <= DRAG_SNAP_THRESHOLD &&
                     Math.abs(newCenterY - selectedMapObject!!.snap.snapCenterY) <= DRAG_SNAP_THRESHOLD
                 ) {
                     return
@@ -339,7 +342,9 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 super.touchUp(event, x, y, pointer, button)
                 selectedMapObject!!.editorObject.isDraggingHorizontally = false
                 selectedMapObject!!.editorObject.isDraggingVertically = false
-                selectedMapObject!!.snap.resetSnappedX()
+                if (selectedMapObject!!.tryGet(SnapComponent) != null) {
+                    selectedMapObject!!.snap.resetSnappedX()
+                }
                 if (scene2D.centerX != initialImageX)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         MoveCommand(
@@ -403,17 +408,20 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 } else {
                     selectedMapObject!!.editorObject.isDraggingHorizontally = false
                     newCenterY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords)
-                    newCenterY = if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null ||
-                        (selectedMapObject as Entity).tryGet(DestroyablePlatformComponent) != null ||
-                        (selectedMapObject as Entity).tryGet(MockMapObjectComponent) != null
-                    ) {
-                        newCenterY.roundToNearest(1f, .125f, .5f)
-                    } else {
-                        newCenterY.roundToNearest(.5f, .125f)
+                    if (selectedMapObject!!.tryGet(SnapComponent) != null) {
+                        newCenterY = if ((selectedMapObject as Entity).tryGet(PlatformComponent) != null ||
+                            (selectedMapObject as Entity).tryGet(DestroyablePlatformComponent) != null ||
+                            (selectedMapObject as Entity).tryGet(MockMapObjectComponent) != null
+                        ) {
+                            newCenterY.roundToNearest(1f, .125f, .5f)
+                        } else {
+                            newCenterY.roundToNearest(.5f, .125f)
+                        }
                     }
                 }
 
-                if (Math.abs(selectedMapObject!!.snap.snapCenterY - newCenterY) <= DRAG_SNAP_THRESHOLD &&
+                if (selectedMapObject!!.tryGet(SnapComponent) != null &&
+                    Math.abs(selectedMapObject!!.snap.snapCenterY - newCenterY) <= DRAG_SNAP_THRESHOLD &&
                     Math.abs(selectedMapObject!!.snap.snapCenterX - newCenterX) <= DRAG_SNAP_THRESHOLD
                 ) {
                     return
@@ -430,7 +438,9 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 super.touchUp(event, x, y, pointer, button)
                 selectedMapObject!!.editorObject.isDraggingVertically = false
                 selectedMapObject!!.editorObject.isDraggingHorizontally = false
-                selectedMapObject!!.snap.resetSnappedY()
+                if (selectedMapObject!!.tryGet(SnapComponent) != null) {
+                    selectedMapObject!!.snap.resetSnappedY()
+                }
                 if (scene2D.centerY != initialImageY)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         MoveCommand(

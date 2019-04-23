@@ -111,7 +111,9 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
     private fun resetBodiesToInitialState() {
         engine.getEntitiesFor(Family.all(BodyComponent::class.java).exclude(CombinedBodyComponent::class.java).get())
             .forEach {
-                if ((it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) && it.tryGet(BodyComponent) != null) {
+                if ((it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) && it.tryGet(BodyComponent) != null
+                    && it.tryGet(Scene2DComponent) != null
+                ) {
                     it.body.resetToInitialState()
                     it.scene2D.run {
                         centerX = it.body.body.worldCenter.x
