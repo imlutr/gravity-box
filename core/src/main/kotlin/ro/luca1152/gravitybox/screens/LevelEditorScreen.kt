@@ -847,7 +847,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
     }
 
     override fun resize(width: Int, height: Int) {
-        gameViewport.update(width, height, true)
+        gameViewport.update(width, height, false)
     }
 
     override fun hide() {
