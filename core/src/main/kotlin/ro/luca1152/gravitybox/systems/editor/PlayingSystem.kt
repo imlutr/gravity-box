@@ -207,7 +207,9 @@ class PlayingSystem(
 
     private fun makeEveryObjectOpaque() {
         engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
-            it.scene2D.color.a = 1f
+            if (it.tryGet(Scene2DComponent) != null) {// Crashes if I don't check..
+                it.scene2D.color.a = 1f
+            }
         }
     }
 
