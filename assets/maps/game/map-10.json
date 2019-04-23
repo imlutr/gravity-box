@@ -1,5 +1,5 @@
 {
-  "id": 3,
+  "id": 2,
   "padding": {
     "left": 2,
     "right": 2,
@@ -17,8 +17,8 @@
   "finish": {
     "id": 1,
     "position": {
-      "x": 96,
-      "y": 296
+      "x": -64,
+      "y": 104
     },
     "rotation": 0
   },
@@ -27,50 +27,30 @@
       "type": "platform",
       "id": 2,
       "position": {
-        "x": -43.999985,
+        "x": 12,
         "y": 32
       },
-      "width": 472.00003,
+      "width": 280,
       "rotation": 0
     },
     {
       "type": "platform",
       "id": 3,
       "position": {
-        "x": 96,
-        "y": 224
+        "x": 160,
+        "y": 96
       },
-      "width": 192,
-      "rotation": 0
+      "width": 144,
+      "rotation": 270
     },
     {
-      "type": "platform",
+      "type": "text",
       "id": 4,
+      "string": "Tip: the angle you shoot at\nmatters",
       "position": {
-        "x": 200,
-        "y": 216
+        "x": 18,
+        "y": -27.999992
       },
-      "width": 384,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "id": 5,
-      "position": {
-        "x": -288,
-        "y": 216
-      },
-      "width": 384,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "id": 6,
-      "position": {
-        "x": -44,
-        "y": 416
-      },
-      "width": 504,
       "rotation": 0
     }
   ]
