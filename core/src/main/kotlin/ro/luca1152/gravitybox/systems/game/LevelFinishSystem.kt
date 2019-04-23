@@ -66,6 +66,7 @@ class LevelFinishSystem(
             return
         promptUserToRate()
         handleLevelFinish()
+        playScreen?.shouldUpdateLevelLabel = true
     }
 
     private fun handleLevelFinish() {
