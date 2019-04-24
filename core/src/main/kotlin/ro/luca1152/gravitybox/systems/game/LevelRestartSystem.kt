@@ -57,12 +57,16 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                 Actions.run { levelEntity.level.isRestarting = true },
                 Actions.fadeOut(.25f, Interpolation.pow3In),
                 Actions.run {
-                    resetBodiesToInitialState()
-                    resetMovingPlatforms()
-                    resetDestroyablePlatforms()
-                    resetCollectiblePoints()
-                    removeBullets()
-                    levelEntity.map.forceCenterCameraOnPlayer = true
+                    // Without this check, in the level editor, if the player restarted the level just before
+                    // leaving the play test section, the game would crash
+                    if (engine != null) {
+                        resetBodiesToInitialState()
+                        resetMovingPlatforms()
+                        resetDestroyablePlatforms()
+                        resetCollectiblePoints()
+                        removeBullets()
+                        levelEntity.map.forceCenterCameraOnPlayer = true
+                    }
                 },
                 Actions.fadeIn(.25f, Interpolation.pow3In),
                 Actions.run { levelEntity.level.isRestarting = false }
