@@ -1,5 +1,6 @@
 {
   "id": 2,
+  "hue": 8,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,7 +10,7 @@
   "player": {
     "id": 0,
     "position": {
-      "x": 96,
+      "x": -96,
       "y": 72
     },
     "rotation": 0
@@ -17,8 +18,8 @@
   "finish": {
     "id": 1,
     "position": {
-      "x": -64,
-      "y": 104
+      "x": -88,
+      "y": -40
     },
     "rotation": 0
   },
@@ -27,7 +28,7 @@
       "type": "platform",
       "id": 2,
       "position": {
-        "x": 12,
+        "x": -12,
         "y": 32
       },
       "width": 280,
@@ -37,21 +38,31 @@
       "type": "platform",
       "id": 3,
       "position": {
-        "x": 160,
-        "y": 96
+        "x": 52,
+        "y": -112
       },
-      "width": 144,
+      "width": 408,
+      "rotation": 0
+    },
+    {
+      "type": "platform",
+      "id": 4,
+      "position": {
+        "x": -160.00006,
+        "y": 120
+      },
+      "width": 192,
       "rotation": 270
     },
     {
-      "type": "text",
-      "id": 4,
-      "string": "Tip: the angle you shoot at\nmatters",
+      "type": "platform",
+      "id": 5,
       "position": {
-        "x": 18,
-        "y": -27.999992
+        "x": 248,
+        "y": -47.78579
       },
-      "rotation": 0
+      "width": 112.42842,
+      "rotation": 270
     }
   ]
 }

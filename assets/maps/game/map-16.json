@@ -1,5 +1,6 @@
 {
-  "id": 2,
+  "id": 1,
+  "hue": 155,
   "padding": {
     "left": 2,
     "right": 2,
@@ -17,8 +18,8 @@
   "finish": {
     "id": 1,
     "position": {
-      "x": 96,
-      "y": 104
+      "x": 160,
+      "y": -280
     },
     "rotation": 0
   },
@@ -27,7 +28,7 @@
       "type": "platform",
       "id": 2,
       "position": {
-        "x": 0,
+        "x": 64,
         "y": 32
       },
       "width": 384,
@@ -37,41 +38,31 @@
       "type": "platform",
       "id": 3,
       "position": {
-        "x": 24,
-        "y": -96
+        "x": -415.99994,
+        "y": -160
       },
-      "width": 672,
+      "width": 448,
       "rotation": 0
     },
     {
       "type": "platform",
       "id": 4,
       "position": {
-        "x": -8,
-        "y": 128
+        "x": 160,
+        "y": -352
       },
-      "width": 176,
-      "rotation": 270
+      "width": 192,
+      "rotation": 0
     },
     {
       "type": "platform",
       "id": 5,
       "position": {
-        "x": 184,
-        "y": 224
+        "x": 276.61148,
+        "y": -327.09924
       },
-      "width": 400,
-      "rotation": 0
-    },
-    {
-      "type": "platform",
-      "id": 6,
-      "position": {
-        "x": -320,
-        "y": -40
-      },
-      "width": 128,
-      "rotation": 270
+      "width": 77.04578,
+      "rotation": 45
     }
   ]
 }
