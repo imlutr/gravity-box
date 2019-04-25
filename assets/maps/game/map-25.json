@@ -1,6 +1,6 @@
 {
-  "id": 2,
-  "hue": 97,
+  "id": 4,
+  "hue": 300,
   "padding": {
     "left": 2,
     "right": 2,
@@ -10,7 +10,7 @@
   "player": {
     "id": 0,
     "position": {
-      "x": 32,
+      "x": -32,
       "y": 72
     },
     "rotation": 0
@@ -18,7 +18,7 @@
   "finish": {
     "id": 1,
     "position": {
-      "x": -386.53992,
+      "x": 128,
       "y": 104
     },
     "rotation": 0
@@ -28,7 +28,37 @@
       "type": "platform",
       "id": 2,
       "position": {
+        "x": -146.41975,
+        "y": 32
+      },
+      "width": 340.83994,
+      "rotation": 0
+    },
+    {
+      "type": "platform",
+      "id": 3,
+      "position": {
         "x": 32,
+        "y": 128
+      },
+      "width": 208,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "id": 4,
+      "position": {
+        "x": -7.999832,
+        "y": 224
+      },
+      "width": 64,
+      "rotation": 0
+    },
+    {
+      "type": "platform",
+      "id": 5,
+      "position": {
+        "x": 136,
         "y": 32
       },
       "width": 192,
@@ -36,43 +66,23 @@
     },
     {
       "type": "platform",
-      "id": 3,
-      "position": {
-        "x": -384,
-        "y": 32
-      },
-      "width": 133.07983,
-      "rotation": 0
-    },
-    {
-      "type": "platform",
-      "id": 4,
-      "position": {
-        "x": -458.53998,
-        "y": 129.64595
-      },
-      "width": 211.2919,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "id": 5,
-      "position": {
-        "x": 120,
-        "y": 137.64595
-      },
-      "width": 195.2919,
-      "rotation": 270
-    },
-    {
-      "type": "text",
       "id": 6,
-      "string": "Slight change...",
       "position": {
-        "x": -179.02203,
-        "y": 213.33015
+        "x": 224,
+        "y": 136
       },
-      "rotation": 0
+      "width": 192.00002,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "id": 7,
+      "position": {
+        "x": 274.0692,
+        "y": 338.0639
+      },
+      "width": 148.2698,
+      "rotation": 45
     }
   ]
 }

@@ -192,7 +192,7 @@ class PlayingSystem(
             addSystem(PlayerCameraSystem(context))
             addSystem(UpdateGameCameraSystem(context))
             addSystem(ImageRenderingSystem(context))
-//            addSystem(PhysicsDebugRenderingSystem())
+//            addSystem(PhysicsDebugRenderingSystem(context))
             addSystem(DebugRenderingSystem(context))
         }
     }
