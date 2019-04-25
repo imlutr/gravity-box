@@ -102,7 +102,8 @@ class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
                 if (entityB.isDeleted || entityA == entityB) {
                     break
                 }
-                if (isSameRotation(entityA, entityB) &&
+                if (entityA.polygon.polygon.vertices.isNotEmpty() && entityB.polygon.polygon.vertices.isNotEmpty() &&
+                    isSameRotation(entityA, entityB) &&
                     entityA.polygon.bottommostY == entityB.polygon.bottommostY &&
                     entityA.polygon.topmostY == entityB.polygon.topmostY &&
                     ((entityA.polygon.leftmostX == entityB.polygon.leftmostX ||
