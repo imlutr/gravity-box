@@ -1,6 +1,6 @@
 {
   "id": 2,
-  "hue": 157,
+  "hue": 305,
   "padding": {
     "left": 2,
     "right": 2,
@@ -10,7 +10,7 @@
   "player": {
     "id": 0,
     "position": {
-      "x": -384,
+      "x": 32,
       "y": 72
     },
     "rotation": 0
@@ -19,7 +19,7 @@
     "id": 1,
     "position": {
       "x": -386.53992,
-      "y": -64
+      "y": 104
     },
     "rotation": 0
   },
@@ -28,11 +28,11 @@
       "type": "platform",
       "id": 2,
       "position": {
-        "x": -48,
+        "x": 32,
         "y": 32
       },
-      "width": 64,
-      "rotation": 90
+      "width": 192,
+      "rotation": 0
     },
     {
       "type": "platform",
@@ -48,50 +48,40 @@
       "type": "platform",
       "id": 4,
       "position": {
-        "x": -458.53992,
-        "y": 32.109848
+        "x": -458.53998,
+        "y": 129.64595
       },
-      "width": 320.2197,
+      "width": 211.2919,
       "rotation": 270
     },
     {
       "type": "platform",
       "id": 5,
       "position": {
-        "x": -171.71265,
-        "y": 200.2197
+        "x": 120,
+        "y": 137.64595
       },
-      "width": 589.65466,
-      "rotation": 0
+      "width": 195.2919,
+      "rotation": 270
     },
     {
-      "type": "platform",
+      "type": "text",
       "id": 6,
+      "string": "Be careful...",
       "position": {
-        "x": 115.114685,
-        "y": 32.109848
+        "x": -179.02203,
+        "y": 192.55751
       },
-      "width": 320.2197,
-      "rotation": 270
+      "rotation": 0
     },
     {
       "type": "platform",
       "id": 7,
       "position": {
-        "x": -394.53998,
-        "y": -136
+        "x": -169.27002,
+        "y": 243.2919
       },
-      "width": 144.00012,
-      "rotation": 0
-    },
-    {
-      "type": "platform",
-      "id": 8,
-      "position": {
-        "x": 25.557335,
-        "y": -120
-      },
-      "width": 163.11469,
+      "width": 594.54004,
       "rotation": 0
     }
   ]

@@ -1,6 +1,6 @@
 {
   "id": 2,
-  "hue": 337,
+  "hue": 188,
   "padding": {
     "left": 2,
     "right": 2,
@@ -10,7 +10,7 @@
   "player": {
     "id": 0,
     "position": {
-      "x": 96,
+      "x": -32,
       "y": 72
     },
     "rotation": 0
@@ -18,40 +18,30 @@
   "finish": {
     "id": 1,
     "position": {
-      "x": -64,
+      "x": 64,
       "y": 104
     },
     "rotation": 0
   },
   "objects": [
     {
-      "type": "platform",
-      "id": 2,
+      "type": "text",
+      "id": 0,
+      "string": "Tip: the distance between the\nexplosion and the box matters",
       "position": {
-        "x": 12,
-        "y": 32
+        "x": -127.609985,
+        "y": -51.999985
       },
-      "width": 280,
       "rotation": 0
     },
     {
       "type": "platform",
-      "id": 3,
+      "id": 2,
       "position": {
-        "x": 160,
-        "y": 96
+        "x": -127.99994,
+        "y": 32
       },
-      "width": 144,
-      "rotation": 270
-    },
-    {
-      "type": "text",
-      "id": 4,
-      "string": "Tip: the angle you shoot at\nmatters",
-      "position": {
-        "x": 18,
-        "y": -27.999992
-      },
+      "width": 512,
       "rotation": 0
     }
   ]

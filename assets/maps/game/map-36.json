@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 268,
+  "hue": 73,
   "padding": {
     "left": 2,
     "right": 2,
@@ -10,7 +10,7 @@
   "player": {
     "id": 0,
     "position": {
-      "x": 64,
+      "x": -64,
       "y": 72
     },
     "rotation": 0
@@ -18,7 +18,7 @@
   "finish": {
     "id": 1,
     "position": {
-      "x": -320,
+      "x": 112,
       "y": -40
     },
     "rotation": 0
@@ -28,70 +28,70 @@
       "type": "platform",
       "id": 2,
       "position": {
-        "x": 64,
+        "x": 32,
         "y": 32
       },
-      "width": 128,
+      "width": 320,
       "rotation": 0
     },
     {
       "type": "platform",
       "id": 3,
       "position": {
-        "x": -320,
-        "y": 32
+        "x": -119.93327,
+        "y": 224
       },
-      "width": 127.99999,
+      "width": 48.133507,
       "rotation": 0
     },
     {
       "type": "platform",
       "id": 4,
       "position": {
-        "x": -180,
-        "y": 160
+        "x": -136.00003,
+        "y": 120
       },
-      "width": 616,
-      "rotation": 0
+      "width": 192,
+      "rotation": 270
     },
     {
       "type": "platform",
       "id": 5,
       "position": {
-        "x": -372,
-        "y": -112
+        "x": -288,
+        "y": 328
       },
-      "width": 231.99997,
-      "rotation": 0
+      "width": 192,
+      "rotation": 270
     },
     {
       "type": "platform",
       "id": 6,
       "position": {
-        "x": -480,
-        "y": 24
+        "x": -288,
+        "y": -44
       },
-      "width": 256,
+      "width": 152,
       "rotation": 270
     },
     {
       "type": "platform",
       "id": 7,
       "position": {
-        "x": -248,
-        "y": -40
+        "x": -44,
+        "y": -112
       },
-      "width": 160,
-      "rotation": 270
+      "width": 472,
+      "rotation": 0
     },
     {
       "type": "platform",
       "id": 8,
       "position": {
-        "x": 136,
-        "y": 96
+        "x": 184,
+        "y": -40
       },
-      "width": 144,
+      "width": 128,
       "rotation": 270
     }
   ]
