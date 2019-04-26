@@ -59,9 +59,10 @@ class ObjectSelectionSystem(context: Context) : EntitySystem() {
         }
 
         override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            if (inputEntity.input.isPanning || inputEntity.input.isZooming) {
-                return true
-            }
+            if (inputEntity.input.isPanning || inputEntity.input.isZooming) return true
+
+            // Sometimes (rarely) touchedActors is not initialized and the game crashes :S
+            if (!::touchedActors.isInitialized) return true
 
             if (!touchedActors.any { it.userObject == selectedObject }) {
                 selectedObject?.editorObject?.isSelected = false
