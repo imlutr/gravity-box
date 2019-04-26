@@ -364,7 +364,7 @@ class MakeObjectMovingCommand(
             val mockPlatform = MovingMockPlatformEntity.createEntity(
                 context, this,
                 movingObject.endPoint.x, movingObject.endPoint.y,
-                scene2D.width, scene2D.height
+                scene2D.width, scene2D.rotation
             ).apply {
                 linkedEntity(context, "platform", this@run)
             }

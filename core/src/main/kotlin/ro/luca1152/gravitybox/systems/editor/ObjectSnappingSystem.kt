@@ -77,9 +77,9 @@ class ObjectSnappingSystem : EntitySystem() {
     }
 
     private fun snapSelectedObject() {
-        if (selectedObject == null || onScreenObjects.isEmpty) {
-            return
-        }
+        if (selectedObject == null || onScreenObjects.isEmpty) return
+        if (selectedObject!!.tryGet(SnapComponent) == null) return
+
         snapObjectPosition()
         snapObjectRotation()
         snapObjectSize()

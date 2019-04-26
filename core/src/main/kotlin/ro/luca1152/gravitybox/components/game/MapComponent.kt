@@ -230,7 +230,8 @@ class MapComponent : Component, Poolable {
                 PlatformComponent::class.java,
                 RotatingIndicatorComponent::class.java,
                 DashedLineComponent::class.java,
-                MockMapObjectComponent::class.java
+                MockMapObjectComponent::class.java,
+                TextComponent::class.java
             ).get()
         ).forEach {
             entitiesToRemove.add(it)

@@ -97,7 +97,7 @@ class BodyComponent : Component, Poolable {
     }
 
     fun destroyBody() {
-        if (::body.isInitialized) {
+        if (::body.isInitialized && ::world.isInitialized) {
             if (world.bodies.contains(body, false))
                 world.destroyBody(body)
         }

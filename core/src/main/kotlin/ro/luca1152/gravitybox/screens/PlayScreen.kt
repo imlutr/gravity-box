@@ -56,6 +56,8 @@ import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
 
 class PlayScreen(private val context: Context) : KtxScreen {
+    private val canLoadAnyLevel = true // debug
+
     private val manager: AssetManager = context.inject()
     private val game: MyGame = context.inject()
     private val engine: PooledEngine = context.inject()
@@ -74,7 +76,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val bottomGrayStripHeight = 128f
     private val skin = manager.get(Assets.uiSkin)
     var shiftCameraYBy = 0f
-    private var shouldUpdateLevelLabel = false
+    var shouldUpdateLevelLabel = false
     private var isChangingLevel = false
     private val clearPreferencesListener = object : InputAdapter() {
         override fun keyDown(keycode: Int): Boolean {
@@ -305,9 +307,19 @@ class PlayScreen(private val context: Context) : KtxScreen {
         })
     }
     private val levelLabel = DistanceFieldLabel(
-        "#${Math.min(preferences.getInteger("highestFinishedLevel", 0) + 1, MyGame.LEVELS_NUMBER)}",
+        "#${if (canLoadAnyLevel) 1 else (Math.min(
+            preferences.getInteger("highestFinishedLevel", 0) + 1,
+            MyGame.LEVELS_NUMBER
+        ))}",
         skin, "semi-bold", 37f, Colors.gameColor
-    )
+    ).apply {
+        addListener(object : ClickListener() {
+            // Make the player not shoot if the label is clicked
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                return true
+            }
+        })
+    }
     private val leftLevelRightTable = Table(skin).apply {
         add(leftButton).padRight(102f)
         add(levelLabel).padRight(102f)
@@ -693,10 +705,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private fun createGameEntities() {
         levelEntity = LevelEntity.createEntity(
             context,
-            Math.min(
-                preferences.getInteger("highestFinishedLevel", 0) + 1,
-                MyGame.LEVELS_NUMBER
-            )
+            if (canLoadAnyLevel) 1 else
+                Math.min(
+                    preferences.getInteger("highestFinishedLevel", 0) + 1,
+                    MyGame.LEVELS_NUMBER
+                )
         ).apply {
             level.loadMap = true
             level.forceUpdateMap = true
@@ -798,7 +811,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             makeButtonTouchable(leftButton)
         }
 
-        if (levelEntity.level.levelId == Math.min(
+        if (levelEntity.level.levelId == if (canLoadAnyLevel) MyGame.LEVELS_NUMBER else Math.min(
                 MyGame.LEVELS_NUMBER,
                 preferences.getInteger("highestFinishedLevel", 0) + 1
             )

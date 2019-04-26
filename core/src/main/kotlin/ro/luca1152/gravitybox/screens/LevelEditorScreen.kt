@@ -416,6 +416,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
         val lastEditedMapFile = getLastEditedMapFile()
         val mapFactory = getMapFactory(lastEditedMapFile.path())
         levelEntity.map.loadMap(context, mapFactory, playerEntity, finishEntity, true)
+        levelEntity.level.levelId = levelEntity.map.levelId
         isEditingNewLevel = false
         centerCameraOnPlayer()
     }

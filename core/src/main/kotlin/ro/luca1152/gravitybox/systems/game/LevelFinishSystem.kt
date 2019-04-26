@@ -66,6 +66,7 @@ class LevelFinishSystem(
             return
         promptUserToRate()
         handleLevelFinish()
+        playScreen?.shouldUpdateLevelLabel = true
     }
 
     private fun handleLevelFinish() {
@@ -119,7 +120,7 @@ class LevelFinishSystem(
 
     private fun deleteEntities() {
         engine.getEntitiesFor(
-            Family.all(BodyComponent::class.java).exclude(
+            Family.one(BodyComponent::class.java, TextComponent::class.java).exclude(
                 PlayerComponent::class.java,
                 FinishComponent::class.java,
                 LevelComponent::class.java

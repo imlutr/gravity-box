@@ -57,12 +57,16 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                 Actions.run { levelEntity.level.isRestarting = true },
                 Actions.fadeOut(.25f, Interpolation.pow3In),
                 Actions.run {
-                    resetBodiesToInitialState()
-                    resetMovingPlatforms()
-                    resetDestroyablePlatforms()
-                    resetCollectiblePoints()
-                    removeBullets()
-                    levelEntity.map.forceCenterCameraOnPlayer = true
+                    // Without this check, in the level editor, if the player restarted the level just before
+                    // leaving the play test section, the game would crash
+                    if (engine != null) {
+                        resetBodiesToInitialState()
+                        resetMovingPlatforms()
+                        resetDestroyablePlatforms()
+                        resetCollectiblePoints()
+                        removeBullets()
+                        levelEntity.map.forceCenterCameraOnPlayer = true
+                    }
                 },
                 Actions.fadeIn(.25f, Interpolation.pow3In),
                 Actions.run { levelEntity.level.isRestarting = false }
@@ -111,7 +115,9 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
     private fun resetBodiesToInitialState() {
         engine.getEntitiesFor(Family.all(BodyComponent::class.java).exclude(CombinedBodyComponent::class.java).get())
             .forEach {
-                if (it.tryGet(BodyComponent) != null) {
+                if ((it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) && it.tryGet(BodyComponent) != null
+                    && it.tryGet(Scene2DComponent) != null
+                ) {
                     it.body.resetToInitialState()
                     it.scene2D.run {
                         centerX = it.body.body.worldCenter.x

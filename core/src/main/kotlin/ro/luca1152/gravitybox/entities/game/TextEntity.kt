@@ -19,7 +19,10 @@ package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.inject.Context
-import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.editor.extendedTouch
+import ro.luca1152.gravitybox.components.editor.json
+import ro.luca1152.gravitybox.components.editor.overlay
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
@@ -56,7 +59,6 @@ object TextEntity {
         extendedTouch(context, this, scene2D.width, scene2D.height)
 
         polygon(context, scene2D)
-        snap(context)
         editorObject(context)
         overlay(
             context,

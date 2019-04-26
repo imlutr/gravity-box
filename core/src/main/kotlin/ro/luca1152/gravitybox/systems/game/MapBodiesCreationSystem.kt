@@ -102,7 +102,10 @@ class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
                 if (entityB.isDeleted || entityA == entityB) {
                     break
                 }
-                if (isSameRotation(entityA, entityB) &&
+                if (entityA.polygon.polygon.vertices.isNotEmpty() && entityB.polygon.polygon.vertices.isNotEmpty() &&
+                    isSameRotation(entityA, entityB) && isHorizontalOrVertical(entityA) && isHorizontalOrVertical(
+                        entityB
+                    ) &&
                     entityA.polygon.bottommostY == entityB.polygon.bottommostY &&
                     entityA.polygon.topmostY == entityB.polygon.topmostY &&
                     ((entityA.polygon.leftmostX == entityB.polygon.leftmostX ||
@@ -129,7 +132,10 @@ class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
                 if (entityB.isDeleted || entityA == entityB) {
                     break
                 }
-                if (isSameRotation(entityA, entityB) &&
+                if (entityA.polygon.polygon.vertices.isNotEmpty() && entityB.polygon.polygon.vertices.isNotEmpty() &&
+                    isSameRotation(entityA, entityB) && isHorizontalOrVertical(entityA) && isHorizontalOrVertical(
+                        entityB
+                    ) &&
                     entityA.polygon.leftmostX == entityB.polygon.leftmostX &&
                     entityA.polygon.rightmostX == entityB.polygon.rightmostX &&
                     ((entityA.polygon.bottommostY == entityB.polygon.bottommostY ||
@@ -250,4 +256,6 @@ class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
 
     private fun isSameRotation(entityA: Entity, entityB: Entity) =
         entityA.polygon.polygon.rotation == entityB.polygon.polygon.rotation || Math.abs(entityA.polygon.polygon.rotation - 180f) == entityB.polygon.polygon.rotation
+
+    private fun isHorizontalOrVertical(entity: Entity) = entity.polygon.polygon.rotation % 90 == 0f
 }
