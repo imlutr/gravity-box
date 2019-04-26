@@ -842,7 +842,6 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
     }
 
     override fun render(delta: Float) {
-        println("${levelEntity.level.levelId} vs ${levelEntity.map.levelId}")
         clearScreen(Colors.bgColor)
         update(delta)
         uiStage.draw()
