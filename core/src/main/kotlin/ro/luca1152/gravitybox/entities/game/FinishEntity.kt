@@ -40,11 +40,10 @@ object FinishEntity {
 
     fun createEntity(
         context: Context,
-        id: Int = 0, x: Float = 0f, y: Float = 0f,
-        blinkEndlessly: Boolean = true
+        x: Float = 0f, y: Float = 0f, blinkEndlessly: Boolean = true
     ) = newEntity(context).apply {
         val manager: AssetManager = context.inject()
-        mapObject(context, id)
+        mapObject(context)
         scene2D(context)
         scene2D(context, manager.get(Assets.tileset).findRegion("finish"), x, y, WIDTH, HEIGHT)
         polygon(context, scene2D)

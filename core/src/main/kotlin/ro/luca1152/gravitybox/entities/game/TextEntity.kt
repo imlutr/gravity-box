@@ -32,13 +32,13 @@ import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 object TextEntity {
     fun createEntity(
         context: Context,
-        id: Int,
         string: String,
-        x: Float, y: Float
+        x: Float,
+        y: Float
     ) = newEntity(context).apply {
         val skin: Skin = context.inject()
         val gameStage: GameStage = context.inject()
-        mapObject(context, id)
+        mapObject(context)
         text(context, string)
         scene2D(context)
         scene2D.run {

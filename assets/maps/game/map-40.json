@@ -8,7 +8,6 @@
     "bottom": 5
   },
   "player": {
-    "id": 0,
     "position": {
       "x": -32,
       "y": 72
@@ -16,7 +15,6 @@
     "rotation": 0
   },
   "finish": {
-    "id": 1,
     "position": {
       "x": 64,
       "y": 104
@@ -26,7 +24,6 @@
   "objects": [
     {
       "type": "text",
-      "id": 0,
       "string": "Tip: the distance between the\nexplosion and the box matters",
       "position": {
         "x": -127.609985,
@@ -36,7 +33,6 @@
     },
     {
       "type": "platform",
-      "id": 2,
       "position": {
         "x": -127.99994,
         "y": 32

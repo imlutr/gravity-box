@@ -19,7 +19,6 @@ package ro.luca1152.gravitybox.components.editor
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Pool.Poolable
@@ -141,8 +140,6 @@ class AddCommand(
     private val platform = if (affectedEntity.tryGet(MockMapObjectComponent) != null)
         affectedEntity.linkedEntity.get("platform") else null
 
-    private val engine: PooledEngine = context.inject()
-
     override fun execute() {
         if (isMockObject) {
             MakeObjectMovingCommand(context, platform!!).execute()
@@ -178,13 +175,6 @@ class AddCommand(
         affectedEntity.tryGet(ColorComponent)?.run {
             colorType = ColorType.DARK
         }
-        affectedEntity.tryGet(MapObjectComponent)?.run {
-            val newId = affectedEntity.mapObject.id
-            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
-                if (!it.editorObject.isDeleted && it != affectedEntity && it.mapObject.id >= newId)
-                    it.mapObject.id++
-            }
-        }
         affectedEntity.tryGet(CollectiblePointComponent)?.run {
             mapEntity.map.pointsCount++
         }
@@ -214,13 +204,6 @@ class AddCommand(
         }
         affectedEntity.tryGet(BodyComponent)?.run {
             destroyBody()
-        }
-        affectedEntity.tryGet(MapObjectComponent)?.run {
-            val deletedId = affectedEntity.mapObject.id
-            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
-                if (!it.editorObject.isDeleted && it.mapObject.id > deletedId)
-                    it.mapObject.id--
-            }
         }
         affectedEntity.tryGet(MockMapObjectComponent)?.run {
             MakeObjectNonMovingCommand(context, affectedEntity.linkedEntity.get("platform")).execute()

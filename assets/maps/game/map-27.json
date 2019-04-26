@@ -7,7 +7,6 @@
     "bottom": 5
   },
   "player": {
-    "id": 0,
     "position": {
       "x": -96,
       "y": 72
@@ -15,7 +14,6 @@
     "rotation": 0
   },
   "finish": {
-    "id": 1,
     "position": {
       "x": -408.00024,
       "y": 104
@@ -25,7 +23,6 @@
   "objects": [
     {
       "type": "platform",
-      "id": 2,
       "position": {
         "x": -74.63455,
         "y": 32
@@ -35,7 +32,6 @@
     },
     {
       "type": "platform",
-      "id": 3,
       "position": {
         "x": -159.99988,
         "y": 40
@@ -45,7 +41,6 @@
     },
     {
       "type": "platform",
-      "id": 4,
       "position": {
         "x": 273.14322,
         "y": -224
@@ -55,7 +50,6 @@
     },
     {
       "type": "platform",
-      "id": 5,
       "position": {
         "x": 345.70056,
         "y": -88
@@ -65,7 +59,6 @@
     },
     {
       "type": "platform",
-      "id": 6,
       "position": {
         "x": -74.63455,
         "y": -480
@@ -75,7 +68,6 @@
     },
     {
       "type": "platform",
-      "id": 7,
       "position": {
         "x": -160.00003,
         "y": -394.04868
@@ -85,7 +77,6 @@
     },
     {
       "type": "platform",
-      "id": 8,
       "position": {
         "x": 345.70056,
         "y": -599.99994
@@ -95,7 +86,6 @@
     },
     {
       "type": "platform",
-      "id": 9,
       "position": {
         "x": 273.14322,
         "y": -736
@@ -105,7 +95,6 @@
     },
     {
       "type": "platform",
-      "id": 10,
       "position": {
         "x": -255.99994,
         "y": -736
@@ -115,7 +104,6 @@
     },
     {
       "type": "platform",
-      "id": 11,
       "position": {
         "x": -352.00024,
         "y": -344.00012
@@ -125,7 +113,6 @@
     },
     {
       "type": "platform",
-      "id": 12,
       "position": {
         "x": -328.3056,
         "y": 288
@@ -135,7 +122,6 @@
     },
     {
       "type": "platform",
-      "id": 13,
       "position": {
         "x": -424.30566,
         "y": 32
@@ -145,7 +131,6 @@
     },
     {
       "type": "platform",
-      "id": 14,
       "position": {
         "x": -480.00024,
         "y": 160

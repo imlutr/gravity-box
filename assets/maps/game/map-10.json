@@ -8,7 +8,6 @@
     "bottom": 5
   },
   "player": {
-    "id": 0,
     "position": {
       "x": 0,
       "y": 72
@@ -16,7 +15,6 @@
     "rotation": 0
   },
   "finish": {
-    "id": 1,
     "position": {
       "x": 256,
       "y": 360
@@ -26,7 +24,6 @@
   "objects": [
     {
       "type": "platform",
-      "id": 2,
       "position": {
         "x": 0,
         "y": 32
@@ -36,7 +33,6 @@
     },
     {
       "type": "platform",
-      "id": 3,
       "position": {
         "x": -255.99988,
         "y": 288
@@ -46,7 +42,6 @@
     },
     {
       "type": "platform",
-      "id": 4,
       "position": {
         "x": -136,
         "y": 152
@@ -56,7 +51,6 @@
     },
     {
       "type": "platform",
-      "id": 5,
       "position": {
         "x": 136,
         "y": 288
@@ -66,7 +60,6 @@
     },
     {
       "type": "platform",
-      "id": 6,
       "position": {
         "x": -511.99982,
         "y": 544
@@ -76,7 +69,6 @@
     },
     {
       "type": "platform",
-      "id": 7,
       "position": {
         "x": -391.99988,
         "y": 408
@@ -86,7 +78,6 @@
     },
     {
       "type": "platform",
-      "id": 8,
       "position": {
         "x": -120.00006,
         "y": 680
@@ -96,7 +87,6 @@
     },
     {
       "type": "platform",
-      "id": 9,
       "position": {
         "x": 0,
         "y": 544
@@ -106,7 +96,6 @@
     },
     {
       "type": "platform",
-      "id": 10,
       "position": {
         "x": -647.9999,
         "y": 800
@@ -116,7 +105,6 @@
     },
     {
       "type": "platform",
-      "id": 11,
       "position": {
         "x": -256,
         "y": 800
@@ -126,7 +114,6 @@
     },
     {
       "type": "platform",
-      "id": 12,
       "position": {
         "x": -248,
         "y": 1056
@@ -136,7 +123,6 @@
     },
     {
       "type": "platform",
-      "id": 13,
       "position": {
         "x": 264,
         "y": 288
@@ -146,7 +132,6 @@
     },
     {
       "type": "platform",
-      "id": 14,
       "position": {
         "x": 280.00003,
         "y": 800
@@ -156,7 +141,6 @@
     },
     {
       "type": "platform",
-      "id": 15,
       "position": {
         "x": 392,
         "y": 536.00006
@@ -166,7 +150,6 @@
     },
     {
       "type": "platform",
-      "id": 16,
       "position": {
         "x": 152,
         "y": 928

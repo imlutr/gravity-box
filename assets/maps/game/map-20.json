@@ -8,7 +8,6 @@
     "bottom": 5
   },
   "player": {
-    "id": 0,
     "position": {
       "x": -56,
       "y": 72
@@ -16,7 +15,6 @@
     "rotation": 0
   },
   "finish": {
-    "id": 1,
     "position": {
       "x": -655.9999,
       "y": -151.99997
@@ -26,7 +24,6 @@
   "objects": [
     {
       "type": "platform",
-      "id": 2,
       "position": {
         "x": 32,
         "y": 32
@@ -36,7 +33,6 @@
     },
     {
       "type": "platform",
-      "id": 3,
       "position": {
         "x": -96,
         "y": 52.00003
@@ -46,7 +42,6 @@
     },
     {
       "type": "platform",
-      "id": 4,
       "position": {
         "x": 160,
         "y": 287.375
@@ -56,7 +51,6 @@
     },
     {
       "type": "platform",
-      "id": 5,
       "position": {
         "x": -224.00006,
         "y": 328
@@ -66,7 +60,6 @@
     },
     {
       "type": "platform",
-      "id": 6,
       "position": {
         "x": -32,
         "y": 542.75
@@ -76,7 +69,6 @@
     },
     {
       "type": "platform",
-      "id": 7,
       "position": {
         "x": -160.00006,
         "y": -224
@@ -86,7 +78,6 @@
     },
     {
       "type": "platform",
-      "id": 8,
       "position": {
         "x": -295.99994,
         "y": -79.99997
@@ -96,7 +87,6 @@
     },
     {
       "type": "platform",
-      "id": 9,
       "position": {
         "x": -591.9999,
         "y": -224
@@ -106,7 +96,6 @@
     },
     {
       "type": "platform",
-      "id": 10,
       "position": {
         "x": -583.9999,
         "y": 136
@@ -116,7 +105,6 @@
     },
     {
       "type": "platform",
-      "id": 11,
       "position": {
         "x": -511.9999,
         "y": 172.38083
@@ -126,7 +114,6 @@
     },
     {
       "type": "platform",
-      "id": 12,
       "position": {
         "x": -296,
         "y": 429.70447
@@ -136,7 +123,6 @@
     },
     {
       "type": "platform",
-      "id": 13,
       "position": {
         "x": -727.9999,
         "y": 256
@@ -146,7 +132,6 @@
     },
     {
       "type": "platform",
-      "id": 14,
       "position": {
         "x": -483.99994,
         "y": 736

@@ -41,16 +41,16 @@ object PlatformEntity {
 
     fun createEntity(
         context: Context,
-        id: Int,
         x: Float, y: Float,
         width: Float,
         rotation: Float = ROTATION,
         isDestroyable: Boolean = false,
         isRotating: Boolean = false,
-        targetX: Float = Float.POSITIVE_INFINITY, targetY: Float = Float.POSITIVE_INFINITY
+        targetX: Float = Float.POSITIVE_INFINITY,
+        targetY: Float = Float.POSITIVE_INFINITY
     ) = newEntity(context).apply {
         val manager: AssetManager = context.inject()
-        mapObject(context, id)
+        mapObject(context)
         if (isDestroyable) {
             destroyablePlatform(context)
             scene2D(context, x, y, width, HEIGHT, rotation)

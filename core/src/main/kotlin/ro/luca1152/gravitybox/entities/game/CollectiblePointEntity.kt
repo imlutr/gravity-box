@@ -34,9 +34,8 @@ object CollectiblePointEntity {
 
     fun createEntity(
         context: Context,
-        id: Int,
-        centerX: Float, centerY: Float,
-        rotation: Float = 0f,
+        centerX: Float,
+        centerY: Float, rotation: Float = 0f,
         blinkEndlessly: Boolean = true
     ) = newEntity(context).apply {
         val manager: AssetManager = context.inject()
@@ -53,7 +52,7 @@ object CollectiblePointEntity {
         }
         collectiblePoint(context)
         editorObject(context)
-        mapObject(context, id)
+        mapObject(context)
         collisionBox(context, WIDTH, HEIGHT)
         polygon(context, scene2D)
         snap(context)
