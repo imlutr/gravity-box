@@ -39,10 +39,10 @@ object PlayerEntity {
 
     fun createEntity(
         context: Context,
-        id: Int = 0, x: Float = 0f, y: Float = 0f
+        x: Float = 0f, y: Float = 0f
     ) = newEntity(context).apply {
         val manager: AssetManager = context.inject()
-        mapObject(context, id)
+        mapObject(context)
         overlay(
             context,
             showMovementButtons = true, showRotationButton = true, showDeletionButton = false,

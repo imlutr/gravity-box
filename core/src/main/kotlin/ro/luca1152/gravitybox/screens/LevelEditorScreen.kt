@@ -404,10 +404,10 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
         inputEntity = InputEntity.createEntity(context, toggledButton)
         undoRedoEntity = UndoRedoEntity.createEntity(context)
         levelEntity = LevelEntity.createEntity(context, getFirstUnusedLevelId())
-        finishEntity = FinishEntity.createEntity(context, 1, blinkEndlessly = false).apply {
+        finishEntity = FinishEntity.createEntity(context, blinkEndlessly = false).apply {
             scene2D.color.a = OBJECTS_COLOR_ALPHA
         }
-        playerEntity = PlayerEntity.createEntity(context, 0).apply {
+        playerEntity = PlayerEntity.createEntity(context).apply {
             scene2D.color.a = OBJECTS_COLOR_ALPHA
         }
     }
@@ -424,7 +424,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
     private fun resetMapToInitialState() {
         removeAdditionalEntities()
         undoRedoEntity.undoRedo.reset()
-        val platformEntity = PlatformEntity.createEntity(context, 2, 0f, .5f, 4f).apply {
+        val platformEntity = PlatformEntity.createEntity(context, 0f, .5f, 4f).apply {
             scene2D.color.a = OBJECTS_COLOR_ALPHA
         }
         repositionDefaultEntities(platformEntity)

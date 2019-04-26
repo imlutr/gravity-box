@@ -82,8 +82,7 @@ class ObjectPlacementSystem(
             placedObject = when (inputEntity.input.placeToolObjectType) {
                 PlatformComponent::class.java, DestroyablePlatformComponent::class.java, MovingObjectComponent::class.java -> {
                     PlatformEntity.createEntity(
-                        context, id,
-                        MathUtils.floor(coords.x).toFloat() + .5f,
+                        context, MathUtils.floor(coords.x).toFloat() + .5f,
                         MathUtils.floor(coords.y).toFloat() + .5f,
                         platformWidth,
                         isDestroyable = inputEntity.input.placeToolObjectType == DestroyablePlatformComponent::class.java
@@ -92,8 +91,7 @@ class ObjectPlacementSystem(
                 CollectiblePointComponent::class.java -> {
                     levelEntity.map.pointsCount++
                     CollectiblePointEntity.createEntity(
-                        context, id,
-                        MathUtils.floor(coords.x).toFloat() + .5f,
+                        context, MathUtils.floor(coords.x).toFloat() + .5f,
                         MathUtils.floor(coords.y).toFloat() + .5f,
                         blinkEndlessly = false
                     )

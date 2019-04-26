@@ -8,7 +8,6 @@
     "bottom": 5
   },
   "player": {
-    "id": 0,
     "position": {
       "x": -96,
       "y": 72
@@ -16,7 +15,6 @@
     "rotation": 0
   },
   "finish": {
-    "id": 1,
     "position": {
       "x": 208,
       "y": 199.38974
@@ -26,7 +24,6 @@
   "objects": [
     {
       "type": "platform",
-      "id": 2,
       "position": {
         "x": 8,
         "y": 32
@@ -36,7 +33,6 @@
     },
     {
       "type": "platform",
-      "id": 3,
       "position": {
         "x": -136,
         "y": 120
@@ -46,7 +42,6 @@
     },
     {
       "type": "platform",
-      "id": 4,
       "position": {
         "x": -8,
         "y": 352
@@ -56,7 +51,6 @@
     },
     {
       "type": "platform",
-      "id": 5,
       "position": {
         "x": 136,
         "y": 200
@@ -66,7 +60,6 @@
     },
     {
       "type": "platform",
-      "id": 6,
       "position": {
         "x": -255.99998,
         "y": 272.3783
@@ -76,7 +69,6 @@
     },
     {
       "type": "platform",
-      "id": 7,
       "position": {
         "x": -272,
         "y": -224
@@ -86,7 +78,6 @@
     },
     {
       "type": "platform",
-      "id": 8,
       "position": {
         "x": 64,
         "y": -416
@@ -96,7 +87,6 @@
     },
     {
       "type": "platform",
-      "id": 9,
       "position": {
         "x": 303.4314,
         "y": -381.56763
@@ -106,7 +96,6 @@
     },
     {
       "type": "platform",
-      "id": 10,
       "position": {
         "x": 499.6407,
         "y": -160
@@ -116,7 +105,6 @@
     },
     {
       "type": "platform",
-      "id": 11,
       "position": {
         "x": 583.9999,
         "y": -63.999992
@@ -126,7 +114,6 @@
     },
     {
       "type": "platform",
-      "id": 12,
       "position": {
         "x": 208,
         "y": 127.38974

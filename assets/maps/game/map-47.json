@@ -8,7 +8,6 @@
     "bottom": 5
   },
   "player": {
-    "id": 0,
     "position": {
       "x": -96,
       "y": 96
@@ -16,7 +15,6 @@
     "rotation": 0
   },
   "finish": {
-    "id": 1,
     "position": {
       "x": -112.00006,
       "y": -16
@@ -26,7 +24,6 @@
   "objects": [
     {
       "type": "platform",
-      "id": 2,
       "position": {
         "x": -112.00006,
         "y": -88
@@ -36,7 +33,6 @@
     },
     {
       "type": "platform",
-      "id": 3,
       "position": {
         "x": -112.00006,
         "y": 56
@@ -46,7 +42,6 @@
     },
     {
       "type": "platform",
-      "id": 4,
       "position": {
         "x": 160,
         "y": 256.38498
@@ -60,7 +55,6 @@
     },
     {
       "type": "platform",
-      "id": 5,
       "position": {
         "x": -184.00005,
         "y": 48.19249

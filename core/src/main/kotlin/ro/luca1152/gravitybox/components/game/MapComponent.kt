@@ -30,7 +30,6 @@ import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonWriter
 import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.TimeUtils
-import ktx.collections.sortBy
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.*
@@ -166,7 +165,6 @@ class MapComponent : Component, Poolable {
             player!!.json.writeToJson(this)
             finishPoint!!.json.writeToJson(this)
             writeArrayStart("objects")
-            objects.sortBy { it.mapObject.id }
             objects.forEach {
                 it.json.writeToJson(this)
             }
@@ -262,9 +260,6 @@ class MapComponent : Component, Poolable {
                 centerY = player.position.y.pixelsToMeters
                 rotation = player.rotation.toFloat()
             }
-            mapObject.run {
-                id = player.id
-            }
         }
     }
 
@@ -274,9 +269,6 @@ class MapComponent : Component, Poolable {
                 centerX = finish.position.x.pixelsToMeters
                 centerY = finish.position.y.pixelsToMeters
                 rotation = finish.rotation.toFloat()
-            }
-            mapObject.run {
-                id = finish.id
             }
         }
     }
@@ -298,7 +290,6 @@ class MapComponent : Component, Poolable {
     private fun createPlatform(context: Context, platform: ObjectPrototype, isLevelEditor: Boolean) {
         val newPlatform = PlatformEntity.createEntity(
             context,
-            platform.id,
             platform.position.x.pixelsToMeters,
             platform.position.y.pixelsToMeters,
             platform.width.pixelsToMeters,
@@ -330,7 +321,6 @@ class MapComponent : Component, Poolable {
         pointsCount++
         CollectiblePointEntity.createEntity(
             context,
-            point.id,
             point.position.x.pixelsToMeters,
             point.position.y.pixelsToMeters,
             point.rotation.toFloat()
@@ -340,7 +330,6 @@ class MapComponent : Component, Poolable {
     private fun createText(context: Context, text: ObjectPrototype) {
         TextEntity.createEntity(
             context,
-            text.id,
             text.string,
             text.position.x,
             text.position.y

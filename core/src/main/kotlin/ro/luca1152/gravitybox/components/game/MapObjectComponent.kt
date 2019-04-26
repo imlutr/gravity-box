@@ -26,23 +26,9 @@ import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that the entity is an object from a game map. */
 class MapObjectComponent : Component, Poolable {
-    var id = -1
-
-    fun set(id: Int) {
-        this.id = id
-    }
-
-    override fun reset() {
-        id = -1
-    }
-
+    override fun reset() {}
     companion object : ComponentResolver<MapObjectComponent>(MapObjectComponent::class.java)
 }
 
-val Entity.mapObject: MapObjectComponent
-    get() = MapObjectComponent[this]
-
-fun Entity.mapObject(context: Context, id: Int) =
-    add(createComponent<MapObjectComponent>(context).apply {
-        set(id)
-    })!!
+fun Entity.mapObject(context: Context) =
+    add(createComponent<MapObjectComponent>(context))!!
