@@ -312,7 +312,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
             MyGame.LEVELS_NUMBER
         ))}",
         skin, "semi-bold", 37f, Colors.gameColor
-    )
+    ).apply {
+        addListener(object : ClickListener() {
+            // Make the player not shoot if the label is clicked
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                return true
+            }
+        })
+    }
     private val leftLevelRightTable = Table(skin).apply {
         add(leftButton).padRight(102f)
         add(levelLabel).padRight(102f)
