@@ -161,6 +161,7 @@ class MapComponent : Component, Poolable {
 
             // Map properties
             writeValue("id", levelId)
+            writeValue("hue", hue)
             writeObjectStart("padding")
             writeValue("left", paddingLeft)
             writeValue("right", paddingRight)
