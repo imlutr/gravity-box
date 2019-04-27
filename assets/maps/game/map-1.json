@@ -11,15 +11,13 @@
     "position": {
       "x": -32,
       "y": 392
-    },
-    "rotation": 0
+    }
   },
   "finish": {
     "position": {
       "x": -32,
       "y": 104
-    },
-    "rotation": 0
+    }
   },
   "objects": [
     {
@@ -28,8 +26,7 @@
         "x": -31.999977,
         "y": 32
       },
-      "width": 240.00005,
-      "rotation": 0
+      "width": 240.00005
     },
     {
       "type": "platform",
@@ -37,8 +34,7 @@
         "x": -32,
         "y": 352
       },
-      "width": 64,
-      "rotation": 0
+      "width": 64
     },
     {
       "type": "platform",
@@ -46,8 +42,7 @@
         "x": -32,
         "y": 480
       },
-      "width": 240,
-      "rotation": 0
+      "width": 240
     },
     {
       "type": "platform",
@@ -73,8 +68,7 @@
       "position": {
         "x": -32.90622,
         "y": 545
-      },
-      "rotation": 0
+      }
     },
     {
       "type": "text",
@@ -82,8 +76,7 @@
       "position": {
         "x": -32,
         "y": -31.874985
-      },
-      "rotation": 0
+      }
     }
   ]
 }

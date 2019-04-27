@@ -10,15 +10,13 @@
     "position": {
       "x": -96,
       "y": 72
-    },
-    "rotation": 0
+    }
   },
   "finish": {
     "position": {
       "x": -408.00024,
       "y": 104
-    },
-    "rotation": 0
+    }
   },
   "objects": [
     {
@@ -27,8 +25,7 @@
         "x": -74.63455,
         "y": 32
       },
-      "width": 154.73065,
-      "rotation": 0
+      "width": 154.73065
     },
     {
       "type": "platform",
@@ -45,8 +42,7 @@
         "x": 273.14322,
         "y": -224
       },
-      "width": 161.1147,
-      "rotation": 0
+      "width": 161.1147
     },
     {
       "type": "platform",
@@ -63,8 +59,7 @@
         "x": -74.63455,
         "y": -480
       },
-      "width": 154.73065,
-      "rotation": 0
+      "width": 154.73065
     },
     {
       "type": "platform",
@@ -90,8 +85,7 @@
         "x": 273.14322,
         "y": -736
       },
-      "width": 161.11469,
-      "rotation": 0
+      "width": 161.11469
     },
     {
       "type": "platform",
@@ -99,8 +93,7 @@
         "x": -255.99994,
         "y": -736
       },
-      "width": 208.00012,
-      "rotation": 0
+      "width": 208.00012
     },
     {
       "type": "platform",
@@ -117,8 +110,7 @@
         "x": -328.3056,
         "y": 288
       },
-      "width": 320.61145,
-      "rotation": 0
+      "width": 320.61145
     },
     {
       "type": "platform",
@@ -126,8 +118,7 @@
         "x": -424.30566,
         "y": 32
       },
-      "width": 128.61133,
-      "rotation": 0
+      "width": 128.61133
     },
     {
       "type": "platform",

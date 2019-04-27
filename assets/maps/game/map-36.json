@@ -11,15 +11,13 @@
     "position": {
       "x": -64,
       "y": 72
-    },
-    "rotation": 0
+    }
   },
   "finish": {
     "position": {
       "x": 112,
       "y": -40
-    },
-    "rotation": 0
+    }
   },
   "objects": [
     {
@@ -28,8 +26,7 @@
         "x": 32,
         "y": 32
       },
-      "width": 320,
-      "rotation": 0
+      "width": 320
     },
     {
       "type": "platform",
@@ -37,8 +34,7 @@
         "x": -119.93327,
         "y": 224
       },
-      "width": 48.133507,
-      "rotation": 0
+      "width": 48.133507
     },
     {
       "type": "platform",
@@ -73,8 +69,7 @@
         "x": -44,
         "y": -112
       },
-      "width": 472,
-      "rotation": 0
+      "width": 472
     },
     {
       "type": "platform",

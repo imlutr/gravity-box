@@ -79,7 +79,9 @@ class JsonComponent : Component, Poolable {
                     if (tryGet(PlatformComponent) != null || tryGet(DestroyablePlatformComponent) != null) json.run {
                         writeValue("width", scene2D.width.metersToPixels)
                     }
-                    writeValue("rotation", scene2D.rotation.toInt())
+                    if (scene2D.rotation != 0f) {
+                        writeValue("rotation", scene2D.rotation.toInt())
+                    }
                     if (tryGet(DestroyablePlatformComponent) != null) json.run {
                         writeValue("isDestroyable", true)
                     }

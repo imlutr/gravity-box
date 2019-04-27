@@ -11,15 +11,13 @@
     "position": {
       "x": 192,
       "y": 72
-    },
-    "rotation": 0
+    }
   },
   "finish": {
     "position": {
       "x": -216,
       "y": 104
-    },
-    "rotation": 0
+    }
   },
   "objects": [
     {
@@ -28,8 +26,7 @@
         "x": -20,
         "y": 32
       },
-      "width": 552,
-      "rotation": 0
+      "width": 552
     },
     {
       "type": "platform",
@@ -37,8 +34,7 @@
         "x": -19.999939,
         "y": 288
       },
-      "width": 552.0001,
-      "rotation": 0
+      "width": 552.0001
     },
     {
       "type": "platform",
