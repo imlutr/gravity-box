@@ -62,8 +62,6 @@ class PlayerCameraSystem(
             playerEntity.scene2D.centerY,
             0f
         )
-        gameCamera.position.set(lerpCameraPosition)
-        gameCamera.position.y -= playScreen?.shiftCameraYBy ?: 0f
     }
 
     override fun update(deltaTime: Float) {
@@ -74,6 +72,8 @@ class PlayerCameraSystem(
             smoothlyFollowPlayer()
         }
         keepCameraWithinBounds()
+        gameCamera.position.set(lerpCameraPosition)
+        gameCamera.position.y -= playScreen?.shiftCameraYBy ?: 0f
     }
 
     private fun smoothlyFollowPlayer() {
@@ -82,8 +82,6 @@ class PlayerCameraSystem(
             playerEntity.scene2D.centerY,
             progress = .15f
         )
-        gameCamera.position.set(lerpCameraPosition)
-        gameCamera.position.y -= playScreen?.shiftCameraYBy ?: 0f
     }
 
     private fun keepCameraWithinBounds(zoom: Float = 1f) {
@@ -104,10 +102,15 @@ class PlayerCameraSystem(
         // Clamp horizontal axis
         if (mapWidth < gameCamera.viewportWidth) {
             lerpCameraPosition.x = mapRight - mapWidth / 2f
+            println("cal1")
         } else if (cameraLeft <= mapLeft && mapLeft + 2 * cameraHalfWidth < mapRight) {
+            println("cal2")
             lerpCameraPosition.x = mapLeft + cameraHalfWidth
         } else if (cameraRight >= mapRight) {
             lerpCameraPosition.x = mapRight - cameraHalfWidth
+            println("cal3")
+        } else {
+            println("noncal")
         }
 
         // Clamp vertical axis

@@ -754,7 +754,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(UpdateGameCameraSystem(context))
             addSystem(ImageRenderingSystem(context))
             addSystem(LevelFinishSystem(context, playScreen = this@PlayScreen))
-//            addSystem(PhysicsDebugRenderingSystem())
+//            addSystem(PhysicsDebugRenderingSystem(context))
             addSystem(DebugRenderingSystem(context))
         }
     }
