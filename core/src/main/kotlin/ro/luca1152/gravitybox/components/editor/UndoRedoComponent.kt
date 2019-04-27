@@ -27,6 +27,8 @@ import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.events.Events
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeComponent
@@ -130,6 +132,9 @@ class AddCommand(
     override var affectedEntity: Entity,
     private val mapEntity: Entity
 ) : Command() {
+    // Injected objects
+    private val eventQueue: EventQueue = context.inject()
+
     /**
      * True if the [affectedEntity] is a mock object.
      * I keep this in a variable as the mock platform entity will be deleted in [unexecute()].
@@ -178,7 +183,7 @@ class AddCommand(
         affectedEntity.tryGet(CollectiblePointComponent)?.run {
             mapEntity.map.pointsCount++
         }
-        mapEntity.map.updateRoundedPlatforms = true
+        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
     }
 
     override fun unexecute() {
@@ -211,7 +216,7 @@ class AddCommand(
         affectedEntity.tryGet(CollectiblePointComponent)?.run {
             mapEntity.map.pointsCount--
         }
-        mapEntity.map.updateRoundedPlatforms = true
+        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
     }
 }
 
@@ -300,7 +305,11 @@ class MakeObjectDestroyableCommand(
     private val context: Context,
     override val affectedEntity: Entity
 ) : Command() {
+    // Injected objects
+    private val eventQueue: EventQueue = context.inject()
     private val engine: PooledEngine = context.inject()
+
+    // Entities
     private val mapEntity = engine.getSingleton<LevelComponent>()
 
     override fun execute() {
@@ -315,7 +324,7 @@ class MakeObjectDestroyableCommand(
         affectedEntity.run {
             removeComponent<DestroyablePlatformComponent>()
             platform(context)
-            mapEntity.map.updateRoundedPlatforms = true
+            eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
         }
     }
 }

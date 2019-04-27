@@ -27,6 +27,8 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.inject.Context
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.events.Events
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
@@ -40,10 +42,13 @@ class LevelFinishSystem(
     private val restartLevelWhenFinished: Boolean = false,
     private val playScreen: PlayScreen? = null
 ) : EntitySystem() {
+    // Injected objects
     private val preferences: Preferences = context.inject()
     private val uiStage: UIStage = context.inject()
     private val gameStage: GameStage = context.inject()
+    private val eventQueue: EventQueue = context.inject()
 
+    // Entities
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
 
@@ -92,9 +97,9 @@ class LevelFinishSystem(
                             forceUpdateMap = true
                         }
                         levelEntity.map.run {
-                            updateRoundedPlatforms = true
                             forceCenterCameraOnPlayer = true
                         }
+                        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
                     },
                     Actions.fadeIn(.25f, Interpolation.pow3In),
                     Actions.run { levelEntity.level.isRestarting = false }

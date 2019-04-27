@@ -38,6 +38,8 @@ import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.TextEntity
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.events.Events
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
@@ -67,9 +69,11 @@ class MapComponent : Component, Poolable {
         const val GRAVITY = -25f
     }
 
+    // Injected objects
     private lateinit var engine: PooledEngine
     private lateinit var manager: AssetManager
     private lateinit var world: World
+    private lateinit var eventQueue: EventQueue
 
     var levelId = 1
     var hue = 180
@@ -82,7 +86,6 @@ class MapComponent : Component, Poolable {
     var mapBottom = Float.POSITIVE_INFINITY
     var mapTop = Float.NEGATIVE_INFINITY
 
-    var updateRoundedPlatforms = true
     var forceCenterCameraOnPlayer = false
 
     var paddingLeft = 2f
@@ -91,12 +94,16 @@ class MapComponent : Component, Poolable {
     var paddingBottom = 5f
 
     fun set(context: Context, levelId: Int, hue: Int) {
+        this.levelId = levelId
+        this.hue = hue
+        injectObjects(context)
+    }
+
+    private fun injectObjects(context: Context) {
         engine = context.inject()
         manager = context.inject()
         world = context.inject()
-
-        this.levelId = levelId
-        this.hue = hue
+        eventQueue = context.inject()
     }
 
     fun updateMapBounds() {
@@ -206,8 +213,8 @@ class MapComponent : Component, Poolable {
         updateMapBounds()
         if (isLevelEditor) {
             makeObjectsTransparent()
-            updateRoundedPlatforms = true
         }
+        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
     }
 
     private fun resetPoints() {
@@ -370,7 +377,6 @@ class MapComponent : Component, Poolable {
         paddingRight = 2f
         paddingTop = 5f
         paddingBottom = 5f
-        updateRoundedPlatforms = true
         forceCenterCameraOnPlayer = false
     }
 

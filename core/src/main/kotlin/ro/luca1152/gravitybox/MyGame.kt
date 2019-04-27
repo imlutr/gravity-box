@@ -31,6 +31,7 @@ import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.MapComponent
+import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.kotlin.*
 
@@ -54,6 +55,7 @@ class MyGame : KtxGame<Screen>() {
             bindSingleton(this@MyGame)
             bindSingleton(SpriteBatch() as Batch)
             bindSingleton(AssetManager())
+            bindSingleton(EventQueue())
             bindSingleton(InputMultiplexer())
             bindSingleton(PooledEngine())
             bindSingleton(ShapeRenderer())

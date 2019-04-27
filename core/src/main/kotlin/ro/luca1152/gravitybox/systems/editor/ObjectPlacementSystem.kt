@@ -30,6 +30,8 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.events.Events
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
@@ -40,8 +42,11 @@ class ObjectPlacementSystem(
     private val context: Context,
     private val levelEditorScreen: LevelEditorScreen
 ) : EntitySystem() {
+    // Injected objects
+    private val eventQueue: EventQueue = context.inject()
     private val inputMultiplexer: InputMultiplexer = context.inject()
 
+    // Lateinit entities
     private lateinit var levelEntity: Entity
     private lateinit var undoRedoEntity: Entity
     private lateinit var inputEntity: Entity
@@ -77,8 +82,6 @@ class ObjectPlacementSystem(
         private fun createPlatformAt(screenX: Int, screenY: Int) {
             val coords = screenToWorldCoordinates(context, screenX, screenY)
             val platformWidth = 1f
-            val id = engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get())
-                .filter { !it.editorObject.isDeleted }.size
             placedObject = when (inputEntity.input.placeToolObjectType) {
                 PlatformComponent::class.java, DestroyablePlatformComponent::class.java, MovingObjectComponent::class.java -> {
                     PlatformEntity.createEntity(
@@ -111,7 +114,7 @@ class ObjectPlacementSystem(
                 placedObject.movingObject(context, mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
             }
 
-            mapEntity.map.updateRoundedPlatforms = true
+            eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
             undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(context, placedObject, mapEntity))
         }
 

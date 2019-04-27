@@ -45,6 +45,8 @@ import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.events.Events
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
@@ -56,8 +58,7 @@ import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
 
 class PlayScreen(private val context: Context) : KtxScreen {
-    private val canLoadAnyLevel = true // debug
-
+    // Injected objects
     private val manager: AssetManager = context.inject()
     private val game: MyGame = context.inject()
     private val engine: PooledEngine = context.inject()
@@ -68,8 +69,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val uiCamera: UICamera = context.inject()
     private val gameStage: GameStage = context.inject()
     private val preferences: Preferences = context.inject()
+    private val eventQueue: EventQueue = context.inject()
 
+    // Lateinit entities
     private lateinit var levelEntity: Entity
+
+    private val canLoadAnyLevel = true // debug
+
     private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, uiCamera), context.inject())
     private val padTopBottom = 38f
     private val padLeftRight = 43f
@@ -268,7 +274,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                                 forceUpdateMap = true
                             }
                             levelEntity.map.run {
-                                updateRoundedPlatforms = true
+                                eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
                                 forceCenterCameraOnPlayer = true
                             }
                         },
@@ -295,7 +301,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                                 forceUpdateMap = true
                             }
                             levelEntity.map.run {
-                                updateRoundedPlatforms = true
+                                eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
                                 forceCenterCameraOnPlayer = true
                             }
                         },

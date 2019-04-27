@@ -66,6 +66,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
         const val OBJECTS_COLOR_ALPHA = .85f
     }
 
+    // Injected objects
     private val engine: PooledEngine = context.inject()
     private val manager: AssetManager = context.inject()
     private val gameStage: GameStage = context.inject()
@@ -555,7 +556,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
 
     fun addGameSystems() {
         engine.run {
-            addSystem(UndoRedoSystem())
+            addSystem(UndoRedoSystem(context))
             addSystem(SelectedObjectColorSystem())
             addSystem(ObjectPlacementSystem(context, this@LevelEditorScreen))
             addSystem(TapThroughObjectsSystem(context))
@@ -566,7 +567,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
             addSystem(OverlayCameraSyncSystem(context))
             addSystem(ExtendedTouchSyncSystem())
             addSystem(GridRenderingSystem(context))
-            addSystem(ObjectSnappingSystem())
+            addSystem(ObjectSnappingSystem(context))
             addSystem(OverlayPositioningSystem(context))
             addSystem(RoundedPlatformsSystem(context))
             addSystem(RotatingIndicatorSystem())

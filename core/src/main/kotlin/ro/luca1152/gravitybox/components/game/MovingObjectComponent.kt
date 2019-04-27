@@ -65,7 +65,7 @@ class MovingObjectComponent : Component, Poolable {
         update()
     }
 
-    private fun update() {
+    fun update() {
         updateStartToFinishDistance()
         updateDirection()
     }

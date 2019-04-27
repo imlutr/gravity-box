@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
-import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.NinePatch
@@ -29,34 +28,35 @@ import com.badlogic.gdx.utils.Array
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
-import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.components.game.MapComponent
+import ro.luca1152.gravitybox.components.game.PlatformComponent
+import ro.luca1152.gravitybox.components.game.pixelsToMeters
+import ro.luca1152.gravitybox.components.game.scene2D
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
+import ro.luca1152.gravitybox.events.Event
+import ro.luca1152.gravitybox.events.EventSystem
+import ro.luca1152.gravitybox.events.Events.UPDATE_ROUNDED_PLATFORMS
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.hitAll
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Sets the according texture to platforms so they are correctly rounded. */
-class RoundedPlatformsSystem(private val context: Context) :
-    IteratingSystem(Family.all(PlatformComponent::class.java, Scene2DComponent::class.java).get()) {
+class RoundedPlatformsSystem(private val context: Context) : EventSystem(UPDATE_ROUNDED_PLATFORMS::class, context.inject()) {
+    // Injected objects
     private val manager: AssetManager = context.inject()
 
+    // Lateinit entities
     private lateinit var mapEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
-        super.addedToEngine(engine)
         mapEntity = engine.getSingleton<MapComponent>()
     }
 
-    override fun update(deltaTime: Float) {
-        if (!mapEntity.map.updateRoundedPlatforms)
-            return
-        super.update(deltaTime)
-        mapEntity.map.updateRoundedPlatforms = false
-    }
-
-    override fun processEntity(entity: Entity, deltaTime: Float) {
-        roundCorners(entity)
+    override fun processEvent(event: Event, deltaTime: Float) {
+        engine.getEntitiesFor(Family.all(PlatformComponent::class.java).get()).forEach {
+            roundCorners(it)
+        }
     }
 
     private fun roundCorners(entity: Entity) {
@@ -70,12 +70,14 @@ class RoundedPlatformsSystem(private val context: Context) :
             val isStraightTopRightCorner = isPlatformInTopRightOf(this) || isPlatformAtRightOf(this)
             val isStraightTopLeftCorner = isPlatformInTopLeftOf(this) || isPlatformAtLeftOf(this)
             val isStraightBottomLeftCorner = isPlatformInBottomLeftOf(this) || isPlatformAtLeftOf(this)
+
             val bitmask = booleanArrayOf(
                 isStraightBottomRightCorner,
                 isStraightTopRightCorner,
                 isStraightTopLeftCorner,
                 isStraightBottomLeftCorner
             )
+
             return bitmaskToInt(bitmask)
         }
     }
@@ -83,6 +85,7 @@ class RoundedPlatformsSystem(private val context: Context) :
     private fun bitmaskToInt(bitmask: BooleanArray): Int {
         require(bitmask.size <= 32) { "The bitmask is too big to be packed in an Int." }
 
+        // Algorithm for packing a bitmask into an int
         var intValue = 0
         for (i in 0 until bitmask.size) {
             val bit = if (bitmask[i]) 1 else 0
@@ -95,20 +98,21 @@ class RoundedPlatformsSystem(private val context: Context) :
 
     private fun setCorrectTexture(entity: Entity, bitmask: Int) {
         entity.scene2D.run {
+            // clearChildren() may affect these values
             val oldWidth = width
             val oldHeight = height
             val oldCenterX = centerX
             val oldCenterY = centerY
+            val oldRotation = rotation
+
             clearChildren()
+
             addNinePatch(
-                context,
-                NinePatch(
+                context, NinePatch(
                     manager.get(Assets.tileset).findRegion("platform-$bitmask"),
-                    PlatformEntity.PATCH_LEFT,
-                    PlatformEntity.PATCH_RIGHT,
-                    PlatformEntity.PATCH_TOP,
-                    PlatformEntity.PATCH_BOTTOM
-                ), oldCenterX, oldCenterY, oldWidth, oldHeight, rotation
+                    PlatformEntity.PATCH_LEFT, PlatformEntity.PATCH_RIGHT,
+                    PlatformEntity.PATCH_TOP, PlatformEntity.PATCH_BOTTOM
+                ), oldCenterX, oldCenterY, oldWidth, oldHeight, oldRotation
             )
         }
     }
@@ -132,18 +136,13 @@ class RoundedPlatformsSystem(private val context: Context) :
         isPlatform(actor.hitAll(PlatformEntity.HEIGHT / 2f, (-5).pixelsToMeters))
 
     private fun isPlatform(actors: Array<Actor>): Boolean {
-        actors.forEach {
-            if (isPlatform(it)) {
-                return true
-            }
-        }
+        actors.forEach { if (isPlatform(it)) return true }
         return false
     }
 
     private fun isPlatform(actor: Actor?): Boolean {
         return if (actor == null || actor.userObject == null || actor.userObject !is Entity) false
-        else (actor.userObject as Entity).tryGet(PlatformComponent) != null && !isExtendedBounds(actor)
-                && !isDeleted(actor.userObject as Entity)
+        else (actor.userObject as Entity).tryGet(PlatformComponent) != null && !isExtendedBounds(actor) && !isDeleted(actor.userObject as Entity)
     }
 
     private fun isExtendedBounds(actor: Actor?) = actor?.color == Color.CLEAR

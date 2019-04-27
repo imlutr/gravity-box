@@ -25,6 +25,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Array
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.SnapComponent
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
@@ -33,13 +34,20 @@ import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.ROTATION
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.snap
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.events.Events
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Snaps nearby map objects together when moved. */
-class ObjectSnappingSystem : EntitySystem() {
+class ObjectSnappingSystem(context: Context) : EntitySystem() {
+    // Injected objects
+    private val eventQueue: EventQueue = context.inject()
+
+    // Lateinit entities
     private lateinit var levelEntity: Entity
+
     private val selectedObject: Entity?
         get() = engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).filterNullableSingleton { it.editorObject.isSelected }
     private val onScreenObjects = Array<Entity>()
@@ -372,7 +380,7 @@ class ObjectSnappingSystem : EntitySystem() {
 
     private fun updateRoundedPlatforms() {
         if (didSnapPlatform) {
-            levelEntity.map.updateRoundedPlatforms = true
+            eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
             selectedObject!!.polygon.update()
         }
     }
