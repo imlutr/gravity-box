@@ -721,6 +721,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         ).apply {
             level.loadMap = true
             level.forceUpdateMap = true
+            map.forceCenterCameraOnPlayer = true
         }
         PlayerEntity.createEntity(context)
         FinishEntity.createEntity(context)
