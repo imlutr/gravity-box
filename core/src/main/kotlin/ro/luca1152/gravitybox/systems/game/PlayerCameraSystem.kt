@@ -36,11 +36,16 @@ class PlayerCameraSystem(
     context: Context,
     private val playScreen: PlayScreen? = null
 ) : EntitySystem() {
+    // Injected objects
     private val gameCamera: GameCamera = context.inject()
+
+    // Entities
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
+
     private var initialCameraZoom = 1f
     private var initialCameraPosition = Vector3()
+    private val lerpCameraPosition = Vector3()
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
@@ -52,11 +57,13 @@ class PlayerCameraSystem(
     }
 
     private fun instantlyCenterCameraOnPlayer() {
-        gameCamera.position.set(
+        lerpCameraPosition.set(
             playerEntity.scene2D.centerX,
-            playerEntity.scene2D.centerY - (playScreen?.shiftCameraYBy ?: 0f),
+            playerEntity.scene2D.centerY,
             0f
         )
+        gameCamera.position.set(lerpCameraPosition)
+        gameCamera.position.y -= playScreen?.shiftCameraYBy ?: 0f
     }
 
     override fun update(deltaTime: Float) {
@@ -70,11 +77,13 @@ class PlayerCameraSystem(
     }
 
     private fun smoothlyFollowPlayer() {
-        gameCamera.position.lerp(
+        lerpCameraPosition.lerp(
             playerEntity.scene2D.centerX,
-            playerEntity.scene2D.centerY - (playScreen?.shiftCameraYBy ?: 0f),
+            playerEntity.scene2D.centerY,
             progress = .15f
         )
+        gameCamera.position.set(lerpCameraPosition)
+        gameCamera.position.y -= playScreen?.shiftCameraYBy ?: 0f
     }
 
     private fun keepCameraWithinBounds(zoom: Float = 1f) {
@@ -86,30 +95,28 @@ class PlayerCameraSystem(
         val mapTop = (levelEntity.map.mapTop + levelEntity.map.paddingTop) * zoom
         val mapWidth = Math.abs(mapRight - mapLeft)
         val mapHeight = Math.abs(mapTop - mapBottom)
-        val cameraLeft = gameCamera.position.x - cameraHalfWidth
-        val cameraRight = gameCamera.position.x + cameraHalfWidth
-        val cameraBottom = gameCamera.position.y - cameraHalfHeight
-        val cameraTop = gameCamera.position.y + cameraHalfHeight
+        val cameraLeft = lerpCameraPosition.x - cameraHalfWidth
+        val cameraRight = lerpCameraPosition.x + cameraHalfWidth
+        val cameraBottom = lerpCameraPosition.y - cameraHalfHeight
+        val cameraTop = lerpCameraPosition.y + cameraHalfHeight
 
 
         // Clamp horizontal axis
         if (mapWidth < gameCamera.viewportWidth) {
-            gameCamera.position.x = mapRight - mapWidth / 2f
+            lerpCameraPosition.x = mapRight - mapWidth / 2f
         } else if (cameraLeft <= mapLeft && mapLeft + 2 * cameraHalfWidth < mapRight) {
-            gameCamera.position.x = mapLeft + cameraHalfWidth
+            lerpCameraPosition.x = mapLeft + cameraHalfWidth
         } else if (cameraRight >= mapRight) {
-            gameCamera.position.x = mapRight - cameraHalfWidth
+            lerpCameraPosition.x = mapRight - cameraHalfWidth
         }
 
         // Clamp vertical axis
-        if (mapHeight + (playScreen?.shiftCameraYBy ?: 0f) < gameCamera.viewportHeight - 5f) {
-            gameCamera.position.y = mapTop - mapHeight / 2f - (playScreen?.shiftCameraYBy ?: 0f)
-        } else if (cameraBottom + (playScreen?.shiftCameraYBy ?: 0f) <= mapBottom) {
-            gameCamera.position.y = mapBottom + cameraHalfHeight - (playScreen?.shiftCameraYBy ?: 0f)
-        } else if (cameraTop + (playScreen?.shiftCameraYBy
-                ?: 0f) >= mapTop && mapTop - 2 * cameraHalfHeight > mapBottom
-        ) {
-            gameCamera.position.y = mapTop - cameraHalfHeight - (playScreen?.shiftCameraYBy ?: 0f)
+        if (mapHeight < gameCamera.viewportHeight - 5f) {
+            lerpCameraPosition.y = mapTop - mapHeight / 2f
+        } else if (cameraBottom <= mapBottom) {
+            lerpCameraPosition.y = mapBottom + cameraHalfHeight
+        } else if (cameraTop >= mapTop && mapTop - 2 * cameraHalfHeight > mapBottom) {
+            lerpCameraPosition.y = mapTop - cameraHalfHeight
         }
 
     }
