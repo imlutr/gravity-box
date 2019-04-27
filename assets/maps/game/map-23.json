@@ -1,5 +1,6 @@
 {
   "id": 1,
+  "hue": 268,
   "padding": {
     "left": 2,
     "right": 2,
@@ -8,75 +9,75 @@
   },
   "player": {
     "position": {
-      "x": -32,
+      "x": 64,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 112,
-      "y": 766.65625
+      "x": -320,
+      "y": -40
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -32,
+        "x": 64,
         "y": 32
       },
-      "width": 192
+      "width": 128
     },
     {
       "type": "platform",
       "position": {
-        "x": -119.99988,
-        "y": 466.54364
+        "x": -320,
+        "y": 32
       },
-      "width": 853.0873,
+      "width": 127.99999
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -180,
+        "y": 160
+      },
+      "width": 616
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -372,
+        "y": -112
+      },
+      "width": 231.99997
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -480,
+        "y": 24
+      },
+      "width": 256,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 56,
-        "y": 371.32812
+        "x": -248,
+        "y": -40
       },
-      "width": 662.65625,
+      "width": 160,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 120,
-        "y": 694.65625
+        "x": 136,
+        "y": 96
       },
-      "width": 112
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 24,
-        "y": 901.0873
-      },
-      "width": 304
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 184,
-        "y": 797.87177
-      },
-      "width": 222.43108,
+      "width": 144,
       "rotation": 270
-    },
-    {
-      "type": "text",
-      "string": "Wall Jumping\nTip: shoot faster",
-      "position": {
-        "x": -32.746246,
-        "y": -49.37053
-      }
     }
   ]
 }
