@@ -28,10 +28,7 @@ import com.badlogic.gdx.utils.Array
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
-import ro.luca1152.gravitybox.components.game.MapComponent
-import ro.luca1152.gravitybox.components.game.PlatformComponent
-import ro.luca1152.gravitybox.components.game.pixelsToMeters
-import ro.luca1152.gravitybox.components.game.scene2D
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.events.Event
 import ro.luca1152.gravitybox.events.EventSystem
@@ -54,7 +51,7 @@ class RoundedPlatformsSystem(private val context: Context) : EventSystem(UPDATE_
     }
 
     override fun processEvent(event: Event, deltaTime: Float) {
-        engine.getEntitiesFor(Family.all(PlatformComponent::class.java).get()).forEach {
+        engine.getEntitiesFor(Family.all(PlatformComponent::class.java, Scene2DComponent::class.java).get()).forEach {
             roundCorners(it)
         }
     }
