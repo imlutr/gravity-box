@@ -29,9 +29,7 @@ import ro.luca1152.gravitybox.components.game.pixelsToMeters
  */
 
 class GameCamera : OrthographicCamera(720.pixelsToMeters, 1280.pixelsToMeters)
-class GameViewport(context: Context) :
-    ExtendViewport(720.pixelsToMeters, 1280.pixelsToMeters, context.inject<GameCamera>())
-
+class GameViewport(context: Context) : ExtendViewport(720.pixelsToMeters, 1280.pixelsToMeters, context.inject<GameCamera>())
 class GameStage(context: Context) : Stage(context.inject<GameViewport>(), context.inject())
 
 class OverlayCamera : OrthographicCamera()

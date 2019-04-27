@@ -46,7 +46,7 @@ class ObjectPlacementSystem(
     private val eventQueue: EventQueue = context.inject()
     private val inputMultiplexer: InputMultiplexer = context.inject()
 
-    // Lateinit entities
+    // Entities
     private lateinit var levelEntity: Entity
     private lateinit var undoRedoEntity: Entity
     private lateinit var inputEntity: Entity

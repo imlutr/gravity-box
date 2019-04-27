@@ -45,7 +45,7 @@ class ObjectSnappingSystem(context: Context) : EntitySystem() {
     // Injected objects
     private val eventQueue: EventQueue = context.inject()
 
-    // Lateinit entities
+    // Entities
     private lateinit var levelEntity: Entity
 
     private val selectedObject: Entity?

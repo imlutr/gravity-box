@@ -32,16 +32,16 @@ import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.assets.loaders.TextLoader
-import ro.luca1152.gravitybox.utils.kotlin.UIStage
-import ro.luca1152.gravitybox.utils.kotlin.UIViewport
-import ro.luca1152.gravitybox.utils.kotlin.clearScreen
-import ro.luca1152.gravitybox.utils.kotlin.setScreen
+import ro.luca1152.gravitybox.utils.kotlin.*
 
 class LoadingScreen(private val context: Context) : KtxScreen {
+    // Injected objects
     private val manager: AssetManager = context.inject()
     private val game: MyGame = context.inject()
     private val uiStage: UIStage = context.inject()
+    private val gameViewport: GameViewport = context.inject()
     private val uiViewport: UIViewport = context.inject()
+    private val overlayViewport: OverlayViewport = context.inject()
 
     private var loadingAssetsTimer = 0f
     private var loadedEditorMaps = false
@@ -123,5 +123,11 @@ class LoadingScreen(private val context: Context) : KtxScreen {
         game.setScreen(
             TransitionScreen(context, PlayScreen::class.java, fadeOutCurrentScreen = false, clearScreenWithBlack = true)
         )
+    }
+
+    override fun resize(width: Int, height: Int) {
+        gameViewport.update(width, height, false)
+        uiViewport.update(width, height, false)
+        overlayViewport.update(width, height, false)
     }
 }

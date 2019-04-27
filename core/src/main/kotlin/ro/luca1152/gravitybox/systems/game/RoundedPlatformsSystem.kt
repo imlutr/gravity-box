@@ -46,7 +46,7 @@ class RoundedPlatformsSystem(private val context: Context) : EventSystem(UPDATE_
     // Injected objects
     private val manager: AssetManager = context.inject()
 
-    // Lateinit entities
+    // Entities
     private lateinit var mapEntity: Entity
 
     override fun addedToEngine(engine: Engine) {

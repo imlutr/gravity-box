@@ -71,6 +71,8 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
     private val manager: AssetManager = context.inject()
     private val gameStage: GameStage = context.inject()
     private val gameViewport: GameViewport = context.inject()
+    private val uiViewport: UIViewport = context.inject()
+    private val overlayViewport: OverlayViewport = context.inject()
     private val gameCamera: GameCamera = context.inject()
     private val uiStage: UIStage = context.inject()
     private val inputMultiplexer: InputMultiplexer = context.inject()
@@ -850,6 +852,8 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
 
     override fun resize(width: Int, height: Int) {
         gameViewport.update(width, height, false)
+        uiViewport.update(width, height, false)
+        overlayViewport.update(width, height, false)
     }
 
     override fun hide() {

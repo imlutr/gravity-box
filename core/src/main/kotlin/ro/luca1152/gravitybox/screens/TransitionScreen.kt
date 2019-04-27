@@ -34,10 +34,14 @@ class TransitionScreen(
     private val fadeOutCurrentScreen: Boolean = true,
     private val clearScreenWithBlack: Boolean = false
 ) : KtxScreen {
+    // Injected objects
     private val game: MyGame = context.inject()
     private val uiStage: UIStage = context.inject()
     private val gameStage: GameStage = context.inject()
     private val overlayStage: OverlayStage = context.inject()
+    private val gameViewport: GameViewport = context.inject()
+    private val uiViewport: UIViewport = context.inject()
+    private val overlayViewport: OverlayViewport = context.inject()
     private val engine: PooledEngine = context.inject()
 
     private val previousScreen = game.shownScreen
@@ -96,6 +100,12 @@ class TransitionScreen(
         uiStage.addAction(Actions.fadeIn(fadeDuration))
         gameStage.addAction(Actions.fadeIn(fadeDuration))
         overlayStage.addAction(Actions.fadeIn(fadeDuration))
+    }
+
+    override fun resize(width: Int, height: Int) {
+        gameViewport.update(width, height, false)
+        uiViewport.update(width, height, false)
+        overlayViewport.update(width, height, false)
     }
 
     override fun hide() {

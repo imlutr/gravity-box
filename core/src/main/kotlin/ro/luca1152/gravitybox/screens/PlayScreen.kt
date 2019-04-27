@@ -67,11 +67,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val inputMultiplexer: InputMultiplexer = context.inject()
     private val uiStage: UIStage = context.inject()
     private val uiCamera: UICamera = context.inject()
+    private val uiViewport: UIViewport = context.inject()
+    private val overlayViewport: OverlayViewport = context.inject()
     private val gameStage: GameStage = context.inject()
     private val preferences: Preferences = context.inject()
     private val eventQueue: EventQueue = context.inject()
 
-    // Lateinit entities
+    // Entities
     private lateinit var levelEntity: Entity
 
     private val canLoadAnyLevel = true // debug
@@ -236,8 +238,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val topPartImage = object : Image(manager.get(Assets.tileset).findRegion("pixel")) {
         init {
-            width = 720f
-            height = 1280f
+            width = uiViewport.worldWidth
+            height = uiViewport.worldHeight
             color = Color.WHITE.copy(alpha = 0f)
             addListener(object : ClickListener() {
                 override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -858,6 +860,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     override fun resize(width: Int, height: Int) {
         gameViewport.update(width, height, false)
+        uiViewport.update(width, height, false)
+        overlayViewport.update(width, height, false)
+        menuOverlayStage.viewport.update(width, height, false)
     }
 
     override fun hide() {
