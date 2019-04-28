@@ -234,10 +234,15 @@ class MapComponent : Component, Poolable {
         engine.getEntitiesFor(
             Family.one(
                 PlatformComponent::class.java,
+                DestroyablePlatformComponent::class.java,
+                RotatingObjectComponent::class.java,
+                ExplosionComponent::class.java,
                 RotatingIndicatorComponent::class.java,
                 DashedLineComponent::class.java,
                 MockMapObjectComponent::class.java,
-                TextComponent::class.java
+                TextComponent::class.java,
+                BulletComponent::class.java,
+                CollectiblePointComponent::class.java
             ).get()
         ).forEach {
             entitiesToRemove.add(it)
