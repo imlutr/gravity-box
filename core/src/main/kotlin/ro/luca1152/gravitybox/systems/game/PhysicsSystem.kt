@@ -32,7 +32,6 @@ class PhysicsSystem(context: Context) : EntitySystem() {
             world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS)
             accumulator -= TIME_STEP
         }
-        world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS)
     }
 
     companion object {

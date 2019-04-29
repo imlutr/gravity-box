@@ -75,7 +75,11 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
     }
 
     private fun removeBullets() {
+        val bulletsToRemove = ArrayList<Entity>()
         engine.getEntitiesFor(Family.all(BulletComponent::class.java).get()).forEach {
+            bulletsToRemove.add(it)
+        }
+        bulletsToRemove.forEach {
             engine.removeAndResetEntity(it)
         }
     }

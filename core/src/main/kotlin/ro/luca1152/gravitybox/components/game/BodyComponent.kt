@@ -94,6 +94,11 @@ class BodyComponent : Component, Poolable {
         initialX = Float.POSITIVE_INFINITY
         initialY = Float.POSITIVE_INFINITY
         initialRotationRad = 0f
+        bodyType = BodyDef.BodyType.StaticBody
+        density = 1f
+        friction = .2f
+        categoryBits = 0
+        maskBits = 0
     }
 
     fun destroyBody() {

@@ -29,7 +29,6 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxGame
 import ktx.app.clearScreen
@@ -135,14 +134,6 @@ fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? =
 
 /** Removes the [entity] from the engine and resets each of its components. */
 fun Engine.removeAndResetEntity(entity: Entity) {
-    // Reset every component so you don't have to manually reset them for
-    // each entity, such as calling world.destroyBody(entity.body.body).
-    for (component in entity.components) {
-        if (component is Poolable)
-            component.reset()
-        entity.remove(component::class.java)
-    }
-
     // Call the default removeEntity() function
     this.removeEntity(entity)
 }

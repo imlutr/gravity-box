@@ -44,6 +44,7 @@ import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
+import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
 import java.io.StringWriter
@@ -112,7 +113,7 @@ class MapComponent : Component, Poolable {
         mapBottom = Float.POSITIVE_INFINITY
         mapTop = Float.NEGATIVE_INFINITY
         engine.getEntitiesFor(Family.all(PolygonComponent::class.java).get()).forEach {
-            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+            if ((it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) && !it.isScheduledForRemoval) {
                 it.polygon.run {
                     mapLeft = Math.min(mapLeft, leftmostX)
                     mapRight = Math.max(mapRight, rightmostX)
@@ -234,6 +235,7 @@ class MapComponent : Component, Poolable {
         engine.getEntitiesFor(
             Family.one(
                 PlatformComponent::class.java,
+                CombinedBodyComponent::class.java,
                 DestroyablePlatformComponent::class.java,
                 RotatingObjectComponent::class.java,
                 ExplosionComponent::class.java,
@@ -242,13 +244,14 @@ class MapComponent : Component, Poolable {
                 MockMapObjectComponent::class.java,
                 TextComponent::class.java,
                 BulletComponent::class.java,
-                CollectiblePointComponent::class.java
+                CollectiblePointComponent::class.java,
+                ExtendedTouchComponent::class.java
             ).get()
         ).forEach {
             entitiesToRemove.add(it)
         }
         entitiesToRemove.forEach {
-            engine.removeEntity(it)
+            engine.removeAndResetEntity(it)
         }
     }
 
