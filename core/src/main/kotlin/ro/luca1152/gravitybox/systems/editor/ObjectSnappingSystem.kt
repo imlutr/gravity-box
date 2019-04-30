@@ -234,6 +234,7 @@ class ObjectSnappingSystem(context: Context) : EntitySystem() {
             val oldCenterY = scene2D.centerY
             val oldWidth = scene2D.width
             scene2D.updateFromPolygon(polygon.polygon)
+            scene2D.group.children.first().width = scene2D.width
             if (tryGet(MovingObjectComponent) != null) {
                 updateMockMovingObject(
                     linkedEntity.get("mockPlatform"),

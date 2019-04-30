@@ -271,7 +271,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
                         Actions.run {
                             shouldUpdateLevelLabel = true
                             levelEntity.level.run {
-                                levelId--
+                                if (levelId == 1) levelId = MyGame.LEVELS_NUMBER
+                                else levelId--
                                 loadMap = true
                                 forceUpdateMap = true
                             }
@@ -814,11 +815,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateLeftRightButtons() {
-        if (levelEntity.level.levelId == 1) {
-            makeButtonUntouchable(leftButton)
-        } else {
-            makeButtonTouchable(leftButton)
-        }
+//        if (levelEntity.level.levelId == 1) {
+//            makeButtonUntouchable(leftButton)
+//        } else {
+//            makeButtonTouchable(leftButton)
+//        }
 
         if (levelEntity.level.levelId == if (canLoadAnyLevel) MyGame.LEVELS_NUMBER else Math.min(
                 MyGame.LEVELS_NUMBER,

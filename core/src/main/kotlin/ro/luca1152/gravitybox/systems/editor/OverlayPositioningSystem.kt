@@ -577,6 +577,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
         }
         val position = selectedMapObjectPolygon.getRectangleCenter()
         scene2D.width = newWidth
+        scene2D.group.children.first().width = newWidth
         if (selectedMapObject!!.tryGet(MovingObjectComponent) != null) {
             selectedMapObject!!.linkedEntity.get("mockPlatform").scene2D.run {
                 group.children.first().width = newWidth

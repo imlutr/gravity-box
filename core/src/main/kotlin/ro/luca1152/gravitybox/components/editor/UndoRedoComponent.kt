@@ -282,6 +282,8 @@ class ResizeCommand(
         affectedEntity.scene2D.run {
             width -= deltaWidth
             height -= deltaHeight
+            group.children.first().width -= deltaWidth
+            group.children.first().height -= deltaHeight
             centerX = newCenterX
             centerY = newCenterY
         }
