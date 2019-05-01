@@ -88,8 +88,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 scaleMapObject(
-                    x, this@apply, selectedMapObject!!, toLeft = true,
-                    isDestroyablePlatform = selectedMapObject!!.tryGet(DestroyablePlatformComponent) != null
+                    x, this@apply, selectedMapObject!!, toLeft = true
                 )
                 eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
                 selectedMapObject!!.polygon.update()
@@ -102,7 +101,6 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 if (scene2D.width != initialImageWidth || scene2D.height != initialImageHeight)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         ResizeCommand(
-                            context,
                             selectedMapObject!!,
                             scene2D.width - initialImageWidth, scene2D.height - initialImageHeight,
                             scene2D.centerX - initialImageX, scene2D.centerY - initialImageY
@@ -140,8 +138,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 scaleMapObject(
-                    x, this@apply, selectedMapObject!!, toRight = true,
-                    isDestroyablePlatform = selectedMapObject!!.tryGet(DestroyablePlatformComponent) != null
+                    x, this@apply, selectedMapObject!!, toRight = true
                 )
                 eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
                 selectedMapObject!!.polygon.update()
@@ -154,7 +151,6 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 if (scene2D.width != initialImageWidth || scene2D.height != initialImageHeight)
                     undoRedoEntity.undoRedo.addExecutedCommand(
                         ResizeCommand(
-                            context,
                             selectedMapObject!!,
                             scene2D.width - initialImageWidth, scene2D.height - initialImageHeight,
                             scene2D.centerX - initialImageX, scene2D.centerY - initialImageY
@@ -535,8 +531,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
         buttonDragged: Button,
         linkedMapObject: Entity,
         toLeft: Boolean = false,
-        toRight: Boolean = false,
-        isDestroyablePlatform: Boolean = false
+        toRight: Boolean = false
     ) {
         if (!toLeft && !toRight) error { "No scale direction given." }
         if (toLeft && toRight) error { "Can't scale in two directions." }
@@ -547,15 +542,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
 
         val scene2D = linkedMapObject.scene2D
         var newWidth = Math.max(.5f, scene2D.width - deltaX)
-        newWidth = if (isDestroyablePlatform) {
-            newWidth.roundToNearest(
-                (16f + 5.33f).pixelsToMeters,
-                (16f + 5.33f).pixelsToMeters,
-                0f
-            )
-        } else {
-            newWidth.roundToNearest(1f, .15f)
-        }
+        newWidth = newWidth.roundToNearest(1f, .15f)
 
         // Scale the platform correctly, taking in consideration its rotation and the scaling direction
         val localLeft = if (toLeft) -(newWidth - scene2D.width) else 0f
@@ -589,9 +576,6 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
         scene2D.run {
             centerX = position.x
             centerY = position.y
-            if (isDestroyablePlatform) {
-                linkedMapObject.destroyablePlatform.updateScene2D(context, scene2D)
-            }
         }
 
         updateEditorObject()

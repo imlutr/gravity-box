@@ -53,8 +53,14 @@ object PlatformEntity {
         mapObject(context)
         if (isDestroyable) {
             destroyablePlatform(context)
-            scene2D(context, x, y, width, HEIGHT, rotation)
-            destroyablePlatform.updateScene2D(context, scene2D)
+            scene2D(
+                context,
+                NinePatch(
+                    manager.get(Assets.tileset).findRegion("platform-0"),
+                    PATCH_LEFT, PATCH_RIGHT,
+                    PATCH_TOP, PATCH_BOTTOM
+                ), x, y, width, HEIGHT, rotation
+            )
         } else {
             platform(context)
             scene2D(

@@ -51,7 +51,12 @@ class RoundedPlatformsSystem(private val context: Context) : EventSystem(UPDATE_
     }
 
     override fun processEvent(event: Event, deltaTime: Float) {
-        engine.getEntitiesFor(Family.all(PlatformComponent::class.java, Scene2DComponent::class.java).get()).forEach {
+        engine.getEntitiesFor(
+            Family.one(
+                PlatformComponent::class.java,
+                DestroyablePlatformComponent::class.java
+            ).all(Scene2DComponent::class.java).get()
+        ).forEach {
             roundCorners(it)
         }
     }
@@ -104,9 +109,11 @@ class RoundedPlatformsSystem(private val context: Context) : EventSystem(UPDATE_
 
             clearChildren()
 
+            val regionName = "${(if (entity.tryGet(DestroyablePlatformComponent) != null) "destroyable-" else "")}platform-$bitmask"
+
             addNinePatch(
                 context, NinePatch(
-                    manager.get(Assets.tileset).findRegion("platform-$bitmask"),
+                    manager.get(Assets.tileset).findRegion(regionName),
                     PlatformEntity.PATCH_LEFT, PlatformEntity.PATCH_RIGHT,
                     PlatformEntity.PATCH_TOP, PlatformEntity.PATCH_BOTTOM
                 ), oldCenterX, oldCenterY, oldWidth, oldHeight, oldRotation
@@ -139,7 +146,9 @@ class RoundedPlatformsSystem(private val context: Context) : EventSystem(UPDATE_
 
     private fun isPlatform(actor: Actor?): Boolean {
         return if (actor == null || actor.userObject == null || actor.userObject !is Entity) false
-        else (actor.userObject as Entity).tryGet(PlatformComponent) != null && !isExtendedBounds(actor) && !isDeleted(actor.userObject as Entity)
+        else ((actor.userObject as Entity).tryGet(PlatformComponent) != null ||
+                (actor.userObject as Entity).tryGet(DestroyablePlatformComponent) != null) &&
+                !isExtendedBounds(actor) && !isDeleted(actor.userObject as Entity)
     }
 
     private fun isExtendedBounds(actor: Actor?) = actor?.color == Color.CLEAR

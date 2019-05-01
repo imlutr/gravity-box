@@ -205,9 +205,6 @@ class ObjectSnappingSystem(context: Context) : EntitySystem() {
         if (!selectedObject!!.editorObject.isResizing) {
             return
         }
-        if (selectedObject!!.tryGet(DestroyablePlatformComponent) != null) {
-            return
-        }
         snapObjectLeft()
         snapObjectRight()
         snapObjectTop()
