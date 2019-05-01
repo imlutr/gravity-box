@@ -1,0 +1,134 @@
+{
+  "id": 1,
+  "hue": 218,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": -96,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -408.00024,
+      "y": 104
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -74.63455,
+        "y": 32
+      },
+      "width": 154.73065,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -159.99963,
+        "y": -168
+      },
+      "width": 896,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 265.14322,
+        "y": -224
+      },
+      "width": 145.11472,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 345.70056,
+        "y": -216
+      },
+      "width": 1024,
+      "rotation": 270,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -74.63455,
+        "y": -480
+      },
+      "width": 154.73065,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 273.14322,
+        "y": -736
+      },
+      "width": 161.11469,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -255.99994,
+        "y": -736
+      },
+      "width": 208.00012,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -352.00024,
+        "y": -344.00012
+      },
+      "width": 768.00024,
+      "rotation": 270,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 92.85034,
+        "y": 288
+      },
+      "width": 489.70044,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -424.30566,
+        "y": 32
+      },
+      "width": 128.61133,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -480.00024,
+        "y": 160
+      },
+      "width": 240.00002,
+      "rotation": 270,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -320.30554,
+        "y": 288
+      },
+      "width": 336.61133
+    }
+  ]
+}
