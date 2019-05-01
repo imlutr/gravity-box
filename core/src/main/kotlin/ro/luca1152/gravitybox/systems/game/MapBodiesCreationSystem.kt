@@ -238,11 +238,11 @@ class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
                     }
                     if (it.tryGet(RotatingObjectComponent) != null) {
                         val hookDef = BodyDef().apply {
-                            position.set(it.body.body.worldCenter)
+                            position.set(it.body.body!!.worldCenter)
                         }
                         val hook = world.createBody(hookDef)
                         val jointDef = RevoluteJointDef().apply {
-                            initialize(hook, it.body.body, it.body.body.worldCenter)
+                            initialize(hook, it.body.body, it.body.body!!.worldCenter)
                             collideConnected = false
                             enableLimit = false
                             enableMotor = true

@@ -91,8 +91,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                     if (destroyablePlatform.isRemoved) {
                         destroyablePlatform.isRemoved = false
                         scene2D.isVisible = true
-                        val bodyType =
-                            if (tryGet(DestroyablePlatformComponent) == null) BodyDef.BodyType.StaticBody else BodyDef.BodyType.KinematicBody
+                        val bodyType = BodyDef.BodyType.StaticBody
                         val categoryBits = PlatformEntity.CATEGORY_BITS
                         val maskBits = PlatformEntity.MASK_BITS
                         body(context, scene2D.toBody(context, bodyType, categoryBits, maskBits), categoryBits, maskBits)
@@ -122,10 +121,12 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                 if ((it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) && it.tryGet(BodyComponent) != null
                     && it.tryGet(Scene2DComponent) != null
                 ) {
-                    it.body.resetToInitialState()
-                    it.scene2D.run {
-                        centerX = it.body.body.worldCenter.x
-                        centerY = it.body.body.worldCenter.y
+                    if (it.body.body != null) {
+                        it.body.resetToInitialState()
+                        it.scene2D.run {
+                            centerX = it.body.body!!.worldCenter.x
+                            centerY = it.body.body!!.worldCenter.y
+                        }
                     }
                 }
             }

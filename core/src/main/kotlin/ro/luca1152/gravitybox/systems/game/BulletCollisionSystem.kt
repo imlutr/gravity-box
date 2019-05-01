@@ -48,16 +48,16 @@ class BulletCollisionSystem(private val context: Context) :
 
     override fun processEntity(bullet: Entity, deltaTime: Float) {
         if (bullet.bullet.collidedWithPlatform) {
-            val bulletPosition = bullet.body.body.worldCenter
+            val bulletPosition = bullet.body.body!!.worldCenter
             ExplosionImageEntity.createEntity(context, bulletPosition.x, bulletPosition.y)
-            applyBlastImpulse(bullet.body.body)
+            applyBlastImpulse(bullet.body.body!!)
             engine.removeAndResetEntity(bullet)
         }
     }
 
     private fun applyBlastImpulse(bullet: Body) {
         val playerBody = playerEntity.body.body
-        val closestBody = getClosestBodyToExplosion(bullet.worldCenter, playerBody.worldCenter)
+        val closestBody = getClosestBodyToExplosion(bullet.worldCenter, playerBody!!.worldCenter)
         if (noObstacleFoundBetween(closestBody))
             playerBody.applyBlastImpulse(bullet.worldCenter, playerBody.worldCenter, 150f)
     }
@@ -93,7 +93,7 @@ class BulletCollisionSystem(private val context: Context) :
         // Apply the force
         this.applyLinearImpulse(
             blastDir.nor().scl(impulseMag),
-            playerEntity.body.body.worldCenter,
+            playerEntity.body.body!!.worldCenter,
             true
         )
         Pools.free(blastDir)

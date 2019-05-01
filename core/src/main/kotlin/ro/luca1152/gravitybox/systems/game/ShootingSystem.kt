@@ -49,13 +49,13 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
     }
 
     private fun createBullet(worldX: Float, worldY: Float) {
-        val playerPosition = Pools.obtain(Vector2::class.java).set(playerEntity.body.body.worldCenter)
+        val playerPosition = Pools.obtain(Vector2::class.java).set(playerEntity.body.body!!.worldCenter)
         val bullet = BulletEntity.createEntity(context, playerPosition.x, playerPosition.y)
         val velocity = Pools.obtain(Vector2::class.java).set(playerPosition)
         velocity.sub(worldX, worldY)
         velocity.nor()
         velocity.scl(-BulletComponent.SPEED)
-        bullet.body.body.setLinearVelocity(velocity.x, velocity.y)
+        bullet.body.body!!.setLinearVelocity(velocity.x, velocity.y)
         Pools.free(playerPosition)
         Pools.free(velocity)
     }

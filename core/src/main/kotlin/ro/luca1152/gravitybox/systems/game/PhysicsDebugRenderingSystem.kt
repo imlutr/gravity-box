@@ -63,10 +63,8 @@ class PhysicsDebugRenderingSystem(context: Context) : EntitySystem() {
     private fun drawXAtOrigins() {
         shapeRenderer.set(ShapeRenderer.ShapeType.Line)
         for (entity in engine.getEntitiesFor(Family.all(BodyComponent::class.java).get())) {
-            if (!entity.body.isInitialized) {
-                return
-            }
-            val body = entity.body.body
+            if (entity.body.body == null) return
+            val body = entity.body.body!!
             if (body.type == BodyDef.BodyType.DynamicBody && body.userData != null) {
                 (body.userData as Entity).run {
                     when {

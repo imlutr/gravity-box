@@ -70,7 +70,7 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
 
     private fun updatePosition(entity: Entity, moveBy: Vector2) {
         entity.body.body.run {
-            setLinearVelocity(
+            this!!.setLinearVelocity(
                 MathUtils.lerp(linearVelocity.x, moveBy.x, .2f),
                 MathUtils.lerp(linearVelocity.y, moveBy.y, .2f)
             )

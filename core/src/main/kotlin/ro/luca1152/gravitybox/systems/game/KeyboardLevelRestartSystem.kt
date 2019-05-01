@@ -37,7 +37,9 @@ class KeyboardLevelRestartSystem(context: Context) : EntitySystem() {
     private val inputAdapter = object : KtxInputAdapter {
         override fun keyDown(keycode: Int): Boolean {
             if (keycode == Input.Keys.R) {
-                levelEntity.level.restartLevel = true
+                if (!levelEntity.level.isRestarting) {
+                    levelEntity.level.restartLevel = true
+                }
                 return true
             }
             return false
