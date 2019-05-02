@@ -191,6 +191,7 @@ class PlayingSystem(
             addSystem(CanFinishLevelSystem(context))
             addSystem(PlayerCameraSystem(context))
             addSystem(UpdateGameCameraSystem(context))
+            addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
 //            addSystem(PhysicsDebugRenderingSystem(context))
             addSystem(DebugRenderingSystem(context))

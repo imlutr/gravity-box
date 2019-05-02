@@ -42,7 +42,7 @@ class FadeOutFadeInSystem(context: Context) :
         init {
             color.set(Colors.bgColor)
             color.a = 0f
-            setSize(gameStage.viewport.worldWidth, gameStage.viewport.worldHeight)
+            setSize(gameStage.viewport.worldWidth * 10f, gameStage.viewport.worldHeight * 10f)
         }
 
         override fun act(delta: Float) {
