@@ -46,7 +46,9 @@ import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.Events
+import ro.luca1152.gravitybox.events.FadeInEvent
+import ro.luca1152.gravitybox.events.FadeOutEvent
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
@@ -77,6 +79,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private lateinit var levelEntity: Entity
 
     private val canLoadAnyLevel = true // debug
+    private val cycleFromFirstToLastLevel = true
 
     private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, uiCamera), context.inject())
     private val padTopBottom = 38f
@@ -264,23 +267,30 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addClickRunnable(Runnable {
             // The button is touchable
             if (color.a == 1f && !isChangingLevel) {
+                val fadeOutDuration = .2f
+                val fadeInDuration = .2f
                 gameStage.addAction(
                     Actions.sequence(
-                        Actions.run { isChangingLevel = true },
-                        Actions.fadeOut(.2f),
+                        Actions.run {
+                            isChangingLevel = true
+                            eventQueue.add(FadeOutEvent(fadeOutDuration))
+                        },
+                        Actions.delay(fadeOutDuration),
                         Actions.run {
                             shouldUpdateLevelLabel = true
                             levelEntity.level.run {
-                                levelId--
+                                if (levelId == 1) levelId = MyGame.LEVELS_NUMBER
+                                else levelId--
                                 loadMap = true
                                 forceUpdateMap = true
                             }
                             levelEntity.map.run {
-                                eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+                                eventQueue.add(UpdateRoundedPlatformsEvent())
                                 forceCenterCameraOnPlayer = true
                             }
                         },
-                        Actions.fadeIn(.2f),
+                        Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
+                        Actions.delay(fadeInDuration),
                         Actions.run { isChangingLevel = false }
                     )
                 )
@@ -291,10 +301,15 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addClickRunnable(Runnable {
             // The button is touchable
             if (color.a == 1f && !isChangingLevel) {
+                val fadeOutDuration = .2f
+                val fadeInDuration = .2f
                 gameStage.addAction(
                     Actions.sequence(
-                        Actions.run { isChangingLevel = true },
-                        Actions.fadeOut(.2f),
+                        Actions.run {
+                            isChangingLevel = true
+                            eventQueue.add(FadeOutEvent(fadeOutDuration))
+                        },
+                        Actions.delay(fadeOutDuration),
                         Actions.run {
                             shouldUpdateLevelLabel = true
                             levelEntity.level.run {
@@ -303,11 +318,12 @@ class PlayScreen(private val context: Context) : KtxScreen {
                                 forceUpdateMap = true
                             }
                             levelEntity.map.run {
-                                eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+                                eventQueue.add(UpdateRoundedPlatformsEvent())
                                 forceCenterCameraOnPlayer = true
                             }
                         },
-                        Actions.fadeIn(.2f),
+                        Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
+                        Actions.delay(fadeInDuration),
                         Actions.run { isChangingLevel = false }
                     )
                 )
@@ -735,6 +751,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(RoundedPlatformsSystem(context))
             addSystem(ObjectMovementSystem())
             addSystem(PhysicsSystem(context))
+            addSystem(RefilterSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(ShootingSystem(context))
             addSystem(BulletCollisionSystem(context))
@@ -752,6 +769,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(CanFinishLevelSystem(context))
             addSystem(PlayerCameraSystem(context, this@PlayScreen))
             addSystem(UpdateGameCameraSystem(context))
+            addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
             addSystem(LevelFinishSystem(context, playScreen = this@PlayScreen))
 //            addSystem(PhysicsDebugRenderingSystem(context))
@@ -814,7 +832,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateLeftRightButtons() {
-        if (levelEntity.level.levelId == 1) {
+        if (levelEntity.level.levelId == 1 && !cycleFromFirstToLastLevel) {
             makeButtonUntouchable(leftButton)
         } else {
             makeButtonTouchable(leftButton)

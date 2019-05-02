@@ -28,7 +28,7 @@ class OffScreenLevelRestartSystem : EntitySystem() {
     private lateinit var playerEntity: Entity
     private lateinit var levelEntity: Entity
     private val playerIsOffScreen
-        get() = playerEntity.body.body.worldCenter.y < -15f + levelEntity.map.mapBottom
+        get() = playerEntity.body.body!!.worldCenter.y < -15f + levelEntity.map.mapBottom
 
     override fun addedToEngine(engine: Engine) {
         playerEntity = engine.getSingleton<PlayerComponent>()

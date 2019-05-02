@@ -25,7 +25,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.utils.Pools
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
@@ -108,11 +107,8 @@ class CombinedBodiesCreationSystem(private val context: Context) : EntitySystem(
         val height = Math.abs(topmostY - bottommostY)
         val centerX = leftmostX + width / 2f
         val centerY = bottommostY + height / 2f
-        val bodyDef = Pools.obtain(BodyDef::class.java).apply {
+        val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.StaticBody
-            position.set(0f, 0f)
-            bullet = false
-            fixedRotation = false
         }
         val polygonShape = PolygonShape().apply {
             setAsBox(width / 2f, height / 2f)
@@ -128,6 +124,5 @@ class CombinedBodiesCreationSystem(private val context: Context) : EntitySystem(
             setTransform(centerX, centerY, 0f)
         }
         bodyEntity.body.set(context, body, bodyEntity, PlatformEntity.CATEGORY_BITS, PlatformEntity.MASK_BITS)
-        Pools.free(bodyDef)
     }
 }

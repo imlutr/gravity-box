@@ -19,11 +19,9 @@ package ro.luca1152.gravitybox.components.game
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that the entity is a destroyable platform. */
@@ -34,42 +32,6 @@ class DestroyablePlatformComponent : Component, Poolable {
     override fun reset() {
         remove = false
         isRemoved = false
-    }
-
-    fun updateScene2D(
-        context: Context,
-        scene2D: Scene2DComponent
-    ) {
-        val manager: AssetManager = context.inject()
-
-        val oldWidth = scene2D.width
-        val oldCenterY = scene2D.centerY
-        val oldCenterX = scene2D.centerX
-        val oldRotation = scene2D.rotation
-        var appendedHeight = false
-        scene2D.clearChildren()
-        val dotsCount = (oldWidth / (16f + 5.33f).pixelsToMeters).toInt()
-        for (i in 0 until dotsCount) {
-            scene2D.run {
-                width += 5.33f.pixelsToMeters / 2f
-                addImage(
-                    context,
-                    manager.get(Assets.tileset).findRegion("platform-dot"),
-                    appendWidth = true, appendHeight = !appendedHeight
-                ).run {
-                    x += 5.33f.pixelsToMeters / 2f + i * (16f + 5.33f).pixelsToMeters
-                }
-                appendedHeight = true
-                width += 5.33f.pixelsToMeters / 2f
-                originX = width / 2f
-            }
-        }
-        scene2D.run {
-            width = oldWidth
-            centerX = oldCenterX
-            centerY = oldCenterY
-            rotation = oldRotation
-        }
     }
 
     companion object : ComponentResolver<DestroyablePlatformComponent>(DestroyablePlatformComponent::class.java)

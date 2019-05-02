@@ -22,6 +22,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxInputAdapter
 import ktx.inject.Context
@@ -35,6 +36,7 @@ import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 /** Shoots bullet when the screen is touched. */
 class ShootingSystem(private val context: Context) : EntitySystem() {
     private val inputMultiplexer: InputMultiplexer = context.inject()
+    private val world: World = context.inject()
 
     private lateinit var playerEntity: Entity
 
@@ -47,13 +49,13 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
     }
 
     private fun createBullet(worldX: Float, worldY: Float) {
-        val playerPosition = Pools.obtain(Vector2::class.java).set(playerEntity.body.body.worldCenter)
+        val playerPosition = Pools.obtain(Vector2::class.java).set(playerEntity.body.body!!.worldCenter)
         val bullet = BulletEntity.createEntity(context, playerPosition.x, playerPosition.y)
         val velocity = Pools.obtain(Vector2::class.java).set(playerPosition)
         velocity.sub(worldX, worldY)
         velocity.nor()
         velocity.scl(-BulletComponent.SPEED)
-        bullet.body.body.setLinearVelocity(velocity.x, velocity.y)
+        bullet.body.body!!.setLinearVelocity(velocity.x, velocity.y)
         Pools.free(playerPosition)
         Pools.free(velocity)
     }

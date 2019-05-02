@@ -24,12 +24,10 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.physics.box2d.Body
-import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.Pool.Poolable
+import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxGame
 import ktx.app.clearScreen
@@ -54,13 +52,6 @@ fun Color.setWithoutAlpha(color: Color) {
     this.g = color.g
     this.b = color.b
 }
-
-private val bodyArray: Array<Body> = Array()
-val World.bodies: Array<Body>
-    get() {
-        getBodies(bodyArray)
-        return bodyArray
-    }
 
 fun screenToWorldCoordinates(context: Context, screenX: Int, screenY: Int): Vector3 {
     val gameCamera: GameCamera = context.inject()
@@ -135,14 +126,14 @@ fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? =
 
 /** Removes the [entity] from the engine and resets each of its components. */
 fun Engine.removeAndResetEntity(entity: Entity) {
-    // Reset every component so you don't have to manually reset them for
-    // each entity, such as calling world.destroyBody(entity.body.body).
-    for (component in entity.components) {
-        if (component is Poolable)
-            component.reset()
-        entity.remove(component::class.java)
+    val componentsToRemove = ArrayList<Component>()
+    entity.components.forEach {
+        componentsToRemove.add(it)
     }
-
+    componentsToRemove.forEach {
+        entity.remove(it::class.java)
+        (it as Pool.Poolable).reset()
+    }
     // Call the default removeEntity() function
     this.removeEntity(entity)
 }

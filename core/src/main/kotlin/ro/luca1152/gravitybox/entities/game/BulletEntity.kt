@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.entities.game
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.physics.box2d.*
-import com.badlogic.gdx.utils.Pools
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
@@ -52,24 +51,23 @@ object BulletEntity {
         userData: Entity
     ): Body {
         val world: World = context.inject()
-        val bodyDef = Pools.obtain(BodyDef::class.java).apply {
+        val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
             position.set(x, y)
             bullet = true
-            fixedRotation = false
+        }
+        val polygonShape = PolygonShape().apply {
+            setAsBox(WIDTH, HEIGHT)
         }
         val fixtureDef = FixtureDef().apply {
-            shape = PolygonShape().apply {
-                setAsBox(WIDTH, HEIGHT)
-            }
+            shape = polygonShape
             density = .2f
             filter.categoryBits = EntityCategory.BULLET.bits
             filter.maskBits = EntityCategory.PLATFORM.bits
         }
         return world.createBody(bodyDef).apply {
-            Pools.free(bodyDef)
             createFixture(fixtureDef)
-            fixtureDef.shape.dispose()
+            polygonShape.dispose()
             gravityScale = .5f
             this.userData = userData
         }

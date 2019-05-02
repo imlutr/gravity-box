@@ -31,7 +31,7 @@ import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.Events
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
@@ -101,7 +101,6 @@ class ObjectPlacementSystem(
                 }
                 else -> error("placeToolObjectType was not recognized.")
             }
-            placedObject.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
 
             // Place the mock moving platform in the level editor
             if (inputEntity.input.placeToolObjectType == MovingObjectComponent::class.java) {
@@ -114,7 +113,7 @@ class ObjectPlacementSystem(
                 placedObject.movingObject(context, mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
             }
 
-            eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+            eventQueue.add(UpdateRoundedPlatformsEvent())
             undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(context, placedObject, mapEntity))
         }
 

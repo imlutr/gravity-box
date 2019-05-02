@@ -23,7 +23,6 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
@@ -39,16 +38,17 @@ import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.TextEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.Events
-import ro.luca1152.gravitybox.screens.LevelEditorScreen
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
+import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 /** Pixels per meter. */
 const val PPM = 64f
@@ -112,12 +112,12 @@ class MapComponent : Component, Poolable {
         mapBottom = Float.POSITIVE_INFINITY
         mapTop = Float.NEGATIVE_INFINITY
         engine.getEntitiesFor(Family.all(PolygonComponent::class.java).get()).forEach {
-            if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
+            if ((it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) && !it.isScheduledForRemoval) {
                 it.polygon.run {
-                    mapLeft = Math.min(mapLeft, leftmostX)
-                    mapRight = Math.max(mapRight, rightmostX)
-                    mapBottom = Math.min(mapBottom, bottommostY)
-                    mapTop = Math.max(mapTop, topmostY)
+                    mapLeft = if (leftmostX != Float.NEGATIVE_INFINITY) Math.min(mapLeft, leftmostX) else mapLeft
+                    mapRight = if (rightmostX != Float.POSITIVE_INFINITY) Math.max(mapRight, rightmostX) else mapRight
+                    mapBottom = if (bottommostY != Float.NEGATIVE_INFINITY) Math.min(mapBottom, bottommostY) else mapBottom
+                    mapTop = if (topmostY != Float.POSITIVE_INFINITY) Math.max(mapTop, topmostY) else mapTop
                 }
             }
         }
@@ -161,6 +161,7 @@ class MapComponent : Component, Poolable {
 
             // Map properties
             writeValue("id", levelId)
+            writeValue("hue", hue)
             writeObjectStart("padding")
             writeValue("left", paddingLeft)
             writeValue("right", paddingRight)
@@ -204,17 +205,13 @@ class MapComponent : Component, Poolable {
         isLevelEditor: Boolean = false
     ) {
         resetPoints()
-        destroyAllBodies()
         removeObjects()
         createMap(mapFactory.id, mapFactory.hue, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
         createObjects(context, mapFactory.objects, isLevelEditor)
         updateMapBounds()
-        if (isLevelEditor) {
-            makeObjectsTransparent()
-        }
-        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+        eventQueue.add(UpdateRoundedPlatformsEvent())
     }
 
     private fun resetPoints() {
@@ -222,27 +219,28 @@ class MapComponent : Component, Poolable {
         pointsCount = 0
     }
 
-    private fun makeObjectsTransparent() {
-        engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
-            it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
-        }
-    }
-
     private fun removeObjects() {
         val entitiesToRemove = Array<Entity>()
         engine.getEntitiesFor(
             Family.one(
                 PlatformComponent::class.java,
+                CombinedBodyComponent::class.java,
+                DestroyablePlatformComponent::class.java,
+                RotatingObjectComponent::class.java,
+                ExplosionComponent::class.java,
                 RotatingIndicatorComponent::class.java,
                 DashedLineComponent::class.java,
                 MockMapObjectComponent::class.java,
-                TextComponent::class.java
+                TextComponent::class.java,
+                BulletComponent::class.java,
+                CollectiblePointComponent::class.java,
+                ExtendedTouchComponent::class.java
             ).get()
         ).forEach {
             entitiesToRemove.add(it)
         }
         entitiesToRemove.forEach {
-            engine.removeEntity(it)
+            engine.removeAndResetEntity(it)
         }
     }
 
@@ -381,10 +379,12 @@ class MapComponent : Component, Poolable {
     }
 
     fun destroyAllBodies() {
-        val bodiesToRemove = Array<Body>()
-        world.getBodies(bodiesToRemove)
-        bodiesToRemove.forEach {
-            world.destroyBody(it)
+        val bodiesToDestroy = ArrayList<Entity>()
+        engine.getEntitiesFor(Family.all(BodyComponent::class.java).get()).forEach {
+            bodiesToDestroy.add(it)
+        }
+        bodiesToDestroy.forEach {
+            it.body.destroyBody()
         }
     }
 }

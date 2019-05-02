@@ -173,6 +173,7 @@ class PlayingSystem(
             addSystem(CombinedBodiesCreationSystem(context))
             addSystem(ObjectMovementSystem())
             addSystem(PhysicsSystem(context))
+            addSystem(RefilterSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(LevelRestartSystem(context))
             addSystem(ShootingSystem(context))
@@ -191,6 +192,7 @@ class PlayingSystem(
             addSystem(CanFinishLevelSystem(context))
             addSystem(PlayerCameraSystem(context))
             addSystem(UpdateGameCameraSystem(context))
+            addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
 //            addSystem(PhysicsDebugRenderingSystem(context))
             addSystem(DebugRenderingSystem(context))
@@ -229,7 +231,6 @@ class PlayingSystem(
         resetDestroyablePlatforms(engine)
         resetCollectiblePoints(engine)
         levelEditorScreen.addGameSystems()
-        makeEveryObjectTransparent(engine)
         resetCollectedPointsCount()
     }
 
@@ -327,15 +328,6 @@ class PlayingSystem(
                     isVisible = true
                     isTouchable = true
                 }
-            }
-        }
-    }
-
-    private fun makeEveryObjectTransparent(engine: Engine) {
-        engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
-            // ??? There is (rarely) a crash here because scene2D is null...
-            if (it.tryGet(Scene2DComponent) != null) {
-                it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
             }
         }
     }

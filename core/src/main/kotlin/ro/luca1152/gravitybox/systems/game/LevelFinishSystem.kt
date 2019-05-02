@@ -24,16 +24,18 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.utils.Array
 import ktx.inject.Context
 import ro.luca1152.gravitybox.MyGame
+import ro.luca1152.gravitybox.components.editor.DashedLineComponent
+import ro.luca1152.gravitybox.components.editor.ExtendedTouchComponent
+import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
+import ro.luca1152.gravitybox.components.editor.RotatingIndicatorComponent
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.Events
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.screens.PlayScreen
-import ro.luca1152.gravitybox.utils.kotlin.GameStage
-import ro.luca1152.gravitybox.utils.kotlin.UIStage
-import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
-import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Handles what happens when a level is finished. */
@@ -99,7 +101,7 @@ class LevelFinishSystem(
                         levelEntity.map.run {
                             forceCenterCameraOnPlayer = true
                         }
-                        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+                        eventQueue.add(UpdateRoundedPlatformsEvent())
                     },
                     Actions.fadeIn(.25f, Interpolation.pow3In),
                     Actions.run { levelEntity.level.isRestarting = false }
@@ -124,14 +126,27 @@ class LevelFinishSystem(
     }
 
     private fun deleteEntities() {
+        val entitiesToRemove = Array<Entity>()
         engine.getEntitiesFor(
-            Family.one(BodyComponent::class.java, TextComponent::class.java).exclude(
-                PlayerComponent::class.java,
-                FinishComponent::class.java,
-                LevelComponent::class.java
+            Family.one(
+                PlatformComponent::class.java,
+                CombinedBodyComponent::class.java,
+                DestroyablePlatformComponent::class.java,
+                RotatingObjectComponent::class.java,
+                ExplosionComponent::class.java,
+                RotatingIndicatorComponent::class.java,
+                DashedLineComponent::class.java,
+                MockMapObjectComponent::class.java,
+                TextComponent::class.java,
+                BulletComponent::class.java,
+                CollectiblePointComponent::class.java,
+                ExtendedTouchComponent::class.java
             ).get()
         ).forEach {
-            engine.removeEntity(it)
+            entitiesToRemove.add(it)
+        }
+        entitiesToRemove.forEach {
+            engine.removeAndResetEntity(it)
         }
     }
 }

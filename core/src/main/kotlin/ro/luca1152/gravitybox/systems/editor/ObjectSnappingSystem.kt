@@ -35,7 +35,7 @@ import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.snap
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.Events
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
@@ -205,9 +205,6 @@ class ObjectSnappingSystem(context: Context) : EntitySystem() {
         if (!selectedObject!!.editorObject.isResizing) {
             return
         }
-        if (selectedObject!!.tryGet(DestroyablePlatformComponent) != null) {
-            return
-        }
         snapObjectLeft()
         snapObjectRight()
         snapObjectTop()
@@ -234,6 +231,7 @@ class ObjectSnappingSystem(context: Context) : EntitySystem() {
             val oldCenterY = scene2D.centerY
             val oldWidth = scene2D.width
             scene2D.updateFromPolygon(polygon.polygon)
+            scene2D.group.children.first().width = scene2D.width
             if (tryGet(MovingObjectComponent) != null) {
                 updateMockMovingObject(
                     linkedEntity.get("mockPlatform"),
@@ -380,7 +378,7 @@ class ObjectSnappingSystem(context: Context) : EntitySystem() {
 
     private fun updateRoundedPlatforms() {
         if (didSnapPlatform) {
-            eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+            eventQueue.add(UpdateRoundedPlatformsEvent())
             selectedObject!!.polygon.update()
         }
     }

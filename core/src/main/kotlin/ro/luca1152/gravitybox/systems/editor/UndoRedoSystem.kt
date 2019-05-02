@@ -26,7 +26,7 @@ import ro.luca1152.gravitybox.components.editor.UndoRedoComponent
 import ro.luca1152.gravitybox.components.editor.undoRedo
 import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.Events
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 class UndoRedoSystem(context: Context) : IteratingSystem(Family.all(UndoRedoComponent::class.java).get()) {
@@ -52,7 +52,7 @@ class UndoRedoSystem(context: Context) : IteratingSystem(Family.all(UndoRedoComp
             commandToUndo.unexecute()
             entity.undoRedo.commandsToRedo.push(commandToUndo)
             entity.undoRedo.levelsToUndo--
-            eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 
@@ -62,7 +62,7 @@ class UndoRedoSystem(context: Context) : IteratingSystem(Family.all(UndoRedoComp
             commandToRedo.execute()
             entity.undoRedo.commandsToUndo.push(commandToRedo)
             entity.undoRedo.levelsToRedo--
-            eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 }

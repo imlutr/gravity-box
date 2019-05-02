@@ -33,7 +33,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool.Poolable
-import com.badlogic.gdx.utils.Pools
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
@@ -249,11 +248,9 @@ class Scene2DComponent : Component, Poolable {
         trimSize: Float = 0f
     ): Body {
         val world: World = context.inject()
-        val bodyDef = Pools.obtain(BodyDef::class.java).apply {
+        val bodyDef = BodyDef().apply {
             type = bodyType
-            position.set(0f, 0f)
-            fixedRotation = false
-            bullet = false
+            bullet = bodyType == BodyDef.BodyType.DynamicBody
         }
         val polygonShape = PolygonShape().apply {
             setAsBox(width / 2f - trimSize, height / 2f - trimSize)
@@ -269,7 +266,6 @@ class Scene2DComponent : Component, Poolable {
             createFixture(fixtureDef)
             setTransform(centerX, centerY, rotation.toRadians)
             polygonShape.dispose()
-            Pools.free(bodyDef)
         }
     }
 

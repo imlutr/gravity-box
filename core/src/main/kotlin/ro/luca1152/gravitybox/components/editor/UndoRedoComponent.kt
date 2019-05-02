@@ -28,9 +28,8 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.Events
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
-import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import java.util.*
@@ -183,7 +182,7 @@ class AddCommand(
         affectedEntity.tryGet(CollectiblePointComponent)?.run {
             mapEntity.map.pointsCount++
         }
-        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+        eventQueue.add(UpdateRoundedPlatformsEvent())
     }
 
     override fun unexecute() {
@@ -216,7 +215,7 @@ class AddCommand(
         affectedEntity.tryGet(CollectiblePointComponent)?.run {
             mapEntity.map.pointsCount--
         }
-        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+        eventQueue.add(UpdateRoundedPlatformsEvent())
     }
 }
 
@@ -242,7 +241,6 @@ class DeleteCommand(
  * then have to be called two times (or the undo button pressed two times), instead of once.
  */
 class ResizeCommand(
-    private val context: Context,
     override val affectedEntity: Entity,
     private val deltaWidth: Float, private val deltaHeight: Float,
     private val deltaX: Float = 0f, private val deltaY: Float = 0f
@@ -260,9 +258,6 @@ class ResizeCommand(
             height += deltaHeight
             centerX = newCenterX
             centerY = newCenterY
-        }
-        affectedEntity.tryGet(DestroyablePlatformComponent)?.run {
-            updateScene2D(context, affectedEntity.scene2D)
         }
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
             affectedEntity.linkedEntity.get("mockPlatform").scene2D.run {
@@ -282,11 +277,10 @@ class ResizeCommand(
         affectedEntity.scene2D.run {
             width -= deltaWidth
             height -= deltaHeight
+            group.children.first().width -= deltaWidth
+            group.children.first().height -= deltaHeight
             centerX = newCenterX
             centerY = newCenterY
-        }
-        affectedEntity.tryGet(DestroyablePlatformComponent)?.run {
-            updateScene2D(context, affectedEntity.scene2D)
         }
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
             affectedEntity.linkedEntity.get("mockPlatform").scene2D.run {
@@ -307,16 +301,12 @@ class MakeObjectDestroyableCommand(
 ) : Command() {
     // Injected objects
     private val eventQueue: EventQueue = context.inject()
-    private val engine: PooledEngine = context.inject()
-
-    // Entities
-    private val mapEntity = engine.getSingleton<LevelComponent>()
 
     override fun execute() {
         affectedEntity.run {
             removeComponent<PlatformComponent>()
             destroyablePlatform(context)
-            destroyablePlatform.updateScene2D(context, scene2D)
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 
@@ -324,7 +314,7 @@ class MakeObjectDestroyableCommand(
         affectedEntity.run {
             removeComponent<DestroyablePlatformComponent>()
             platform(context)
-            eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 }

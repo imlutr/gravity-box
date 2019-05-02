@@ -26,7 +26,6 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.utils.kotlin.bodies
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Contains a Box2D body. */
@@ -44,9 +43,7 @@ class BodyComponent : Component, Poolable {
     var initialY = Float.POSITIVE_INFINITY
     var initialRotationRad = 0f
 
-    lateinit var body: Body
-    val isInitialized
-        get() = ::body.isInitialized
+    var body: Body? = null
 
     fun set(
         context: Context,
@@ -76,7 +73,7 @@ class BodyComponent : Component, Poolable {
 
     fun resetToInitialState() {
         if (initialX != Float.POSITIVE_INFINITY && initialY != Float.POSITIVE_INFINITY && bodyType != BodyDef.BodyType.StaticBody) {
-            body.run {
+            body!!.run {
                 setTransform(initialX, initialY, initialRotationRad)
                 applyForceToCenter(0f, 0f, true) // Wake up the body so it doesn't float
                 setLinearVelocity(0f, 0f)
@@ -94,13 +91,18 @@ class BodyComponent : Component, Poolable {
         initialX = Float.POSITIVE_INFINITY
         initialY = Float.POSITIVE_INFINITY
         initialRotationRad = 0f
+        bodyType = BodyDef.BodyType.StaticBody
+        density = 1f
+        friction = .2f
+        categoryBits = 0
+        maskBits = 0
     }
 
     fun destroyBody() {
-        if (::body.isInitialized && ::world.isInitialized) {
-            if (world.bodies.contains(body, false))
-                world.destroyBody(body)
+        if (body != null && ::world.isInitialized) {
+            world.destroyBody(body)
         }
+        body = null
     }
 
     companion object : ComponentResolver<BodyComponent>(BodyComponent::class.java)
