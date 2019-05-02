@@ -101,7 +101,6 @@ class ObjectPlacementSystem(
                 }
                 else -> error("placeToolObjectType was not recognized.")
             }
-            placedObject.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
 
             // Place the mock moving platform in the level editor
             if (inputEntity.input.placeToolObjectType == MovingObjectComponent::class.java) {

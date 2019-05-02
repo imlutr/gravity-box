@@ -229,7 +229,6 @@ class PlayingSystem(
         resetDestroyablePlatforms(engine)
         resetCollectiblePoints(engine)
         levelEditorScreen.addGameSystems()
-        makeEveryObjectTransparent(engine)
         resetCollectedPointsCount()
     }
 
@@ -327,15 +326,6 @@ class PlayingSystem(
                     isVisible = true
                     isTouchable = true
                 }
-            }
-        }
-    }
-
-    private fun makeEveryObjectTransparent(engine: Engine) {
-        engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
-            // ??? There is (rarely) a crash here because scene2D is null...
-            if (it.tryGet(Scene2DComponent) != null) {
-                it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
             }
         }
     }

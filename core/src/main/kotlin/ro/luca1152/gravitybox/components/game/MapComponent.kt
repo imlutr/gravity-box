@@ -40,7 +40,6 @@ import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.TextEntity
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
-import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
@@ -213,21 +212,12 @@ class MapComponent : Component, Poolable {
         createFinish(mapFactory.finish, finishEntity)
         createObjects(context, mapFactory.objects, isLevelEditor)
         updateMapBounds()
-        if (isLevelEditor) {
-            makeObjectsTransparent()
-        }
         eventQueue.add(UpdateRoundedPlatformsEvent())
     }
 
     private fun resetPoints() {
         collectedPointsCount = 0
         pointsCount = 0
-    }
-
-    private fun makeObjectsTransparent() {
-        engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
-            it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
-        }
     }
 
     private fun removeObjects() {
