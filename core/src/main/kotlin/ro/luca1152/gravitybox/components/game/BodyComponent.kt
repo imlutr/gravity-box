@@ -103,7 +103,6 @@ class BodyComponent : Component, Poolable {
             world.destroyBody(body)
         }
         body = null
-        resetInitialState()
     }
 
     companion object : ComponentResolver<BodyComponent>(BodyComponent::class.java)
