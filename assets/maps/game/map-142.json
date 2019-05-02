@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 224,
+  "hue": 332,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,7 +15,7 @@
   },
   "finish": {
     "position": {
-      "x": -416,
+      "x": -320,
       "y": 104
     }
   },
@@ -23,54 +23,48 @@
     {
       "type": "platform",
       "position": {
-        "x": -32,
+        "x": -105.3085,
         "y": 32
       },
-      "width": 400
+      "width": 557.383,
+      "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -416,
-        "y": 32
+        "x": -160,
+        "y": 136
       },
-      "width": 192
+      "width": 192,
+      "rotation": 270,
+      "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -224,
-        "y": 116
+        "x": -140,
+        "y": -96
       },
-      "width": 152,
-      "rotation": 270
+      "width": 872,
+      "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 160,
-        "y": 116
+        "x": 288,
+        "y": -48.442696
       },
-      "width": 152,
-      "rotation": 270
+      "width": 79.11461,
+      "rotation": 270,
+      "isDestroyable": true
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "Not worth trying...",
       "position": {
-        "x": -504,
-        "y": 308.125
-      },
-      "width": 536.25,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -328,
-        "y": 308.125
-      },
-      "width": 536.25,
-      "rotation": 270
+        "x": -135.4624,
+        "y": 292.70184
+      }
     }
   ]
 }

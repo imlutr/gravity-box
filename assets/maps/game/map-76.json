@@ -1,6 +1,6 @@
 {
-  "id": 1,
-  "hue": 20,
+  "id": 2,
+  "hue": 337,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,21 +9,21 @@
   },
   "player": {
     "position": {
-      "x": -96,
+      "x": 96,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": -88,
-      "y": -40
+      "x": -64,
+      "y": 104
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -12,
+        "x": 12,
         "y": 32
       },
       "width": 280
@@ -31,28 +31,19 @@
     {
       "type": "platform",
       "position": {
-        "x": 44,
-        "y": -112
+        "x": 160,
+        "y": 96
       },
-      "width": 424
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -160,
-        "y": 56
-      },
-      "width": 320,
+      "width": 144,
       "rotation": 270
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "Tip: the angle you shoot at\nmatters",
       "position": {
-        "x": 248,
-        "y": -47.78579
-      },
-      "width": 112.42842,
-      "rotation": 270
+        "x": 18,
+        "y": -27.999992
+      }
     }
   ]
 }

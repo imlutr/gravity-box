@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 21,
+  "hue": 211,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,7 +9,7 @@
   },
   "player": {
     "position": {
-      "x": 224,
+      "x": -112.19829,
       "y": 72
     }
   },
@@ -52,23 +52,6 @@
         "y": 115.91617
       },
       "width": 151.83234,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 220.97534,
-        "y": 32
-      },
-      "width": 134.04935
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 296,
-        "y": 107.91617
-      },
-      "width": 167.83234,
       "rotation": 270
     }
   ]

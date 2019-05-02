@@ -1,6 +1,6 @@
 {
-  "id": 1,
-  "hue": 307,
+  "id": 2,
+  "hue": 8,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,100 +9,49 @@
   },
   "player": {
     "position": {
-      "x": -32,
+      "x": 64,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 0,
-      "y": -664
+      "x": 80,
+      "y": -40
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -32,
+        "x": -12,
         "y": 32
       },
-      "width": 192
+      "width": 280
     },
     {
       "type": "platform",
       "position": {
-        "x": 72,
-        "y": 107.72764
+        "x": -60,
+        "y": -112
       },
-      "width": 167.45528,
+      "width": 408
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 136,
+        "y": 120
+      },
+      "width": 192,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -223.99997,
-        "y": -160
+        "x": -256,
+        "y": -47.78579
       },
-      "width": 192
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -327.99997,
-        "y": -84.64219
-      },
-      "width": 166.71562,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -32,
-        "y": -352
-      },
-      "width": 192
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 72,
-        "y": -276
-      },
-      "width": 168,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -223.99997,
-        "y": -544
-      },
-      "width": 191.99994
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -328,
-        "y": -468
-      },
-      "width": 168,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -32,
-        "y": -736
-      },
-      "width": 192
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 72,
-        "y": -660
-      },
-      "width": 168,
+      "width": 112.42842,
       "rotation": 270
     }
   ]

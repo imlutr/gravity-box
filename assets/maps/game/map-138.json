@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 279,
+  "hue": 339,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,7 +15,7 @@
   },
   "finish": {
     "position": {
-      "x": -32,
+      "x": 0,
       "y": -664
     }
   },
@@ -31,16 +31,17 @@
     {
       "type": "platform",
       "position": {
-        "x": -136,
-        "y": 120
+        "x": 72,
+        "y": 107.72764
       },
-      "width": 192,
-      "rotation": 270
+      "width": 167.45528,
+      "rotation": 270,
+      "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 415.99997,
+        "x": -223.99997,
         "y": -160
       },
       "width": 192
@@ -48,11 +49,12 @@
     {
       "type": "platform",
       "position": {
-        "x": 520,
-        "y": -64
+        "x": -327.99997,
+        "y": -84.64219
       },
-      "width": 208,
-      "rotation": 270
+      "width": 166.71562,
+      "rotation": 270,
+      "isDestroyable": true
     },
     {
       "type": "platform",
@@ -65,28 +67,31 @@
     {
       "type": "platform",
       "position": {
-        "x": -136,
-        "y": -256
+        "x": 72,
+        "y": -276
       },
-      "width": 208.00002,
-      "rotation": 270
+      "width": 168,
+      "rotation": 270,
+      "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 416,
+        "x": -223.99997,
         "y": -544
       },
-      "width": 191.99997
+      "width": 191.99994,
+      "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 520,
-        "y": -448
+        "x": -328,
+        "y": -468
       },
-      "width": 207.99998,
-      "rotation": 270
+      "width": 168,
+      "rotation": 270,
+      "isDestroyable": true
     },
     {
       "type": "platform",
@@ -94,16 +99,18 @@
         "x": -32,
         "y": -736
       },
-      "width": 192
+      "width": 192,
+      "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -136,
-        "y": -648
+        "x": 72,
+        "y": -660
       },
-      "width": 192,
-      "rotation": 270
+      "width": 168,
+      "rotation": 270,
+      "isDestroyable": true
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 87,
+  "hue": 144,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,8 +15,8 @@
   },
   "finish": {
     "position": {
-      "x": -576,
-      "y": 719.4272
+      "x": 576,
+      "y": 104
     }
   },
   "objects": [
@@ -49,8 +49,8 @@
     {
       "type": "platform",
       "position": {
-        "x": -288,
-        "y": 747.4272
+        "x": 288,
+        "y": 148
       },
       "width": 216,
       "rotation": 270
@@ -58,16 +58,16 @@
     {
       "type": "platform",
       "position": {
-        "x": -584,
-        "y": 647.4272
+        "x": 568.00006,
+        "y": 32
       },
       "width": 575.99994
     },
     {
       "type": "platform",
       "position": {
-        "x": -864,
-        "y": 771.4272
+        "x": 864,
+        "y": 139.99998
       },
       "width": 231.99997,
       "rotation": 270

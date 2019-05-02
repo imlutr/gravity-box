@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 267,
+  "hue": 73,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,23 +15,32 @@
   },
   "finish": {
     "position": {
-      "x": -192,
-      "y": 104
+      "x": 112,
+      "y": 766.65625
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -103.999985,
+        "x": -32,
         "y": 32
       },
-      "width": 336.00003
+      "width": 192
     },
     {
       "type": "platform",
       "position": {
         "x": -119.99988,
+        "y": 466.54364
+      },
+      "width": 853.0873,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 56,
         "y": 371.32812
       },
       "width": 662.65625,
@@ -40,28 +49,35 @@
     {
       "type": "platform",
       "position": {
-        "x": 56,
-        "y": 466.54364
+        "x": 120,
+        "y": 694.65625
       },
-      "width": 853.0873,
-      "rotation": 270
+      "width": 112
     },
     {
       "type": "platform",
       "position": {
-        "x": -103.999985,
+        "x": 24,
         "y": 901.0873
       },
-      "width": 336.00003
+      "width": 304
     },
     {
       "type": "platform",
       "position": {
-        "x": -264.00006,
-        "y": 466.54364
+        "x": 184,
+        "y": 797.87177
       },
-      "width": 853.0873,
+      "width": 222.43108,
       "rotation": 270
+    },
+    {
+      "type": "text",
+      "string": "Wall Jumping\nTip: shoot faster",
+      "position": {
+        "x": -32.746246,
+        "y": -49.37053
+      }
     }
   ]
 }

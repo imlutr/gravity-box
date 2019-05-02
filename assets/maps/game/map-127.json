@@ -1,6 +1,6 @@
 {
-  "id": 2,
-  "hue": 77,
+  "id": 1,
+  "hue": 165,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,90 +9,62 @@
   },
   "player": {
     "position": {
-      "x": -431.8522,
+      "x": 224,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": -84,
-      "y": 1000
+      "x": 224,
+      "y": 424
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -427.00003,
+        "x": 128,
         "y": 32
       },
-      "width": 473.99994,
+      "width": 560,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -182.00006,
-        "y": 184
-      },
-      "width": 320,
-      "rotation": 270,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -18.000015,
+        "x": 226.11343,
         "y": 352
       },
-      "width": 344.0001,
+      "width": 137.97772,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 162.00003,
-        "y": 735.2911
+        "x": 416,
+        "y": 320
       },
-      "width": 782.5821,
+      "width": 592,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -445.5733,
-        "y": 672
+        "x": -160,
+        "y": 320
       },
-      "width": 128,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -672.0002,
-        "y": 575.2911
-      },
-      "width": 1102.5822,
+      "width": 592,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -83.61551,
-        "y": 928
+        "x": 128,
+        "y": 608
       },
-      "width": 127.928375,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -255.00012,
-        "y": 1134.5822
-      },
-      "width": 850.00024,
+      "width": 560,
       "isDestroyable": true
     }
   ]

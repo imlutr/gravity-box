@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 333,
+  "hue": 186,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,8 +15,8 @@
   },
   "finish": {
     "position": {
-      "x": 384,
-      "y": 104
+      "x": -64,
+      "y": 872
     }
   },
   "objects": [
@@ -31,10 +31,18 @@
     {
       "type": "platform",
       "position": {
-        "x": 384,
-        "y": 32
+        "x": -256,
+        "y": 416
       },
-      "width": 128.00003
+      "width": 128
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -64,
+        "y": 800
+      },
+      "width": 128
     }
   ]
 }
