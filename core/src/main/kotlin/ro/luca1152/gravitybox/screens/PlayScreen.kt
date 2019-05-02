@@ -79,6 +79,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private lateinit var levelEntity: Entity
 
     private val canLoadAnyLevel = true // debug
+    private val cycleFromFirstToLastLevel = true
 
     private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, uiCamera), context.inject())
     private val padTopBottom = 38f
@@ -830,11 +831,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateLeftRightButtons() {
-//        if (levelEntity.level.levelId == 1) {
-//            makeButtonUntouchable(leftButton)
-//        } else {
-//            makeButtonTouchable(leftButton)
-//        }
+        if (levelEntity.level.levelId == 1 && !cycleFromFirstToLastLevel) {
+            makeButtonUntouchable(leftButton)
+        } else {
+            makeButtonTouchable(leftButton)
+        }
 
         if (levelEntity.level.levelId == if (canLoadAnyLevel) MyGame.LEVELS_NUMBER else Math.min(
                 MyGame.LEVELS_NUMBER,
