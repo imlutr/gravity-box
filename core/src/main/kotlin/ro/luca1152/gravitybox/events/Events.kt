@@ -17,12 +17,23 @@
 
 package ro.luca1152.gravitybox.events
 
+import com.badlogic.gdx.math.Interpolation
+
 /** The base [Event] class. */
 interface Event
 
-enum class Events : Event {
-    // Game events
-    UPDATE_ROUNDED_PLATFORMS
+class UpdateRoundedPlatformsEvent : Event
 
-    // Editor events
+open class FadeOutFadeInEvent(
+    val fadeOutDuration: Float, val fadeOutInterpolation: Interpolation,
+    val fadeInDuration: Float, val fadeInInterpolation: Interpolation
+) : Event {
+    constructor(fadeOutDuration: Float, fadeInDuration: Float) :
+            this(fadeOutDuration, Interpolation.linear, fadeInDuration, Interpolation.linear)
 }
+
+class FadeOutEvent(fadeOutDuration: Float, fadeOutInterpolation: Interpolation = Interpolation.linear) :
+    FadeOutFadeInEvent(fadeOutDuration, fadeOutInterpolation, 0f, Interpolation.linear)
+
+class FadeInEvent(fadeInDuration: Float, fadeInInterpolation: Interpolation = Interpolation.linear) :
+    FadeOutFadeInEvent(0f, Interpolation.linear, fadeInDuration, fadeInInterpolation)

@@ -36,7 +36,7 @@ import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.Events
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
@@ -90,7 +90,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 scaleMapObject(
                     x, this@apply, selectedMapObject!!, toLeft = true
                 )
-                eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+                eventQueue.add(UpdateRoundedPlatformsEvent())
                 selectedMapObject!!.polygon.update()
             }
 
@@ -140,7 +140,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 scaleMapObject(
                     x, this@apply, selectedMapObject!!, toRight = true
                 )
-                eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+                eventQueue.add(UpdateRoundedPlatformsEvent())
                 selectedMapObject!!.polygon.update()
             }
 
@@ -193,7 +193,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
-                eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+                eventQueue.add(UpdateRoundedPlatformsEvent())
                 selectedMapObject!!.editorObject.isRotating = true
 
                 val mouseCoords = screenToWorldCoordinates(context, Gdx.input.x, Gdx.input.y)
@@ -304,7 +304,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 if (!isDragging) return // Make sure dragStart() is called first
-                eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+                eventQueue.add(UpdateRoundedPlatformsEvent())
                 selectedMapObject!!.editorObject.isDraggingHorizontally = true
 
                 val mouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
@@ -393,7 +393,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 if (!isDragging) return // Make sure dragStart() is called first
-                eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+                eventQueue.add(UpdateRoundedPlatformsEvent())
                 selectedMapObject!!.editorObject.isDraggingVertically = true
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y

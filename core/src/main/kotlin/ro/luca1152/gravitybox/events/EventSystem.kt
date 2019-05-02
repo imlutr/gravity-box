@@ -21,17 +21,18 @@ import com.badlogic.ashley.core.EntitySystem
 import kotlin.reflect.KClass
 
 /** A simple [EntitySystem] that iterates over each event and calls [processEvent] for each one every time the system is updated.*/
-abstract class EventSystem(
-    private val eventType: KClass<out Event>,
-    private val eventQueue: EventQueue
+abstract class EventSystem<T : Event>(
+    private val eventQueue: EventQueue,
+    private val eventType: KClass<T>
 ) : EntitySystem() {
     private val eventsToRemove = ArrayList<Event>()
 
     /** The update method called every tick. Calls [processEvent] for each event, then removes it from the [eventQueue]. */
+    @Suppress("UNCHECKED_CAST")
     override fun update(deltaTime: Float) {
         eventQueue.forEach {
-            if (it::class == eventType) {
-                processEvent(it, deltaTime)
+            if (it::class.isSubclassOf(eventType)) {
+                processEvent(it as T, deltaTime)
                 eventsToRemove.add(it)
             }
         }
@@ -40,5 +41,8 @@ abstract class EventSystem(
     }
 
     /**	This method is called on every event. Override this to implement your system's specific processing. */
-    abstract fun processEvent(event: Event, deltaTime: Float)
+    abstract fun processEvent(event: T, deltaTime: Float)
+
+    private fun <X : Any> KClass<out Any>.isSubclassOf(kClass: KClass<X>) =
+        kClass.java.isAssignableFrom(this.java)
 }

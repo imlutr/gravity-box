@@ -575,6 +575,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
             addSystem(RotatingIndicatorSystem())
             addSystem(ColorSyncSystem())
             addSystem(DashedLineRenderingSystem(context))
+            addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
             addSystem(OverlayRenderingSystem(context))
             addSystem(DebugRenderingSystem(context))

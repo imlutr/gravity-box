@@ -28,7 +28,7 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.Events
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.removeComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
@@ -182,7 +182,7 @@ class AddCommand(
         affectedEntity.tryGet(CollectiblePointComponent)?.run {
             mapEntity.map.pointsCount++
         }
-        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+        eventQueue.add(UpdateRoundedPlatformsEvent())
     }
 
     override fun unexecute() {
@@ -215,7 +215,7 @@ class AddCommand(
         affectedEntity.tryGet(CollectiblePointComponent)?.run {
             mapEntity.map.pointsCount--
         }
-        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+        eventQueue.add(UpdateRoundedPlatformsEvent())
     }
 }
 
@@ -306,7 +306,7 @@ class MakeObjectDestroyableCommand(
         affectedEntity.run {
             removeComponent<PlatformComponent>()
             destroyablePlatform(context)
-            eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 
@@ -314,7 +314,7 @@ class MakeObjectDestroyableCommand(
         affectedEntity.run {
             removeComponent<DestroyablePlatformComponent>()
             platform(context)
-            eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 }

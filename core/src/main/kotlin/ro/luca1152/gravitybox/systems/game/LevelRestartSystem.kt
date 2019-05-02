@@ -29,6 +29,8 @@ import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.events.FadeOutFadeInEvent
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
@@ -36,8 +38,11 @@ import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Handles what happens when a level is marked as to be restarted. */
 class LevelRestartSystem(private val context: Context) : EntitySystem() {
+    // Injected objects
     private val gameStage: GameStage = context.inject()
+    private val eventQueue: EventQueue = context.inject()
 
+    // Entities
     private lateinit var levelEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
@@ -52,10 +57,15 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
 
     private fun restartTheLevel() {
         levelEntity.level.restartLevel = false
+
+        val fadeOutDuration = .25f
+        val fadeInDuration = .25f
+        eventQueue.add(FadeOutFadeInEvent(fadeOutDuration, Interpolation.pow3In, fadeInDuration, Interpolation.pow3In))
+
         gameStage.addAction(
             Actions.sequence(
                 Actions.run { levelEntity.level.isRestarting = true },
-                Actions.fadeOut(.25f, Interpolation.pow3In),
+                Actions.delay(fadeOutDuration),
                 Actions.run {
                     // Without this check, in the level editor, if the player restarted the level just before
                     // leaving the play test section, the game would crash
@@ -68,7 +78,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                         levelEntity.map.forceCenterCameraOnPlayer = true
                     }
                 },
-                Actions.fadeIn(.25f, Interpolation.pow3In),
+                Actions.delay(fadeInDuration),
                 Actions.run { levelEntity.level.isRestarting = false }
             )
         )

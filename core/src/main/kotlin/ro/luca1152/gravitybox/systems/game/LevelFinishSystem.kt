@@ -33,7 +33,7 @@ import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
 import ro.luca1152.gravitybox.components.editor.RotatingIndicatorComponent
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.Events
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -101,7 +101,7 @@ class LevelFinishSystem(
                         levelEntity.map.run {
                             forceCenterCameraOnPlayer = true
                         }
-                        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+                        eventQueue.add(UpdateRoundedPlatformsEvent())
                     },
                     Actions.fadeIn(.25f, Interpolation.pow3In),
                     Actions.run { levelEntity.level.isRestarting = false }

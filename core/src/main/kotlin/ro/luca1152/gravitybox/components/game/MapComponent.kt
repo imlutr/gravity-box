@@ -39,7 +39,7 @@ import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.TextEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.Events
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
@@ -216,7 +216,7 @@ class MapComponent : Component, Poolable {
         if (isLevelEditor) {
             makeObjectsTransparent()
         }
-        eventQueue.add(Events.UPDATE_ROUNDED_PLATFORMS)
+        eventQueue.add(UpdateRoundedPlatformsEvent())
     }
 
     private fun resetPoints() {
