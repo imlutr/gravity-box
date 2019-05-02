@@ -30,7 +30,8 @@ import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.FadeOutFadeInEvent
+import ro.luca1152.gravitybox.events.FadeInEvent
+import ro.luca1152.gravitybox.events.FadeOutEvent
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
@@ -60,11 +61,13 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
 
         val fadeOutDuration = .25f
         val fadeInDuration = .25f
-        eventQueue.add(FadeOutFadeInEvent(fadeOutDuration, Interpolation.pow3In, fadeInDuration, Interpolation.pow3In))
 
         gameStage.addAction(
             Actions.sequence(
-                Actions.run { levelEntity.level.isRestarting = true },
+                Actions.run {
+                    levelEntity.level.isRestarting = true
+                    eventQueue.add(FadeOutEvent(fadeOutDuration, Interpolation.pow3In))
+                },
                 Actions.delay(fadeOutDuration),
                 Actions.run {
                     // Without this check, in the level editor, if the player restarted the level just before
@@ -78,6 +81,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                         levelEntity.map.forceCenterCameraOnPlayer = true
                     }
                 },
+                Actions.run { eventQueue.add(FadeInEvent(fadeInDuration, Interpolation.pow3In)) },
                 Actions.delay(fadeInDuration),
                 Actions.run { levelEntity.level.isRestarting = false }
             )
