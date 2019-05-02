@@ -114,10 +114,10 @@ class MapComponent : Component, Poolable {
         engine.getEntitiesFor(Family.all(PolygonComponent::class.java).get()).forEach {
             if ((it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) && !it.isScheduledForRemoval) {
                 it.polygon.run {
-                    mapLeft = Math.min(mapLeft, leftmostX)
-                    mapRight = Math.max(mapRight, rightmostX)
-                    mapBottom = Math.min(mapBottom, bottommostY)
-                    mapTop = Math.max(mapTop, topmostY)
+                    mapLeft = if (leftmostX != Float.NEGATIVE_INFINITY) Math.min(mapLeft, leftmostX) else mapLeft
+                    mapRight = if (rightmostX != Float.POSITIVE_INFINITY) Math.max(mapRight, rightmostX) else mapRight
+                    mapBottom = if (bottommostY != Float.NEGATIVE_INFINITY) Math.min(mapBottom, bottommostY) else mapBottom
+                    mapTop = if (topmostY != Float.POSITIVE_INFINITY) Math.max(mapTop, topmostY) else mapTop
                 }
             }
         }
