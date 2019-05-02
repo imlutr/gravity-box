@@ -109,9 +109,6 @@ class CombinedBodiesCreationSystem(private val context: Context) : EntitySystem(
         val centerY = bottommostY + height / 2f
         val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.StaticBody
-            position.set(0f, 0f)
-            bullet = false
-            fixedRotation = false
         }
         val polygonShape = PolygonShape().apply {
             setAsBox(width / 2f, height / 2f)

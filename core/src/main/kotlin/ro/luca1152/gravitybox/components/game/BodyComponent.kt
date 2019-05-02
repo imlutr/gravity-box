@@ -26,7 +26,6 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.utils.kotlin.bodies
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Contains a Box2D body. */
@@ -101,10 +100,10 @@ class BodyComponent : Component, Poolable {
 
     fun destroyBody() {
         if (body != null && ::world.isInitialized) {
-            if (world.bodies.contains(body, false))
-                world.destroyBody(body)
+            world.destroyBody(body)
         }
         body = null
+        resetInitialState()
     }
 
     companion object : ComponentResolver<BodyComponent>(BodyComponent::class.java)

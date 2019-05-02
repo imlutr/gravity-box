@@ -55,19 +55,19 @@ object BulletEntity {
             type = BodyDef.BodyType.DynamicBody
             position.set(x, y)
             bullet = true
-            fixedRotation = false
+        }
+        val polygonShape = PolygonShape().apply {
+            setAsBox(WIDTH, HEIGHT)
         }
         val fixtureDef = FixtureDef().apply {
-            shape = PolygonShape().apply {
-                setAsBox(WIDTH, HEIGHT)
-            }
+            shape = polygonShape
             density = .2f
             filter.categoryBits = EntityCategory.BULLET.bits
             filter.maskBits = EntityCategory.PLATFORM.bits
         }
         return world.createBody(bodyDef).apply {
             createFixture(fixtureDef)
-            fixtureDef.shape.dispose()
+            polygonShape.dispose()
             gravityScale = .5f
             this.userData = userData
         }

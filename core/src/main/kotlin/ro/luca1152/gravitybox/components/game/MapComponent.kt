@@ -23,7 +23,6 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
@@ -49,6 +48,7 @@ import ro.luca1152.gravitybox.utils.ui.Colors
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 /** Pixels per meter. */
 const val PPM = 64f
@@ -205,7 +205,6 @@ class MapComponent : Component, Poolable {
         isLevelEditor: Boolean = false
     ) {
         resetPoints()
-        destroyAllBodies()
         removeObjects()
         createMap(mapFactory.id, mapFactory.hue, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
@@ -380,10 +379,12 @@ class MapComponent : Component, Poolable {
     }
 
     fun destroyAllBodies() {
-        val bodiesToRemove = Array<Body>()
-        world.getBodies(bodiesToRemove)
-        bodiesToRemove.forEach {
-            world.destroyBody(it)
+        val bodiesToDestroy = ArrayList<Entity>()
+        engine.getEntitiesFor(Family.all(BodyComponent::class.java).get()).forEach {
+            bodiesToDestroy.add(it)
+        }
+        bodiesToDestroy.forEach {
+            it.body.destroyBody()
         }
     }
 }

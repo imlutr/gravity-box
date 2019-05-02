@@ -250,8 +250,6 @@ class Scene2DComponent : Component, Poolable {
         val world: World = context.inject()
         val bodyDef = BodyDef().apply {
             type = bodyType
-            position.set(0f, 0f)
-            fixedRotation = false
             bullet = bodyType == BodyDef.BodyType.DynamicBody
         }
         val polygonShape = PolygonShape().apply {
