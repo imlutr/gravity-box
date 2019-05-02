@@ -11,7 +11,7 @@ This is the mobile port of my [Game Maker's Toolkit Jam 2018](https://itch.io/ja
 - [Kotlin](https://kotlinlang.org/) - The language used
 - [libGDX](https://libgdx.badlogicgames.com/) - The game framework used
 - [Ashley](https://github.com/libgdx/ashley/wiki) - Entity Component System library
-- [libKTX.inject](https://github.com/libktx/ktx/tree/master/inject) - Dependency Injection for Kotlin
+- [libKTX.inject](https://github.com/libktx/ktx/tree/master/inject) - Lightweight dependency injection library
 - [Box2D](https://github.com/libgdx/libgdx/wiki/Box2d) - 2D physics library
 - [libKTX](https://github.com/libktx/ktx) - Kotlin extensions for libGDX
 
