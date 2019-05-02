@@ -173,6 +173,7 @@ class PlayingSystem(
             addSystem(CombinedBodiesCreationSystem(context))
             addSystem(ObjectMovementSystem())
             addSystem(PhysicsSystem(context))
+            addSystem(RefilterSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(LevelRestartSystem(context))
             addSystem(ShootingSystem(context))
