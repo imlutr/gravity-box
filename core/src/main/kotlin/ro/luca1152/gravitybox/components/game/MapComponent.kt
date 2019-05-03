@@ -42,6 +42,7 @@ import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -205,6 +206,7 @@ class MapComponent : Component, Poolable {
         isLevelEditor: Boolean = false
     ) {
         resetPoints()
+        resetFinish(context)
         removeObjects()
         createMap(mapFactory.id, mapFactory.hue, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
@@ -217,6 +219,14 @@ class MapComponent : Component, Poolable {
     private fun resetPoints() {
         collectedPointsCount = 0
         pointsCount = 0
+        engine.getSingleton<LevelComponent>().level.canFinish = true
+    }
+
+    private fun resetFinish(context: Context) {
+        val finishEntity = engine.getSingleton<FinishComponent>()
+        if (finishEntity.tryGet(FadeInFadeOutComponent) == null) {
+            finishEntity.fadeInFadeOut(context, finishEntity.scene2D)
+        }
     }
 
     private fun removeObjects() {
