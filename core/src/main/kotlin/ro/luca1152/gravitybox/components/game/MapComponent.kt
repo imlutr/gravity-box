@@ -302,7 +302,8 @@ class MapComponent : Component, Poolable {
             isDestroyable = platform.isDestroyable,
             isRotating = platform.isRotating,
             targetX = platform.movingTo.x.pixelsToMeters,
-            targetY = platform.movingTo.y.pixelsToMeters
+            targetY = platform.movingTo.y.pixelsToMeters,
+            speed = platform.speed.pixelsToMeters
         )
         if (platform.movingTo.x != Float.POSITIVE_INFINITY && platform.movingTo.y != Float.POSITIVE_INFINITY) {
             val mockPlatform = MovingMockPlatformEntity.createEntity(
@@ -311,7 +312,6 @@ class MapComponent : Component, Poolable {
                 newPlatform.scene2D.width, newPlatform.scene2D.rotation
             )
             newPlatform.linkedEntity(context, "mockPlatform", mockPlatform)
-            newPlatform.movingObject(context, mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
 
             if (isLevelEditor) {
                 val dashedLine = DashedLineEntity.createEntity(context, newPlatform, mockPlatform)

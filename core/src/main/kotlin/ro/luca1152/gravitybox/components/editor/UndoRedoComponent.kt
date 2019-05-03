@@ -339,10 +339,11 @@ class MakeObjectMovingCommand(
     override val affectedEntity: Entity
 ) : Command() {
     private val engine: PooledEngine = context.inject()
+    private var oldSpeed = MovingObjectComponent.SPEED
 
     override fun execute() {
         affectedEntity.run {
-            movingObject(context, scene2D.centerX + 1f, scene2D.centerY + 1f)
+            movingObject(context, scene2D.centerX + 1f, scene2D.centerY + 1f, oldSpeed)
             val mockPlatform = MovingMockPlatformEntity.createEntity(
                 context, this,
                 movingObject.endPoint.x, movingObject.endPoint.y,
@@ -360,6 +361,7 @@ class MakeObjectMovingCommand(
 
     override fun unexecute() {
         affectedEntity.run {
+            oldSpeed = movingObject.speed
             removeComponent<MovingObjectComponent>()
             engine.removeEntity(linkedEntity.get("mockPlatform"))
             engine.removeEntity(linkedEntity.get("dashedLine"))

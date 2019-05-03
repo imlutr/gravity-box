@@ -17,6 +17,9 @@
 
 package ro.luca1152.gravitybox.utils.assets.json
 
+import ro.luca1152.gravitybox.components.game.MovingObjectComponent
+import ro.luca1152.gravitybox.components.game.metersToPixels
+
 class PaddingPrototype {
     var left = 0
     var right = 0
@@ -51,9 +54,13 @@ class ObjectPrototype {
     var id = 0
     var string = ""
     var position = PositionPrototype()
+
     var movingTo = MovingToPrototype()
+    var speed = MovingObjectComponent.SPEED.metersToPixels
+
     var width = 0f
     var rotation = 0
+
     var isDestroyable = false
     var isRotating = false
 }

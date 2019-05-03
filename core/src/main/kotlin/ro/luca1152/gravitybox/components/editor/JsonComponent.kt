@@ -75,6 +75,7 @@ class JsonComponent : Component, Poolable {
                         writeValue("x", movingObject.endPoint.x.metersToPixels)
                         writeValue("y", movingObject.endPoint.y.metersToPixels)
                         writeObjectEnd()
+                        writeValue("speed", movingObject.speed.metersToPixels)
                     }
                     if (tryGet(PlatformComponent) != null || tryGet(DestroyablePlatformComponent) != null) json.run {
                         writeValue("width", scene2D.width.metersToPixels)
