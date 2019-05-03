@@ -304,7 +304,7 @@ class MapComponent : Component, Poolable {
             targetX = platform.movingTo.x.pixelsToMeters,
             targetY = platform.movingTo.y.pixelsToMeters
         )
-        if (isLevelEditor && platform.movingTo.x != Float.POSITIVE_INFINITY && platform.movingTo.y != Float.POSITIVE_INFINITY) {
+        if (platform.movingTo.x != Float.POSITIVE_INFINITY && platform.movingTo.y != Float.POSITIVE_INFINITY) {
             val mockPlatform = MovingMockPlatformEntity.createEntity(
                 context, newPlatform,
                 platform.movingTo.x.pixelsToMeters, platform.movingTo.y.pixelsToMeters,
@@ -313,9 +313,15 @@ class MapComponent : Component, Poolable {
             newPlatform.linkedEntity(context, "mockPlatform", mockPlatform)
             newPlatform.movingObject(context, mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
 
-            val dashedLine = DashedLineEntity.createEntity(context, newPlatform, mockPlatform)
-            mockPlatform.linkedEntity.add("dashedLine", dashedLine)
-            newPlatform.linkedEntity.add("dashedLine", dashedLine)
+            if (isLevelEditor) {
+                val dashedLine = DashedLineEntity.createEntity(context, newPlatform, mockPlatform)
+                mockPlatform.linkedEntity.add("dashedLine", dashedLine)
+                newPlatform.linkedEntity.add("dashedLine", dashedLine)
+            } else {
+                // Even if it is not in the level editor, the mock platform should still be added as it
+                // is used to determine map bounds as the target position should also be used in calculations
+                mockPlatform.scene2D.isVisible = false
+            }
         }
         if (isLevelEditor && platform.isRotating) {
             newPlatform.rotatingIndicator(context)
