@@ -104,9 +104,9 @@ class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
                     break
                 }
                 if (entityA.polygon.polygon.vertices.isNotEmpty() && entityB.polygon.polygon.vertices.isNotEmpty() &&
-                    isSameRotation(entityA, entityB) && isHorizontalOrVertical(entityA) && isHorizontalOrVertical(
-                        entityB
-                    ) &&
+                    isSameRotation(entityA, entityB) && isHorizontalOrVertical(entityA) && isHorizontalOrVertical(entityB) &&
+                    entityA.tryGet(MovingObjectComponent) == null && entityB.tryGet(MovingObjectComponent) == null &&
+                    entityB.tryGet(RotatingObjectComponent) == null && entityB.tryGet(RotatingObjectComponent) == null &&
                     entityA.polygon.bottommostY == entityB.polygon.bottommostY &&
                     entityA.polygon.topmostY == entityB.polygon.topmostY &&
                     ((entityA.polygon.leftmostX == entityB.polygon.leftmostX ||
@@ -134,9 +134,9 @@ class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
                     break
                 }
                 if (entityA.polygon.polygon.vertices.isNotEmpty() && entityB.polygon.polygon.vertices.isNotEmpty() &&
-                    isSameRotation(entityA, entityB) && isHorizontalOrVertical(entityA) && isHorizontalOrVertical(
-                        entityB
-                    ) &&
+                    isSameRotation(entityA, entityB) && isHorizontalOrVertical(entityA) && isHorizontalOrVertical(entityB) &&
+                    entityA.tryGet(MovingObjectComponent) == null && entityB.tryGet(MovingObjectComponent) == null &&
+                    entityB.tryGet(RotatingObjectComponent) == null && entityB.tryGet(RotatingObjectComponent) == null &&
                     entityA.polygon.leftmostX == entityB.polygon.leftmostX &&
                     entityA.polygon.rightmostX == entityB.polygon.rightmostX &&
                     ((entityA.polygon.bottommostY == entityB.polygon.bottommostY ||
