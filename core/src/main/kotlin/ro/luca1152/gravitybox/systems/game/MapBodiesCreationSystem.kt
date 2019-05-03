@@ -225,6 +225,7 @@ class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
                     }
                     if (it.tryGet(MovingObjectComponent) != null) {
                         bodyType = BodyDef.BodyType.KinematicBody
+                        friction = 1000f
                     }
                     if (it.tryGet(RotatingObjectComponent) != null) {
                         bodyType = BodyDef.BodyType.DynamicBody

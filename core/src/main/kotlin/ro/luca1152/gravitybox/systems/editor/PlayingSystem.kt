@@ -108,7 +108,7 @@ class PlayingSystem(
     }
 
     private fun setOwnBox2DContactListener() {
-        world.setContactListener(WorldContactListener())
+        world.setContactListener(WorldContactListener(context))
     }
 
     private fun makeFinishPointEndlesslyBlink() {
@@ -171,8 +171,8 @@ class PlayingSystem(
         engine.run {
             addSystem(MapBodiesCreationSystem(context))
             addSystem(CombinedBodiesCreationSystem(context))
-            addSystem(ObjectMovementSystem())
             addSystem(PhysicsSystem(context))
+            addSystem(ObjectMovementSystem())
             addSystem(RefilterSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(LevelRestartSystem(context))

@@ -723,7 +723,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun setOwnBox2DContactListener() {
-        world.setContactListener(WorldContactListener())
+        world.setContactListener(WorldContactListener(context))
     }
 
     private fun createGameEntities() {
@@ -749,8 +749,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(MapBodiesCreationSystem(context))
             addSystem(CombinedBodiesCreationSystem(context))
             addSystem(RoundedPlatformsSystem(context))
-            addSystem(ObjectMovementSystem())
             addSystem(PhysicsSystem(context))
+            addSystem(ObjectMovementSystem())
             addSystem(RefilterSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(ShootingSystem(context))

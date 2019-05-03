@@ -31,7 +31,7 @@ import ro.luca1152.gravitybox.utils.kotlin.tryGet
 /** Indicates that the map object is moving back an forth to a given position. */
 class MovingObjectComponent : Component, Poolable {
     companion object : ComponentResolver<MovingObjectComponent>(MovingObjectComponent::class.java) {
-        const val SPEED = 1f
+        const val SPEED = 5f
     }
 
     val startPoint = Vector2()

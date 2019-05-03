@@ -21,7 +21,6 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pools
 import ktx.math.times
@@ -53,7 +52,7 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
         entity.run {
             val moveBy = getMoveBy(entity)
             updatePosition(entity, moveBy)
-            updateDirection(entity)
+            updateDirection(entity, moveBy)
             Pools.free(moveBy)
         }
     }
@@ -69,23 +68,30 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
     }
 
     private fun updatePosition(entity: Entity, moveBy: Vector2) {
-        entity.body.body.run {
-            this!!.setLinearVelocity(
-                MathUtils.lerp(linearVelocity.x, moveBy.x, .2f),
-                MathUtils.lerp(linearVelocity.y, moveBy.y, .2f)
-            )
+        if (entity.body.body!!.linearVelocity.len() == 0f) {
+            if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
+                playerEntity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+            }
         }
+        entity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+
     }
 
-    private fun updateDirection(entity: Entity) {
+    private fun updateDirection(entity: Entity, moveBy: Vector2) {
         entity.run {
             val objectPosition = Pools.obtain(Vector2::class.java).set(scene2D.centerX, scene2D.centerY)
             if (objectPosition.dst(movingObject.startPoint) >= movingObject.startToFinishDistance) {
                 objectPosition.set(movingObject.endPoint)
                 movingObject.isMovingTowardsEndPoint = false
+                if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
+                    playerEntity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+                }
             } else if (objectPosition.dst(movingObject.endPoint) >= movingObject.startToFinishDistance) {
                 objectPosition.set(movingObject.startPoint)
                 movingObject.isMovingTowardsEndPoint = true
+                if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
+                    playerEntity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+                }
             }
             Pools.free(objectPosition)
         }
