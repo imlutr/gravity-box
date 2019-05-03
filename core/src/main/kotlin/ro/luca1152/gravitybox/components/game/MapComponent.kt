@@ -307,7 +307,7 @@ class MapComponent : Component, Poolable {
         if (isLevelEditor && platform.movingTo.x != Float.POSITIVE_INFINITY && platform.movingTo.y != Float.POSITIVE_INFINITY) {
             val mockPlatform = MovingMockPlatformEntity.createEntity(
                 context, newPlatform,
-                newPlatform.scene2D.centerX + 1f, newPlatform.scene2D.centerY + 1f,
+                platform.movingTo.x.pixelsToMeters, platform.movingTo.y.pixelsToMeters,
                 newPlatform.scene2D.width, newPlatform.scene2D.rotation
             )
             newPlatform.linkedEntity(context, "mockPlatform", mockPlatform)
