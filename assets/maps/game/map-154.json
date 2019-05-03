@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 305,
+  "hue": 181,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,81 +9,72 @@
   },
   "player": {
     "position": {
-      "x": -32,
-      "y": 72
+      "x": -64,
+      "y": -56
     }
   },
   "finish": {
     "position": {
-      "x": 64,
-      "y": 104
+      "x": -288,
+      "y": 680
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": 32,
-        "y": 32
+        "x": -62.578957,
+        "y": -96
       },
-      "width": 192,
+      "width": 242.84209,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 136,
-        "y": 142.07874
+        "x": -192.00002,
+        "y": 75.99992
       },
-      "width": 236.15749,
+      "width": 359.99985,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -88,
-        "y": -352
+        "x": 66.84209,
+        "y": 596.96954
       },
-      "width": 128,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -159.99997,
-        "y": -254.43127
-      },
-      "width": 211.13762,
+      "width": 553.9394,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 192,
-        "y": -672
+        "x": -281.11334,
+        "y": 608
       },
-      "width": 128,
+      "width": 194.22662,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 264,
-        "y": -577.23004
+        "x": -386.22668,
+        "y": 736.9696
       },
-      "width": 205.53998,
+      "width": 273.93924,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 512,
-        "y": -352
+        "x": -159.69226,
+        "y": 865.9392
       },
-      "width": 128.00003,
+      "width": 437.06873,
       "isDestroyable": true
     }
   ]

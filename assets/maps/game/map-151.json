@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 305,
+  "hue": 280,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,7 +15,7 @@
   },
   "finish": {
     "position": {
-      "x": 64,
+      "x": 147.79984,
       "y": 104
     }
   },
@@ -23,67 +23,57 @@
     {
       "type": "platform",
       "position": {
-        "x": 32,
+        "x": -32.00003,
         "y": 32
       },
-      "width": 192,
+      "width": 160.00006,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 136,
-        "y": 142.07874
+        "x": -120.00006,
+        "y": 467.43488
       },
-      "width": 236.15749,
+      "width": 886.86975,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -88,
-        "y": -352
+        "x": 56,
+        "y": 352
       },
-      "width": 128,
+      "width": 656,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 144,
+        "y": 32
+      },
+      "width": 160,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -159.99997,
-        "y": -254.43127
+        "x": 55.99997,
+        "y": 902.86975
       },
-      "width": 211.13762,
+      "width": 336.00006,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 232,
+        "y": 467.43488
+      },
+      "width": 886.86975,
       "rotation": 270,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 192,
-        "y": -672
-      },
-      "width": 128,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 264,
-        "y": -577.23004
-      },
-      "width": 205.53998,
-      "rotation": 270,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 512,
-        "y": -352
-      },
-      "width": 128.00003,
       "isDestroyable": true
     }
   ]
