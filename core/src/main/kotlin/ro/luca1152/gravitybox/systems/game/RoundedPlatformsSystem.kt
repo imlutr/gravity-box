@@ -55,7 +55,7 @@ class RoundedPlatformsSystem(private val context: Context) :
             Family.one(
                 PlatformComponent::class.java,
                 DestroyablePlatformComponent::class.java
-            ).all(Scene2DComponent::class.java).get()
+            ).all(Scene2DComponent::class.java).exclude(MovingObjectComponent::class.java).get()
         ).forEach {
             roundCorners(it)
         }
@@ -148,6 +148,7 @@ class RoundedPlatformsSystem(private val context: Context) :
         return if (actor == null || actor.userObject == null || actor.userObject !is Entity) false
         else ((actor.userObject as Entity).tryGet(PlatformComponent) != null ||
                 (actor.userObject as Entity).tryGet(DestroyablePlatformComponent) != null) &&
+                (actor.userObject as Entity).tryGet(MovingObjectComponent) == null &&
                 !isExtendedBounds(actor) && !isDeleted(actor.userObject as Entity)
     }
 
