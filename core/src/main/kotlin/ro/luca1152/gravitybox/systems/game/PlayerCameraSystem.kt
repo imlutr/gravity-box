@@ -98,15 +98,14 @@ class PlayerCameraSystem(
         val cameraBottom = lerpCameraPosition.y - cameraHalfHeight
         val cameraTop = lerpCameraPosition.y + cameraHalfHeight
 
-
         // Clamp horizontal axis
-        if (mapWidth < gameCamera.viewportWidth) {
-            lerpCameraPosition.x = mapRight - mapWidth / 2f
-        } else if (cameraLeft <= mapLeft && mapLeft + 2 * cameraHalfWidth < mapRight) {
-            lerpCameraPosition.x = mapLeft + cameraHalfWidth
-        } else if (cameraRight >= mapRight) {
-            lerpCameraPosition.x = mapRight - cameraHalfWidth
+        when {
+            mapWidth < gameCamera.viewportWidth -> lerpCameraPosition.x = mapRight - mapWidth / 2f
+            cameraLeft <= mapLeft -> lerpCameraPosition.x = mapLeft + cameraHalfWidth
+            cameraRight >= mapRight -> lerpCameraPosition.x = mapRight - cameraHalfWidth
         }
+
+        // Clamp vertical axis
 
         // Clamp vertical axis
         if (mapHeight < gameCamera.viewportHeight - 5f) {
