@@ -345,8 +345,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         })
     }
     private val leftLevelRightTable = Table(skin).apply {
-        add(leftButton).padRight(102f)
-        add(levelLabel).padRight(102f)
+        add(leftButton).padRight(64f)
+        add(levelLabel).padRight(64f)
         add(rightButton)
         addAction(Actions.fadeOut(0f))
     }
