@@ -65,6 +65,14 @@
       "width": 886.86975,
       "rotation": 270,
       "isDestroyable": true
+    },
+    {
+      "type": "text",
+      "string": "Yes...",
+      "position": {
+        "x": -117.27348,
+        "y": -15.879189
+      }
     }
   ]
 }
