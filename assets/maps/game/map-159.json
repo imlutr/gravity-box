@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 282,
+  "hue": 117,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,56 +15,56 @@
   },
   "finish": {
     "position": {
-      "x": 373.99997,
-      "y": 808
+      "x": -26.996521,
+      "y": 1692
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -31.963455,
+        "x": -29.49826,
         "y": 32
       },
-      "width": 160.07303,
+      "width": 165.00348,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -120,
-        "y": 472
+        "x": 61.00348,
+        "y": 557.3205
       },
-      "width": 896,
+      "width": 1066.641,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 56.07306,
-        "y": 472
+        "x": -401.66357,
+        "y": 1290.5599
       },
-      "width": 896,
+      "width": 640,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 380,
-        "y": 736
+        "x": -29.498337,
+        "y": 1620
       },
-      "width": 632,
+      "width": 197.00363,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 704,
-        "y": 824
+        "x": 77.00348,
+        "y": 1755.1249
       },
-      "width": 192.00006,
+      "width": 286.2503,
       "rotation": 270,
       "isDestroyable": true
     }

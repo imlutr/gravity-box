@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 81,
+  "hue": 278,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,7 +15,7 @@
   },
   "finish": {
     "position": {
-      "x": 192,
+      "x": 64,
       "y": 104
     }
   },
@@ -23,43 +23,57 @@
     {
       "type": "platform",
       "position": {
-        "x": 64,
+        "x": -8,
         "y": 32
       },
-      "width": 432
+      "width": 320
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -159.99988,
+        "y": 384
+      },
+      "width": 720,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 160,
+        "y": 384
+      },
+      "width": 720,
+      "rotation": 270
     },
     {
       "type": "point",
       "position": {
-        "x": 128,
-        "y": 364.157
+        "x": -80.93117,
+        "y": 288
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -32,
+        "y": 480
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 96,
+        "y": 608
       }
     },
     {
       "type": "platform",
       "position": {
-        "x": -160,
-        "y": 216
+        "x": 0.14660645,
+        "y": 736
       },
-      "width": 384,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 288,
-        "y": 216
-      },
-      "width": 384,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 64,
-        "y": 416
-      },
-      "width": 464
+      "width": 304.29297
     }
   ]
 }

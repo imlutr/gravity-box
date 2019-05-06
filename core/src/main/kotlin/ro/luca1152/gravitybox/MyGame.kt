@@ -38,7 +38,7 @@ import ro.luca1152.gravitybox.utils.kotlin.*
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
     companion object {
-        const val LEVELS_NUMBER = 204
+        const val LEVELS_NUMBER = 203
     }
 
     private val context = Context()
