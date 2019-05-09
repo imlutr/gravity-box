@@ -27,11 +27,11 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.utils.Array
 import ktx.inject.Context
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.editor.DashedLineComponent
 import ro.luca1152.gravitybox.components.editor.ExtendedTouchComponent
 import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
 import ro.luca1152.gravitybox.components.editor.RotatingIndicatorComponent
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.components.game.DashedLineComponent
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.screens.PlayScreen

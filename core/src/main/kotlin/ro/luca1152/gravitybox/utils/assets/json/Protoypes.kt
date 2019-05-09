@@ -50,17 +50,24 @@ class MovingToPrototype {
 }
 
 class ObjectPrototype {
+    // Any map object
     var type = ""
-    var id = 0
-    var string = ""
     var position = PositionPrototype()
+    var rotation = 0
 
+    // Platform
+    var width = 0f
+    var isDestroyable = false
+    var isRotating = false
+
+    // Moving platform
     var movingTo = MovingToPrototype()
     var speed = MovingObjectComponent.SPEED.metersToPixels
 
-    var width = 0f
-    var rotation = 0
+    // Text
+    var string = ""
 
-    var isDestroyable = false
-    var isRotating = false
+    // Dashed line
+    var start = PositionPrototype()
+    var end = PositionPrototype()
 }

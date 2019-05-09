@@ -49,6 +49,7 @@ import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.FadeInEvent
 import ro.luca1152.gravitybox.events.FadeOutEvent
 import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
+import ro.luca1152.gravitybox.systems.editor.DashedLineRenderingSystem
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
@@ -769,6 +770,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem(context, this@PlayScreen))
             addSystem(UpdateGameCameraSystem(context))
+            addSystem(DashedLineRenderingSystem(context))
             addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
             addSystem(LevelFinishSystem(context, playScreen = this@PlayScreen))
