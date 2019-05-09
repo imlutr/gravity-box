@@ -361,8 +361,8 @@ class MapComponent : Component, Poolable {
     private fun createDashedLine(context: Context, dashedLine: ObjectPrototype) {
         DashedLineEntity.createEntity(
             context,
-            dashedLine.start.x, dashedLine.start.y,
-            dashedLine.end.x, dashedLine.end.y
+            dashedLine.start.x.pixelsToMeters, dashedLine.start.y.pixelsToMeters,
+            dashedLine.end.x.pixelsToMeters, dashedLine.end.y.pixelsToMeters
         )
     }
 
