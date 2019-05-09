@@ -42,6 +42,7 @@ import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -205,6 +206,7 @@ class MapComponent : Component, Poolable {
         isLevelEditor: Boolean = false
     ) {
         resetPoints()
+        resetFinish(context)
         removeObjects()
         createMap(mapFactory.id, mapFactory.hue, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
@@ -217,6 +219,14 @@ class MapComponent : Component, Poolable {
     private fun resetPoints() {
         collectedPointsCount = 0
         pointsCount = 0
+        engine.getSingleton<LevelComponent>().level.canFinish = true
+    }
+
+    private fun resetFinish(context: Context) {
+        val finishEntity = engine.getSingleton<FinishComponent>()
+        if (finishEntity.tryGet(FadeInFadeOutComponent) == null) {
+            finishEntity.fadeInFadeOut(context, finishEntity.scene2D)
+        }
     }
 
     private fun removeObjects() {
@@ -302,20 +312,26 @@ class MapComponent : Component, Poolable {
             isDestroyable = platform.isDestroyable,
             isRotating = platform.isRotating,
             targetX = platform.movingTo.x.pixelsToMeters,
-            targetY = platform.movingTo.y.pixelsToMeters
+            targetY = platform.movingTo.y.pixelsToMeters,
+            speed = platform.speed.pixelsToMeters
         )
-        if (isLevelEditor && platform.movingTo.x != Float.POSITIVE_INFINITY && platform.movingTo.y != Float.POSITIVE_INFINITY) {
+        if (platform.movingTo.x != Float.POSITIVE_INFINITY && platform.movingTo.y != Float.POSITIVE_INFINITY) {
             val mockPlatform = MovingMockPlatformEntity.createEntity(
                 context, newPlatform,
-                newPlatform.scene2D.centerX + 1f, newPlatform.scene2D.centerY + 1f,
+                platform.movingTo.x.pixelsToMeters, platform.movingTo.y.pixelsToMeters,
                 newPlatform.scene2D.width, newPlatform.scene2D.rotation
             )
             newPlatform.linkedEntity(context, "mockPlatform", mockPlatform)
-            newPlatform.movingObject(context, mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
 
-            val dashedLine = DashedLineEntity.createEntity(context, newPlatform, mockPlatform)
-            mockPlatform.linkedEntity.add("dashedLine", dashedLine)
-            newPlatform.linkedEntity.add("dashedLine", dashedLine)
+            if (isLevelEditor) {
+                val dashedLine = DashedLineEntity.createEntity(context, newPlatform, mockPlatform)
+                mockPlatform.linkedEntity.add("dashedLine", dashedLine)
+                newPlatform.linkedEntity.add("dashedLine", dashedLine)
+            } else {
+                // Even if it is not in the level editor, the mock platform should still be added as it
+                // is used to determine map bounds as the target position should also be used in calculations
+                mockPlatform.scene2D.isVisible = false
+            }
         }
         if (isLevelEditor && platform.isRotating) {
             newPlatform.rotatingIndicator(context)

@@ -47,7 +47,8 @@ object PlatformEntity {
         isDestroyable: Boolean = false,
         isRotating: Boolean = false,
         targetX: Float = Float.POSITIVE_INFINITY,
-        targetY: Float = Float.POSITIVE_INFINITY
+        targetY: Float = Float.POSITIVE_INFINITY,
+        speed: Float = MovingObjectComponent.SPEED
     ) = newEntity(context).apply {
         val manager: AssetManager = context.inject()
         mapObject(context)
@@ -76,7 +77,7 @@ object PlatformEntity {
             rotatingObject(context)
         }
         if (targetX != Float.POSITIVE_INFINITY && targetY != Float.POSITIVE_INFINITY) {
-            movingObject(context, targetX, targetY)
+            movingObject(context, targetX, targetY, speed)
         }
         polygon(context, scene2D)
         editorObject(context)

@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 161,
+  "hue": 349,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,73 +9,39 @@
   },
   "player": {
     "position": {
-      "x": 32,
-      "y": 72
+      "x": -224,
+      "y": 132.43048
     }
   },
   "finish": {
     "position": {
-      "x": -64.000244,
-      "y": -1176
+      "x": 149.61897,
+      "y": -728
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": 32,
-        "y": 32
+        "x": 166.8224,
+        "y": -162.63542
       },
-      "width": 320
+      "width": 704,
+      "rotation": 313
     },
     {
       "type": "platform",
       "position": {
-        "x": 200,
-        "y": 152
+        "x": -223.61877,
+        "y": 92.43048
       },
-      "width": 256,
-      "rotation": 270
+      "width": 312.61987
     },
     {
       "type": "platform",
       "position": {
-        "x": -288.00024,
-        "y": -224
-      },
-      "width": 320
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -120,
-        "y": -104
-      },
-      "width": 256,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -440.00024,
-        "y": -360
-      },
-      "width": 256,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -608.0001,
-        "y": -480
-      },
-      "width": 320
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -968,
-        "y": -648
+        "x": -371.9287,
+        "y": 196.43048
       },
       "width": 192,
       "rotation": 270
@@ -83,43 +49,27 @@
     {
       "type": "platform",
       "position": {
-        "x": -800,
-        "y": -736
+        "x": 381.8611,
+        "y": -642.1767
       },
-      "width": 319.99976
+      "width": 459.9457,
+      "rotation": 45
     },
     {
       "type": "platform",
       "position": {
-        "x": -648.0001,
-        "y": -872
+        "x": 148.5815,
+        "y": -800
       },
-      "width": 255.99997,
-      "rotation": 270
+      "width": 169.163
     },
     {
       "type": "platform",
       "position": {
-        "x": -479.9999,
-        "y": -992
+        "x": 72,
+        "y": -727.99994
       },
-      "width": 319.9997
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -160,
-        "y": -1248
-      },
-      "width": 320
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -328.00006,
-        "y": -1128
-      },
-      "width": 256,
+      "width": 127.99992,
       "rotation": 270
     }
   ]

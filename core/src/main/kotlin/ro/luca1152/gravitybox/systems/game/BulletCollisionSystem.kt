@@ -31,6 +31,7 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.ExplosionImageEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 
 /** Handles what happens when a bullet collides with a map object. */
@@ -58,8 +59,16 @@ class BulletCollisionSystem(private val context: Context) :
     private fun applyBlastImpulse(bullet: Body) {
         val playerBody = playerEntity.body.body
         val closestBody = getClosestBodyToExplosion(bullet.worldCenter, playerBody!!.worldCenter)
-        if (noObstacleFoundBetween(closestBody))
+        if (noObstacleFoundBetween(closestBody)) {
             playerBody.applyBlastImpulse(bullet.worldCenter, playerBody.worldCenter, 150f)
+            if (playerEntity.tryGet(PassengerComponent) != null) {
+                val driverVelocity = playerEntity.passenger.driver!!.body.body!!.linearVelocity
+                playerBody.setLinearVelocity(
+                    playerBody.linearVelocity.x - driverVelocity.x,
+                    playerBody.linearVelocity.y - driverVelocity.y
+                )
+            }
+        }
     }
 
     private fun getClosestBodyToExplosion(explosionCenter: Vector2, playerCenter: Vector2): Body? {

@@ -1,6 +1,6 @@
 {
-  "id": 1,
-  "hue": 165,
+  "id": 2,
+  "hue": 77,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,62 +9,90 @@
   },
   "player": {
     "position": {
-      "x": 224,
+      "x": -431.8522,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 224,
-      "y": 424
+      "x": -84,
+      "y": 1000
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": 128,
+        "x": -427.00003,
         "y": 32
       },
-      "width": 560,
+      "width": 473.99994,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 226.11343,
+        "x": -182.00006,
+        "y": 184
+      },
+      "width": 320,
+      "rotation": 270,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -18.000015,
         "y": 352
       },
-      "width": 137.97772,
+      "width": 344.0001,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 416,
-        "y": 320
+        "x": 162.00003,
+        "y": 735.2911
       },
-      "width": 592,
+      "width": 782.5821,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -160,
-        "y": 320
+        "x": -445.5733,
+        "y": 672
       },
-      "width": 592,
+      "width": 128,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -672.0002,
+        "y": 575.2911
+      },
+      "width": 1102.5822,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 128,
-        "y": 608
+        "x": -83.61551,
+        "y": 928
       },
-      "width": 560,
+      "width": 127.928375,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -255.00012,
+        "y": 1134.5822
+      },
+      "width": 850.00024,
       "isDestroyable": true
     }
   ]

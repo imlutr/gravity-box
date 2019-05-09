@@ -19,16 +19,19 @@ package ro.luca1152.gravitybox.utils.box2d
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.Contact
 import com.badlogic.gdx.physics.box2d.ContactImpulse
 import com.badlogic.gdx.physics.box2d.ContactListener
 import com.badlogic.gdx.physics.box2d.Manifold
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.utils.kotlin.removeComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Reacts accordingly to every Box2D collision. */
-class WorldContactListener : ContactListener {
+class WorldContactListener(private val context: Context) : ContactListener {
     override fun beginContact(contact: Contact) {
         val bodyA = contact.fixtureA.body
         val bodyB = contact.fixtureB.body
@@ -45,6 +48,8 @@ class WorldContactListener : ContactListener {
         val platformEntity = findEntity(PlatformComponent, entityA, entityB)
         val destroyablePlatformEntity = findEntity(DestroyablePlatformComponent, entityA, entityB)
         val combinedPlatformEntity = findEntity(CombinedBodyComponent, entityA, entityB)
+        val movingPlatformEntity = findEntity(MovingObjectComponent, entityA, entityB)
+        val playerEntity = findEntity(PlayerComponent, entityA, entityB)
 
         // A bullet and a platform collided
         if (bulletEntity != null && (platformEntity != null || destroyablePlatformEntity != null)) {
@@ -61,9 +66,33 @@ class WorldContactListener : ContactListener {
             bulletEntity.bullet.collidedWithPlatform = true
             bulletEntity.bullet.collidedWith = combinedPlatformEntity
         }
+
+        if (playerEntity != null && movingPlatformEntity != null) {
+            if (Math.abs(movingPlatformEntity.body.body!!.transform.rotation * MathUtils.radiansToDegrees) <= 45f) {
+                playerEntity.passenger(context, movingPlatformEntity)
+            }
+        }
     }
 
-    override fun endContact(contact: Contact?) {}
+    override fun endContact(contact: Contact) {
+        val bodyA = contact.fixtureA.body
+        val bodyB = contact.fixtureB.body
+
+        if (bodyA.userData !is Entity || bodyB.userData !is Entity)
+            return
+
+        // Get the entities from the bodies
+        val entityA = bodyA.userData as Entity
+        val entityB = bodyB.userData as Entity
+
+        // Find the specific entities
+        val movingPlatformEntity = findEntity(MovingObjectComponent, entityA, entityB)
+        val playerEntity = findEntity(PlayerComponent, entityA, entityB)
+
+        if (playerEntity != null && movingPlatformEntity != null && playerEntity.tryGet(PassengerComponent) != null) {
+            playerEntity.removeComponent<PassengerComponent>()
+        }
+    }
 
     override fun preSolve(contact: Contact?, oldManifold: Manifold?) {}
 

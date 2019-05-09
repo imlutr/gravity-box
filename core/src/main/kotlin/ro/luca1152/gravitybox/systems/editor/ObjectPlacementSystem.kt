@@ -110,7 +110,7 @@ class ObjectPlacementSystem(
                     placedObject.scene2D.width, placedObject.scene2D.rotation
                 )
                 placedObject.linkedEntity(context, "mockPlatform", mockPlatform)
-                placedObject.movingObject(context, mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY)
+                placedObject.movingObject(context, mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY, MovingObjectComponent.SPEED)
             }
 
             eventQueue.add(UpdateRoundedPlatformsEvent())

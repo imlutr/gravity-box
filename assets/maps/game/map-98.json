@@ -1,6 +1,6 @@
 {
-  "id": 2,
-  "hue": 263,
+  "id": 1,
+  "hue": 186,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,8 +15,8 @@
   },
   "finish": {
     "position": {
-      "x": 128,
-      "y": 488
+      "x": -64,
+      "y": 872
     }
   },
   "objects": [
@@ -31,18 +31,18 @@
     {
       "type": "platform",
       "position": {
-        "x": 128,
+        "x": -256,
         "y": 416
       },
       "width": 128
     },
     {
-      "type": "text",
-      "string": "Tip: shoot downwards",
+      "type": "platform",
       "position": {
-        "x": -63.000015,
-        "y": -30
-      }
+        "x": -64,
+        "y": 800
+      },
+      "width": 128
     }
   ]
 }

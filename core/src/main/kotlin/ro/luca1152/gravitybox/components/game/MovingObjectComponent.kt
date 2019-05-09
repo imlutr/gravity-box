@@ -31,7 +31,7 @@ import ro.luca1152.gravitybox.utils.kotlin.tryGet
 /** Indicates that the map object is moving back an forth to a given position. */
 class MovingObjectComponent : Component, Poolable {
     companion object : ComponentResolver<MovingObjectComponent>(MovingObjectComponent::class.java) {
-        const val SPEED = 1f
+        const val SPEED = 3.5f
     }
 
     val startPoint = Vector2()
@@ -43,9 +43,10 @@ class MovingObjectComponent : Component, Poolable {
     /** If false, it means that the platform is moving back towards the starting point. */
     var isMovingTowardsEndPoint = true
 
-    fun set(platformEntity: Entity, targetX: Float, targetY: Float) {
+    fun set(platformEntity: Entity, targetX: Float, targetY: Float, speed: Float) {
         startPoint.set(platformEntity.scene2D.centerX, platformEntity.scene2D.centerY)
         endPoint.set(targetX, targetY)
+        this.speed = speed
         update()
     }
 
@@ -92,7 +93,8 @@ val Entity.movingObject: MovingObjectComponent
 
 fun Entity.movingObject(
     context: Context,
-    targetX: Float, targetY: Float
+    targetX: Float, targetY: Float,
+    speed: Float
 ) = add(createComponent<MovingObjectComponent>(context).apply {
-    set(this@movingObject, targetX, targetY)
+    set(this@movingObject, targetX, targetY, speed)
 })!!

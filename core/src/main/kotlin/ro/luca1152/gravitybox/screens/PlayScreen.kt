@@ -345,8 +345,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         })
     }
     private val leftLevelRightTable = Table(skin).apply {
-        add(leftButton).padRight(102f)
-        add(levelLabel).padRight(102f)
+        add(leftButton).padRight(64f)
+        add(levelLabel).padRight(64f)
         add(rightButton)
         addAction(Actions.fadeOut(0f))
     }
@@ -723,7 +723,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun setOwnBox2DContactListener() {
-        world.setContactListener(WorldContactListener())
+        world.setContactListener(WorldContactListener(context))
     }
 
     private fun createGameEntities() {
@@ -749,8 +749,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(MapBodiesCreationSystem(context))
             addSystem(CombinedBodiesCreationSystem(context))
             addSystem(RoundedPlatformsSystem(context))
-            addSystem(ObjectMovementSystem())
             addSystem(PhysicsSystem(context))
+            addSystem(ObjectMovementSystem())
             addSystem(RefilterSystem())
             addSystem(PhysicsSyncSystem())
             addSystem(ShootingSystem(context))
@@ -762,11 +762,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(LevelFinishDetectionSystem())
             addSystem(PointsCollectionSystem())
             addSystem(LevelRestartSystem(context))
+            addSystem(CanFinishLevelSystem(context))
             addSystem(FinishPointColorSystem())
             addSystem(ColorSchemeSystem())
             addSystem(SelectedObjectColorSystem())
             addSystem(ColorSyncSystem())
-            addSystem(CanFinishLevelSystem(context))
             addSystem(PlayerCameraSystem(context, this@PlayScreen))
             addSystem(UpdateGameCameraSystem(context))
             addSystem(FadeOutFadeInSystem(context))

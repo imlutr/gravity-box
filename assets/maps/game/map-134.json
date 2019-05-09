@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 48,
+  "hue": 145,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,144 +9,43 @@
   },
   "player": {
     "position": {
-      "x": -56,
+      "x": 32,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": -655.9999,
-      "y": -151.99997
+      "x": -128,
+      "y": 104
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": 32,
+        "x": -43.99997,
         "y": 32
       },
-      "width": 240,
+      "width": 296.00006,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -96,
-        "y": 44.00003
+        "x": 96,
+        "y": 116
       },
-      "width": 552,
+      "width": 152,
       "rotation": 270,
       "isDestroyable": true
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "You know the drill...",
       "position": {
-        "x": 160,
-        "y": 287.375
-      },
-      "width": 526.75,
-      "rotation": 270,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -224.00006,
-        "y": 328
-      },
-      "width": 832,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -32,
-        "y": 542.75
-      },
-      "width": 368,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -199.99994,
-        "y": -224
-      },
-      "width": 191.9999,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -263.99988,
-        "y": -79.99997
-      },
-      "width": 64,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -623.9999,
-        "y": -224
-      },
-      "width": 223.99991,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -583.9999,
-        "y": 136
-      },
-      "width": 704,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -543.99994,
-        "y": 172.38083
-      },
-      "width": 64,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -263.99997,
-        "y": 429.70447
-      },
-      "width": 63.999817,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -727.9999,
-        "y": 264
-      },
-      "width": 960,
-      "rotation": 270,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -475.9999,
-        "y": 736
-      },
-      "width": 487.99994
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -655.9999,
-        "y": -72
-      },
-      "width": 128,
-      "isDestroyable": true
+        "x": -40.97461,
+        "y": -31.680878
+      }
     }
   ]
 }
