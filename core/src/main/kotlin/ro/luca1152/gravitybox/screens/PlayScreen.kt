@@ -49,6 +49,7 @@ import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.FadeInEvent
 import ro.luca1152.gravitybox.events.FadeOutEvent
 import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
+import ro.luca1152.gravitybox.systems.editor.DashedLineRenderingSystem
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
@@ -80,6 +81,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private val canLoadAnyLevel = true // debug
     private val cycleFromFirstToLastLevel = true
+    private val loadSpecificLevel = -1 // If not -1, the specified level will be loaded first instead of #1
 
     private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, uiCamera), context.inject())
     private val padTopBottom = 38f
@@ -331,7 +333,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         })
     }
     private val levelLabel = DistanceFieldLabel(
-        "#${if (canLoadAnyLevel) 1 else (Math.min(
+        "#${if (loadSpecificLevel != -1) loadSpecificLevel else if (canLoadAnyLevel) 1 else (Math.min(
             preferences.getInteger("highestFinishedLevel", 0) + 1,
             MyGame.LEVELS_NUMBER
         ))}",
@@ -729,7 +731,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private fun createGameEntities() {
         levelEntity = LevelEntity.createEntity(
             context,
-            if (canLoadAnyLevel) 1 else
+            if (loadSpecificLevel != -1) loadSpecificLevel
+            else if (canLoadAnyLevel) 1 else
                 Math.min(
                     preferences.getInteger("highestFinishedLevel", 0) + 1,
                     MyGame.LEVELS_NUMBER
@@ -769,6 +772,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem(context, this@PlayScreen))
             addSystem(UpdateGameCameraSystem(context))
+            addSystem(DashedLineRenderingSystem(context))
             addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
             addSystem(LevelFinishSystem(context, playScreen = this@PlayScreen))

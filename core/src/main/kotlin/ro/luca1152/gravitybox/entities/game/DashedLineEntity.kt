@@ -15,16 +15,12 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.entities.editor
+package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.ashley.core.Entity
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
-import ro.luca1152.gravitybox.components.editor.dashedLine
-import ro.luca1152.gravitybox.components.game.DestroyablePlatformComponent
-import ro.luca1152.gravitybox.components.game.PlatformComponent
-import ro.luca1152.gravitybox.components.game.linkedEntity
-import ro.luca1152.gravitybox.components.game.scene2D
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
@@ -32,15 +28,26 @@ import ro.luca1152.gravitybox.utils.kotlin.tryGet
 object DashedLineEntity {
     fun createEntity(
         context: Context,
-        platformEntity: Entity, mockPlatformEntity: Entity
+        startX: Float, startY: Float,
+        endX: Float, endY: Float
     ) = newEntity(context).apply {
         dashedLine(
             context,
-            platformEntity.scene2D.centerX, platformEntity.scene2D.centerY,
-            mockPlatformEntity.scene2D.centerX, mockPlatformEntity.scene2D.centerY
+            startX, startY,
+            endX, endY
         )
-        linkedEntity(context)
         addToEngine(context)
+    }
+
+    fun createEntity(
+        context: Context,
+        platformEntity: Entity, mockPlatformEntity: Entity
+    ) = createEntity(
+        context,
+        platformEntity.scene2D.centerX, platformEntity.scene2D.centerY,
+        mockPlatformEntity.scene2D.centerX, mockPlatformEntity.scene2D.centerY
+    ).apply {
+        linkedEntity(context)
         linkedEntity.apply {
             require(
                 platformEntity.tryGet(PlatformComponent) != null || platformEntity.tryGet(DestroyablePlatformComponent) != null

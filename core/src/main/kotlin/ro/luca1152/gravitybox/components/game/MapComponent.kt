@@ -32,9 +32,9 @@ import com.badlogic.gdx.utils.TimeUtils
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.*
-import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
+import ro.luca1152.gravitybox.entities.game.DashedLineEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.TextEntity
 import ro.luca1152.gravitybox.events.EventQueue
@@ -298,6 +298,7 @@ class MapComponent : Component, Poolable {
                 it.type == "platform" -> createPlatform(context, it, isLevelEditor)
                 it.type == "point" -> createPoint(context, it)
                 it.type == "text" -> createText(context, it)
+                it.type == "dashed-line" -> createDashedLine(context, it)
             }
         }
     }
@@ -354,6 +355,14 @@ class MapComponent : Component, Poolable {
             text.string,
             text.position.x,
             text.position.y
+        )
+    }
+
+    private fun createDashedLine(context: Context, dashedLine: ObjectPrototype) {
+        DashedLineEntity.createEntity(
+            context,
+            dashedLine.start.x.pixelsToMeters, dashedLine.start.y.pixelsToMeters,
+            dashedLine.end.x.pixelsToMeters, dashedLine.end.y.pixelsToMeters
         )
     }
 

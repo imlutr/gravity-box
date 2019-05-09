@@ -27,12 +27,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pools
 import ktx.inject.Context
-import ro.luca1152.gravitybox.components.editor.DashedLineComponent
-import ro.luca1152.gravitybox.components.editor.dashedLine
-import ro.luca1152.gravitybox.components.game.linkedEntity
-import ro.luca1152.gravitybox.components.game.pixelsToMeters
-import ro.luca1152.gravitybox.components.game.scene2D
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
 
 class DashedLineRenderingSystem(context: Context) : IteratingSystem(Family.all(DashedLineComponent::class.java).get()) {
@@ -53,6 +50,8 @@ class DashedLineRenderingSystem(context: Context) : IteratingSystem(Family.all(D
     }
 
     private fun updateLineEnds(entity: Entity) {
+        if (entity.tryGet(LinkedEntityComponent) == null) return
+
         val platform = entity.linkedEntity.get("platform")
         val mockPlatform = entity.linkedEntity.get("mockPlatform")
         entity.dashedLine.run {
