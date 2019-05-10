@@ -1,6 +1,6 @@
 {
-  "id": 1,
-  "hue": 71,
+  "id": 2,
+  "hue": 337,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,94 +9,71 @@
   },
   "player": {
     "position": {
-      "x": 0,
+      "x": 32,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": -128.00003,
-      "y": -1088
+      "x": -64,
+      "y": 104
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": 0,
+        "x": 12,
         "y": 32
       },
-      "width": 256
+      "width": 280
     },
     {
       "type": "platform",
       "position": {
-        "x": -301.0993,
-        "y": -148.10085
+        "x": 160,
+        "y": 107.71762
       },
-      "width": 512,
-      "rotation": 45
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -608,
-        "y": -468
-      },
-      "width": 168.00005,
+      "width": 167.43524,
       "rotation": 270
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "Tip: the angle you shoot at\nmatters",
       "position": {
-        "x": 136,
-        "y": 120
-      },
-      "width": 192,
-      "rotation": 270
+        "x": 18,
+        "y": -27.999992
+      }
     },
     {
-      "type": "platform",
-      "position": {
-        "x": -467.46722,
-        "y": -544
+      "type": "dashed-line",
+      "start": {
+        "x": 32,
+        "y": 72
       },
-      "width": 265.06555
+      "end": {
+        "x": 160,
+        "y": 72
+      }
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "vs.",
       "position": {
-        "x": -190.48425,
-        "y": -706.28284
-      },
-      "width": 448,
-      "rotation": 313
+        "x": 120,
+        "y": 105
+      }
     },
     {
-      "type": "platform",
-      "position": {
-        "x": -128.00003,
-        "y": -1157.7014
+      "type": "dashed-line",
+      "start": {
+        "x": 32,
+        "y": 72
       },
-      "width": 128
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -200.00002,
-        "y": -932.24884
-      },
-      "width": 466.90512,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 96,
-        "y": -1034.8508
-      },
-      "width": 229.70128,
-      "rotation": 270
+      "end": {
+        "x": 160,
+        "y": 185
+      }
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 332,
+  "hue": 145,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,13 +9,13 @@
   },
   "player": {
     "position": {
-      "x": -32,
+      "x": 32,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": -320,
+      "x": -128,
       "y": 104
     }
   },
@@ -23,47 +23,28 @@
     {
       "type": "platform",
       "position": {
-        "x": -105.3085,
+        "x": -43.99997,
         "y": 32
       },
-      "width": 557.383,
+      "width": 296.00006,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -160,
-        "y": 136
+        "x": 96,
+        "y": 116
       },
-      "width": 192,
-      "rotation": 270,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -140,
-        "y": -96
-      },
-      "width": 872,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 288,
-        "y": -48.442696
-      },
-      "width": 79.11461,
+      "width": 152,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "text",
-      "string": "Not worth trying...",
+      "string": "You know the drill...",
       "position": {
-        "x": -135.4624,
-        "y": 292.70184
+        "x": -40.97461,
+        "y": -31.680878
       }
     }
   ]

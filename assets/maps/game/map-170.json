@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 61,
+  "hue": 289,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,13 +9,13 @@
   },
   "player": {
     "position": {
-      "x": 120,
+      "x": -64,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 88,
+      "x": 96,
       "y": 104
     }
   },
@@ -23,81 +23,51 @@
     {
       "type": "platform",
       "position": {
-        "x": -32,
+        "x": -31.999954,
         "y": 32
       },
-      "width": 368
+      "width": 384.0001
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -192.00002,
+        "y": 72
+      }
     },
     {
       "type": "platform",
       "position": {
-        "x": 56,
+        "x": -32,
         "y": 224
       },
-      "width": 192
+      "width": 384
     },
     {
       "type": "platform",
       "position": {
-        "x": -119.99994,
-        "y": 416
+        "x": -232,
+        "y": 128
       },
-      "width": 192
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 160,
-        "y": 363.2635
-      },
-      "width": 678.527,
+      "width": 208,
       "rotation": 270
     },
     {
-      "type": "point",
-      "position": {
-        "x": -32,
-        "y": 320
-      }
-    },
-    {
       "type": "platform",
       "position": {
-        "x": -224,
-        "y": 363.2635
+        "x": 168,
+        "y": 128
       },
-      "width": 678.527,
+      "width": 207.99998,
       "rotation": 270
     },
     {
-      "type": "point",
+      "type": "text",
+      "string": "Hmm...",
       "position": {
-        "x": -32,
-        "y": 512
+        "x": -63.321,
+        "y": 161.79843
       }
-    },
-    {
-      "type": "point",
-      "position": {
-        "x": 120,
-        "y": 648
-      }
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 120,
-        "y": 608
-      },
-      "width": 64
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -32,
-        "y": 694.527
-      },
-      "width": 368
     }
   ]
 }

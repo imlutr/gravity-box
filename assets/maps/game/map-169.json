@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 350,
+  "hue": 99,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,65 +9,84 @@
   },
   "player": {
     "position": {
-      "x": 160,
+      "x": -32,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": -87.99997,
-      "y": 104
+      "x": 320,
+      "y": 3073.5605
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": 24.000015,
+        "x": -40,
         "y": 32
       },
-      "width": 383.99997
+      "width": 176,
+      "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -159.99997,
-        "y": 224
+        "x": 56,
+        "y": 440
       },
-      "width": 368,
-      "rotation": 270
+      "width": 832,
+      "rotation": 270,
+      "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 224,
-        "y": 224
+        "x": -319.99988,
+        "y": 1215.2805
       },
-      "width": 400,
-      "rotation": 270
+      "width": 718.5609,
+      "rotation": 270,
+      "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 152,
-        "y": 224
+        "x": 56,
+        "y": 1940.0608
       },
-      "width": 128
+      "width": 730.9995,
+      "rotation": 270,
+      "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 24.00003,
-        "y": 416
+        "x": -319.99988,
+        "y": 2657.5605
       },
-      "width": 383.99994
+      "width": 704,
+      "rotation": 270,
+      "isDestroyable": true
     },
     {
-      "type": "point",
+      "type": "platform",
       "position": {
-        "x": 184,
-        "y": 264
-      }
+        "x": 295.99997,
+        "y": 3001.5605
+      },
+      "width": 495.99994,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 551.99994,
+        "y": 3109.5603
+      },
+      "width": 231.99963,
+      "rotation": 270,
+      "isDestroyable": true
     }
   ]
 }

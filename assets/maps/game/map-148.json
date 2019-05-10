@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 131,
+  "hue": 332,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,80 +9,62 @@
   },
   "player": {
     "position": {
-      "x": -96,
+      "x": -32,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": -96,
-      "y": 256
+      "x": -320,
+      "y": 104
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -96,
+        "x": -105.3085,
         "y": 32
       },
-      "width": 128,
+      "width": 557.383,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -24,
-        "y": 108
+        "x": -160,
+        "y": 136
       },
-      "width": 168,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -96,
-        "y": 184
-      },
-      "width": 128,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -95.99999,
-        "y": -224
-      },
-      "width": 128.00002,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -63.999992,
-        "y": -480
-      },
-      "width": 63.999985,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -103.99999,
-        "y": -401.93762
-      },
-      "width": 172.12477,
+      "width": 192,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 256,
-        "y": -224
+        "x": -140,
+        "y": -96
       },
-      "width": 97.93313,
+      "width": 872,
       "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 288,
+        "y": -48.442696
+      },
+      "width": 79.11461,
+      "rotation": 270,
+      "isDestroyable": true
+    },
+    {
+      "type": "text",
+      "string": "Not worth trying...",
+      "position": {
+        "x": -135.4624,
+        "y": 292.70184
+      }
     }
   ]
 }
