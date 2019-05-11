@@ -57,7 +57,9 @@ class RoundedPlatformsSystem(private val context: Context) :
                 DestroyablePlatformComponent::class.java
             ).all(Scene2DComponent::class.java).exclude(MovingObjectComponent::class.java).get()
         ).forEach {
-            roundCorners(it)
+            if (it.tryGet(MovingObjectComponent) == null) {
+                roundCorners(it)
+            }
         }
     }
 
