@@ -81,7 +81,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private val canLoadAnyLevel = true // debug
     private val cycleFromFirstToLastLevel = true
-    private val loadSpecificLevel = -1 // If not -1, the specified level will be loaded first instead of #1
+    private val loadSpecificLevel = -1 // If not -1, the specified level will be loaded first instead of [the last finished level+1]
 
     private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, uiCamera), context.inject())
     private val padTopBottom = 38f
