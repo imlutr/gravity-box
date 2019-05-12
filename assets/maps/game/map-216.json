@@ -1,0 +1,138 @@
+{
+  "id": 1,
+  "hue": 29,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": 0,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": 0,
+      "y": 104.000015
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": 0,
+        "y": 32
+      },
+      "width": 256,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 0,
+        "y": 16
+      },
+      "width": 256,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -256.00006,
+        "y": 352
+      },
+      "width": 128,
+      "isDestroyable": true
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -256,
+        "y": 392
+      }
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 320,
+        "y": 352
+      },
+      "width": 128,
+      "isDestroyable": true
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 320,
+        "y": 392
+      }
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -256.00003,
+        "y": 672
+      },
+      "width": 128.00006,
+      "isDestroyable": true
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -256,
+        "y": 712
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 320,
+        "y": 712
+      }
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 320,
+        "y": 672
+      },
+      "width": 128,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -256.00006,
+        "y": 992
+      },
+      "width": 128.00003,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 320,
+        "y": 992
+      },
+      "width": 127.999985,
+      "isDestroyable": true
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -256,
+        "y": 1032
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 320,
+        "y": 1032
+      }
+    }
+  ]
+}

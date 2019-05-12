@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 211,
+  "hue": 150,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,49 +9,93 @@
   },
   "player": {
     "position": {
-      "x": -112.19829,
+      "x": -32,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 224,
-      "y": 360
+      "x": 160,
+      "y": 1880
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -116.97532,
+        "x": -32,
         "y": 32
       },
-      "width": 150.04936
+      "width": 192
     },
     {
       "type": "platform",
       "position": {
-        "x": 224,
-        "y": 288
+        "x": 72,
+        "y": 248
       },
-      "width": 128
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 296,
-        "y": 398.41968
-      },
-      "width": 236.83934,
+      "width": 448,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -183.99997,
-        "y": 115.91617
+        "x": -119.99997,
+        "y": 696
       },
-      "width": 151.83234,
+      "width": 448,
+      "rotation": 90
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 72,
+        "y": 1144
+      },
+      "width": 448,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -119.99997,
+        "y": 1677.1771
+      },
+      "width": 618.3541,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 160,
+        "y": 1808
+      },
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 64,
+        "y": 1994.3542
+      },
+      "width": 384
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 264,
+        "y": 1901.1772
+      },
+      "width": 202.35402,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 72,
+        "y": 1731.9999
+      },
+      "width": 136.00024,
       "rotation": 270
     }
   ]

@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 278,
+  "hue": 178,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,71 +9,83 @@
   },
   "player": {
     "position": {
-      "x": -96,
+      "x": -64,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 64,
-      "y": 104
+      "x": -64,
+      "y": 506.5312
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -8,
+        "x": -64,
         "y": 32
       },
-      "width": 320
+      "width": 128
     },
     {
       "type": "platform",
       "position": {
-        "x": -159.99988,
-        "y": 384
+        "x": -320,
+        "y": 233.2656
       },
-      "width": 720,
+      "width": 576,
+      "rotation": 314
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -556,
+        "y": 434.5312
+      },
+      "width": 88.00002
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -64,
+        "y": 434.5312
+      },
+      "width": 128
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 8,
+        "y": 320
+      },
+      "width": 592,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 160,
-        "y": 384
-      },
-      "width": 720,
-      "rotation": 270
-    },
-    {
-      "type": "point",
-      "position": {
-        "x": -80.93117,
-        "y": 288
-      }
-    },
-    {
-      "type": "point",
-      "position": {
-        "x": -32,
-        "y": 480
-      }
-    },
-    {
-      "type": "point",
-      "position": {
-        "x": 96,
+        "x": -300.0001,
         "y": 608
-      }
+      },
+      "width": 599.9998
     },
     {
       "type": "platform",
       "position": {
-        "x": 0.14660645,
-        "y": 736
+        "x": -608,
+        "y": 521.2656
       },
-      "width": 304.29297
+      "width": 189.46875,
+      "rotation": 270
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -304.16266,
+        "y": 276.3097
+      },
+      "rotation": 315
     }
   ]
 }

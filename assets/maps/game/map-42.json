@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 133,
+  "hue": 73,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,67 +9,75 @@
   },
   "player": {
     "position": {
-      "x": -51.507904,
+      "x": -32,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 216,
-      "y": 1349.5459
+      "x": 112,
+      "y": 766.65625
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -52,
+        "x": -32,
         "y": 32
       },
-      "width": 152
+      "width": 192
     },
     {
       "type": "platform",
       "position": {
-        "x": -136,
-        "y": 777.791
+        "x": -119.99988,
+        "y": 466.54364
       },
-      "width": 1507.582,
+      "width": 853.0873,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 32,
-        "y": 654.77295
+        "x": 56,
+        "y": 371.32812
       },
-      "width": 1261.5459,
+      "width": 662.65625,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 160,
-        "y": 1277.5459
+        "x": 120,
+        "y": 694.65625
       },
-      "width": 240
+      "width": 112
     },
     {
       "type": "platform",
       "position": {
-        "x": 288,
-        "y": 1408.5637
+        "x": 24,
+        "y": 901.0873
       },
-      "width": 278.03674,
+      "width": 304
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 184,
+        "y": 797.87177
+      },
+      "width": 222.43108,
       "rotation": 270
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "Wall Jumping",
       "position": {
-        "x": 68,
-        "y": 1539.582
-      },
-      "width": 424
+        "x": -32.746246,
+        "y": -14.296001
+      }
     }
   ]
 }

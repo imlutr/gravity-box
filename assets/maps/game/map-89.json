@@ -1,6 +1,6 @@
 {
-  "id": 1,
-  "hue": 13,
+  "id": 2,
+  "hue": 8,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,29 +9,37 @@
   },
   "player": {
     "position": {
-      "x": -32,
+      "x": 64,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 64,
-      "y": 1771.9998
+      "x": 80,
+      "y": -40
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -32,
+        "x": -12,
         "y": 32
       },
-      "width": 192
+      "width": 280
     },
     {
       "type": "platform",
       "position": {
-        "x": 72,
+        "x": -60,
+        "y": -112
+      },
+      "width": 408
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 136,
         "y": 120
       },
       "width": 192,
@@ -40,90 +48,11 @@
     {
       "type": "platform",
       "position": {
-        "x": -503.99994,
-        "y": -544
+        "x": -256,
+        "y": -47.78579
       },
-      "width": 960,
+      "width": 112.42842,
       "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -327.99988,
-        "y": 548
-      },
-      "width": 696,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -503.99988,
-        "y": 548
-      },
-      "width": 696,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -328.00015,
-        "y": -544
-      },
-      "width": 959.99994,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -504,
-        "y": 1507.9996
-      },
-      "width": 703.99976,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -327.99982,
-        "y": 1507.9995
-      },
-      "width": 704,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 56,
-        "y": 1699.9998
-      },
-      "width": 448
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -160,
-        "y": 1783.9996
-      },
-      "width": 151.99979,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 288,
-        "y": 1775.9996
-      },
-      "width": 167.99974,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -32,
-        "y": 208
-      },
-      "width": 192
     }
   ]
 }

@@ -1,57 +1,155 @@
 {
-  "id": 2,
-  "hue": 8,
+  "id": 1,
+  "hue": 67,
   "padding": {
     "left": 2,
-    "right": 2,
+    "right": 3,
     "top": 5,
     "bottom": 5
   },
   "player": {
     "position": {
-      "x": 64,
-      "y": 72
+      "x": -32,
+      "y": 96
     }
   },
   "finish": {
     "position": {
-      "x": 80,
-      "y": -40
+      "x": -512,
+      "y": 5248
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -12,
-        "y": 32
+        "x": -32,
+        "y": 56
       },
-      "width": 280
+      "width": 192
     },
     {
       "type": "platform",
       "position": {
-        "x": -60,
-        "y": -112
+        "x": 56,
+        "y": 288
       },
-      "width": 408
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 136,
-        "y": 120
-      },
-      "width": 192,
+      "width": 448,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -256,
-        "y": -47.78579
+        "x": -120,
+        "y": 736
       },
-      "width": 112.42842,
+      "width": 448,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 56,
+        "y": 1183.9998
+      },
+      "width": 448,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -119.99988,
+        "y": 1632
+      },
+      "width": 448,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 56,
+        "y": 2080
+      },
+      "width": 448,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -288,
+        "y": 2296
+      },
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -376.00012,
+        "y": 2719.9998
+      },
+      "width": 448,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -199.99994,
+        "y": 3168
+      },
+      "width": 448,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -375.99988,
+        "y": 3615.9998
+      },
+      "width": 448,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -199.99994,
+        "y": 4063.9985
+      },
+      "width": 448,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -375.99988,
+        "y": 4512
+      },
+      "width": 448,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -199.99988,
+        "y": 4960
+      },
+      "width": 448,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -512,
+        "y": 5176
+      },
+      "width": 128
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -584,
+        "y": 5401.133
+      },
+      "width": 466.2658,
       "rotation": 270
     }
   ]

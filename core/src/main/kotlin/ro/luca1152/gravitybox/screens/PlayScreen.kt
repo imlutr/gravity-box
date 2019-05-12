@@ -81,7 +81,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private val canLoadAnyLevel = true // debug
     private val cycleFromFirstToLastLevel = true
-    private val loadSpecificLevel = -1 // If not -1, the specified level will be loaded first instead of #1
+    private val loadSpecificLevel = -1 // If not -1, the specified level will be loaded first instead of [the last finished level+1]
 
     private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, uiCamera), context.inject())
     private val padTopBottom = 38f
@@ -266,8 +266,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
     }
     private val leftButton = ClickButton(skin, "left-button").apply {
+        touchable = Touchable.disabled
         addClickRunnable(Runnable {
-            // The button is touchable
             if (color.a == 1f && !isChangingLevel) {
                 val fadeOutDuration = .2f
                 val fadeInDuration = .2f
@@ -300,8 +300,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         })
     }
     private val rightButton = ClickButton(skin, "right-button").apply {
+        touchable = Touchable.disabled
         addClickRunnable(Runnable {
-            // The button is touchable
             if (color.a == 1f && !isChangingLevel) {
                 val fadeOutDuration = .2f
                 val fadeInDuration = .2f
@@ -644,7 +644,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     Actions.parallel(
                         Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
                         Actions.fadeIn(.2f, Interpolation.pow3In)
-                    )
+                    ),
+                    Actions.run {
+                        leftButton.touchable = Touchable.enabled
+                        rightButton.touchable = Touchable.enabled
+                    }
                 )
             )
         }
@@ -705,7 +709,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     Actions.parallel(
                         Actions.moveTo(x, 0f, .2f, Interpolation.pow3In),
                         Actions.fadeOut(.2f, Interpolation.pow3In)
-                    )
+                    ),
+                    Actions.run {
+                        leftButton.touchable = Touchable.disabled
+                        rightButton.touchable = Touchable.disabled
+                    }
                 )
             )
         }

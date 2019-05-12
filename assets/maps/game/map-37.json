@@ -1,6 +1,6 @@
 {
-  "id": 1,
-  "hue": 73,
+  "id": 3,
+  "hue": 227,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,75 +9,142 @@
   },
   "player": {
     "position": {
-      "x": -32,
+      "x": -75,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 112,
-      "y": 766.65625
+      "x": -208,
+      "y": 104
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -32,
+        "x": -167.76794,
         "y": 32
+      },
+      "width": 304.46423
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 137.64233,
+        "y": 32
+      },
+      "width": 108.71534
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -146.94446,
+        "y": -96
+      },
+      "width": 165.88904
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 216,
+        "y": -96
+      },
+      "width": 176
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -224.00003,
+        "y": -224
       },
       "width": 192
     },
     {
       "type": "platform",
       "position": {
-        "x": -119.99988,
-        "y": 466.54364
+        "x": -136,
+        "y": 96
       },
-      "width": 853.0873,
+      "width": 112,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 56,
-        "y": 371.32812
+        "x": 80,
+        "y": 160
       },
-      "width": 662.65625,
+      "width": 448
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 296,
+        "y": 32
+      },
+      "width": 240,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 120,
-        "y": 694.65625
+        "x": -328.00006,
+        "y": -96
       },
-      "width": 112
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 24,
-        "y": 901.0873
-      },
-      "width": 304
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 184,
-        "y": 797.87177
-      },
-      "width": 222.43108,
+      "width": 272,
       "rotation": 270
     },
     {
-      "type": "text",
-      "string": "Wall Jumping\nTip: shoot faster",
+      "type": "platform",
       "position": {
-        "x": -32.746246,
-        "y": -49.37053
-      }
+        "x": 351.99985,
+        "y": -224
+      },
+      "width": 319.99985
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -280,
+        "y": 168
+      },
+      "width": 256,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 595.9999,
+        "y": -32
+      },
+      "width": 168.00026
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 519.99976,
+        "y": -136
+      },
+      "width": 192,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 196,
+        "y": 288
+      },
+      "width": 936
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 672,
+        "y": 136
+      },
+      "width": 320,
+      "rotation": 270
     }
   ]
 }
