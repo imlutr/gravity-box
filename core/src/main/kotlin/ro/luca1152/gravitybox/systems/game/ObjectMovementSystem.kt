@@ -45,6 +45,7 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
         if (entity.tryGet(DestroyablePlatformComponent) != null && entity.destroyablePlatform.isRemoved) {
             return
         }
+        entity.movingObject.delayBeforeSwitching -= deltaTime
         moveObject(entity)
     }
 
@@ -78,22 +79,32 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
     }
 
     private fun updateDirection(entity: Entity, moveBy: Vector2) {
-        entity.run {
-            val objectPosition = Pools.obtain(Vector2::class.java).set(scene2D.centerX, scene2D.centerY)
-            if (objectPosition.dst(movingObject.startPoint) >= movingObject.startToFinishDistance) {
-                objectPosition.set(movingObject.endPoint)
-                movingObject.isMovingTowardsEndPoint = false
-                if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
-                    playerEntity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+        if (entity.movingObject.delayBeforeSwitching <= 0f) {
+            entity.run {
+                val objectPosition = Pools.obtain(Vector2::class.java).set(scene2D.centerX, scene2D.centerY)
+                if (objectPosition.dst(movingObject.startPoint).approxEqualTo(movingObject.startToFinishDistance) ||
+                    objectPosition.dst(movingObject.startPoint) >= movingObject.startToFinishDistance
+                ) {
+                    objectPosition.set(movingObject.endPoint)
+                    movingObject.isMovingTowardsEndPoint = false
+                    if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
+                        playerEntity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+                    }
+                    entity.movingObject.delayBeforeSwitching = MovingObjectComponent.DELAY_BEFORE_SWITCHING_DIRECTION
+                } else if (objectPosition.dst(movingObject.endPoint).approxEqualTo(movingObject.startToFinishDistance) ||
+                    objectPosition.dst(movingObject.endPoint) >= movingObject.startToFinishDistance
+                ) {
+                    objectPosition.set(movingObject.startPoint)
+                    movingObject.isMovingTowardsEndPoint = true
+                    if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
+                        playerEntity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+                    }
+                    entity.movingObject.delayBeforeSwitching = MovingObjectComponent.DELAY_BEFORE_SWITCHING_DIRECTION
                 }
-            } else if (objectPosition.dst(movingObject.endPoint) >= movingObject.startToFinishDistance) {
-                objectPosition.set(movingObject.startPoint)
-                movingObject.isMovingTowardsEndPoint = true
-                if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
-                    playerEntity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
-                }
+                Pools.free(objectPosition)
             }
-            Pools.free(objectPosition)
         }
     }
+
+    private fun Float.approxEqualTo(f: Float) = Math.abs(this - f) <= 0.001f
 }
