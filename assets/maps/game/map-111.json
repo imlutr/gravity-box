@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 33,
+  "hue": 186,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,8 +15,8 @@
   },
   "finish": {
     "position": {
-      "x": 256,
-      "y": 2344
+      "x": -64,
+      "y": 872
     }
   },
   "objects": [
@@ -31,56 +31,16 @@
     {
       "type": "platform",
       "position": {
-        "x": 64,
-        "y": 352
-      },
-      "width": 128
-    },
-    {
-      "type": "platform",
-      "position": {
         "x": -256,
-        "y": 672
+        "y": 416
       },
       "width": 128
     },
     {
       "type": "platform",
       "position": {
-        "x": 128,
-        "y": 992
-      },
-      "width": 128
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -320,
-        "y": 1312
-      },
-      "width": 128
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 192,
-        "y": 1632
-      },
-      "width": 128
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -384.00006,
-        "y": 1952
-      },
-      "width": 128
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 256,
-        "y": 2272
+        "x": -64,
+        "y": 800
       },
       "width": 128
     }

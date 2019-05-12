@@ -1,6 +1,6 @@
 {
-  "id": 2,
-  "hue": 263,
+  "id": 1,
+  "hue": 155,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,40 +9,49 @@
   },
   "player": {
     "position": {
-      "x": -64,
+      "x": -96,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 128,
-      "y": 488
+      "x": 160,
+      "y": -280
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -64,
+        "x": 64,
         "y": 32
       },
-      "width": 128
+      "width": 384
     },
     {
       "type": "platform",
       "position": {
-        "x": 128,
-        "y": 416
+        "x": -415.99994,
+        "y": -160
       },
-      "width": 128
+      "width": 448
     },
     {
-      "type": "text",
-      "string": "Tip: shoot downwards",
+      "type": "platform",
       "position": {
-        "x": -63.000015,
-        "y": -30
-      }
+        "x": 160,
+        "y": -352
+      },
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 276.61148,
+        "y": -327.09924
+      },
+      "width": 77.04578,
+      "rotation": 45
     }
   ]
 }

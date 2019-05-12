@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 150,
+  "hue": 133,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,94 +9,67 @@
   },
   "player": {
     "position": {
-      "x": -32,
+      "x": -51.507904,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 160,
-      "y": 1880
+      "x": 216,
+      "y": 1349.5459
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -32,
+        "x": -52,
         "y": 32
       },
-      "width": 192
+      "width": 152
     },
     {
       "type": "platform",
       "position": {
-        "x": 72,
-        "y": 248
+        "x": -136,
+        "y": 777.791
       },
-      "width": 448,
+      "width": 1507.582,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -119.99997,
-        "y": 696
+        "x": 32,
+        "y": 654.77295
       },
-      "width": 448,
-      "rotation": 90
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 72,
-        "y": 1144
-      },
-      "width": 448,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -119.99997,
-        "y": 1677.1771
-      },
-      "width": 618.3541,
+      "width": 1261.5459,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
         "x": 160,
-        "y": 1808
+        "y": 1277.5459
       },
-      "width": 192
+      "width": 240
     },
     {
       "type": "platform",
       "position": {
-        "x": 64,
-        "y": 1994.3542
+        "x": 288,
+        "y": 1408.5637
       },
-      "width": 384
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 264,
-        "y": 1901.1772
-      },
-      "width": 202.35402,
+      "width": 278.03674,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 72,
-        "y": 1731.9999
+        "x": 68,
+        "y": 1539.582
       },
-      "width": 136.00024,
-      "rotation": 270
+      "width": 424
     }
   ]
 }

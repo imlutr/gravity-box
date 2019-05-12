@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 145,
+  "hue": 269,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,13 +9,13 @@
   },
   "player": {
     "position": {
-      "x": 0,
+      "x": -32,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 152,
+      "x": -236,
       "y": 104
     }
   },
@@ -23,47 +23,101 @@
     {
       "type": "platform",
       "position": {
-        "x": 32,
+        "x": -147.99974,
         "y": 32
       },
-      "width": 368,
-      "isDestroyable": true
+      "width": 423.99954
     },
     {
       "type": "platform",
       "position": {
-        "x": 32,
-        "y": 288
+        "x": -120,
+        "y": 680
       },
-      "width": 368,
-      "isDestroyable": true
+      "width": 1280,
+      "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 224,
-        "y": 160
+        "x": 56,
+        "y": 776
       },
-      "width": 272,
-      "rotation": 270,
-      "isDestroyable": true
+      "width": 1472,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -148.00008,
+        "y": 1504
+      },
+      "width": 423.99985
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -351.9995,
+        "y": 768
+      },
+      "width": 1456,
+      "rotation": 270
     },
     {
       "type": "point",
       "position": {
-        "x": -120,
-        "y": 72
+        "x": -79.99999,
+        "y": 640
       }
     },
     {
-      "type": "platform",
+      "type": "point",
+      "position": {
+        "x": 16,
+        "y": 1312
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -311.9995,
+        "y": 1312
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -247.99951,
+        "y": 1120
+      }
+    },
+    {
+      "type": "point",
       "position": {
         "x": -160,
-        "y": 160
-      },
-      "width": 272,
-      "rotation": 270,
-      "isDestroyable": true
+        "y": 928
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -160,
+        "y": 672
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -247.99951,
+        "y": 480
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -311.9995,
+        "y": 288
+      }
     }
   ]
 }

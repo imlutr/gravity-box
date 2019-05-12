@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 279,
+  "hue": 249,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,8 +15,8 @@
   },
   "finish": {
     "position": {
-      "x": -32,
-      "y": -664
+      "x": 112,
+      "y": 6184
     }
   },
   "objects": [
@@ -31,52 +31,85 @@
     {
       "type": "platform",
       "position": {
-        "x": -136,
-        "y": -264
+        "x": -120,
+        "y": 3144
       },
-      "width": 960,
+      "width": 6208,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 415.99997,
-        "y": -160
+        "x": 56,
+        "y": 3080
       },
-      "width": 192
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 520,
-        "y": -168
-      },
-      "width": 768,
+      "width": 6080,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -32,
-        "y": -352
+        "x": 128,
+        "y": 6112
       },
-      "width": 192
+      "width": 128
     },
     {
       "type": "platform",
       "position": {
-        "x": 416,
-        "y": -544
+        "x": 184,
+        "y": 6184
       },
-      "width": 191.99997
+      "width": 159.99979,
+      "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -32,
-        "y": -736
+        "x": 32,
+        "y": 6256
       },
-      "width": 192
+      "width": 320
+    },
+    {
+      "type": "text",
+      "string": "Long way...",
+      "position": {
+        "x": -23.823166,
+        "y": -13.383636
+      }
+    },
+    {
+      "type": "text",
+      "string": "Hooray!",
+      "position": {
+        "x": -32.64734,
+        "y": 6219.3447
+      }
+    },
+    {
+      "type": "text",
+      "string": "3...",
+      "position": {
+        "x": -24.869839,
+        "y": 1438
+      }
+    },
+    {
+      "type": "text",
+      "string": "2...",
+      "position": {
+        "x": -31.303608,
+        "y": 3080
+      }
+    },
+    {
+      "type": "text",
+      "string": "1...",
+      "position": {
+        "x": -32.647354,
+        "y": 4730
+      }
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
-  "id": 2,
-  "hue": 105,
+  "id": 4,
+  "hue": 300,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,56 +15,61 @@
   },
   "finish": {
     "position": {
-      "x": 64,
+      "x": 128,
       "y": 104
     }
   },
   "objects": [
     {
-      "type": "text",
-      "string": "Tip: the distance between the\nexplosion and the box matters",
+      "type": "platform",
       "position": {
-        "x": -127.609985,
-        "y": -51.999985
-      }
+        "x": -146.41975,
+        "y": 32
+      },
+      "width": 340.83994
     },
     {
       "type": "platform",
       "position": {
-        "x": -127.99994,
+        "x": 32,
+        "y": 128
+      },
+      "width": 208,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -7.999832,
+        "y": 224
+      },
+      "width": 64
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 136,
         "y": 32
       },
-      "width": 512
+      "width": 192
     },
     {
-      "type": "dashed-line",
-      "start": {
-        "x": -32,
-        "y": 72
-      },
-      "end": {
-        "x": -380,
-        "y": 38
-      }
-    },
-    {
-      "type": "dashed-line",
-      "start": {
-        "x": -32,
-        "y": 72
-      },
-      "end": {
-        "x": -100,
-        "y": 38
-      }
-    },
-    {
-      "type": "text",
-      "string": "vs.",
+      "type": "platform",
       "position": {
-        "x": -125,
-        "y": 55
-      }
+        "x": 224,
+        "y": 136
+      },
+      "width": 192.00002,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 274.0692,
+        "y": 338.0639
+      },
+      "width": 148.2698,
+      "rotation": 45
     }
   ]
 }

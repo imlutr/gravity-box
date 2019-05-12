@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 20,
+  "hue": 283,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,43 +15,89 @@
   },
   "finish": {
     "position": {
-      "x": -88,
-      "y": -40
+      "x": -96,
+      "y": 2216
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -12,
-        "y": 32
+        "x": -8,
+        "y": 325.77332
       },
-      "width": 280
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 44,
-        "y": -112
-      },
-      "width": 424
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -160,
-        "y": 56
-      },
-      "width": 320,
+      "width": 1280,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 248,
-        "y": -47.78579
+        "x": -183.99988,
+        "y": -486.37
       },
-      "width": 112.42842,
+      "width": 1292.74,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -8.0000305,
+        "y": -1152
+      },
+      "width": 896,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 168,
+        "y": -544
+      },
+      "width": 2112,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 344,
+        "y": 1413.3406
+      },
+      "width": 1802.681,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 168,
+        "y": 1637.3407
+      },
+      "width": 1354.6809,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -96,
+        "y": 2144
+      },
+      "width": 320
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 56,
+        "y": 2233.3403
+      },
+      "width": 162.68163,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -248,
+        "y": 2233.3408
+      },
+      "width": 162.68068,
       "rotation": 270
     }
   ]

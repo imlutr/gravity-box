@@ -1,6 +1,6 @@
 {
-  "id": 1,
-  "hue": 283,
+  "id": 2,
+  "hue": 162,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,76 +9,68 @@
   },
   "player": {
     "position": {
-      "x": -128,
+      "x": 160,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 192,
-      "y": -64
+      "x": -216,
+      "y": 104
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -52,
+        "x": -40,
         "y": 32
       },
-      "width": 360
+      "width": 512
     },
     {
       "type": "platform",
       "position": {
-        "x": 192,
-        "y": 32
+        "x": -40,
+        "y": 288
       },
-      "width": 128,
+      "width": 512
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -288,
+        "y": 160
+      },
+      "width": 239.99998,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 224,
+        "y": 160
+      },
+      "width": 272,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -32,
+        "y": 160
+      },
+      "width": 240,
+      "rotation": 270,
       "isDestroyable": true
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "Hmm...",
       "position": {
-        "x": 120,
-        "y": -52
-      },
-      "width": 152,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 184.00002,
-        "y": -136
-      },
-      "width": 143.99998
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 264,
-        "y": 44
-      },
-      "width": 376,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 12,
-        "y": 224
-      },
-      "width": 488
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -224,
-        "y": 128
-      },
-      "width": 176,
-      "rotation": 270
+        "x": 100.48557,
+        "y": 225.38647
+      }
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
-  "id": 1,
-  "hue": 161,
+  "id": 2,
+  "hue": 337,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,84 +9,71 @@
   },
   "player": {
     "position": {
-      "x": 352,
+      "x": 32,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 1120,
-      "y": -664
+      "x": -64,
+      "y": 104
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": 368,
+        "x": 12,
         "y": 32
       },
-      "width": 320
+      "width": 280
     },
     {
       "type": "platform",
       "position": {
-        "x": 200,
-        "y": 152
+        "x": 160,
+        "y": 107.71762
       },
-      "width": 256,
+      "width": 167.43524,
       "rotation": 270
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "Tip: the angle you shoot at\nmatters",
       "position": {
-        "x": 672,
-        "y": -224
-      },
-      "width": 320
+        "x": 18,
+        "y": -27.999992
+      }
     },
     {
-      "type": "platform",
-      "position": {
-        "x": 520,
-        "y": -104
+      "type": "dashed-line",
+      "start": {
+        "x": 32,
+        "y": 72
       },
-      "width": 256,
-      "rotation": 270
+      "end": {
+        "x": 160,
+        "y": 72
+      }
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "vs.",
       "position": {
-        "x": 824,
-        "y": -360
-      },
-      "width": 256,
-      "rotation": 270
+        "x": 120,
+        "y": 105
+      }
     },
     {
-      "type": "platform",
-      "position": {
-        "x": 992,
-        "y": -480
+      "type": "dashed-line",
+      "start": {
+        "x": 32,
+        "y": 72
       },
-      "width": 320
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 1290.1222,
-        "y": -648
-      },
-      "width": 192,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 1122.1223,
-        "y": -736
-      },
-      "width": 319.99976
+      "end": {
+        "x": 160,
+        "y": 185
+      }
     }
   ]
 }

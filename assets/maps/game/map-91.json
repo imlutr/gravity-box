@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 132,
+  "hue": 161,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,57 +9,73 @@
   },
   "player": {
     "position": {
-      "x": 356.13177,
-      "y": 443.71887
-    },
-    "rotation": 45
+      "x": 352,
+      "y": 72
+    }
   },
   "finish": {
     "position": {
-      "x": -768,
-      "y": -216
+      "x": 1120,
+      "y": -664
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": 158.36151,
-        "y": 190.42229
+        "x": 368,
+        "y": 32
       },
-      "width": 704,
-      "rotation": 45
+      "width": 320
     },
     {
       "type": "platform",
       "position": {
-        "x": -448,
-        "y": -96
+        "x": 200,
+        "y": 152
       },
-      "width": 192
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -672,
-        "y": -12
-      },
-      "width": 280,
+      "width": 256,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -508,
-        "y": 120
+        "x": 672,
+        "y": -224
       },
-      "width": 311.99997
+      "width": 320
     },
     {
       "type": "platform",
       "position": {
-        "x": -536,
-        "y": -200
+        "x": 520,
+        "y": -104
+      },
+      "width": 256,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 824,
+        "y": -360
+      },
+      "width": 256,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 992,
+        "y": -480
+      },
+      "width": 320
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 1290.1222,
+        "y": -648
       },
       "width": 192,
       "rotation": 270
@@ -67,18 +83,10 @@
     {
       "type": "platform",
       "position": {
-        "x": -688,
-        "y": -288
+        "x": 1122.1223,
+        "y": -736
       },
-      "width": 287.99997
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -756,
-        "y": -144
-      },
-      "width": 151.99998
+      "width": 319.99976
     }
   ]
 }
