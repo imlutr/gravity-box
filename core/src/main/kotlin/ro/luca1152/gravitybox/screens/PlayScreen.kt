@@ -266,9 +266,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
     }
     private val leftButton = ClickButton(skin, "left-button").apply {
+        touchable = Touchable.disabled
         addClickRunnable(Runnable {
-            // The button is touchable
-            if (color.a == 1f && !isChangingLevel) {
+            if (!isChangingLevel) {
                 val fadeOutDuration = .2f
                 val fadeInDuration = .2f
                 gameStage.addAction(
@@ -300,9 +300,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
         })
     }
     private val rightButton = ClickButton(skin, "right-button").apply {
+        touchable = Touchable.disabled
         addClickRunnable(Runnable {
-            // The button is touchable
-            if (color.a == 1f && !isChangingLevel) {
+            if (!isChangingLevel) {
                 val fadeOutDuration = .2f
                 val fadeInDuration = .2f
                 gameStage.addAction(
@@ -644,7 +644,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     Actions.parallel(
                         Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
                         Actions.fadeIn(.2f, Interpolation.pow3In)
-                    )
+                    ),
+                    Actions.run {
+                        leftButton.touchable = Touchable.enabled
+                        rightButton.touchable = Touchable.enabled
+                    }
                 )
             )
         }
@@ -705,7 +709,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     Actions.parallel(
                         Actions.moveTo(x, 0f, .2f, Interpolation.pow3In),
                         Actions.fadeOut(.2f, Interpolation.pow3In)
-                    )
+                    ),
+                    Actions.run {
+                        leftButton.touchable = Touchable.disabled
+                        rightButton.touchable = Touchable.disabled
+                    }
                 )
             )
         }
