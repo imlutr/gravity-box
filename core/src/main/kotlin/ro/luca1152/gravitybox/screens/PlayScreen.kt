@@ -268,7 +268,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val leftButton = ClickButton(skin, "left-button").apply {
         touchable = Touchable.disabled
         addClickRunnable(Runnable {
-            if (!isChangingLevel) {
+            if (color.a == 1f && !isChangingLevel) {
                 val fadeOutDuration = .2f
                 val fadeInDuration = .2f
                 gameStage.addAction(
@@ -302,7 +302,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val rightButton = ClickButton(skin, "right-button").apply {
         touchable = Touchable.disabled
         addClickRunnable(Runnable {
-            if (!isChangingLevel) {
+            if (color.a == 1f && !isChangingLevel) {
                 val fadeOutDuration = .2f
                 val fadeInDuration = .2f
                 gameStage.addAction(
