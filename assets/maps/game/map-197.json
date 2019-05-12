@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 269,
+  "hue": 147,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,109 +15,65 @@
   },
   "finish": {
     "position": {
-      "x": -236,
-      "y": 104
+      "x": -32,
+      "y": 103.98222
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -147.99974,
+        "x": -32,
         "y": 32
       },
-      "width": 423.99954
+      "width": 192
     },
     {
       "type": "platform",
       "position": {
         "x": -120,
-        "y": 680
+        "y": 864
       },
-      "width": 1280,
+      "width": 1648,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
         "x": 56,
-        "y": 776
+        "y": 872
       },
-      "width": 1472,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -148.00008,
-        "y": 1504
-      },
-      "width": 423.99985
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -351.9995,
-        "y": 768
-      },
-      "width": 1456,
+      "width": 1664,
       "rotation": 270
     },
     {
       "type": "point",
       "position": {
+        "x": 16,
+        "y": 736
+      }
+    },
+    {
+      "type": "point",
+      "position": {
         "x": -79.99999,
-        "y": 640
+        "y": 1184
       }
     },
     {
       "type": "point",
       "position": {
         "x": 16,
-        "y": 1312
+        "y": 1656
       }
     },
     {
-      "type": "point",
+      "type": "platform",
       "position": {
-        "x": -311.9995,
-        "y": 1312
-      }
-    },
-    {
-      "type": "point",
-      "position": {
-        "x": -247.99951,
-        "y": 1120
-      }
-    },
-    {
-      "type": "point",
-      "position": {
-        "x": -160,
-        "y": 928
-      }
-    },
-    {
-      "type": "point",
-      "position": {
-        "x": -160,
-        "y": 672
-      }
-    },
-    {
-      "type": "point",
-      "position": {
-        "x": -247.99951,
-        "y": 480
-      }
-    },
-    {
-      "type": "point",
-      "position": {
-        "x": -311.9995,
-        "y": 288
-      }
+        "x": -32,
+        "y": 1696
+      },
+      "width": 192
     }
   ]
 }

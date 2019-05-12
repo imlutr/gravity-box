@@ -23,14 +23,6 @@
     {
       "type": "platform",
       "position": {
-        "x": 48,
-        "y": 32
-      },
-      "width": 128
-    },
-    {
-      "type": "platform",
-      "position": {
         "x": -386.53986,
         "y": 32
       },

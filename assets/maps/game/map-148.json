@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 332,
+  "hue": 349,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,31 +9,39 @@
   },
   "player": {
     "position": {
-      "x": -32,
-      "y": 72
+      "x": -224,
+      "y": 132.43048
     }
   },
   "finish": {
     "position": {
-      "x": -320,
-      "y": 104
+      "x": 149.61897,
+      "y": -728
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -105.3085,
-        "y": 32
+        "x": 166.8224,
+        "y": -162.63542
       },
-      "width": 557.383,
-      "isDestroyable": true
+      "width": 704,
+      "rotation": 313
     },
     {
       "type": "platform",
       "position": {
-        "x": -160,
-        "y": 136
+        "x": -223.61877,
+        "y": 92.43048
+      },
+      "width": 312.61987
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -371.9287,
+        "y": 196.43048
       },
       "width": 192,
       "rotation": 270,
@@ -42,29 +50,31 @@
     {
       "type": "platform",
       "position": {
-        "x": -140,
-        "y": -96
+        "x": 381.8611,
+        "y": -642.1767
       },
-      "width": 872,
+      "width": 459.9457,
+      "rotation": 45,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 288,
-        "y": -48.442696
+        "x": 148.5815,
+        "y": -800
       },
-      "width": 79.11461,
-      "rotation": 270,
+      "width": 169.163,
       "isDestroyable": true
     },
     {
-      "type": "text",
-      "string": "Not worth trying...",
+      "type": "platform",
       "position": {
-        "x": -135.4624,
-        "y": 292.70184
-      }
+        "x": 72,
+        "y": -727.99994
+      },
+      "width": 127.99992,
+      "rotation": 270,
+      "isDestroyable": true
     }
   ]
 }

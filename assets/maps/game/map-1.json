@@ -67,7 +67,7 @@
       "string": "Tap to shoot",
       "position": {
         "x": -32.90622,
-        "y": 545
+        "y": 525.1677
       }
     },
     {
@@ -75,7 +75,7 @@
       "string": "This is the finish point",
       "position": {
         "x": -32,
-        "y": -31.874985
+        "y": -11.472618
       }
     }
   ]

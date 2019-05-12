@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 339,
+  "hue": 285,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,106 +9,33 @@
   },
   "player": {
     "position": {
-      "x": -32,
+      "x": 64,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 0,
-      "y": -664
+      "x": -383.99994,
+      "y": 104
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -32,
+        "x": -159.99994,
         "y": 32
       },
-      "width": 192
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 72,
-        "y": 107.72764
-      },
-      "width": 167.45528,
-      "rotation": 270,
+      "width": 576,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -223.99997,
-        "y": -160
+        "x": 136,
+        "y": 108.00001
       },
-      "width": 192
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -327.99997,
-        "y": -84.64219
-      },
-      "width": 166.71562,
-      "rotation": 270,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -32,
-        "y": -352
-      },
-      "width": 192
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 72,
-        "y": -276
-      },
-      "width": 168,
-      "rotation": 270,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -223.99997,
-        "y": -544
-      },
-      "width": 191.99994,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -328,
-        "y": -468
-      },
-      "width": 168,
-      "rotation": 270,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -32,
-        "y": -736
-      },
-      "width": 192,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 72,
-        "y": -660
-      },
-      "width": 168,
+      "width": 168.00002,
       "rotation": 270,
       "isDestroyable": true
     }

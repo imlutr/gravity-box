@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 122,
+  "hue": 246,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,34 +9,40 @@
   },
   "player": {
     "position": {
-      "x": -78.01826,
-      "y": 69.492645
-    },
-    "rotation": 15
+      "x": -128,
+      "y": 72
+    }
   },
   "finish": {
     "position": {
-      "x": 348.13174,
-      "y": 227.3545
+      "x": -127.99994,
+      "y": 680
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -64,
+        "x": -127.99994,
         "y": 32
       },
-      "width": 128,
-      "rotation": 15
+      "width": 128
     },
     {
       "type": "platform",
       "position": {
-        "x": 348.13174,
-        "y": 155.3545
+        "x": -512,
+        "y": 160
       },
       "width": 128
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -127.99997,
+        "y": 608
+      },
+      "width": 128.00006
     }
   ]
 }

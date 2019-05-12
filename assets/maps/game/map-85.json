@@ -1,6 +1,6 @@
 {
-  "id": 1,
-  "hue": 161,
+  "id": 2,
+  "hue": 8,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,73 +9,38 @@
   },
   "player": {
     "position": {
-      "x": 352,
+      "x": 64,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 1120,
-      "y": -664
+      "x": 80,
+      "y": -40
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": 368,
+        "x": -12,
         "y": 32
       },
-      "width": 320
+      "width": 280
     },
     {
       "type": "platform",
       "position": {
-        "x": 200,
-        "y": 152
+        "x": -60,
+        "y": -112
       },
-      "width": 256,
-      "rotation": 270
+      "width": 408
     },
     {
       "type": "platform",
       "position": {
-        "x": 672,
-        "y": -224
-      },
-      "width": 320
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 520,
-        "y": -104
-      },
-      "width": 256,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 824,
-        "y": -360
-      },
-      "width": 256,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 992,
-        "y": -480
-      },
-      "width": 320
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 1290.1222,
-        "y": -648
+        "x": 136,
+        "y": 120
       },
       "width": 192,
       "rotation": 270
@@ -83,10 +48,11 @@
     {
       "type": "platform",
       "position": {
-        "x": 1122.1223,
-        "y": -736
+        "x": -256,
+        "y": -47.78579
       },
-      "width": 319.99976
+      "width": 112.42842,
+      "rotation": 270
     }
   ]
 }

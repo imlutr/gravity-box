@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 64,
+  "hue": 62
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,48 +9,23 @@
   },
   "player": {
     "position": {
-      "x": -32,
-      "y": 72
-    }
+      "x": 92.24468,
+      "y": 149.00928
+    },
+    "rotation": 45
   },
   "finish": {
     "position": {
-      "x": -128,
-      "y": 1734.6084
+      "x": 128,
+      "y": 1128
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -32,
+        "x": 32,
         "y": 32
-      },
-      "width": 192
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -120.00003,
-        "y": 392
-      },
-      "width": 704,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 56,
-        "y": 392
-      },
-      "width": 704,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 238.77336,
-        "y": 942
       },
       "width": 320,
       "rotation": 45
@@ -58,8 +33,8 @@
     {
       "type": "platform",
       "position": {
-        "x": -128,
-        "y": 1238
+        "x": -309.99997,
+        "y": 278
       },
       "width": 320,
       "rotation": 314
@@ -67,8 +42,8 @@
     {
       "type": "platform",
       "position": {
-        "x": 238.77336,
-        "y": 1568
+        "x": 160,
+        "y": 544
       },
       "width": 320,
       "rotation": 45
@@ -76,45 +51,19 @@
     {
       "type": "platform",
       "position": {
-        "x": -56,
-        "y": 2118.6084
+        "x": -288,
+        "y": 835.99994
       },
-      "width": 896,
-      "rotation": 270
+      "width": 320,
+      "rotation": 314
     },
     {
       "type": "platform",
       "position": {
-        "x": 120.045166,
-        "y": 2263.3047
+        "x": 128,
+        "y": 1056
       },
-      "width": 862.6073,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -40,
-        "y": 2702.6084
-      },
-      "width": 336
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -200.00003,
-        "y": 2182.6084
-      },
-      "width": 1023.99994,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -128,
-        "y": 1662.6084
-      },
-      "width": 160
+      "width": 192
     }
   ]
 }
