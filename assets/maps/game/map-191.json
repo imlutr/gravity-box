@@ -15,18 +15,18 @@
   },
   "finish": {
     "position": {
-      "x": -84,
-      "y": 1064
+      "x": -600.00024,
+      "y": 1320
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -427.00003,
+        "x": -435.00015,
         "y": 32
       },
-      "width": 473.99994
+      "width": 490.00018
     },
     {
       "type": "platform",
@@ -49,9 +49,9 @@
       "type": "platform",
       "position": {
         "x": 162.00003,
-        "y": 792
+        "y": 872
       },
-      "width": 896,
+      "width": 1056,
       "rotation": 270
     },
     {
@@ -66,9 +66,9 @@
       "type": "platform",
       "position": {
         "x": -672.00024,
-        "y": 632
+        "y": 712
       },
-      "width": 1216,
+      "width": 1344,
       "rotation": 270
     },
     {
@@ -82,10 +82,10 @@
     {
       "type": "platform",
       "position": {
-        "x": -255.00012,
+        "x": -492.00006,
         "y": 1248
       },
-      "width": 850.00024
+      "width": 344.00034
     },
     {
       "type": "point",
@@ -114,6 +114,14 @@
         "x": -351.99994,
         "y": 992
       }
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -263.00027,
+        "y": 1392
+      },
+      "width": 833.99994
     }
   ]
 }

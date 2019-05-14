@@ -15,35 +15,35 @@
   },
   "finish": {
     "position": {
-      "x": -88,
-      "y": -40
+      "x": -120.587036,
+      "y": -1816
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -12,
+        "x": -20,
         "y": 32
       },
-      "width": 280
+      "width": 296
     },
     {
       "type": "platform",
       "position": {
-        "x": 52,
+        "x": 89.472565,
         "y": -112
       },
-      "width": 408,
+      "width": 333.05487,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
         "x": -160,
-        "y": 48
+        "y": 128
       },
-      "width": 336,
+      "width": 176,
       "rotation": 270,
       "isDestroyable": true
     },
@@ -54,6 +54,25 @@
         "y": -47.78579
       },
       "width": 112.42842,
+      "rotation": 270,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -120,
+        "y": -1888
+      },
+      "width": 64,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -160,
+        "y": -48
+      },
+      "width": 144,
       "rotation": 270,
       "isDestroyable": true
     }

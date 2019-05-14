@@ -15,7 +15,7 @@
   },
   "finish": {
     "position": {
-      "x": 281.68616,
+      "x": 192,
       "y": 1320
     }
   },
@@ -33,85 +33,85 @@
       "type": "platform",
       "position": {
         "x": 96,
-        "y": 96
+        "y": 125.30424
       },
-      "width": 144,
+      "width": 202.60847,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -256,
+        "x": -267.9032,
         "y": 288
       },
-      "width": 175.99998,
+      "width": 152.19359,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
         "x": -352,
-        "y": 384
+        "y": 364.20755
       },
-      "width": 208,
+      "width": 168.41487,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 120.84308,
+        "x": 152.84308,
         "y": 608
       },
-      "width": 193.68616,
+      "width": 129.68616,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
         "x": 225.68616,
-        "y": 703.0549
+        "y": 671.48553
       },
-      "width": 206.10913,
+      "width": 142.9702,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -466.71075,
-        "y": 1022.77386
+        "x": -464,
+        "y": 984.00024
       },
-      "width": 205.54752,
+      "width": 128,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -368.00003,
+        "x": -400,
         "y": 928
       },
-      "width": 181.42146,
+      "width": 112.00003,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 248.61511,
+        "x": 224,
         "y": 1248
       },
-      "width": 190.76978,
+      "width": 64,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": 352,
-        "y": 1344
+        "x": 264,
+        "y": 1278.0662
       },
-      "width": 207.99992,
+      "width": 76.132225,
       "rotation": 270,
       "isDestroyable": true
     }
