@@ -232,6 +232,7 @@ class PlayingSystem(
         resetCollectiblePoints(engine)
         levelEditorScreen.addGameSystems()
         resetCollectedPointsCount()
+        levelEntity.map.resetPassengers()
     }
 
     private fun hidePlayUI() {

@@ -90,6 +90,7 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
                     objectPosition.set(movingObject.endPoint)
                     movingObject.isMovingTowardsEndPoint = false
                     if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
+                        println("cal")
                         playerEntity.body.body!!.setLinearVelocity(moveBy.x * -1, moveBy.y * -1)
                     }
                     entity.movingObject.delayBeforeSwitching = MovingObjectComponent.DELAY_BEFORE_SWITCHING_DIRECTION
@@ -102,6 +103,7 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
                     movingObject.isMovingTowardsEndPoint = true
                     if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
                         playerEntity.body.body!!.setLinearVelocity(moveBy.x * -1, moveBy.y * -1)
+                        println("cal")
                     }
                     entity.movingObject.delayBeforeSwitching = MovingObjectComponent.DELAY_BEFORE_SWITCHING_DIRECTION
                 }

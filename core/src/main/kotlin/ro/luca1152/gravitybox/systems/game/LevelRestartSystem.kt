@@ -45,9 +45,11 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
 
     // Entities
     private lateinit var levelEntity: Entity
+    private lateinit var playerEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
+        playerEntity = engine.getSingleton<PlayerComponent>()
     }
 
     override fun update(deltaTime: Float) {
@@ -73,6 +75,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                     // Without this check, in the level editor, if the player restarted the level just before
                     // leaving the play test section, the game would crash
                     if (engine != null) {
+                        levelEntity.map.resetPassengers()
                         resetBodiesToInitialState()
                         resetMovingPlatforms()
                         resetDestroyablePlatforms()

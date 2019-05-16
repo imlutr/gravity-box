@@ -100,6 +100,7 @@ class LevelFinishSystem(
                         }
                         levelEntity.map.run {
                             forceCenterCameraOnPlayer = true
+                            resetPassengers()
                         }
                         eventQueue.add(UpdateRoundedPlatformsEvent())
                     },
