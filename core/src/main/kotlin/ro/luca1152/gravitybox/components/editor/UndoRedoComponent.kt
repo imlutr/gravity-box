@@ -339,6 +339,7 @@ class MakeObjectMovingCommand(
     override val affectedEntity: Entity
 ) : Command() {
     private val engine: PooledEngine = context.inject()
+    private val eventQueue: EventQueue = context.inject()
     private var oldSpeed = MovingObjectComponent.SPEED
 
     override fun execute() {
@@ -356,6 +357,8 @@ class MakeObjectMovingCommand(
             val dashedLine = DashedLineEntity.createEntity(context, this, mockPlatform)
             mockPlatform.linkedEntity.add("dashedLine", dashedLine)
             this.linkedEntity.add("dashedLine", dashedLine)
+
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 
@@ -367,6 +370,8 @@ class MakeObjectMovingCommand(
             engine.removeEntity(linkedEntity.get("dashedLine"))
             removeComponent<LinkedEntityComponent>()
         }
+
+        eventQueue.add(UpdateRoundedPlatformsEvent())
     }
 }
 

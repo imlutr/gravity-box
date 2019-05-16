@@ -55,10 +55,12 @@ class RoundedPlatformsSystem(private val context: Context) :
             Family.one(
                 PlatformComponent::class.java,
                 DestroyablePlatformComponent::class.java
-            ).all(Scene2DComponent::class.java).exclude(MovingObjectComponent::class.java).get()
+            ).all(Scene2DComponent::class.java).get()
         ).forEach {
             if (it.tryGet(MovingObjectComponent) == null) {
                 roundCorners(it)
+            } else {
+                setCorrectTexture(it, 0)
             }
         }
     }
