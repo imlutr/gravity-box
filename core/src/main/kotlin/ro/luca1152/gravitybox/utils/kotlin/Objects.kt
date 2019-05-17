@@ -18,6 +18,7 @@
 package ro.luca1152.gravitybox.utils.kotlin
 
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.inject.Context
@@ -39,3 +40,5 @@ class OverlayStage(context: Context) : Stage(context.inject<OverlayViewport>(), 
 class UICamera : OrthographicCamera()
 class UIViewport(context: Context) : ExtendViewport(720f, 1280f, context.inject<UICamera>())
 class UIStage(context: Context) : Stage(context.inject<UIViewport>(), context.inject())
+
+class DistanceFieldShader(vertexShader: String, fragmentShader: String) : ShaderProgram(vertexShader, fragmentShader)

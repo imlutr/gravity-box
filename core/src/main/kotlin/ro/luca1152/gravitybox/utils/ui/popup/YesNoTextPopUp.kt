@@ -33,7 +33,7 @@ class YesNoTextPopUp(
     textColor: Color = Color.WHITE,
     yesIsHighlighted: Boolean = false, noIsHighlighted: Boolean = false
 ) : YesNoPopUp(context, width, height, skin, yesIsHighlighted, noIsHighlighted) {
-    val textLabel = DistanceFieldLabel(text, skin, fontName, textSize, textColor).apply {
+    val textLabel = DistanceFieldLabel(context, text, skin, fontName, textSize, textColor).apply {
         setWrap(true)
         setAlignment(Align.center, Align.center)
     }

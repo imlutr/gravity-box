@@ -34,6 +34,7 @@ import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
@@ -70,6 +71,7 @@ class MyGame : KtxGame<Screen>() {
             bindSingleton(UICamera())
             bindSingleton(UIViewport(context))
             bindSingleton(UIStage(context))
+            bindSingleton(DistanceFieldShader(DistanceFieldLabel.vertexShader, DistanceFieldLabel.fragmentShader))
         }
     }
 

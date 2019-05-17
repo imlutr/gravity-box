@@ -32,7 +32,7 @@ class TextPopUp(
     textSize: Float = 32f,
     textColor: Color = Color.WHITE
 ) : PopUp(context, width, height, skin) {
-    private val textLabel = DistanceFieldLabel(text, skin, fontName, textSize, textColor).apply {
+    private val textLabel = DistanceFieldLabel(context, text, skin, fontName, textSize, textColor).apply {
         setWrap(true)
         setAlignment(Align.center, Align.center)
     }
