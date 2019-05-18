@@ -40,7 +40,8 @@ class MovingObjectComponent : Component, Poolable {
     val startToFinishDirection = Vector2()
     var startToFinishDistance = 0f
     var speed = SPEED
-    var delayBeforeSwitching = DELAY_BEFORE_SWITCHING_DIRECTION
+    var delayBeforeSwitching = 0f
+    var justSwitchedDirection = true
 
     /** If false, it means that the platform is moving back towards the starting point. */
     var isMovingTowardsEndPoint = true
@@ -87,8 +88,9 @@ class MovingObjectComponent : Component, Poolable {
         endPoint.set(0f, 0f)
         startToFinishDirection.set(0f, 0f)
         startToFinishDistance = 0f
-        delayBeforeSwitching = DELAY_BEFORE_SWITCHING_DIRECTION
+        delayBeforeSwitching = 0f
         speed = SPEED
+        justSwitchedDirection = true
     }
 }
 
