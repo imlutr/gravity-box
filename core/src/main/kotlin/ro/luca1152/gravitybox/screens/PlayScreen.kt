@@ -81,7 +81,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private val canLoadAnyLevel = true // debug
     private val cycleFromFirstToLastLevel = true
-    private val loadSpecificLevel = 160 // If not -1, the specified level will be loaded first instead of [the last finished level+1]
+    private val loadSpecificLevel = -1 // If not -1, the specified level will be loaded first instead of [the last finished level+1]
 
     private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, uiCamera), context.inject())
     private val padTopBottom = 38f
@@ -142,22 +142,20 @@ class PlayScreen(private val context: Context) : KtxScreen {
         padBottom(padTopBottom).padTop(padTopBottom)
         add(bottomRow).expand().fillX().bottom()
     }
-    private val githubPopUp = NewPopUp(context, 600f, 508f, skin).apply popup@{
+    private val githubPopUp = NewPopUp(context, 600f, 440f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
             """
             This game is fully open-source!
 
-            If you want to support the
-            development, consider starring
-            the GitHub repository, as the
-            visibility would really help!
+            Maybe star the GitHub repository
+            if you like the project. <3
             """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
         )
         val visitGithubButton = Button(skin, "long-button").apply {
             val buttonText = DistanceFieldLabel(
                 context,
-                "Visit repository on GitHub",
+                "Visit GitHub repository",
                 skin, "regular", 36f, Color.WHITE
             )
             add(buttonText)
@@ -188,7 +186,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         widget.run {
             add(text).padBottom(33f).expand().top().row()
             add(visitGithubButton).width(492f).padBottom(32f).row()
-            add(maybeLaterButton).width(492f).expand().bottom().row()
+            add(maybeLaterButton).width(492f).row()
         }
     }
     private val githubButton = ClickButton(skin, "gray-full-round-button").apply {
@@ -200,7 +198,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
         })
     }
-    private val levelEditorPopUp = NewPopUp(context, 600f, 400f, skin).apply popup@{
+    private val levelEditorPopUp = NewPopUp(context, 600f, 370f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
             """
@@ -231,9 +229,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
             })
         }
         widget.run {
-            add(text).expand().row()
-            add(yesButton).width(492f).expand().row()
-            add(maybeLaterButton).width(492f).expand().row()
+            add(text).padBottom(32f).row()
+            add(yesButton).width(492f).padBottom(32f).row()
+            add(maybeLaterButton).width(492f).row()
         }
     }
     private val levelEditorButton = ClickButton(skin, "gray-full-round-button").apply {
@@ -366,7 +364,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         add(topTable).grow().top().padTop(padTopBottom).row()
         add(leftLevelRightTable).expand().bottom()
     }
-    private val heartPopUp = NewPopUp(context, 600f, 450f, skin).apply popup@{
+    private val heartPopUp = NewPopUp(context, 600f, 440f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
             """
@@ -408,9 +406,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
             })
         }
         widget.run {
-            add(text).expand().top().row()
-            add(rateButton).width(492f).expand().row()
-            add(maybeLaterButton).width(492f).expand().bottom().row()
+            add(text).expand().padBottom(32f).row()
+            add(rateButton).width(492f).padBottom(32f).row()
+            add(maybeLaterButton).width(492f).row()
         }
     }
     private val heartButton = ClickButton(
@@ -449,14 +447,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val leaderboardsButton = ClickButton(skin, "empty-round-button").apply {
         addIcon("leaderboards-icon")
     }
-    private val noAdsPopUp = NewPopUp(context, 600f, 970f, skin).apply popup@{
+    private val noAdsPopUp = NewPopUp(context, 600f, 820f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
             """
-            This game is powered by a
-            team of 1 (and open-source
-            contributors)!
-
             Any amount below will support
             the development & REMOVE
             ADS! <3
@@ -509,13 +503,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
             })
         }
         widget.run {
-            add(text).expand().top().row()
-            add(coffeeButton).width(492f).expand().row()
-            add(iceCreamButton).width(492f).expand().row()
-            add(muffinButton).width(492f).expand().row()
-            add(pizzaButton).width(492f).expand().row()
-            add(sushiButton).width(492f).expand().row()
-            add(noThanksButton).width(492f).expand().row()
+            add(text).padBottom(32f).row()
+            add(coffeeButton).width(492f).padBottom(32f).row()
+            add(iceCreamButton).width(492f).padBottom(32f).row()
+            add(muffinButton).width(492f).padBottom(32f).row()
+            add(pizzaButton).width(492f).padBottom(32f).row()
+            add(sushiButton).width(492f).padBottom(32f).row()
+            add(noThanksButton).width(492f).row()
         }
     }
     private val noAdsButton = ClickButton(skin, "empty-round-button").apply {
@@ -617,10 +611,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
             })
         }
         widget.run {
-            add(text).expand().top().row()
-            add(rateButton).width(492f).expand().row()
-            add(maybeLaterButton).width(492f).expand().row()
-            add(neverButton).width(492f).expand().row()
+            add(text).padBottom(32f).row()
+            add(rateButton).width(492f).padBottom(32f).row()
+            add(maybeLaterButton).width(492f).padBottom(32f).row()
+            add(neverButton).width(492f).row()
         }
     }
     private val rootOverlayTable = Table().apply {
