@@ -87,8 +87,8 @@ class MovingObjectComponent : Component, Poolable {
         endPoint.set(0f, 0f)
         startToFinishDirection.set(0f, 0f)
         startToFinishDistance = 0f
-        delayBeforeSwitching = 0f
-        speed = DELAY_BEFORE_SWITCHING_DIRECTION
+        delayBeforeSwitching = DELAY_BEFORE_SWITCHING_DIRECTION
+        speed = SPEED
     }
 }
 

@@ -27,7 +27,6 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxGame
 import ktx.app.clearScreen
@@ -123,20 +122,6 @@ fun Engine.clear() {
  * Otherwise, it returns null.
  */
 fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? = componentResolver[this]
-
-/** Removes the [entity] from the engine and resets each of its components. */
-fun Engine.removeAndResetEntity(entity: Entity) {
-    val componentsToRemove = ArrayList<Component>()
-    entity.components.forEach {
-        componentsToRemove.add(it)
-    }
-    componentsToRemove.forEach {
-        entity.remove(it::class.java)
-        (it as Pool.Poolable).reset()
-    }
-    // Call the default removeEntity() function
-    this.removeEntity(entity)
-}
 
 fun <Type : Screen> KtxGame<Type>.setScreen(screen: Type) {
     if (containsScreen(screen.javaClass)) {

@@ -41,7 +41,10 @@ import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
-import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.removeComponent
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
 import java.io.StringWriter
 import java.text.SimpleDateFormat
@@ -258,7 +261,7 @@ class MapComponent : Component, Poolable {
             entitiesToRemove.add(it)
         }
         entitiesToRemove.forEach {
-            engine.removeAndResetEntity(it)
+            engine.removeEntity(it)
         }
     }
 

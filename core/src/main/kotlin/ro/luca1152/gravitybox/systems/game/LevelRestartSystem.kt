@@ -34,7 +34,6 @@ import ro.luca1152.gravitybox.events.FadeInEvent
 import ro.luca1152.gravitybox.events.FadeOutEvent
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Handles what happens when a level is marked as to be restarted. */
@@ -97,7 +96,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
             bulletsToRemove.add(it)
         }
         bulletsToRemove.forEach {
-            engine.removeAndResetEntity(it)
+            engine.removeEntity(it)
         }
     }
 

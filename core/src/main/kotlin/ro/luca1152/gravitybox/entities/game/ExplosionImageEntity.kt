@@ -29,7 +29,6 @@ import ro.luca1152.gravitybox.components.game.scene2D
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
-import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 
 object ExplosionImageEntity {
     fun createEntity(
@@ -47,7 +46,7 @@ object ExplosionImageEntity {
                     Actions.scaleBy(3f, 3f, .25f),
                     Actions.fadeOut(.25f, Interpolation.exp5)
                 ),
-                Actions.run { engine.removeAndResetEntity(this@apply) }
+                Actions.run { engine.removeEntity(this@apply) }
             )
         )
         color(context, ColorType.DARK)
