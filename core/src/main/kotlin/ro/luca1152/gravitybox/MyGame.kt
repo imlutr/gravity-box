@@ -39,7 +39,7 @@ import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
     companion object {
-        const val LEVELS_NUMBER = 245
+        const val LEVELS_NUMBER = 249
     }
 
     private val context = Context()
