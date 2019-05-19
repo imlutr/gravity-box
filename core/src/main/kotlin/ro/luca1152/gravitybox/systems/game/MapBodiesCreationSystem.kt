@@ -35,7 +35,6 @@ import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Creates Box2D bodies from entities. */
@@ -188,7 +187,7 @@ class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
                         it.combinedBody.newBodyEntity = entityA.combinedBody.newBodyEntity
                     }
                 }
-                engine.removeAndResetEntity(bodyEntityToRemove!!)
+                engine.removeEntity(bodyEntityToRemove!!)
             }
         }
     }
@@ -225,7 +224,6 @@ class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
                     }
                     if (it.tryGet(MovingObjectComponent) != null) {
                         bodyType = BodyDef.BodyType.KinematicBody
-                        friction = 1000f
                     }
                     if (it.tryGet(RotatingObjectComponent) != null) {
                         bodyType = BodyDef.BodyType.DynamicBody

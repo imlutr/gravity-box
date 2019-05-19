@@ -25,7 +25,6 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 
 class OffScreenBulletDeletionSystem(context: Context) : IteratingSystem(
     Family.all(BulletComponent::class.java, Scene2DComponent::class.java).get()
@@ -42,7 +41,7 @@ class OffScreenBulletDeletionSystem(context: Context) : IteratingSystem(
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.isOffScreen) {
-            engine.removeAndResetEntity(entity)
+            engine.removeEntity(entity)
         }
     }
 }

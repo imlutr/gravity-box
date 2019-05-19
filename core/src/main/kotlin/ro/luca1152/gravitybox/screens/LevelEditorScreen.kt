@@ -36,7 +36,10 @@ import ktx.app.KtxScreen
 import ktx.collections.contains
 import ktx.inject.Context
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
+import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.editor.input
+import ro.luca1152.gravitybox.components.editor.undoRedo
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.InputEntity
 import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
@@ -261,31 +264,31 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
         }
     }
     private val cameraPopUpLeftColumn = Table(skin).apply {
-        val left = DistanceFieldLabel("Left", skin, "regular", 65f, Colors.gameColor)
-        val right = DistanceFieldLabel("Right", skin, "regular", 65f, Colors.gameColor)
-        val top = DistanceFieldLabel("Top", skin, "regular", 65f, Colors.gameColor)
-        val bottom = DistanceFieldLabel("Bottom", skin, "regular", 65f, Colors.gameColor)
+        val left = DistanceFieldLabel(context, "Left", skin, "regular", 65f, Colors.gameColor)
+        val right = DistanceFieldLabel(context, "Right", skin, "regular", 65f, Colors.gameColor)
+        val top = DistanceFieldLabel(context, "Top", skin, "regular", 65f, Colors.gameColor)
+        val bottom = DistanceFieldLabel(context, "Bottom", skin, "regular", 65f, Colors.gameColor)
         defaults().padTop(7f).padBottom(7f)
         add(left).row()
         add(right).row()
         add(top).row()
         add(bottom)
     }
-    private val newButton = ClickTextButton("simple-button", skin, "New", "regular", 75f).apply {
+    private val newButton = ClickTextButton(context, "simple-button", skin, "New", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(newLevelConfirmationPopUp)
         }
     }
-    private val saveButton = ClickTextButton("simple-button", skin, "Save", "regular", 75f).apply {
+    private val saveButton = ClickTextButton(context, "simple-button", skin, "Save", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(saveConfirmationPopUp)
         }
     }
-    private val loadButton = ClickTextButton("simple-button", skin, "Load", "regular", 75f).apply {
+    private val loadButton = ClickTextButton(context, "simple-button", skin, "Load", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
@@ -293,14 +296,14 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
             uiStage.addActor(loadLevelPopUp)
         }
     }
-    private val cameraButton = ClickTextButton("simple-button", skin, "Camera", "regular", 75f).apply {
+    private val cameraButton = ClickTextButton(context, "simple-button", skin, "Camera", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(createCameraPopUp())
         }
     }
-    private val playerButton = ClickTextButton("simple-button", skin, "Player", "regular", 75f).apply {
+    private val playerButton = ClickTextButton(context, "simple-button", skin, "Player", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
@@ -625,10 +628,12 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
 
     private fun createLoadLevelRowLeft(mapFactory: MapFactory, lastEditedString: String) = Table(skin).apply {
         val levelIdLabel = DistanceFieldLabel(
+            context,
             "Level #${mapFactory.id}", skin, "regular",
             57f, Colors.gameColor
         )
         val lastEditedLabel = DistanceFieldLabel(
+            context,
             lastEditedString, skin, "regular",
             37f, Colors.gameColor
         )
@@ -712,7 +717,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
 
     private fun createMinusPaddingPlus(paddingName: String) = Table(skin).apply {
         val paddingValueLabel =
-            DistanceFieldLabel("${getPaddingFromName(paddingName)}", skin, "regular", 65f, Colors.gameColor)
+            DistanceFieldLabel(context, "${getPaddingFromName(paddingName)}", skin, "regular", 65f, Colors.gameColor)
         val minusButton = ClickButton(skin, "small-round-button").apply {
             addIcon("small-minus-icon")
             setColors(Colors.gameColor, Colors.uiDownColor)
@@ -745,7 +750,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
     }
 
     private fun createCameraPopUp() = PopUp(context, 590f, 530f, skin).apply {
-        val title = DistanceFieldLabel("Padding", skin, "regular", 70f, Colors.gameColor)
+        val title = DistanceFieldLabel(context, "Padding", skin, "regular", 70f, Colors.gameColor)
         widget.run {
             pad(40f)
             add(title).top().colspan(2).row()

@@ -20,22 +20,18 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.utils.Array
 import ktx.inject.Context
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.editor.ExtendedTouchComponent
-import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
-import ro.luca1152.gravitybox.components.editor.RotatingIndicatorComponent
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.components.game.DashedLineComponent
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.screens.PlayScreen
-import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Handles what happens when a level is finished. */
@@ -87,7 +83,6 @@ class LevelFinishSystem(
                     Actions.run { levelEntity.level.isRestarting = true },
                     Actions.fadeOut(0f),
                     Actions.run {
-                        deleteEntities()
                         preferences.run {
                             val previousHigh = getInteger("highestFinishedLevel", 0)
                             putInteger("highestFinishedLevel", Math.max(previousHigh, levelEntity.level.levelId))
@@ -100,8 +95,8 @@ class LevelFinishSystem(
                         }
                         levelEntity.map.run {
                             forceCenterCameraOnPlayer = true
+                            resetPassengers()
                         }
-                        eventQueue.add(UpdateRoundedPlatformsEvent())
                     },
                     Actions.fadeIn(.25f, Interpolation.pow3In),
                     Actions.run { levelEntity.level.isRestarting = false }
@@ -122,31 +117,6 @@ class LevelFinishSystem(
         preferences.run {
             val oldValue = preferences.getInteger("promptUserToRateAfterFinishingLevel", 3)
             putInteger("promptUserToRateAfterFinishingLevel", oldValue + 4)
-        }
-    }
-
-    private fun deleteEntities() {
-        val entitiesToRemove = Array<Entity>()
-        engine.getEntitiesFor(
-            Family.one(
-                PlatformComponent::class.java,
-                CombinedBodyComponent::class.java,
-                DestroyablePlatformComponent::class.java,
-                RotatingObjectComponent::class.java,
-                ExplosionComponent::class.java,
-                RotatingIndicatorComponent::class.java,
-                DashedLineComponent::class.java,
-                MockMapObjectComponent::class.java,
-                TextComponent::class.java,
-                BulletComponent::class.java,
-                CollectiblePointComponent::class.java,
-                ExtendedTouchComponent::class.java
-            ).get()
-        ).forEach {
-            entitiesToRemove.add(it)
-        }
-        entitiesToRemove.forEach {
-            engine.removeAndResetEntity(it)
         }
     }
 }

@@ -23,19 +23,19 @@
     {
       "type": "platform",
       "position": {
-        "x": -206.42978,
+        "x": -118.42972,
         "y": 32
       },
-      "width": 156.8593,
+      "width": 332.85944,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
         "x": -120.00012,
-        "y": 384
+        "y": 392
       },
-      "width": 720,
+      "width": 704,
       "rotation": 270
     },
     {
@@ -45,8 +45,7 @@
         "y": 467.43488
       },
       "width": 886.86975,
-      "rotation": 270,
-      "isDestroyable": true
+      "rotation": 270
     },
     {
       "type": "platform",
@@ -68,13 +67,12 @@
       "isDestroyable": true
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "Yes, it is possible...",
       "position": {
-        "x": -32.00006,
-        "y": 32
-      },
-      "width": 160.00012,
-      "isDestroyable": true
+        "x": -118.57367,
+        "y": -13.754013
+      }
     }
   ]
 }

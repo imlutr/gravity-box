@@ -68,7 +68,9 @@ class WorldContactListener(private val context: Context) : ContactListener {
         }
 
         if (playerEntity != null && movingPlatformEntity != null) {
-            if (Math.abs(movingPlatformEntity.body.body!!.transform.rotation * MathUtils.radiansToDegrees) <= 45f) {
+            if (Math.abs(movingPlatformEntity.body.body!!.transform.rotation * MathUtils.radiansToDegrees) <= 45f &&
+                playerEntity.scene2D.centerY >= movingPlatformEntity.polygon.bottommostY
+            ) {
                 playerEntity.passenger(context, movingPlatformEntity)
             }
         }

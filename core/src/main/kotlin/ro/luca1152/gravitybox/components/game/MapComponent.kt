@@ -43,7 +43,7 @@ import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
+import ro.luca1152.gravitybox.utils.kotlin.removeComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
 import java.io.StringWriter
@@ -208,12 +208,23 @@ class MapComponent : Component, Poolable {
         resetPoints()
         resetFinish(context)
         removeObjects()
+        resetPassengers()
         createMap(mapFactory.id, mapFactory.hue, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
         createObjects(context, mapFactory.objects, isLevelEditor)
         updateMapBounds()
         eventQueue.add(UpdateRoundedPlatformsEvent())
+    }
+
+    fun resetPassengers() {
+        val entitiesToReset = ArrayList<Entity>()
+        engine.getEntitiesFor(Family.all(PassengerComponent::class.java).get()).forEach {
+            entitiesToReset.add(it)
+        }
+        entitiesToReset.forEach {
+            it.removeComponent<PassengerComponent>()
+        }
     }
 
     private fun resetPoints() {
@@ -250,7 +261,7 @@ class MapComponent : Component, Poolable {
             entitiesToRemove.add(it)
         }
         entitiesToRemove.forEach {
-            engine.removeAndResetEntity(it)
+            engine.removeEntity(it)
         }
     }
 

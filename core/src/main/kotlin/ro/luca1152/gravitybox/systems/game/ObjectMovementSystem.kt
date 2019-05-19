@@ -53,7 +53,7 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
         entity.run {
             val moveBy = getMoveBy(entity)
             updatePosition(entity, moveBy)
-            updateDirection(entity, moveBy)
+            updateDirection(entity)
             Pools.free(moveBy)
         }
     }
@@ -69,37 +69,41 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
     }
 
     private fun updatePosition(entity: Entity, moveBy: Vector2) {
-        if (entity.body.body!!.linearVelocity.len() == 0f) {
+        entity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+        if (entity.movingObject.justSwitchedDirection) {
+            entity.movingObject.justSwitchedDirection = false
             if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
-                playerEntity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+                playerEntity.body.body!!.linearVelocity = moveBy
             }
         }
-        entity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
-
     }
 
-    private fun updateDirection(entity: Entity, moveBy: Vector2) {
+    private fun updateDirection(entity: Entity) {
         if (entity.movingObject.delayBeforeSwitching <= 0f) {
             entity.run {
                 val objectPosition = Pools.obtain(Vector2::class.java).set(scene2D.centerX, scene2D.centerY)
-                if (objectPosition.dst(movingObject.startPoint).approxEqualTo(movingObject.startToFinishDistance) ||
-                    objectPosition.dst(movingObject.startPoint) >= movingObject.startToFinishDistance
+                if (
+                    movingObject.isMovingTowardsEndPoint &&
+                    (objectPosition.dst(movingObject.startPoint).approxEqualTo(movingObject.startToFinishDistance) ||
+                            objectPosition.dst(movingObject.startPoint) >= movingObject.startToFinishDistance)
                 ) {
                     objectPosition.set(movingObject.endPoint)
-                    movingObject.isMovingTowardsEndPoint = false
-                    if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
-                        playerEntity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+                    movingObject.run {
+                        justSwitchedDirection = true
+                        isMovingTowardsEndPoint = false
+                        delayBeforeSwitching = MovingObjectComponent.DELAY_BEFORE_SWITCHING_DIRECTION
                     }
-                    entity.movingObject.delayBeforeSwitching = MovingObjectComponent.DELAY_BEFORE_SWITCHING_DIRECTION
-                } else if (objectPosition.dst(movingObject.endPoint).approxEqualTo(movingObject.startToFinishDistance) ||
-                    objectPosition.dst(movingObject.endPoint) >= movingObject.startToFinishDistance
+                } else if (
+                    !movingObject.isMovingTowardsEndPoint &&
+                    (objectPosition.dst(movingObject.endPoint).approxEqualTo(movingObject.startToFinishDistance) ||
+                            objectPosition.dst(movingObject.endPoint) >= movingObject.startToFinishDistance)
                 ) {
                     objectPosition.set(movingObject.startPoint)
-                    movingObject.isMovingTowardsEndPoint = true
-                    if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
-                        playerEntity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+                    movingObject.run {
+                        justSwitchedDirection = true
+                        isMovingTowardsEndPoint = true
+                        delayBeforeSwitching = MovingObjectComponent.DELAY_BEFORE_SWITCHING_DIRECTION
                     }
-                    entity.movingObject.delayBeforeSwitching = MovingObjectComponent.DELAY_BEFORE_SWITCHING_DIRECTION
                 }
                 Pools.free(objectPosition)
             }

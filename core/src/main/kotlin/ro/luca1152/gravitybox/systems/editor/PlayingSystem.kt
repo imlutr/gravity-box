@@ -34,7 +34,10 @@ import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
-import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 
@@ -232,6 +235,7 @@ class PlayingSystem(
         resetCollectiblePoints(engine)
         levelEditorScreen.addGameSystems()
         resetCollectedPointsCount()
+        levelEntity.map.resetPassengers()
     }
 
     private fun hidePlayUI() {
@@ -290,7 +294,7 @@ class PlayingSystem(
             entitiesToRemove.add(it)
         }
         entitiesToRemove.forEach {
-            engine.removeAndResetEntity(it)
+            engine.removeEntity(it)
         }
     }
 

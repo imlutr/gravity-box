@@ -28,7 +28,9 @@ import ro.luca1152.gravitybox.MyGame
 /** Launches the iOS (RoboVM) application. */
 class IOSLauncher : IOSApplication.Delegate() {
     override fun createApplication(): IOSApplication {
-        val configuration = IOSApplicationConfiguration()
+        val configuration = IOSApplicationConfiguration().apply {
+            this.preventScreenDimming = true
+        }
         return IOSApplication(MyGame(), configuration)
     }
 

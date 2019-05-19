@@ -42,19 +42,19 @@
       "type": "platform",
       "position": {
         "x": 296,
-        "y": 398.41968
+        "y": 321.26605
       },
-      "width": 236.83934,
+      "width": 82.53196,
       "rotation": 270,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -183.99997,
-        "y": 107.91617
+        "x": -184,
+        "y": 94.03294
       },
-      "width": 167.83234,
+      "width": 140.06589,
       "rotation": 270,
       "isDestroyable": true
     },

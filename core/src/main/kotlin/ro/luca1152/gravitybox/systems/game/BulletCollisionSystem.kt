@@ -30,7 +30,6 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.ExplosionImageEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 
@@ -52,7 +51,7 @@ class BulletCollisionSystem(private val context: Context) :
             val bulletPosition = bullet.body.body!!.worldCenter
             ExplosionImageEntity.createEntity(context, bulletPosition.x, bulletPosition.y)
             applyBlastImpulse(bullet.body.body!!)
-            engine.removeAndResetEntity(bullet)
+            engine.removeEntity(bullet)
         }
     }
 

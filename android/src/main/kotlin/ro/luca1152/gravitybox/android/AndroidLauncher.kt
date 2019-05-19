@@ -18,6 +18,7 @@
 package ro.luca1152.gravitybox.android
 
 import android.os.Bundle
+import android.view.WindowManager
 
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
@@ -27,6 +28,7 @@ import ro.luca1152.gravitybox.MyGame
 class AndroidLauncher : AndroidApplication() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         initialize(MyGame(), AndroidApplicationConfiguration())
     }
 }

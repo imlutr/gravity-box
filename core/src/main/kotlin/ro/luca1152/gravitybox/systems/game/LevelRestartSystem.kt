@@ -34,7 +34,6 @@ import ro.luca1152.gravitybox.events.FadeInEvent
 import ro.luca1152.gravitybox.events.FadeOutEvent
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Handles what happens when a level is marked as to be restarted. */
@@ -45,9 +44,11 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
 
     // Entities
     private lateinit var levelEntity: Entity
+    private lateinit var playerEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
+        playerEntity = engine.getSingleton<PlayerComponent>()
     }
 
     override fun update(deltaTime: Float) {
@@ -73,6 +74,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                     // Without this check, in the level editor, if the player restarted the level just before
                     // leaving the play test section, the game would crash
                     if (engine != null) {
+                        levelEntity.map.resetPassengers()
                         resetBodiesToInitialState()
                         resetMovingPlatforms()
                         resetDestroyablePlatforms()
@@ -94,7 +96,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
             bulletsToRemove.add(it)
         }
         bulletsToRemove.forEach {
-            engine.removeAndResetEntity(it)
+            engine.removeEntity(it)
         }
     }
 
@@ -150,6 +152,8 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
         engine.getEntitiesFor(Family.all(MovingObjectComponent::class.java).get()).forEach {
             it.movingObject.run {
                 isMovingTowardsEndPoint = true
+                justSwitchedDirection = true
+                delayBeforeSwitching = 0f
                 if (it.tryGet(LinkedEntityComponent) != null) {
                     moved(it, it.linkedEntity.get("mockPlatform"))
                 } else {
