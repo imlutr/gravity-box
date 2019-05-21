@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 252,
+  "hue": 280,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,7 +15,7 @@
   },
   "finish": {
     "position": {
-      "x": -205.65564,
+      "x": 147.79984,
       "y": 104
     }
   },
@@ -23,43 +23,16 @@
     {
       "type": "platform",
       "position": {
-        "x": -118.42972,
+        "x": -32.00003,
         "y": 32
       },
-      "width": 332.85944,
+      "width": 160.00006,
       "isDestroyable": true
     },
     {
       "type": "platform",
       "position": {
-        "x": -120.00012,
-        "y": 392
-      },
-      "width": 704,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 56,
-        "y": 467.43488
-      },
-      "width": 886.86975,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -118.42975,
-        "y": 902.86975
-      },
-      "width": 332.85938,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -292.8595,
+        "x": -120.00006,
         "y": 467.43488
       },
       "width": 886.86975,
@@ -67,12 +40,41 @@
       "isDestroyable": true
     },
     {
-      "type": "text",
-      "string": "Yes, it is possible...",
+      "type": "platform",
       "position": {
-        "x": -118.57367,
-        "y": -13.754013
-      }
+        "x": 56,
+        "y": 352
+      },
+      "width": 656,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 144,
+        "y": 32
+      },
+      "width": 160,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 55.99997,
+        "y": 902.86975
+      },
+      "width": 336.00006,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 232,
+        "y": 467.43488
+      },
+      "width": 886.86975,
+      "rotation": 270,
+      "isDestroyable": true
     }
   ]
 }

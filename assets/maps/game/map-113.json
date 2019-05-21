@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "hue": 148,
+  "hue": 186,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,8 +15,8 @@
   },
   "finish": {
     "position": {
-      "x": -384,
-      "y": 104
+      "x": -64,
+      "y": 872
     }
   },
   "objects": [
@@ -31,27 +31,18 @@
     {
       "type": "platform",
       "position": {
-        "x": 256,
-        "y": 32
+        "x": -256,
+        "y": 416
       },
       "width": 128
     },
     {
       "type": "platform",
       "position": {
-        "x": -384,
-        "y": 32
+        "x": -64,
+        "y": 800
       },
       "width": 128
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -124.28105,
-        "y": 159.99988
-      },
-      "width": 64.00007,
-      "rotation": 45
     }
   ]
 }
