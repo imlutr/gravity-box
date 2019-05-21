@@ -20,4 +20,6 @@ Windows: `gradlew desktop:run`
 Linux / macOS: `./gradlew desktop:run`
 
 ## License
-This project is licensed under the GNU General Public License v3.0 License - see the [LICENSE](https://github.com/Luca1152/gravity-box/blob/master/LICENSE) file for details.
+All code is licensed under the GNU General Public License v3.0 License - see the [LICENSE](https://github.com/Luca1152/gravity-box/blob/master/LICENSE) file for details.
+
+All assets including graphics, sounds, icons and maps are under the [Creative Commons BY-NC 4.0 license](https://creativecommons.org/licenses/by-nc/4.0/legalcode) unless otherwise indicated.
