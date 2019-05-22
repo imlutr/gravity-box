@@ -1,6 +1,6 @@
 {
-  "id": 3,
-  "hue": 180,
+  "id": 1,
+  "hue": 257,
   "padding": {
     "left": 2,
     "right": 2,
@@ -9,8 +9,8 @@
   },
   "player": {
     "position": {
-      "x": -32,
-      "y": 392
+      "x": 160,
+      "y": 72
     }
   },
   "finish": {
@@ -23,51 +23,94 @@
     {
       "type": "platform",
       "position": {
-        "x": -31.999977,
+        "x": -32,
         "y": 32
       },
-      "width": 240.00005
+      "width": 192
     },
     {
       "type": "platform",
       "position": {
-        "x": -32,
+        "x": 160,
+        "y": 32
+      },
+      "movingTo": {
+        "x": 3168,
+        "y": 32
+      },
+      "speed": 224,
+      "width": 192
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 416,
         "y": 352
-      },
-      "width": 64
+      }
     },
     {
-      "type": "platform",
+      "type": "point",
       "position": {
-        "x": -32,
-        "y": 480
-      },
-      "width": 240
+        "x": 800,
+        "y": 352
+      }
     },
     {
-      "type": "platform",
+      "type": "point",
       "position": {
-        "x": 96,
-        "y": 256
-      },
-      "width": 464,
-      "rotation": 270
+        "x": 1184,
+        "y": 352
+      }
     },
     {
-      "type": "platform",
+      "type": "point",
       "position": {
-        "x": -160.00002,
-        "y": 256
-      },
-      "width": 463.99997,
-      "rotation": 270
+        "x": 1568,
+        "y": 352
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 1952,
+        "y": 352
+      }
     },
     {
       "type": "text",
-      "string": "Good old days...",
+      "string": "Last one...",
       "position": {
-        "x": -32.90622,
-        "y": 525.1677
+        "x": 3114.6895,
+        "y": 436.13464
+      }
+    },
+    {
+      "type": "text",
+      "string": "First one...",
+      "position": {
+        "x": 413.97855,
+        "y": 436.48264
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 2336,
+        "y": 352
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 2720,
+        "y": 352
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 3104,
+        "y": 352
       }
     }
   ]
