@@ -22,7 +22,6 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxInputAdapter
 import ktx.inject.Context
@@ -30,18 +29,20 @@ import ro.luca1152.gravitybox.components.game.BulletComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.body
 import ro.luca1152.gravitybox.entities.game.BulletEntity
+import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 
 /** Shoots bullet when the screen is touched. */
 class ShootingSystem(private val context: Context) : EntitySystem() {
     private val inputMultiplexer: InputMultiplexer = context.inject()
-    private val world: World = context.inject()
+    private val gameCamera: GameCamera = context.inject()
 
     private lateinit var playerEntity: Entity
 
     private val inputAdapter = object : KtxInputAdapter {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+            gameCamera.update()
             val worldCoordinates = screenToWorldCoordinates(context, screenX, screenY)
             createBullet(worldCoordinates.x, worldCoordinates.y)
             return true

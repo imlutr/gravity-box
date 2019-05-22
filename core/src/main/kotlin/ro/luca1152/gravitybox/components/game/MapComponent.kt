@@ -31,7 +31,10 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
+import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.editor.json
+import ro.luca1152.gravitybox.components.editor.rotatingIndicator
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.DashedLineEntity
@@ -112,6 +115,8 @@ class MapComponent : Component, Poolable {
         mapRight = Float.NEGATIVE_INFINITY
         mapBottom = Float.POSITIVE_INFINITY
         mapTop = Float.NEGATIVE_INFINITY
+        engine.getSingleton<PlayerComponent>().polygon.update()
+        engine.getSingleton<FinishComponent>().polygon.update()
         engine.getEntitiesFor(Family.all(PolygonComponent::class.java).get()).forEach {
             if ((it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) && !it.isScheduledForRemoval) {
                 it.polygon.run {
@@ -243,19 +248,10 @@ class MapComponent : Component, Poolable {
     private fun removeObjects() {
         val entitiesToRemove = Array<Entity>()
         engine.getEntitiesFor(
-            Family.one(
-                PlatformComponent::class.java,
-                CombinedBodyComponent::class.java,
-                DestroyablePlatformComponent::class.java,
-                RotatingObjectComponent::class.java,
-                ExplosionComponent::class.java,
-                RotatingIndicatorComponent::class.java,
-                DashedLineComponent::class.java,
-                MockMapObjectComponent::class.java,
-                TextComponent::class.java,
-                BulletComponent::class.java,
-                CollectiblePointComponent::class.java,
-                ExtendedTouchComponent::class.java
+            Family.exclude(
+                PlayerComponent::class.java,
+                FinishComponent::class.java,
+                LevelComponent::class.java
             ).get()
         ).forEach {
             entitiesToRemove.add(it)
