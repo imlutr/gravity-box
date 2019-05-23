@@ -17,39 +17,39 @@
 
 package ro.luca1152.gravitybox.entities.game
 
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.ColorType
 import ro.luca1152.gravitybox.components.game.color
 import ro.luca1152.gravitybox.components.game.explosion
 import ro.luca1152.gravitybox.components.game.scene2D
-import ro.luca1152.gravitybox.engine
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
-import ro.luca1152.gravitybox.utils.kotlin.removeAndResetEntity
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 object ExplosionImageEntity {
     fun createEntity(
-        x: Float, y: Float,
-        manager: AssetManager = Injekt.get()
-    ) = newEntity()
-        .explosion()
-        .scene2D(manager.get(Assets.tileset).findRegion("circle"), x, y)
-        .apply {
-            scene2D.group.addAction(
-                Actions.sequence(
-                    Actions.parallel(
-                        Actions.scaleBy(3f, 3f, .25f),
-                        Actions.fadeOut(.25f, Interpolation.exp5)
-                    ),
-                    Actions.run { engine.removeAndResetEntity(this@apply) }
-                )
+        context: Context,
+        x: Float, y: Float
+    ) = newEntity(context).apply {
+        val manager: AssetManager = context.inject()
+        val engine: PooledEngine = context.inject()
+
+        explosion(context)
+        scene2D(context, manager.get(Assets.tileset).findRegion("circle"), x, y)
+        scene2D.group.addAction(
+            Actions.sequence(
+                Actions.parallel(
+                    Actions.scaleBy(3f, 3f, .25f),
+                    Actions.fadeOut(.25f, Interpolation.exp5)
+                ),
+                Actions.run { engine.removeEntity(this@apply) }
             )
-        }
-        .color(ColorType.DARK)
-        .addToEngine()
+        )
+        color(context, ColorType.DARK)
+        addToEngine(context)
+    }
 }

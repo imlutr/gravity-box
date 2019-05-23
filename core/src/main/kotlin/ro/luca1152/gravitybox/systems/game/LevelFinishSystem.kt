@@ -20,16 +20,33 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.ashley.core.Family
-import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.Preferences
+import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import ktx.inject.Context
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.screens.PlayScreen
+import ro.luca1152.gravitybox.utils.kotlin.GameStage
+import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Handles what happens when a level is finished. */
-class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) : EntitySystem() {
+class LevelFinishSystem(
+    context: Context,
+    private val restartLevelWhenFinished: Boolean = false,
+    private val playScreen: PlayScreen? = null
+) : EntitySystem() {
+    // Injected objects
+    private val preferences: Preferences = context.inject()
+    private val uiStage: UIStage = context.inject()
+    private val gameStage: GameStage = context.inject()
+    private val eventQueue: EventQueue = context.inject()
+
+    // Entities
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
 
@@ -50,35 +67,56 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
     override fun update(deltaTime: Float) {
         if (!levelIsFinished)
             return
+        promptUserToRate()
         handleLevelFinish()
+        playScreen?.shouldUpdateLevelLabel = true
     }
 
     private fun handleLevelFinish() {
+        if (levelEntity.level.isRestarting) return
+
         if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
         else {
-            Colors.hue = MathUtils.random(0, 360)
-            deleteEntities()
-            levelEntity.level.run {
-                levelId = Math.min(levelId + 1, MyGame.LEVELS_NUMBER)
-                loadMap = true
-                forceUpdateMap = true
-            }
-            levelEntity.map.run {
-                updateRoundedPlatforms = true
-            }
+            gameStage.addAction(
+                Actions.sequence(
+                    Actions.run { levelEntity.level.isRestarting = true },
+                    Actions.fadeOut(0f),
+                    Actions.run {
+                        preferences.run {
+                            val previousHigh = getInteger("highestFinishedLevel", 0)
+                            putInteger("highestFinishedLevel", Math.max(previousHigh, levelEntity.level.levelId))
+                            flush()
+                        }
+                        levelEntity.level.run {
+                            levelId = Math.min(levelId + 1, MyGame.LEVELS_NUMBER)
+                            loadMap = true
+                            forceUpdateMap = true
+                        }
+                        levelEntity.map.run {
+                            forceCenterCameraOnPlayer = true
+                            resetPassengers()
+                        }
+                    },
+                    Actions.fadeIn(.25f, Interpolation.pow3In),
+                    Actions.run { levelEntity.level.isRestarting = false }
+                )
+            )
         }
     }
 
-    private fun deleteEntities() {
-        engine.getEntitiesFor(
-            Family.all(BodyComponent::class.java).exclude(
-                PlayerComponent::class.java,
-                FinishComponent::class.java,
-                LevelComponent::class.java
-            ).get()
-        ).forEach {
-            engine.removeEntity(it)
+    private fun promptUserToRate() {
+        if (playScreen == null) return
+        if (preferences.getBoolean("neverPromptUserToRate", false)) return
+        if (preferences.getInteger("promptUserToRateAfterFinishingLevel", 3) != levelEntity.level.levelId) return
+        if (preferences.getBoolean("didRateGame", false)) return
+        uiStage.addAction(Actions.sequence(
+            Actions.delay(.25f),
+            Actions.run { uiStage.addActor(playScreen.rateGamePromptPopUp) }
+        ))
+        preferences.run {
+            val oldValue = preferences.getInteger("promptUserToRateAfterFinishingLevel", 3)
+            putInteger("promptUserToRateAfterFinishingLevel", oldValue + 4)
         }
     }
 }

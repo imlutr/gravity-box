@@ -24,6 +24,7 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
@@ -35,12 +36,13 @@ import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Creates Box2D bodies from entities. */
-class MapBodiesCreationSystem : EntitySystem() {
+class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
+    private val world: World = context.inject()
+
     private lateinit var levelEntity: Entity
+
     private val Entity.isDeleted
         get() = tryGet(EditorObjectComponent) == null && editorObject.isDeleted
     private val Entity.isCombined
@@ -100,7 +102,10 @@ class MapBodiesCreationSystem : EntitySystem() {
                 if (entityB.isDeleted || entityA == entityB) {
                     break
                 }
-                if (isSameRotation(entityA, entityB) &&
+                if (entityA.polygon.polygon.vertices.isNotEmpty() && entityB.polygon.polygon.vertices.isNotEmpty() &&
+                    isSameRotation(entityA, entityB) && isHorizontalOrVertical(entityA) && isHorizontalOrVertical(entityB) &&
+                    entityA.tryGet(MovingObjectComponent) == null && entityB.tryGet(MovingObjectComponent) == null &&
+                    entityB.tryGet(RotatingObjectComponent) == null && entityB.tryGet(RotatingObjectComponent) == null &&
                     entityA.polygon.bottommostY == entityB.polygon.bottommostY &&
                     entityA.polygon.topmostY == entityB.polygon.topmostY &&
                     ((entityA.polygon.leftmostX == entityB.polygon.leftmostX ||
@@ -127,7 +132,10 @@ class MapBodiesCreationSystem : EntitySystem() {
                 if (entityB.isDeleted || entityA == entityB) {
                     break
                 }
-                if (isSameRotation(entityA, entityB) &&
+                if (entityA.polygon.polygon.vertices.isNotEmpty() && entityB.polygon.polygon.vertices.isNotEmpty() &&
+                    isSameRotation(entityA, entityB) && isHorizontalOrVertical(entityA) && isHorizontalOrVertical(entityB) &&
+                    entityA.tryGet(MovingObjectComponent) == null && entityB.tryGet(MovingObjectComponent) == null &&
+                    entityB.tryGet(RotatingObjectComponent) == null && entityB.tryGet(RotatingObjectComponent) == null &&
                     entityA.polygon.leftmostX == entityB.polygon.leftmostX &&
                     entityA.polygon.rightmostX == entityB.polygon.rightmostX &&
                     ((entityA.polygon.bottommostY == entityB.polygon.bottommostY ||
@@ -147,22 +155,23 @@ class MapBodiesCreationSystem : EntitySystem() {
         isCombinedHorizontally: Boolean = false, isCombinedVertically: Boolean = false
     ) {
         if (entityA.isCombined && !entityB.isCombined) {
-            entityB.add(createComponent<CombinedBodyComponent>()).run {
+            entityB.add(createComponent<CombinedBodyComponent>(context)).run {
                 combinedBody.set(entityA.combinedBody.newBodyEntity!!, isCombinedHorizontally, isCombinedVertically)
             }
             entityB.body.resetInitialState()
         } else if (entityB.isCombined && !entityA.isCombined) {
-            entityA.add(createComponent<CombinedBodyComponent>()).run {
+            entityA.add(createComponent<CombinedBodyComponent>(context)).run {
                 combinedBody.set(entityB.combinedBody.newBodyEntity!!, isCombinedHorizontally, isCombinedVertically)
             }
             entityA.body.resetInitialState()
         } else if (!entityA.isCombined && !entityB.isCombined) {
-            val combinedBodyEntity = CombinedPlatformEntity.createEntity(isCombinedHorizontally, isCombinedVertically)
-            entityA.add(createComponent<CombinedBodyComponent>()).run {
+            val combinedBodyEntity =
+                CombinedPlatformEntity.createEntity(context, isCombinedHorizontally, isCombinedVertically)
+            entityA.add(createComponent<CombinedBodyComponent>(context)).run {
                 combinedBody.set(combinedBodyEntity, isCombinedHorizontally, isCombinedVertically)
             }
             entityA.body.resetInitialState()
-            entityB.add(createComponent<CombinedBodyComponent>()).run {
+            entityB.add(createComponent<CombinedBodyComponent>(context)).run {
                 combinedBody.set(combinedBodyEntity, isCombinedHorizontally, isCombinedVertically)
             }
             entityB.body.resetInitialState()
@@ -178,12 +187,12 @@ class MapBodiesCreationSystem : EntitySystem() {
                         it.combinedBody.newBodyEntity = entityA.combinedBody.newBodyEntity
                     }
                 }
-                engine.removeEntity(bodyEntityToRemove)
+                engine.removeEntity(bodyEntityToRemove!!)
             }
         }
     }
 
-    private fun createOtherBodies(world: World = Injekt.get()) {
+    private fun createOtherBodies() {
         engine.getEntitiesFor(Family.all(MapObjectComponent::class.java, BodyComponent::class.java).get())
             .forEach {
                 if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
@@ -221,17 +230,18 @@ class MapBodiesCreationSystem : EntitySystem() {
                     }
                     if (it.tryGet(CombinedBodyComponent) == null) {
                         it.body.set(
-                            it.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction, trimSize),
+                            context,
+                            it.scene2D.toBody(context, bodyType, categoryBits, maskBits, density, friction, trimSize),
                             it, categoryBits, maskBits, density, friction
                         )
                     }
                     if (it.tryGet(RotatingObjectComponent) != null) {
                         val hookDef = BodyDef().apply {
-                            position.set(it.body.body.worldCenter)
+                            position.set(it.body.body!!.worldCenter)
                         }
                         val hook = world.createBody(hookDef)
                         val jointDef = RevoluteJointDef().apply {
-                            initialize(hook, it.body.body, it.body.body.worldCenter)
+                            initialize(hook, it.body.body, it.body.body!!.worldCenter)
                             collideConnected = false
                             enableLimit = false
                             enableMotor = true
@@ -246,4 +256,6 @@ class MapBodiesCreationSystem : EntitySystem() {
 
     private fun isSameRotation(entityA: Entity, entityB: Entity) =
         entityA.polygon.polygon.rotation == entityB.polygon.polygon.rotation || Math.abs(entityA.polygon.polygon.rotation - 180f) == entityB.polygon.polygon.rotation
+
+    private fun isHorizontalOrVertical(entity: Entity) = entity.polygon.polygon.rotation % 90 == 0f
 }

@@ -18,6 +18,7 @@
 package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.gdx.assets.AssetManager
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.editor.json
 import ro.luca1152.gravitybox.components.editor.overlay
@@ -26,36 +27,41 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 object CollectiblePointEntity {
     private const val WIDTH = 1f
     private const val HEIGHT = 1f
 
     fun createEntity(
-        id: Int,
-        centerX: Float, centerY: Float,
-        rotation: Float = 0f,
-        blinkEndlessly: Boolean = true,
-        manager: AssetManager = Injekt.get()
-    ) = newEntity().apply {
-        scene2D(manager.get(Assets.tileset).findRegion("collectible-point"), centerX, centerY, WIDTH, HEIGHT, rotation)
-        color(ColorType.DARK)
+        context: Context,
+        centerX: Float,
+        centerY: Float, rotation: Float = 0f,
+        blinkEndlessly: Boolean = true
+    ) = newEntity(context).apply {
+        val manager: AssetManager = context.inject()
+        scene2D(
+            context,
+            manager.get(Assets.tileset).findRegion("collectible-point"),
+            centerX, centerY,
+            WIDTH, HEIGHT,
+            rotation
+        )
+        color(context, ColorType.DARK)
         if (blinkEndlessly) {
-            fadeInFadeOut(scene2D)
+            fadeInFadeOut(context, scene2D)
         }
-        collectiblePoint()
-        editorObject()
-        mapObject(id)
-        collisionBox(WIDTH, HEIGHT)
-        polygon(scene2D)
-        snap()
-        json(this)
+        collectiblePoint(context)
+        editorObject(context)
+        mapObject(context)
+        collisionBox(context, WIDTH, HEIGHT)
+        polygon(context, scene2D)
+        snap(context)
+        json(context, this)
         overlay(
+            context,
             showMovementButtons = true, showRotationButton = true, showDeletionButton = true,
             showResizingButtons = false, showSettingsButton = false
         )
-        addToEngine()
+        addToEngine(context)
     }
 }

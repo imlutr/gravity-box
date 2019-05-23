@@ -24,21 +24,17 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.graphics.copy
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.ui.Colors
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 @Suppress("PrivatePropertyName")
 /** Creates and renders an infinite grid. */
-class GridRenderingSystem(
-    private val gameStage: GameStage = Injekt.get(),
-    private val manager: AssetManager = Injekt.get()
-) : EntitySystem() {
+class GridRenderingSystem(context: Context) : EntitySystem() {
     companion object {
         private const val GRID_START_POSITION = -500
         private const val GRID_END_POSITION = 500
@@ -46,6 +42,9 @@ class GridRenderingSystem(
         private val LINE_THICKNESS = 2f.pixelsToMeters
         private val LINE_COLOR = Colors.gameColor.copy(alpha = .2f)
     }
+
+    private val gameStage: GameStage = context.inject()
+    private val manager: AssetManager = context.inject()
 
     private val gridGroup = Group()
     private lateinit var levelEntity: Entity

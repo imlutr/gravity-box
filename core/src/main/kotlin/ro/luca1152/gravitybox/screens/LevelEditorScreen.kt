@@ -26,6 +26,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
@@ -33,8 +34,12 @@ import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.app.KtxScreen
 import ktx.collections.contains
+import ktx.inject.Context
 import ro.luca1152.gravitybox.MyGame
-import ro.luca1152.gravitybox.components.editor.*
+import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
+import ro.luca1152.gravitybox.components.editor.editorObject
+import ro.luca1152.gravitybox.components.editor.input
+import ro.luca1152.gravitybox.components.editor.undoRedo
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.editor.InputEntity
 import ro.luca1152.gravitybox.entities.editor.UndoRedoEntity
@@ -54,28 +59,25 @@ import ro.luca1152.gravitybox.utils.ui.button.*
 import ro.luca1152.gravitybox.utils.ui.popup.PopUp
 import ro.luca1152.gravitybox.utils.ui.popup.TextPopUp
 import ro.luca1152.gravitybox.utils.ui.popup.YesNoTextPopUp
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.addSingleton
-import uy.kohesive.injekt.api.get
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class LevelEditorScreen(
-    private val engine: PooledEngine = Injekt.get(),
-    private val manager: AssetManager = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get(),
-    private val gameViewport: GameViewport = Injekt.get(),
-    private val gameCamera: GameCamera = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get(),
-    private val inputMultiplexer: InputMultiplexer = Injekt.get(),
-    private val game: MyGame = Injekt.get()
-) : KtxScreen {
-    companion object {
-        const val OBJECTS_COLOR_ALPHA = .85f
-    }
-
+class LevelEditorScreen(private val context: Context) : KtxScreen {
+    // Injected objects
+    private val engine: PooledEngine = context.inject()
+    private val manager: AssetManager = context.inject()
+    private val gameStage: GameStage = context.inject()
+    private val gameViewport: GameViewport = context.inject()
+    private val uiViewport: UIViewport = context.inject()
+    private val overlayViewport: OverlayViewport = context.inject()
+    private val gameCamera: GameCamera = context.inject()
+    private val uiStage: UIStage = context.inject()
+    private val inputMultiplexer: InputMultiplexer = context.inject()
+    private val game: MyGame = context.inject()
     private val skin = manager.get(Assets.uiSkin)
+
     private val toggledButton = Reference<ToggleButton>()
     private val undoButton = ClickButton(skin, "small-button").apply {
         addIcon("undo-icon")
@@ -125,23 +127,25 @@ class LevelEditorScreen(
         setOpaque(true)
     }
     private val leaveConfirmationPopUp = YesNoTextPopUp(
+        context,
         520f, 400f,
         "Are you sure you want to go back to the main menu?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     )
     private val saveBeforeLeavingPopUp = YesNoTextPopUp(
+        context,
         550f, 350f,
         "Do you want to save the current level?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     ).apply {
         yesClickRunnable = Runnable {
             levelEntity.map.saveMap()
-            game.setScreen(TransitionScreen(PlayScreen::class.java))
+            game.setScreen(TransitionScreen(context, PlayScreen::class.java))
         }
         noClickRunnable = Runnable {
-            game.setScreen(TransitionScreen(PlayScreen::class.java))
+            game.setScreen(TransitionScreen(context, PlayScreen::class.java))
         }
     }
     private val backButton = ClickButton(skin, "small-button").apply {
@@ -159,13 +163,13 @@ class LevelEditorScreen(
                     }
                 } else {
                     Runnable {
-                        game.setScreen(TransitionScreen(PlayScreen::class.java))
+                        game.setScreen(TransitionScreen(context, PlayScreen::class.java))
                     }
                 }
             } else {
                 Runnable {
                     levelEntity.map.saveMap()
-                    game.setScreen(TransitionScreen(PlayScreen::class.java))
+                    game.setScreen(TransitionScreen(context, PlayScreen::class.java))
                 }
             }
         })
@@ -177,14 +181,15 @@ class LevelEditorScreen(
         setToggledButtonReference(this@LevelEditorScreen.toggledButton)
         setToggleOffEveryOtherButton(true)
         addClickRunnable(Runnable {
-            engine.addSystem(PlayingSystem(this@LevelEditorScreen))
+            engine.addSystem(PlayingSystem(context, this@LevelEditorScreen))
         })
         setOpaque(true)
     }
     private val saveConfirmationPopUp = YesNoTextPopUp(
+        context,
         520f, 400f,
         "Are you sure you want to save the level?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor,
         yesIsHighlighted = true
     ).apply {
@@ -196,27 +201,31 @@ class LevelEditorScreen(
         }
     }
     private val levelSavedTextPopUp = TextPopUp(
+        context,
         450f, 250f,
         "Level saved successfully.",
-        skin, "bold", 50f, Colors.gameColor
+        skin, "regular", 50f, Colors.gameColor
     )
     private val deleteConfirmationPopUp = YesNoTextPopUp(
+        context,
         520f, 400f,
         "Are you sure you want to delete the level #[x]?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     )
     private val loadConfirmationPopUp = YesNoTextPopUp(
+        context,
         520f, 400f,
         "Are you sure you want to load the level #[x]?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     )
-    private var loadLevelPopUp = PopUp(0f, 0f, skin)
+    private var loadLevelPopUp = PopUp(context, 0f, 0f, skin)
     private val newLevelConfirmationPopUp = YesNoTextPopUp(
+        context,
         520f, 400f,
         "Are you sure you want to create a new level?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     ).apply {
         yesClickRunnable = Runnable {
@@ -234,9 +243,10 @@ class LevelEditorScreen(
         }
     }
     private val saveLevelBeforeCreationConfirmationPopUp = YesNoTextPopUp(
+        context,
         550f, 350f,
         "Do you want to save the current level?",
-        skin, "bold", 50f,
+        skin, "regular", 50f,
         Colors.gameColor, yesIsHighlighted = true
     ).apply {
         yesClickRunnable = Runnable {
@@ -254,31 +264,31 @@ class LevelEditorScreen(
         }
     }
     private val cameraPopUpLeftColumn = Table(skin).apply {
-        val left = DistanceFieldLabel("Left", skin, "bold", 65f, Colors.gameColor)
-        val right = DistanceFieldLabel("Right", skin, "bold", 65f, Colors.gameColor)
-        val top = DistanceFieldLabel("Top", skin, "bold", 65f, Colors.gameColor)
-        val bottom = DistanceFieldLabel("Bottom", skin, "bold", 65f, Colors.gameColor)
+        val left = DistanceFieldLabel(context, "Left", skin, "regular", 65f, Colors.gameColor)
+        val right = DistanceFieldLabel(context, "Right", skin, "regular", 65f, Colors.gameColor)
+        val top = DistanceFieldLabel(context, "Top", skin, "regular", 65f, Colors.gameColor)
+        val bottom = DistanceFieldLabel(context, "Bottom", skin, "regular", 65f, Colors.gameColor)
         defaults().padTop(7f).padBottom(7f)
         add(left).row()
         add(right).row()
         add(top).row()
         add(bottom)
     }
-    private val newButton = ClickTextButton("simple-button", skin, "New", "bold", 75f).apply {
+    private val newButton = ClickTextButton(context, "simple-button", skin, "New", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(newLevelConfirmationPopUp)
         }
     }
-    private val saveButton = ClickTextButton("simple-button", skin, "Save", "bold", 75f).apply {
+    private val saveButton = ClickTextButton(context, "simple-button", skin, "Save", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(saveConfirmationPopUp)
         }
     }
-    private val loadButton = ClickTextButton("simple-button", skin, "Load", "bold", 75f).apply {
+    private val loadButton = ClickTextButton(context, "simple-button", skin, "Load", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
@@ -286,14 +296,14 @@ class LevelEditorScreen(
             uiStage.addActor(loadLevelPopUp)
         }
     }
-    private val cameraButton = ClickTextButton("simple-button", skin, "Camera", "bold", 75f).apply {
+    private val cameraButton = ClickTextButton(context, "simple-button", skin, "Camera", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
             uiStage.addActor(createCameraPopUp())
         }
     }
-    private val playerButton = ClickTextButton("simple-button", skin, "Player", "bold", 75f).apply {
+    private val playerButton = ClickTextButton(context, "simple-button", skin, "Player", "regular", 75f).apply {
         upColor = Colors.gameColor
         downColor = Colors.uiDownColor
         clickRunnable = Runnable {
@@ -301,7 +311,7 @@ class LevelEditorScreen(
             hideSettingsPopUp = true
         }
     }
-    private val settingsPopUp = PopUp(450f, 510f, skin).apply {
+    private val settingsPopUp = PopUp(context, 450f, 510f, skin).apply {
         widget.run {
             val buttonsTable = Table(skin).apply {
                 defaults().padTop(-5f).padBottom(-5f)
@@ -389,27 +399,22 @@ class LevelEditorScreen(
     }
 
     private fun addDependencies() {
-        Injekt.run {
-            addSingleton(skin)
-        }
+        context.register { if (!contains<Skin>()) bindSingleton(skin) }
     }
 
     private fun createGameEntities() {
-        inputEntity = InputEntity.createEntity(toggledButton)
-        undoRedoEntity = UndoRedoEntity.createEntity()
-        levelEntity = LevelEntity.createEntity(getFirstUnusedLevelId())
-        finishEntity = FinishEntity.createEntity(1, blinkEndlessly = false).apply {
-            scene2D.color.a = OBJECTS_COLOR_ALPHA
-        }
-        playerEntity = PlayerEntity.createEntity(0).apply {
-            scene2D.color.a = OBJECTS_COLOR_ALPHA
-        }
+        inputEntity = InputEntity.createEntity(context, toggledButton)
+        undoRedoEntity = UndoRedoEntity.createEntity(context)
+        levelEntity = LevelEntity.createEntity(context, getFirstUnusedLevelId())
+        finishEntity = FinishEntity.createEntity(context, blinkEndlessly = false)
+        playerEntity = PlayerEntity.createEntity(context)
     }
 
     private fun loadLastEditedLevel() {
         val lastEditedMapFile = getLastEditedMapFile()
         val mapFactory = getMapFactory(lastEditedMapFile.path())
-        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity, true)
+        levelEntity.map.loadMap(context, mapFactory, playerEntity, finishEntity, true)
+        levelEntity.level.levelId = levelEntity.map.levelId
         isEditingNewLevel = false
         centerCameraOnPlayer()
     }
@@ -417,9 +422,7 @@ class LevelEditorScreen(
     private fun resetMapToInitialState() {
         removeAdditionalEntities()
         undoRedoEntity.undoRedo.reset()
-        val platformEntity = PlatformEntity.createEntity(2, 0f, .5f, 4f).apply {
-            scene2D.color.a = OBJECTS_COLOR_ALPHA
-        }
+        val platformEntity = PlatformEntity.createEntity(context, 0f, .5f, 4f)
         repositionDefaultEntities(platformEntity)
         centerCameraOnPlatform(platformEntity)
         settingsPopUp.remove()
@@ -453,12 +456,18 @@ class LevelEditorScreen(
         var minLastEditedFile = FileHandle("")
         Gdx.files.local("maps/editor").list().forEach {
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())
-            val levelDate = formatter.parse(it.nameWithoutExtension())
-            val currentDate = Date(TimeUtils.millis())
-            val diffInMills = Math.abs(currentDate.time - levelDate.time)
-            if (diffInMills < minLastEditedTime) {
-                minLastEditedTime = diffInMills
-                minLastEditedFile = it
+            try {
+                val levelDate = formatter.parse(it.nameWithoutExtension())
+                val currentDate = Date(TimeUtils.millis())
+                val diffInMills = Math.abs(currentDate.time - levelDate.time)
+                if (diffInMills < minLastEditedTime) {
+                    minLastEditedTime = diffInMills
+                    minLastEditedFile = it
+                }
+            } catch (e: ParseException) {
+                if (Gdx.files.local("maps/editor").list().size == 1) {
+                    return it
+                }
             }
         }
         return minLastEditedFile
@@ -535,59 +544,64 @@ class LevelEditorScreen(
 
     private fun handleGameInput() {
         inputMultiplexer.run {
-            addProcessor(Injekt.get<OverlayStage>())
+            addProcessor(context.inject<OverlayStage>())
             addProcessor(gameStage)
         }
     }
 
     fun addGameSystems() {
         engine.run {
-            addSystem(UndoRedoSystem())
+            addSystem(UndoRedoSystem(context))
             addSystem(SelectedObjectColorSystem())
-            addSystem(ObjectPlacementSystem(this@LevelEditorScreen))
-            addSystem(TapThroughObjectsSystem())
-            addSystem(ZoomingSystem())
-            addSystem(PanningSystem())
-            addSystem(ObjectSelectionSystem())
-            addSystem(UpdateGameCameraSystem())
-            addSystem(OverlayCameraSyncSystem())
+            addSystem(ObjectPlacementSystem(context, this@LevelEditorScreen))
+            addSystem(TapThroughObjectsSystem(context))
+            addSystem(ZoomingSystem(context))
+            addSystem(PanningSystem(context))
+            addSystem(ObjectSelectionSystem(context))
+            addSystem(UpdateGameCameraSystem(context))
+            addSystem(OverlayCameraSyncSystem(context))
             addSystem(ExtendedTouchSyncSystem())
-            addSystem(GridRenderingSystem())
-            addSystem(ObjectSnappingSystem())
-            addSystem(OverlayPositioningSystem())
-            addSystem(RoundedPlatformsSystem())
+            addSystem(GridRenderingSystem(context))
+            addSystem(ObjectSnappingSystem(context))
+            addSystem(OverlayPositioningSystem(context))
+            addSystem(RoundedPlatformsSystem(context))
             addSystem(RotatingIndicatorSystem())
             addSystem(ColorSyncSystem())
-            addSystem(DashedLineRenderingSystem())
-            addSystem(ImageRenderingSystem())
-            addSystem(OverlayRenderingSystem())
-            addSystem(DebugRenderingSystem())
+            addSystem(DashedLineRenderingSystem(context))
+            addSystem(FadeOutFadeInSystem(context))
+            addSystem(ImageRenderingSystem(context))
+            addSystem(OverlayRenderingSystem(context))
+            addSystem(DebugRenderingSystem(context))
 //            addSystem(PhysicsDebugRenderingSystem())
         }
     }
 
     private fun getLastEditedString(fileNameWithoutExtension: String): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())
-        val levelDate = formatter.parse(fileNameWithoutExtension)
-        val currentDate = Date(TimeUtils.millis())
+        try {
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())
+            val levelDate = formatter.parse(fileNameWithoutExtension)
+            val currentDate = Date(TimeUtils.millis())
 
-        val diffInMills = Math.abs(currentDate.time - levelDate.time)
-        val diffInYears = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 365
-        val diffInMonths = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 30
-        val diffInWeeks = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 7
-        val diffInDays = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS)
-        val diffInHours = TimeUnit.HOURS.convert(diffInMills, TimeUnit.MILLISECONDS)
-        val diffInMinutes = TimeUnit.MINUTES.convert(diffInMills, TimeUnit.MILLISECONDS)
-        val diffInSeconds = TimeUnit.SECONDS.convert(diffInMills, TimeUnit.MILLISECONDS)
+            val diffInMills = Math.abs(currentDate.time - levelDate.time)
+            val diffInYears = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 365
+            val diffInMonths = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 30
+            val diffInWeeks = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 7
+            val diffInDays = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS)
+            val diffInHours = TimeUnit.HOURS.convert(diffInMills, TimeUnit.MILLISECONDS)
+            val diffInMinutes = TimeUnit.MINUTES.convert(diffInMills, TimeUnit.MILLISECONDS)
+            val diffInSeconds = TimeUnit.SECONDS.convert(diffInMills, TimeUnit.MILLISECONDS)
 
-        return when {
-            diffInYears != 0L -> "$diffInYears year${if (diffInYears > 1) "s" else ""} ago"
-            diffInMonths != 0L -> "$diffInMonths month${if (diffInMonths > 1) "s" else ""} ago"
-            diffInWeeks != 0L -> "$diffInWeeks week${if (diffInWeeks > 1) "s" else ""} ago"
-            diffInDays != 0L -> "$diffInDays day${if (diffInDays > 1) "s" else ""} ago"
-            diffInHours != 0L -> "$diffInHours hour${if (diffInHours > 1) "s" else ""} ago"
-            diffInMinutes != 0L -> "$diffInMinutes minute${if (diffInMinutes > 1) "s" else ""} ago"
-            else -> "$diffInSeconds second${if (diffInSeconds > 1) "s" else ""} ago"
+            return when {
+                diffInYears != 0L -> "$diffInYears year${if (diffInYears > 1) "s" else ""} ago"
+                diffInMonths != 0L -> "$diffInMonths month${if (diffInMonths > 1) "s" else ""} ago"
+                diffInWeeks != 0L -> "$diffInWeeks week${if (diffInWeeks > 1) "s" else ""} ago"
+                diffInDays != 0L -> "$diffInDays day${if (diffInDays > 1) "s" else ""} ago"
+                diffInHours != 0L -> "$diffInHours hour${if (diffInHours > 1) "s" else ""} ago"
+                diffInMinutes != 0L -> "$diffInMinutes minute${if (diffInMinutes > 1) "s" else ""} ago"
+                else -> "$diffInSeconds second${if (diffInSeconds > 1) "s" else ""} ago"
+            }
+        } catch (e: ParseException) {
+            return "ERROR ago"
         }
     }
 
@@ -614,11 +628,13 @@ class LevelEditorScreen(
 
     private fun createLoadLevelRowLeft(mapFactory: MapFactory, lastEditedString: String) = Table(skin).apply {
         val levelIdLabel = DistanceFieldLabel(
-            "Level #${mapFactory.id}", skin, "bold",
+            context,
+            "Level #${mapFactory.id}", skin, "regular",
             57f, Colors.gameColor
         )
         val lastEditedLabel = DistanceFieldLabel(
-            lastEditedString, skin, "extra-bold",
+            context,
+            lastEditedString, skin, "regular",
             37f, Colors.gameColor
         )
         add(levelIdLabel).grow().left().row()
@@ -643,7 +659,7 @@ class LevelEditorScreen(
                     textLabel.setText("Are you sure you want to load the level #${mapFactory.id}?")
                     uiStage.addActor(this)
                     yesClickRunnable = Runnable {
-                        levelEntity.map.loadMap(mapFactory, playerEntity, finishEntity, true)
+                        levelEntity.map.loadMap(context, mapFactory, playerEntity, finishEntity, true)
                         centerCameraOnPlayer()
                         hideSettingsPopUp = true
                         isEditingNewLevel = false
@@ -701,7 +717,7 @@ class LevelEditorScreen(
 
     private fun createMinusPaddingPlus(paddingName: String) = Table(skin).apply {
         val paddingValueLabel =
-            DistanceFieldLabel("${getPaddingFromName(paddingName)}", skin, "bold", 65f, Colors.gameColor)
+            DistanceFieldLabel(context, "${getPaddingFromName(paddingName)}", skin, "regular", 65f, Colors.gameColor)
         val minusButton = ClickButton(skin, "small-round-button").apply {
             addIcon("small-minus-icon")
             setColors(Colors.gameColor, Colors.uiDownColor)
@@ -733,8 +749,8 @@ class LevelEditorScreen(
         add(createMinusPaddingPlus("bottom")).growX().expand().bottom()
     }
 
-    private fun createCameraPopUp() = PopUp(590f, 530f, skin).apply {
-        val title = DistanceFieldLabel("Padding", skin, "bold", 70f, Colors.gameColor)
+    private fun createCameraPopUp() = PopUp(context, 590f, 530f, skin).apply {
+        val title = DistanceFieldLabel(context, "Padding", skin, "regular", 70f, Colors.gameColor)
         widget.run {
             pad(40f)
             add(title).top().colspan(2).row()
@@ -743,7 +759,7 @@ class LevelEditorScreen(
         }
     }
 
-    private fun createLoadLevelPopUp() = PopUp(520f, 500f, skin).apply {
+    private fun createLoadLevelPopUp() = PopUp(context, 520f, 500f, skin).apply {
         val scrollPane = ScrollPane(createLoadLevelTable(430f)).apply {
             setupOverscroll(50f, 80f, 200f)
         }
@@ -831,7 +847,9 @@ class LevelEditorScreen(
     }
 
     override fun resize(width: Int, height: Int) {
-        gameViewport.update(width, height, true)
+        gameViewport.update(width, height, false)
+        uiViewport.update(width, height, false)
+        overlayViewport.update(width, height, false)
     }
 
     override fun hide() {

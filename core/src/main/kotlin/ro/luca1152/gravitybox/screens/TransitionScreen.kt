@@ -19,30 +19,35 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.app.KtxScreen
+import ktx.inject.Context
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Transitions to the [nextScreen] with a fade animation.. */
 class TransitionScreen(
+    context: Context,
     private val nextScreen: Class<out KtxScreen>,
     private val fadeOutCurrentScreen: Boolean = true,
-    private val game: MyGame = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get(),
-    private val overlayStage: OverlayStage = Injekt.get(),
-    private val engine: PooledEngine = Injekt.get()
+    private val clearScreenWithBlack: Boolean = false
 ) : KtxScreen {
-    companion object {
-        private const val FADE_DURATION = .5f
-    }
+    // Injected objects
+    private val game: MyGame = context.inject()
+    private val uiStage: UIStage = context.inject()
+    private val gameStage: GameStage = context.inject()
+    private val overlayStage: OverlayStage = context.inject()
+    private val gameViewport: GameViewport = context.inject()
+    private val uiViewport: UIViewport = context.inject()
+    private val overlayViewport: OverlayViewport = context.inject()
+    private val engine: PooledEngine = context.inject()
 
-    private var transitionScreenIsHidden = false
+    private val previousScreen = game.shownScreen
     private var currentScreen = game.shownScreen
+    private val fadeDuration = .5f
+    private var transitionScreenIsHidden = false
     private val finishedFadingOut
         get() = uiStage.root.actions.size == 0
 
@@ -50,48 +55,57 @@ class TransitionScreen(
         if (currentScreen !is TransitionScreen) {
             Gdx.input.inputProcessor = null
             fadeOutEverything()
-            game.transitionOldScreen = currentScreen
         }
     }
 
     private fun fadeOutEverything() {
         if (fadeOutCurrentScreen) {
-            uiStage.addAction(Actions.fadeOut(FADE_DURATION))
-            gameStage.addAction(Actions.fadeOut(FADE_DURATION))
-            overlayStage.addAction(Actions.fadeOut(FADE_DURATION))
+            uiStage.addAction(Actions.fadeOut(fadeDuration))
+            gameStage.addAction(Actions.fadeOut(fadeDuration))
+            overlayStage.addAction(Actions.fadeOut(fadeDuration))
         }
     }
 
     override fun render(delta: Float) {
         update()
-        clearScreen(Colors.bgColor)
+        clearScreen(if (clearScreenWithBlack) Color.BLACK else Colors.bgColor)
         if (!transitionScreenIsHidden && currentScreen !is TransitionScreen) {
             currentScreen.render(delta)
         } else if (currentScreen is TransitionScreen) {
-            game.transitionOldScreen!!.render(delta)
+            previousScreen.render(delta)
         }
     }
 
     private fun update() {
         Colors.lerpTowardsDefaultColors(.1f)
         if (finishedFadingOut || !fadeOutCurrentScreen) {
-            Colors.resetAllColors()
-            uiStage.clear()
-            gameStage.clear()
-            overlayStage.clear()
-            engine.clear()
+            cleanUp()
             game.setScreen(nextScreen)
             fadeInEverything()
         }
+    }
+
+    private fun cleanUp() {
+        uiStage.clear()
+        gameStage.clear()
+        overlayStage.clear()
+        engine.clear()
+        Colors.resetAllColors()
     }
 
     private fun fadeInEverything() {
         uiStage.addAction(Actions.fadeOut(0f))
         gameStage.addAction(Actions.fadeOut(0f))
         overlayStage.addAction(Actions.fadeOut(0f))
-        uiStage.addAction(Actions.fadeIn(FADE_DURATION))
-        gameStage.addAction(Actions.fadeIn(FADE_DURATION))
-        overlayStage.addAction(Actions.fadeIn(FADE_DURATION))
+        uiStage.addAction(Actions.fadeIn(fadeDuration))
+        gameStage.addAction(Actions.fadeIn(fadeDuration))
+        overlayStage.addAction(Actions.fadeIn(fadeDuration))
+    }
+
+    override fun resize(width: Int, height: Int) {
+        gameViewport.update(width, height, false)
+        uiViewport.update(width, height, false)
+        overlayViewport.update(width, height, false)
     }
 
     override fun hide() {

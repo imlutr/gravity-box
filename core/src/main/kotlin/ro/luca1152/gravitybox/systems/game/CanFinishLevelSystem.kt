@@ -20,20 +20,20 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.ashley.core.Family
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Handles when a level can be finished (only when all the points, if any, were collected) */
-class CanFinishLevelSystem : EntitySystem() {
+class CanFinishLevelSystem(private val context: Context) : EntitySystem() {
     private lateinit var levelEntity: Entity
     private lateinit var finishEntity: Entity
     private val levelHasCollectiblePoints
-        get() = engine.getEntitiesFor(Family.all(CollectiblePointComponent::class.java).get()).size() > 0
+        get() = levelEntity.map.pointsCount > 0
     private val canFinishLevel
-        get() = !engine.getEntitiesFor(Family.all(CollectiblePointComponent::class.java).get()).any { !it.collectiblePoint.isCollected }
+        get() = levelEntity.map.collectedPointsCount == levelEntity.map.pointsCount
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
@@ -41,9 +41,7 @@ class CanFinishLevelSystem : EntitySystem() {
     }
 
     override fun update(deltaTime: Float) {
-        if (!levelHasCollectiblePoints) {
-            return
-        }
+        if (!levelHasCollectiblePoints) return
         handleCollectiblePoints()
     }
 
@@ -57,7 +55,7 @@ class CanFinishLevelSystem : EntitySystem() {
             levelEntity.level.canFinish = false
         } else if (!levelEntity.level.canFinish && canFinishLevel) {
             if (finishEntity.tryGet(FadeInFadeOutComponent) == null) {
-                finishEntity.fadeInFadeOut(finishEntity.scene2D)
+                finishEntity.fadeInFadeOut(context, finishEntity.scene2D)
             }
             levelEntity.level.canFinish = true
         }

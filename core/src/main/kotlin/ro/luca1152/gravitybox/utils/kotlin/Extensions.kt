@@ -24,19 +24,14 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Polygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.physics.box2d.Body
-import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxGame
 import ktx.app.clearScreen
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.engine
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Linearly interpolates to the target values. */
 fun Vector3.lerp(targetX: Float, targetY: Float, targetZ: Float = 0f, progress: Float): Vector3 {
@@ -57,22 +52,11 @@ fun Color.setWithoutAlpha(color: Color) {
     this.b = color.b
 }
 
-private val bodyArray: Array<Body> = Array()
-val World.bodies: Array<Body>
-    get() {
-        getBodies(bodyArray)
-        return bodyArray
-    }
-
-fun screenToWorldCoordinates(screenX: Int, screenY: Int, gameCamera: GameCamera = Injekt.get()): Vector3 {
+fun screenToWorldCoordinates(context: Context, screenX: Int, screenY: Int): Vector3 {
+    val gameCamera: GameCamera = context.inject()
     val coords = Vector3(screenX.toFloat(), screenY.toFloat(), 0f)
     gameCamera.unproject(coords)
     return coords
-}
-
-fun Stage.hitScreen(screenX: Int, screenY: Int, touchable: Boolean = true): Actor? {
-    val stageCoords = screenToStageCoordinates(Vector2(screenX.toFloat(), screenY.toFloat()))
-    return hit(stageCoords.x, stageCoords.y, touchable)
 }
 
 fun Float.roundToNearest(nearest: Float, threshold: Float, startingValue: Float = 0f): Float {
@@ -107,7 +91,8 @@ inline fun <reified T : Component> Engine.getSingleton(): Entity {
     return entity
 }
 
-inline fun <reified T : Component> createComponent(): T {
+inline fun <reified T : Component> createComponent(context: Context): T {
+    val engine: PooledEngine = context.inject()
     return engine.createComponent(T::class.java)
 }
 
@@ -137,20 +122,6 @@ fun Engine.clear() {
  * Otherwise, it returns null.
  */
 fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>): T? = componentResolver[this]
-
-/** Removes the [entity] from the engine and resets each of its components. */
-fun Engine.removeAndResetEntity(entity: Entity) {
-    // Reset every component so you don't have to manually reset them for
-    // each entity, such as calling world.destroyBody(entity.body.body).
-    for (component in entity.components) {
-        if (component is Poolable)
-            component.reset()
-        entity.remove(component::class.java)
-    }
-
-    // Call the default removeEntity() function
-    this.removeEntity(entity)
-}
 
 fun <Type : Screen> KtxGame<Type>.setScreen(screen: Type) {
     if (containsScreen(screen.javaClass)) {
@@ -227,13 +198,11 @@ inline fun <T> Iterable<T>.filterNullableSingleton(predicate: (T) -> Boolean): T
     }
 }
 
-fun Entity.addToEngine(): Entity {
+fun Entity.addToEngine(context: Context): Entity {
+    val engine: PooledEngine = context.inject()
+
     engine.addEntity(this)
     return this
 }
 
-fun newEntity() = engine.createEntity()!!
-
-fun Color.isEqualWithoutAlphaTo(color: Color): Boolean {
-    return this.r == color.r && this.g == color.g && this.b == color.b
-}
+fun newEntity(context: Context) = context.inject<PooledEngine>().createEntity()!!

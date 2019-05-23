@@ -11,7 +11,7 @@ This is the mobile port of my [Game Maker's Toolkit Jam 2018](https://itch.io/ja
 - [Kotlin](https://kotlinlang.org/) - The language used
 - [libGDX](https://libgdx.badlogicgames.com/) - The game framework used
 - [Ashley](https://github.com/libgdx/ashley/wiki) - Entity Component System library
-- [Injekt](https://github.com/kohesive/injekt) - Dependency Injection for Kotlin
+- [libKTX.inject](https://github.com/libktx/ktx/tree/master/inject) - Lightweight dependency injection library
 - [Box2D](https://github.com/libgdx/libgdx/wiki/Box2d) - 2D physics library
 - [libKTX](https://github.com/libktx/ktx) - Kotlin extensions for libGDX
 
@@ -20,4 +20,6 @@ Windows: `gradlew desktop:run`
 Linux / macOS: `./gradlew desktop:run`
 
 ## License
-This project is licensed under the GNU General Public License v3.0 License - see the [LICENSE](https://github.com/Luca1152/gravity-box/blob/master/LICENSE) file for details.
+All code is licensed under the GNU General Public License v3.0 License - see the [LICENSE](https://github.com/Luca1152/gravity-box/blob/master/LICENSE) file for details.
+
+All assets including graphics, sounds, icons and maps are licensed under the [Creative Commons BY-NC 4.0 license](https://creativecommons.org/licenses/by-nc/4.0/legalcode) unless otherwise indicated.

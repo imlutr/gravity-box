@@ -38,7 +38,7 @@ class FinishPointColorSystem : IntervalSystem(1 / 70f) {
     private lateinit var levelEntity: Entity
 
     private val targetGameColor: Color
-        get() = when (playerEntity.player.isInsideFinishPoint) {
+        get() = when (playerEntity.player.isInsideFinishPoint && levelEntity.level.canFinish) {
             true -> when (Colors.useDarkTheme) {
                 true -> Colors.LightTheme.game57
                 false -> Colors.DarkTheme.game95
@@ -50,7 +50,7 @@ class FinishPointColorSystem : IntervalSystem(1 / 70f) {
         }
 
     private val targetBgColor: Color
-        get() = when (playerEntity.player.isInsideFinishPoint) {
+        get() = when (playerEntity.player.isInsideFinishPoint && levelEntity.level.canFinish) {
             true -> when (Colors.useDarkTheme) {
                 true -> Colors.LightTheme.game91
                 false -> Colors.DarkTheme.game20
@@ -67,9 +67,7 @@ class FinishPointColorSystem : IntervalSystem(1 / 70f) {
     }
 
     override fun updateInterval() {
-        if (!levelEntity.level.canFinish && playerEntity.player.isInsideFinishPoint) {
-            return
-        }
+        if (Colors.isDirty) return
         lerpColors()
     }
 

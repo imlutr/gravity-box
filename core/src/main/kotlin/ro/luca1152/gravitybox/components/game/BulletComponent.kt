@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
@@ -41,5 +42,5 @@ class BulletComponent : Component, Poolable {
 val Entity.bullet: BulletComponent
     get() = BulletComponent[this]
 
-fun Entity.bullet() =
-    add(createComponent<BulletComponent>())!!
+fun Entity.bullet(context: Context) =
+    add(createComponent<BulletComponent>(context))!!

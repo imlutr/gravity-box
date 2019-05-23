@@ -21,13 +21,19 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.UndoRedoComponent
 import ro.luca1152.gravitybox.components.editor.undoRedo
 import ro.luca1152.gravitybox.components.game.MapComponent
-import ro.luca1152.gravitybox.components.game.map
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
-class UndoRedoSystem : IteratingSystem(Family.all(UndoRedoComponent::class.java).get()) {
+class UndoRedoSystem(context: Context) : IteratingSystem(Family.all(UndoRedoComponent::class.java).get()) {
+    // Injected objects
+    private val eventQueue: EventQueue = context.inject()
+
+    // Entities
     private lateinit var mapEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
@@ -46,7 +52,7 @@ class UndoRedoSystem : IteratingSystem(Family.all(UndoRedoComponent::class.java)
             commandToUndo.unexecute()
             entity.undoRedo.commandsToRedo.push(commandToUndo)
             entity.undoRedo.levelsToUndo--
-            mapEntity.map.updateRoundedPlatforms = true
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 
@@ -56,7 +62,7 @@ class UndoRedoSystem : IteratingSystem(Family.all(UndoRedoComponent::class.java)
             commandToRedo.execute()
             entity.undoRedo.commandsToUndo.push(commandToRedo)
             entity.undoRedo.levelsToRedo--
-            mapEntity.map.updateRoundedPlatforms = true
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 }

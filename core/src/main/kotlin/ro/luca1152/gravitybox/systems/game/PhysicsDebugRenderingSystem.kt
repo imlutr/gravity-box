@@ -27,21 +27,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.GameViewport
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 @Suppress("LibGDXFlushInsideLoop", "unused")
 /** Renders Box2D debug shapes. */
-class PhysicsDebugRenderingSystem(
-    private val world: World = Injekt.get(),
-    private val shapeRenderer: ShapeRenderer = Injekt.get(),
-    private val gameViewport: GameViewport = Injekt.get(),
-    private val gameCamera: GameCamera = Injekt.get()
-) : EntitySystem() {
+class PhysicsDebugRenderingSystem(context: Context) : EntitySystem() {
+    private val world: World = context.inject()
+    private val shapeRenderer: ShapeRenderer = context.inject()
+    private val gameViewport: GameViewport = context.inject()
+    private val gameCamera: GameCamera = context.inject()
     private val b2DDebugRenderer = Box2DDebugRenderer()
 
     override fun addedToEngine(engine: Engine?) {
@@ -65,10 +63,8 @@ class PhysicsDebugRenderingSystem(
     private fun drawXAtOrigins() {
         shapeRenderer.set(ShapeRenderer.ShapeType.Line)
         for (entity in engine.getEntitiesFor(Family.all(BodyComponent::class.java).get())) {
-            if (!entity.body.isInitialized) {
-                return
-            }
-            val body = entity.body.body
+            if (entity.body.body == null) return
+            val body = entity.body.body!!
             if (body.type == BodyDef.BodyType.DynamicBody && body.userData != null) {
                 (body.userData as Entity).run {
                     when {

@@ -26,6 +26,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Array
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.FinishEntity
@@ -33,20 +34,23 @@ import ro.luca1152.gravitybox.screens.LevelEditorScreen
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
-import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.kotlin.UIStage
+import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Makes edited levels playable. */
 class PlayingSystem(
-    private val levelEditorScreen: LevelEditorScreen,
-    manager: AssetManager = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get(),
-    private val world: World = Injekt.get()
+    private val context: Context,
+    private val levelEditorScreen: LevelEditorScreen
 ) : EntitySystem() {
+    private val manager: AssetManager = context.inject()
+    private val uiStage: UIStage = context.inject()
+    private val world: World = context.inject()
     private val skin = manager.get(Assets.uiSkin)
+
     private val backButton = ClickButton(skin, "small-button").apply {
         addIcon("back-icon")
         iconCell!!.padLeft(-5f) // The back icon doesn't LOOK centered (even though it is)
@@ -99,15 +103,20 @@ class PlayingSystem(
         showPlayUI()
         updateMapBounds()
         makeEveryObjectOpaque()
+        resetCollectedPointsCount()
+    }
+
+    private fun resetCollectedPointsCount() {
+        levelEntity.map.collectedPointsCount = 0
     }
 
     private fun setOwnBox2DContactListener() {
-        world.setContactListener(WorldContactListener())
+        world.setContactListener(WorldContactListener(context))
     }
 
     private fun makeFinishPointEndlesslyBlink() {
         if (levelEntity.level.canFinish) {
-            finishEntity.fadeInFadeOut(finishEntity.scene2D)
+            finishEntity.fadeInFadeOut(context, finishEntity.scene2D)
         } else {
             finishEntity.scene2D.color.a = FinishEntity.FINISH_BLOCKED_ALPHA
         }
@@ -116,7 +125,7 @@ class PlayingSystem(
     private fun makePointsEndlesslyBlink() {
         engine.getEntitiesFor(Family.all(CollectiblePointComponent::class.java).get()).forEach {
             if (it.tryGet(FadeInFadeOutComponent) == null) {
-                it.fadeInFadeOut(it.scene2D)
+                it.fadeInFadeOut(context, it.scene2D)
             }
         }
     }
@@ -163,31 +172,33 @@ class PlayingSystem(
 
     private fun addPlaySystems() {
         engine.run {
-            addSystem(MapBodiesCreationSystem())
-            addSystem(CombinedBodiesCreationSystem())
+            addSystem(MapBodiesCreationSystem(context))
+            addSystem(CombinedBodiesCreationSystem(context))
+            addSystem(PhysicsSystem(context))
             addSystem(ObjectMovementSystem())
-            addSystem(PhysicsSystem())
+            addSystem(RefilterSystem())
             addSystem(PhysicsSyncSystem())
-            addSystem(LevelRestartSystem())
-            addSystem(ShootingSystem())
-            addSystem(BulletCollisionSystem())
+            addSystem(LevelRestartSystem(context))
+            addSystem(ShootingSystem(context))
+            addSystem(BulletCollisionSystem(context))
             addSystem(PlatformRemovalSystem())
             addSystem(OffScreenLevelRestartSystem())
-            addSystem(OffScreenBulletDeletionSystem())
-            addSystem(KeyboardLevelRestartSystem())
+            addSystem(OffScreenBulletDeletionSystem(context))
+            addSystem(KeyboardLevelRestartSystem(context))
             addSystem(LevelFinishDetectionSystem())
             addSystem(PointsCollectionSystem())
-            addSystem(LevelFinishSystem(restartLevelWhenFinished = true))
+            addSystem(LevelFinishSystem(context, restartLevelWhenFinished = true))
             addSystem(FinishPointColorSystem())
             addSystem(SelectedObjectColorSystem())
-            addSystem(RoundedPlatformsSystem())
+            addSystem(RoundedPlatformsSystem(context))
             addSystem(ColorSyncSystem())
-            addSystem(CanFinishLevelSystem())
-            addSystem(PlayerCameraSystem())
-            addSystem(UpdateGameCameraSystem())
-            addSystem(ImageRenderingSystem())
-//            addSystem(PhysicsDebugRenderingSystem())
-            addSystem(DebugRenderingSystem())
+            addSystem(CanFinishLevelSystem(context))
+            addSystem(PlayerCameraSystem(context))
+            addSystem(UpdateGameCameraSystem(context))
+            addSystem(FadeOutFadeInSystem(context))
+            addSystem(ImageRenderingSystem(context))
+//            addSystem(PhysicsDebugRenderingSystem(context))
+            addSystem(DebugRenderingSystem(context))
         }
     }
 
@@ -201,7 +212,9 @@ class PlayingSystem(
 
     private fun makeEveryObjectOpaque() {
         engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
-            it.scene2D.color.a = 1f
+            if (it.tryGet(Scene2DComponent) != null) {// Crashes if I don't check..
+                it.scene2D.color.a = 1f
+            }
         }
     }
 
@@ -221,7 +234,8 @@ class PlayingSystem(
         resetDestroyablePlatforms(engine)
         resetCollectiblePoints(engine)
         levelEditorScreen.addGameSystems()
-        makeEveryObjectTransparent(engine)
+        resetCollectedPointsCount()
+        levelEntity.map.resetPassengers()
     }
 
     private fun hidePlayUI() {
@@ -280,7 +294,7 @@ class PlayingSystem(
             entitiesToRemove.add(it)
         }
         entitiesToRemove.forEach {
-            engine.removeAndResetEntity(it)
+            engine.removeEntity(it)
         }
     }
 
@@ -293,7 +307,7 @@ class PlayingSystem(
             if (it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) {
                 it.scene2D.isVisible = true
                 it.destroyablePlatform.isRemoved = false
-                it.body()
+                it.body(context)
             }
         }
     }
@@ -319,12 +333,6 @@ class PlayingSystem(
                     isTouchable = true
                 }
             }
-        }
-    }
-
-    private fun makeEveryObjectTransparent(engine: Engine) {
-        engine.getEntitiesFor(Family.all(EditorObjectComponent::class.java).get()).forEach {
-            it.scene2D.color.a = LevelEditorScreen.OBJECTS_COLOR_ALPHA
         }
     }
 }

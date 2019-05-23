@@ -33,15 +33,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool.Poolable
-import com.badlogic.gdx.utils.Pools
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.getRectangleCenter
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
-class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Component, Poolable {
+@Suppress("MemberVisibilityCanBePrivate")
+class Scene2DComponent : Component, Poolable {
     val group = object : Group() {
         // The default implementation of Group's hit() is to return the children
         // However, I want to return the group only, treating the object as a whole
@@ -152,6 +151,7 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
     }
 
     fun addNinePatch(
+        context: Context,
         ninePatch: NinePatch,
         centerX: Float = 0f, centerY: Float = 0f,
         width: Float = 0f, height: Float = 0f,
@@ -160,6 +160,7 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
     ): Image {
         ninePatch.scale(1 / PPM, 1 / PPM)
         return addImage(
+            context,
             NinePatchDrawable(ninePatch),
             centerX, centerY,
             width, height,
@@ -169,6 +170,7 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
     }
 
     fun addImage(
+        context: Context,
         textureRegion: TextureRegion,
         centerX: Float = 0f, centerY: Float = 0f,
         width: Float = 0f, height: Float = 0f,
@@ -179,16 +181,28 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
             minWidth /= PPM
             minHeight /= PPM
         }
-        return addImage(textureRegionDrawable, centerX, centerY, width, height, rotation, appendWidth, appendHeight)
+        return addImage(
+            context,
+            textureRegionDrawable,
+            centerX,
+            centerY,
+            width,
+            height,
+            rotation,
+            appendWidth,
+            appendHeight
+        )
     }
 
     private fun addImage(
+        context: Context,
         drawable: Drawable,
         centerX: Float = 0f, centerY: Float = 0f,
         width: Float = 0f, height: Float = 0f,
         rotation: Float = 0f,
         appendWidth: Boolean = true, appendHeight: Boolean = true
     ): Image {
+        val gameStage: GameStage = context.inject()
         val image = Image(drawable).apply {
             if (width != 0f && height != 0f) {
                 setSize(width, height)
@@ -225,19 +239,18 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
     }
 
     fun toBody(
+        context: Context,
         bodyType: BodyDef.BodyType,
         categoryBits: Short,
         maskBits: Short,
         density: Float = 1f,
         friction: Float = 0.2f,
-        trimSize: Float = 0f,
-        world: World = Injekt.get()
+        trimSize: Float = 0f
     ): Body {
-        val bodyDef = Pools.obtain(BodyDef::class.java).apply {
+        val world: World = context.inject()
+        val bodyDef = BodyDef().apply {
             type = bodyType
-            position.set(0f, 0f)
-            fixedRotation = false
-            bullet = false
+            bullet = bodyType == BodyDef.BodyType.DynamicBody
         }
         val polygonShape = PolygonShape().apply {
             setAsBox(width / 2f - trimSize, height / 2f - trimSize)
@@ -253,7 +266,6 @@ class Scene2DComponent(private val gameStage: GameStage = Injekt.get()) : Compon
             createFixture(fixtureDef)
             setTransform(centerX, centerY, rotation.toRadians)
             polygonShape.dispose()
-            Pools.free(bodyDef)
         }
     }
 
@@ -296,38 +308,41 @@ val Entity.scene2D: Scene2DComponent
     get() = Scene2DComponent[this]
 
 
-fun Entity.scene2D() =
-    add(createComponent<Scene2DComponent>().apply {
+fun Entity.scene2D(context: Context) =
+    add(createComponent<Scene2DComponent>(context).apply {
         userObject = this@scene2D
     })!!
 
 fun Entity.scene2D(
+    context: Context,
     ninePatch: NinePatch,
     centerX: Float = 0f, centerY: Float = 0f,
     width: Float = 0f, height: Float = 0f,
     rotation: Float = 0f
-) = add(createComponent<Scene2DComponent>().apply {
-    addNinePatch(ninePatch, centerX, centerY, width, height, rotation)
+) = add(createComponent<Scene2DComponent>(context).apply {
+    addNinePatch(context, ninePatch, centerX, centerY, width, height, rotation)
     userObject = this@scene2D
 })!!
 
 fun Entity.scene2D(
+    context: Context,
     textureRegion: TextureRegion,
     centerX: Float = 0f, centerY: Float = 0f,
     width: Float = 0f, height: Float = 0f,
     rotation: Float = 0f
 ) =
-    add(createComponent<Scene2DComponent>().apply {
-        addImage(textureRegion, centerX, centerY, width, height, rotation)
+    add(createComponent<Scene2DComponent>(context).apply {
+        addImage(context, textureRegion, centerX, centerY, width, height, rotation)
         userObject = this@scene2D
     })!!
 
 fun Entity.scene2D(
+    context: Context,
     centerX: Float = 0f, centerY: Float = 0f,
     width: Float = 0f, height: Float = 0f,
     rotation: Float = 0f
 ) =
-    add(createComponent<Scene2DComponent>().apply {
+    add(createComponent<Scene2DComponent>(context).apply {
         this.width = width
         this.height = height
         this.centerX = centerX

@@ -20,14 +20,12 @@ package ro.luca1152.gravitybox.entities.game
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.physics.box2d.*
-import com.badlogic.gdx.utils.Pools
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 object BulletEntity {
     private const val WIDTH = .15f
@@ -36,39 +34,40 @@ object BulletEntity {
     private val MASK_BITS = EntityCategory.PLATFORM.bits
 
     fun createEntity(
-        x: Float, y: Float,
-        manager: AssetManager = Injekt.get()
-    ) = newEntity().apply {
-        bullet()
-        body(createBulletBody(x, y, this), CATEGORY_BITS, MASK_BITS)
-        scene2D(manager.get(Assets.tileset).findRegion("bullet"), x, y)
-        color(ColorType.DARK)
-        addToEngine()
+        context: Context,
+        x: Float, y: Float
+    ) = newEntity(context).apply {
+        val manager: AssetManager = context.inject()
+        bullet(context)
+        body(context, createBulletBody(context, x, y, this), CATEGORY_BITS, MASK_BITS)
+        scene2D(context, manager.get(Assets.tileset).findRegion("bullet"), x, y)
+        color(context, ColorType.DARK)
+        addToEngine(context)
     }
 
     private fun createBulletBody(
+        context: Context,
         x: Float, y: Float,
-        userData: Entity,
-        world: World = Injekt.get()
+        userData: Entity
     ): Body {
-        val bodyDef = Pools.obtain(BodyDef::class.java).apply {
+        val world: World = context.inject()
+        val bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
             position.set(x, y)
             bullet = true
-            fixedRotation = false
+        }
+        val polygonShape = PolygonShape().apply {
+            setAsBox(WIDTH, HEIGHT)
         }
         val fixtureDef = FixtureDef().apply {
-            shape = PolygonShape().apply {
-                setAsBox(WIDTH, HEIGHT)
-            }
+            shape = polygonShape
             density = .2f
             filter.categoryBits = EntityCategory.BULLET.bits
             filter.maskBits = EntityCategory.PLATFORM.bits
         }
         return world.createBody(bodyDef).apply {
-            Pools.free(bodyDef)
             createFixture(fixtureDef)
-            fixtureDef.shape.dispose()
+            polygonShape.dispose()
             gravityScale = .5f
             this.userData = userData
         }

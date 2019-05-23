@@ -17,14 +17,19 @@
 
 package ro.luca1152.gravitybox.entities.game
 
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
 
 object LevelEntity {
-    fun createEntity(levelId: Int = 0) = newEntity()
-        .level(levelId)
-        .map(levelId)
-        .addToEngine()
+    fun createEntity(
+        context: Context,
+        levelId: Int = 0,
+        hue: Int = 180
+    ) = newEntity(context)
+        .level(context, levelId)
+        .map(context, levelId, hue)
+        .addToEngine(context)
 }

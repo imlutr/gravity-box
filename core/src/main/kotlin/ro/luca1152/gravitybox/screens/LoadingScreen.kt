@@ -20,35 +20,48 @@ package ro.luca1152.gravitybox.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
+import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import ktx.app.KtxGame
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.app.KtxScreen
 import ktx.assets.load
+import ktx.inject.Context
 import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.assets.loaders.TextLoader
-import ro.luca1152.gravitybox.utils.kotlin.UIStage
-import ro.luca1152.gravitybox.utils.kotlin.clearScreen
-import ro.luca1152.gravitybox.utils.kotlin.setScreen
-import ro.luca1152.gravitybox.utils.ui.Colors
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import ro.luca1152.gravitybox.utils.kotlin.*
 
-class LoadingScreen(
-    private val manager: AssetManager = Injekt.get(),
-    private val game: MyGame = Injekt.get(),
-    private val uiStage: UIStage = Injekt.get()
-) : KtxScreen {
+class LoadingScreen(private val context: Context) : KtxScreen {
+    // Injected objects
+    private val manager: AssetManager = context.inject()
+    private val game: MyGame = context.inject()
+    private val uiStage: UIStage = context.inject()
+    private val gameViewport: GameViewport = context.inject()
+    private val uiViewport: UIViewport = context.inject()
+    private val overlayViewport: OverlayViewport = context.inject()
+
     private var loadingAssetsTimer = 0f
+    private var loadedEditorMaps = false
     private val finishedLoadingAssets
         get() = manager.update()
+    private val gravityBoxText = Image(Texture(Gdx.files.internal("graphics/gravity-box-text.png")).apply {
+        setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+    }).apply {
+        x = uiViewport.worldWidth / 2f - prefWidth / 2f
+        y = uiViewport.worldHeight / 2f - prefHeight / 2f
+    }
 
     override fun show() {
+        showSplashScreen()
         loadGraphics()
-        loadMaps()
+        loadGameMaps()
+    }
+
+    private fun showSplashScreen() {
+        uiStage.addActor(gravityBoxText)
     }
 
     private fun loadGraphics() {
@@ -58,59 +71,63 @@ class LoadingScreen(
         }
     }
 
-    private fun loadMaps() {
-        manager.setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
-        loadGameMaps()
-    }
-
     private fun loadGameMaps() {
+        manager.setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
         for (i in 1..MyGame.LEVELS_NUMBER) {
             manager.load<Text>("maps/game/map-$i.json")
         }
     }
 
+    override fun render(delta: Float) {
+        update(delta)
+        clearScreen(Color.BLACK)
+        uiStage.draw()
+    }
+
+    private fun update(delta: Float) {
+        loadingAssetsTimer += delta
+        if (finishedLoadingAssets) {
+            // The editor maps are loaded after because they use a different loader, as they are stored locally,
+            // not internally, and the AssetManager doesn't support two loaders for a class
+            if (!loadedEditorMaps) {
+                loadEditorMaps()
+                loadedEditorMaps = true
+                return
+            } else {
+                logLoadingTime()
+                addScreens()
+                showPlayScreen()
+            }
+        }
+    }
+
     private fun loadEditorMaps() {
+        manager.setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
         Gdx.files.local("maps/editor").list().forEach {
             manager.load<Text>(it.path())
         }
     }
 
-    override fun render(delta: Float) {
-        update(delta)
-        clearScreen(Colors.bgColor)
-    }
+    private fun logLoadingTime() = info { "Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s." }
 
-    private var finishedLoadingOnce = false
-
-    private fun update(delta: Float) {
-        loadingAssetsTimer += delta
-        uiStage.act()
-        if (finishedLoadingAssets) {
-            if (!finishedLoadingOnce) {
-                finishedLoadingOnce = true
-                loadEditorMaps()
-                return
-            }
-            logLoadingTime()
-            addScreens()
-            game.setScreen(TransitionScreen(PlayScreen::class.java, false))
-        }
-    }
-
-    private fun logLoadingTime() {
-        info { "Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s." }
-    }
-
-    /**
-     * Adds screens to the [KtxGame] so [KtxGame.setScreen] works.
-     *
-     * They are added here and not in [MyGame] because adding a screen automatically initializes it, initialization which
-     * may use assets, such as [Skin]s or [Texture]s.
-     */
+    // They are added here and not in [MyGame] because adding a screen automatically initializes it, initialization which
+    // may use assets, such as [Skin]s or [Texture]s, that are loaded here.
     private fun addScreens() {
         game.run {
-            addScreen(LevelEditorScreen())
-            addScreen(PlayScreen())
+            addScreen(LevelEditorScreen(context))
+            addScreen(PlayScreen(context))
         }
+    }
+
+    private fun showPlayScreen() {
+        game.setScreen(
+            TransitionScreen(context, PlayScreen::class.java, fadeOutCurrentScreen = false, clearScreenWithBlack = true)
+        )
+    }
+
+    override fun resize(width: Int, height: Int) {
+        gameViewport.update(width, height, false)
+        uiViewport.update(width, height, false)
+        overlayViewport.update(width, height, false)
     }
 }

@@ -24,19 +24,18 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.scenes.scene2d.Actor
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.filterNullableSingleton
 import ro.luca1152.gravitybox.utils.kotlin.hitAllScreen
 import ro.luca1152.gravitybox.utils.ui.button.ButtonType
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Selects touched map objects. */
-class ObjectSelectionSystem(
-    private val inputMultiplexer: InputMultiplexer = Injekt.get(),
-    private val gameStage: GameStage = Injekt.get()
-) : EntitySystem() {
+class ObjectSelectionSystem(context: Context) : EntitySystem() {
+    private val inputMultiplexer: InputMultiplexer = context.inject()
+    private val gameStage: GameStage = context.inject()
+
     private lateinit var inputEntity: Entity
     var selectedObject: Entity? = null
 
@@ -50,6 +49,7 @@ class ObjectSelectionSystem(
             touchedActors =
                 gameStage.hitAllScreen(screenX, screenY).filter { isMapObject(it) }.distinctBy { it.userObject }
                     .sortedBy { it.zIndex }
+
             if (touchedActors.isEmpty()) {
                 return false
             }
@@ -59,9 +59,10 @@ class ObjectSelectionSystem(
         }
 
         override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            if (inputEntity.input.isPanning || inputEntity.input.isZooming) {
-                return true
-            }
+            if (inputEntity.input.isPanning || inputEntity.input.isZooming) return true
+
+            // Sometimes (rarely) touchedActors is not initialized and the game crashes :S
+            if (!::touchedActors.isInitialized) return true
 
             if (!touchedActors.any { it.userObject == selectedObject }) {
                 selectedObject?.editorObject?.isSelected = false

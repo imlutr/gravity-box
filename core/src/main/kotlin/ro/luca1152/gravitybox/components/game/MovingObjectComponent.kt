@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ktx.math.minus
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.MockMapObjectComponent
@@ -30,7 +31,8 @@ import ro.luca1152.gravitybox.utils.kotlin.tryGet
 /** Indicates that the map object is moving back an forth to a given position. */
 class MovingObjectComponent : Component, Poolable {
     companion object : ComponentResolver<MovingObjectComponent>(MovingObjectComponent::class.java) {
-        const val SPEED = 1f
+        const val SPEED = 3.5f
+        const val DELAY_BEFORE_SWITCHING_DIRECTION = 5 / 60f // 5 frames
     }
 
     val startPoint = Vector2()
@@ -38,13 +40,16 @@ class MovingObjectComponent : Component, Poolable {
     val startToFinishDirection = Vector2()
     var startToFinishDistance = 0f
     var speed = SPEED
+    var delayBeforeSwitching = 0f
+    var justSwitchedDirection = true
 
     /** If false, it means that the platform is moving back towards the starting point. */
     var isMovingTowardsEndPoint = true
 
-    fun set(platformEntity: Entity, targetX: Float, targetY: Float) {
+    fun set(platformEntity: Entity, targetX: Float, targetY: Float, speed: Float) {
         startPoint.set(platformEntity.scene2D.centerX, platformEntity.scene2D.centerY)
         endPoint.set(targetX, targetY)
+        this.speed = speed
         update()
     }
 
@@ -64,7 +69,7 @@ class MovingObjectComponent : Component, Poolable {
         update()
     }
 
-    private fun update() {
+    fun update() {
         updateStartToFinishDistance()
         updateDirection()
     }
@@ -83,6 +88,9 @@ class MovingObjectComponent : Component, Poolable {
         endPoint.set(0f, 0f)
         startToFinishDirection.set(0f, 0f)
         startToFinishDistance = 0f
+        delayBeforeSwitching = 0f
+        speed = SPEED
+        justSwitchedDirection = true
     }
 }
 
@@ -90,7 +98,9 @@ val Entity.movingObject: MovingObjectComponent
     get() = MovingObjectComponent[this]
 
 fun Entity.movingObject(
-    targetX: Float, targetY: Float
-) = add(createComponent<MovingObjectComponent>().apply {
-    set(this@movingObject, targetX, targetY)
+    context: Context,
+    targetX: Float, targetY: Float,
+    speed: Float
+) = add(createComponent<MovingObjectComponent>(context).apply {
+    set(this@movingObject, targetX, targetY, speed)
 })!!

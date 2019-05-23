@@ -35,7 +35,7 @@ fun main(args: Array<String>) {
         resizable = false
         samples = 4
         intArrayOf(128, 64, 32, 16).forEach {
-            addIcon("libgdx$it.png", Files.FileType.Internal)
+            addIcon("gravity-box-$it.png", Files.FileType.Internal)
         }
     })
 }

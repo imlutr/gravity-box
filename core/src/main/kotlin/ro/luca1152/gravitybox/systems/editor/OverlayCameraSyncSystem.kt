@@ -18,17 +18,16 @@
 package ro.luca1152.gravitybox.systems.editor
 
 import com.badlogic.ashley.core.EntitySystem
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.metersToPixels
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.OverlayCamera
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Syncs the [overlayCamera] with the [gameCamera].*/
-class OverlayCameraSyncSystem(
-    private val overlayCamera: OverlayCamera = Injekt.get(),
-    private val gameCamera: GameCamera = Injekt.get()
-) : EntitySystem() {
+class OverlayCameraSyncSystem(context: Context) : EntitySystem() {
+    private val overlayCamera: OverlayCamera = context.inject()
+    private val gameCamera: GameCamera = context.inject()
+
     override fun update(deltaTime: Float) {
         overlayCamera.position.set(gameCamera.position.x.metersToPixels, gameCamera.position.y.metersToPixels, 0f)
         overlayCamera.update()

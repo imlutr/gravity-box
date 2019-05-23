@@ -18,12 +18,12 @@
 package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.ashley.core.EntitySystem
+import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /** Applies all the changes made to the [gameCamera]. */
-class UpdateGameCameraSystem(private val gameCamera: GameCamera = Injekt.get()) : EntitySystem() {
+class UpdateGameCameraSystem(context: Context) : EntitySystem() {
+    private val gameCamera: GameCamera = context.inject()
     override fun update(deltaTime: Float) {
         gameCamera.update()
     }

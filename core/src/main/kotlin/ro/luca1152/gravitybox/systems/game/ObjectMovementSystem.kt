@@ -21,7 +21,6 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pools
 import ktx.math.times
@@ -46,6 +45,7 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
         if (entity.tryGet(DestroyablePlatformComponent) != null && entity.destroyablePlatform.isRemoved) {
             return
         }
+        entity.movingObject.delayBeforeSwitching -= deltaTime
         moveObject(entity)
     }
 
@@ -69,25 +69,46 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
     }
 
     private fun updatePosition(entity: Entity, moveBy: Vector2) {
-        entity.body.body.run {
-            setLinearVelocity(
-                MathUtils.lerp(linearVelocity.x, moveBy.x, .2f),
-                MathUtils.lerp(linearVelocity.y, moveBy.y, .2f)
-            )
+        entity.body.body!!.setLinearVelocity(moveBy.x, moveBy.y)
+        if (entity.movingObject.justSwitchedDirection) {
+            entity.movingObject.justSwitchedDirection = false
+            if (playerEntity.tryGet(PassengerComponent) != null && playerEntity.passenger.driver == entity) {
+                playerEntity.body.body!!.linearVelocity = moveBy
+            }
         }
     }
 
     private fun updateDirection(entity: Entity) {
-        entity.run {
-            val objectPosition = Pools.obtain(Vector2::class.java).set(scene2D.centerX, scene2D.centerY)
-            if (objectPosition.dst(movingObject.startPoint) >= movingObject.startToFinishDistance) {
-                objectPosition.set(movingObject.endPoint)
-                movingObject.isMovingTowardsEndPoint = false
-            } else if (objectPosition.dst(movingObject.endPoint) >= movingObject.startToFinishDistance) {
-                objectPosition.set(movingObject.startPoint)
-                movingObject.isMovingTowardsEndPoint = true
+        if (entity.movingObject.delayBeforeSwitching <= 0f) {
+            entity.run {
+                val objectPosition = Pools.obtain(Vector2::class.java).set(scene2D.centerX, scene2D.centerY)
+                if (
+                    movingObject.isMovingTowardsEndPoint &&
+                    (objectPosition.dst(movingObject.startPoint).approxEqualTo(movingObject.startToFinishDistance) ||
+                            objectPosition.dst(movingObject.startPoint) >= movingObject.startToFinishDistance)
+                ) {
+                    objectPosition.set(movingObject.endPoint)
+                    movingObject.run {
+                        justSwitchedDirection = true
+                        isMovingTowardsEndPoint = false
+                        delayBeforeSwitching = MovingObjectComponent.DELAY_BEFORE_SWITCHING_DIRECTION
+                    }
+                } else if (
+                    !movingObject.isMovingTowardsEndPoint &&
+                    (objectPosition.dst(movingObject.endPoint).approxEqualTo(movingObject.startToFinishDistance) ||
+                            objectPosition.dst(movingObject.endPoint) >= movingObject.startToFinishDistance)
+                ) {
+                    objectPosition.set(movingObject.startPoint)
+                    movingObject.run {
+                        justSwitchedDirection = true
+                        isMovingTowardsEndPoint = true
+                        delayBeforeSwitching = MovingObjectComponent.DELAY_BEFORE_SWITCHING_DIRECTION
+                    }
+                }
+                Pools.free(objectPosition)
             }
-            Pools.free(objectPosition)
         }
     }
+
+    private fun Float.approxEqualTo(f: Float) = Math.abs(this - f) <= 0.001f
 }

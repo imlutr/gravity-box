@@ -28,16 +28,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.graphics.copy
+import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.assets.Assets
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import ro.luca1152.gravitybox.utils.kotlin.UIViewport
 
 /** A redesigned [PopUp]. */
 class NewPopUp(
+    context: Context,
     width: Float, height: Float,
-    skin: Skin,
-    manager: AssetManager = Injekt.get()
+    skin: Skin
 ) : Group() {
+    // Injected objects
+    private val uiViewport: UIViewport = context.inject()
+    private val manager: AssetManager = context.inject()
+
     private val whitePopUp = Image(skin.getDrawable("pop-up")).apply {
         setSize(width, height)
         setOrigin(width / 2f, height / 2f)
@@ -47,7 +51,7 @@ class NewPopUp(
     /** Blocks touches outside the pop-up. */
     private val touchableImage = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         color.a = 0f
-        setSize(720f, 1280f)
+        setSize(uiViewport.worldWidth, uiViewport.worldHeight)
         addListener(object : ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 return true
@@ -58,7 +62,7 @@ class NewPopUp(
     val widget = Table(skin).apply {
         addActor(whitePopUp.apply { toBack() })
         setSize(width, height)
-        setPosition(720f / 2f - width / 2f, 1280f / 2f - height / 2f)
+        setPosition(uiViewport.worldWidth / 2f - width / 2f, uiViewport.worldHeight / 2f - height / 2f)
         pad(38f)
         addListener(object : ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {

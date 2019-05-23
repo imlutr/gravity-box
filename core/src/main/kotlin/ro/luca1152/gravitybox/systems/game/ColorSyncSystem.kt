@@ -20,8 +20,10 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.graphics.Color
-import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.components.game.ColorComponent
+import ro.luca1152.gravitybox.components.game.ColorType
+import ro.luca1152.gravitybox.components.game.Scene2DComponent
+import ro.luca1152.gravitybox.components.game.color
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
@@ -29,16 +31,19 @@ import ro.luca1152.gravitybox.utils.ui.Colors
 /** Syncs the [Scene2DComponent]'s color with the color scheme. */
 class ColorSyncSystem : IteratingSystem(Family.all(Scene2DComponent::class.java, ColorComponent::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        entity.scene2D.color.setWithoutAlpha(
-            when (entity.color.colorType) {
-                ColorType.LIGHT -> Colors.bgColor
-                ColorType.DARK -> Colors.gameColor
-                ColorType.DARKER_DARK -> Colors.uiDownColor
-                else -> Color.RED
-            }
-        )
-        entity.tryGet(Scene2DComponent)?.group?.children?.forEach {
-            it.color.setWithoutAlpha(entity.scene2D.color)
+        entity.syncColorsWithColorScheme()
+    }
+
+    private fun Entity.syncColorsWithColorScheme() {
+        tryGet(Scene2DComponent)?.group?.children?.forEach {
+            it.color.setWithoutAlpha(
+                when (color.colorType) {
+                    ColorType.LIGHT -> Colors.bgColor
+                    ColorType.DARK -> Colors.gameColor
+                    ColorType.DARKER_DARK -> Colors.uiDownColor
+                    else -> throw IllegalArgumentException("Unrecognized colorType. Maybe not initialized?")
+                }
+            )
         }
     }
 }

@@ -22,18 +22,22 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.utils.Json
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.assets.json.MapFactory
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Loads game maps from files. */
-class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : EntitySystem() {
+class MapLoadingSystem(private val context: Context) : EntitySystem() {
+    private val manager: AssetManager = context.inject()
+
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
     private lateinit var finishEntity: Entity
+
+    private var loadedAnyMap = false
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
@@ -52,7 +56,16 @@ class MapLoadingSystem(private val manager: AssetManager = Injekt.get()) : Entit
         val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
         levelEntity.run {
             level.loadMap = false
-            map.loadMap(mapFactory, playerEntity, finishEntity)
+            map.loadMap(context, mapFactory, playerEntity, finishEntity)
+        }
+        initializeColorScheme()
+    }
+
+    private fun initializeColorScheme() {
+        // Only when the game first starts, after the splash screen
+        if (!loadedAnyMap) {
+            Colors.updateAllColors()
+            loadedAnyMap = true
         }
     }
 }

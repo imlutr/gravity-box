@@ -20,28 +20,15 @@ package ro.luca1152.gravitybox.components.game
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
 /** Indicates that the entity is an object from a game map. */
 class MapObjectComponent : Component, Poolable {
-    var id = -1
-
-    fun set(id: Int) {
-        this.id = id
-    }
-
-    override fun reset() {
-        id = -1
-    }
-
+    override fun reset() {}
     companion object : ComponentResolver<MapObjectComponent>(MapObjectComponent::class.java)
 }
 
-val Entity.mapObject: MapObjectComponent
-    get() = MapObjectComponent[this]
-
-fun Entity.mapObject(id: Int) =
-    add(createComponent<MapObjectComponent>().apply {
-        set(id)
-    })!!
+fun Entity.mapObject(context: Context) =
+    add(createComponent<MapObjectComponent>(context))!!

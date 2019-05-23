@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
@@ -57,11 +58,14 @@ class JsonComponent : Component, Poolable {
                     tryGet(CollectiblePointComponent) != null -> {
                         json.writeValue("type", "point")
                     }
-                }
-                if (tryGet(MapObjectComponent) != null) json.run {
-                    writeValue("id", mapObject.id)
+                    tryGet(TextComponent) != null -> {
+                        json.writeValue("type", "text")
+                    }
                 }
                 if (tryGet(Scene2DComponent) != null) json.run {
+                    if (tryGet(TextComponent) != null) json.run {
+                        writeValue("string", text.string)
+                    }
                     writeObjectStart("position")
                     writeValue("x", scene2D.centerX.metersToPixels)
                     writeValue("y", scene2D.centerY.metersToPixels)
@@ -71,11 +75,14 @@ class JsonComponent : Component, Poolable {
                         writeValue("x", movingObject.endPoint.x.metersToPixels)
                         writeValue("y", movingObject.endPoint.y.metersToPixels)
                         writeObjectEnd()
+                        writeValue("speed", movingObject.speed.metersToPixels)
                     }
                     if (tryGet(PlatformComponent) != null || tryGet(DestroyablePlatformComponent) != null) json.run {
                         writeValue("width", scene2D.width.metersToPixels)
                     }
-                    writeValue("rotation", scene2D.rotation.toInt())
+                    if (scene2D.rotation != 0f) {
+                        writeValue("rotation", scene2D.rotation.toInt())
+                    }
                     if (tryGet(DestroyablePlatformComponent) != null) json.run {
                         writeValue("isDestroyable", true)
                     }
@@ -100,15 +107,15 @@ class JsonComponent : Component, Poolable {
 val Entity.json: JsonComponent
     get() = JsonComponent[this]
 
-fun Entity.json() =
-    add(createComponent<JsonComponent>())!!
+fun Entity.json(context: Context) =
+    add(createComponent<JsonComponent>(context))!!
 
-fun Entity.json(parentEntity: Entity, jsonObjectName: String) =
-    add(createComponent<JsonComponent>().apply {
+fun Entity.json(context: Context, parentEntity: Entity, jsonObjectName: String) =
+    add(createComponent<JsonComponent>(context).apply {
         setObject(parentEntity, jsonObjectName)
     })!!
 
-fun Entity.json(parentEntity: Entity) =
-    add(createComponent<JsonComponent>().apply {
+fun Entity.json(context: Context, parentEntity: Entity) =
+    add(createComponent<JsonComponent>(context).apply {
         setArrayObject(parentEntity)
     })!!

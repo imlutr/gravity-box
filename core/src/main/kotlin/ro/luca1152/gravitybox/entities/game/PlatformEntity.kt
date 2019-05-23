@@ -21,14 +21,13 @@ package ro.luca1152.gravitybox.entities.game
 
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.NinePatch
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 object PlatformEntity {
     const val PATCH_LEFT = 9
@@ -41,23 +40,32 @@ object PlatformEntity {
     val MASK_BITS = EntityCategory.OBSTACLE.bits
 
     fun createEntity(
-        id: Int,
+        context: Context,
         x: Float, y: Float,
         width: Float,
         rotation: Float = ROTATION,
         isDestroyable: Boolean = false,
         isRotating: Boolean = false,
-        targetX: Float = Float.POSITIVE_INFINITY, targetY: Float = Float.POSITIVE_INFINITY,
-        manager: AssetManager = Injekt.get()
-    ) = newEntity().apply {
-        mapObject(id)
+        targetX: Float = Float.POSITIVE_INFINITY,
+        targetY: Float = Float.POSITIVE_INFINITY,
+        speed: Float = MovingObjectComponent.SPEED
+    ) = newEntity(context).apply {
+        val manager: AssetManager = context.inject()
+        mapObject(context)
         if (isDestroyable) {
-            destroyablePlatform()
-            scene2D(x, y, width, HEIGHT, rotation)
-            destroyablePlatform.updateScene2D(scene2D)
-        } else {
-            platform()
+            destroyablePlatform(context)
             scene2D(
+                context,
+                NinePatch(
+                    manager.get(Assets.tileset).findRegion("platform-0"),
+                    PATCH_LEFT, PATCH_RIGHT,
+                    PATCH_TOP, PATCH_BOTTOM
+                ), x, y, width, HEIGHT, rotation
+            )
+        } else {
+            platform(context)
+            scene2D(
+                context,
                 NinePatch(
                     manager.get(Assets.tileset).findRegion("platform-0"),
                     PATCH_LEFT, PATCH_RIGHT,
@@ -66,22 +74,23 @@ object PlatformEntity {
             )
         }
         if (isRotating) {
-            rotatingObject()
+            rotatingObject(context)
         }
         if (targetX != Float.POSITIVE_INFINITY && targetY != Float.POSITIVE_INFINITY) {
-            movingObject(targetX, targetY)
+            movingObject(context, targetX, targetY, speed)
         }
-        polygon(scene2D)
-        editorObject()
-        snap()
-        body()
-        color(ColorType.DARK)
+        polygon(context, scene2D)
+        editorObject(context)
+        snap(context)
+        body(context)
+        color(context, ColorType.DARK)
         overlay(
+            context,
             showMovementButtons = true, showRotationButton = true, showDeletionButton = true,
             showResizingButtons = true, showSettingsButton = true
         )
-        extendedTouch(this, 0f, 1f - HEIGHT)
-        json(this)
-        addToEngine()
+        extendedTouch(context, this, 0f, 1f - HEIGHT)
+        json(context, this)
+        addToEngine(context)
     }
 }

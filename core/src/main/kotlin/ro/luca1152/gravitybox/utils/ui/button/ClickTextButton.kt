@@ -22,10 +22,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 class ClickTextButton(
+    context: Context,
     buttonStyleName: String,
     skin: Skin,
     text: String,
@@ -33,7 +35,7 @@ class ClickTextButton(
     textSize: Float = 32f,
     private val usesGameColor: Boolean = true
 ) : Button(skin, buttonStyleName) {
-    val label = DistanceFieldLabel(text, skin, labelStyleName, fontSize = textSize).apply {
+    val label = DistanceFieldLabel(context, text, skin, labelStyleName, fontSize = textSize).apply {
         this@ClickTextButton.add(this)
     }
     private val clickListener = object : ClickListener() {

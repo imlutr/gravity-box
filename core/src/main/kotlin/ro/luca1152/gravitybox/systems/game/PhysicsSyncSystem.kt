@@ -31,12 +31,14 @@ class PhysicsSyncSystem : IteratingSystem(
     Family.all(BodyComponent::class.java).one(Scene2DComponent::class.java, CollisionBoxComponent::class.java).get()
 ) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (entity.tryGet(EditorObjectComponent) != null && entity.editorObject.isDeleted) {
-            return
-        }
+        if (entity.body.body == null) return
+        if (entity.tryGet(EditorObjectComponent) != null && entity.editorObject.isDeleted) return
+
         if (entity.tryGet(Scene2DComponent) != null && entity.tryGet(CombinedBodyComponent) == null) {
-            syncBodyPropertiesWithScene2D(entity, entity.scene2D)
+            if (entity.tryGet(DestroyablePlatformComponent) == null || !entity.destroyablePlatform.isRemoved)
+                syncBodyPropertiesWithScene2D(entity, entity.scene2D)
         }
+
         if (entity.tryGet(CollisionBoxComponent) != null) {
             syncBodyPositionWithCollisionBox(entity, entity.collisionBox)
         }
@@ -44,16 +46,16 @@ class PhysicsSyncSystem : IteratingSystem(
 
     private fun syncBodyPropertiesWithScene2D(physicsEntity: Entity, scene2D: Scene2DComponent) {
         scene2D.run {
-            centerX = physicsEntity.body.body.worldCenter.x
-            centerY = physicsEntity.body.body.worldCenter.y
-            rotation = physicsEntity.body.body.angle * MathUtils.radDeg
+            centerX = physicsEntity.body.body!!.worldCenter.x
+            centerY = physicsEntity.body.body!!.worldCenter.y
+            rotation = physicsEntity.body.body!!.angle * MathUtils.radDeg
         }
     }
 
     private fun syncBodyPositionWithCollisionBox(physicsEntity: Entity, collisionBox: CollisionBoxComponent) {
         collisionBox.box.setPosition(
-            physicsEntity.body.body.worldCenter.x - physicsEntity.collisionBox.width / 2f,
-            physicsEntity.body.body.worldCenter.y - physicsEntity.collisionBox.height / 2f
+            physicsEntity.body.body!!.worldCenter.x - physicsEntity.collisionBox.width / 2f,
+            physicsEntity.body.body!!.worldCenter.y - physicsEntity.collisionBox.height / 2f
         )
     }
 }

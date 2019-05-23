@@ -19,21 +19,19 @@ package ro.luca1152.gravitybox.components.editor
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Pool.Poolable
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.engine
-import ro.luca1152.gravitybox.entities.editor.DashedLineEntity
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
+import ro.luca1152.gravitybox.entities.game.DashedLineEntity
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
-import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 import java.util.*
 
 /** Contains undo and redo commands. */
@@ -77,8 +75,8 @@ class UndoRedoComponent : Component, Poolable {
 val Entity.undoRedo: UndoRedoComponent
     get() = UndoRedoComponent[this]
 
-fun Entity.undoRedo() =
-    add(createComponent<UndoRedoComponent>())!!
+fun Entity.undoRedo(context: Context) =
+    add(createComponent<UndoRedoComponent>(context))!!
 
 abstract class Command {
     abstract val affectedEntity: Entity
@@ -129,10 +127,13 @@ class RotateCommand(
 }
 
 class AddCommand(
+    private val context: Context,
     override var affectedEntity: Entity,
-    private val mapEntity: Entity,
-    private val engine: PooledEngine = Injekt.get()
+    private val mapEntity: Entity
 ) : Command() {
+    // Injected objects
+    private val eventQueue: EventQueue = context.inject()
+
     /**
      * True if the [affectedEntity] is a mock object.
      * I keep this in a variable as the mock platform entity will be deleted in [unexecute()].
@@ -145,7 +146,7 @@ class AddCommand(
 
     override fun execute() {
         if (isMockObject) {
-            MakeObjectMovingCommand(platform!!).execute()
+            MakeObjectMovingCommand(context, platform!!).execute()
             affectedEntity = platform.linkedEntity.get("mockPlatform")
         }
         affectedEntity.tryGet(EditorObjectComponent)?.run {
@@ -157,9 +158,9 @@ class AddCommand(
 
             affectedEntity.tryGet(BodyComponent)?.run {
                 body = if (affectedEntity.tryGet(PlayerComponent) != null) {
-                    affectedEntity.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction, 0.02f)
+                    affectedEntity.scene2D.toBody(context, bodyType, categoryBits, maskBits, density, friction, 0.02f)
                 } else {
-                    affectedEntity.scene2D.toBody(bodyType, categoryBits, maskBits, density, friction)
+                    affectedEntity.scene2D.toBody(context, bodyType, categoryBits, maskBits, density, friction)
                 }
             }
         }
@@ -178,14 +179,10 @@ class AddCommand(
         affectedEntity.tryGet(ColorComponent)?.run {
             colorType = ColorType.DARK
         }
-        affectedEntity.tryGet(MapObjectComponent)?.run {
-            val newId = affectedEntity.mapObject.id
-            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
-                if (!it.editorObject.isDeleted && it != affectedEntity && it.mapObject.id >= newId)
-                    it.mapObject.id++
-            }
+        affectedEntity.tryGet(CollectiblePointComponent)?.run {
+            mapEntity.map.pointsCount++
         }
-        mapEntity.map.updateRoundedPlatforms = true
+        eventQueue.add(UpdateRoundedPlatformsEvent())
     }
 
     override fun unexecute() {
@@ -212,25 +209,22 @@ class AddCommand(
         affectedEntity.tryGet(BodyComponent)?.run {
             destroyBody()
         }
-        affectedEntity.tryGet(MapObjectComponent)?.run {
-            val deletedId = affectedEntity.mapObject.id
-            engine.getEntitiesFor(Family.all(MapObjectComponent::class.java).get()).forEach {
-                if (!it.editorObject.isDeleted && it.mapObject.id > deletedId)
-                    it.mapObject.id--
-            }
-        }
         affectedEntity.tryGet(MockMapObjectComponent)?.run {
-            MakeObjectNonMovingCommand(affectedEntity.linkedEntity.get("platform")).execute()
+            MakeObjectNonMovingCommand(context, affectedEntity.linkedEntity.get("platform")).execute()
         }
-        mapEntity.map.updateRoundedPlatforms = true
+        affectedEntity.tryGet(CollectiblePointComponent)?.run {
+            mapEntity.map.pointsCount--
+        }
+        eventQueue.add(UpdateRoundedPlatformsEvent())
     }
 }
 
 class DeleteCommand(
+    context: Context,
     override val affectedEntity: Entity,
     mapEntity: Entity
 ) : Command() {
-    private val addCommand = AddCommand(affectedEntity, mapEntity)
+    private val addCommand = AddCommand(context, affectedEntity, mapEntity)
 
     override fun execute() {
         addCommand.unexecute()
@@ -265,9 +259,6 @@ class ResizeCommand(
             centerX = newCenterX
             centerY = newCenterY
         }
-        affectedEntity.tryGet(DestroyablePlatformComponent)?.run {
-            updateScene2D(affectedEntity.scene2D)
-        }
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
             affectedEntity.linkedEntity.get("mockPlatform").scene2D.run {
                 width += deltaWidth
@@ -286,11 +277,10 @@ class ResizeCommand(
         affectedEntity.scene2D.run {
             width -= deltaWidth
             height -= deltaHeight
+            group.children.first().width -= deltaWidth
+            group.children.first().height -= deltaHeight
             centerX = newCenterX
             centerY = newCenterY
-        }
-        affectedEntity.tryGet(DestroyablePlatformComponent)?.run {
-            updateScene2D(affectedEntity.scene2D)
         }
         if (affectedEntity.tryGet(MovingObjectComponent) != null) {
             affectedEntity.linkedEntity.get("mockPlatform").scene2D.run {
@@ -305,28 +295,35 @@ class ResizeCommand(
     }
 }
 
-class MakeObjectDestroyableCommand(override val affectedEntity: Entity) : Command() {
-    private val mapEntity: Entity = engine.getSingleton<LevelComponent>()
+class MakeObjectDestroyableCommand(
+    private val context: Context,
+    override val affectedEntity: Entity
+) : Command() {
+    // Injected objects
+    private val eventQueue: EventQueue = context.inject()
 
     override fun execute() {
         affectedEntity.run {
             removeComponent<PlatformComponent>()
-            destroyablePlatform()
-            destroyablePlatform.updateScene2D(scene2D)
+            destroyablePlatform(context)
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 
     override fun unexecute() {
         affectedEntity.run {
             removeComponent<DestroyablePlatformComponent>()
-            platform()
-            mapEntity.map.updateRoundedPlatforms = true
+            platform(context)
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 }
 
-class MakeObjectNonDestroyableCommand(override val affectedEntity: Entity) : Command() {
-    private val makeDestroyable = MakeObjectDestroyableCommand(affectedEntity)
+class MakeObjectNonDestroyableCommand(
+    context: Context,
+    override val affectedEntity: Entity
+) : Command() {
+    private val makeDestroyable = MakeObjectDestroyableCommand(context, affectedEntity)
 
     override fun execute() {
         makeDestroyable.unexecute()
@@ -337,37 +334,52 @@ class MakeObjectNonDestroyableCommand(override val affectedEntity: Entity) : Com
     }
 }
 
-class MakeObjectMovingCommand(override val affectedEntity: Entity) : Command() {
+class MakeObjectMovingCommand(
+    private val context: Context,
+    override val affectedEntity: Entity
+) : Command() {
+    private val engine: PooledEngine = context.inject()
+    private val eventQueue: EventQueue = context.inject()
+    private var oldSpeed = MovingObjectComponent.SPEED
+
     override fun execute() {
         affectedEntity.run {
-            movingObject(scene2D.centerX + 1f, scene2D.centerY + 1f)
+            movingObject(context, scene2D.centerX + 1f, scene2D.centerY + 1f, oldSpeed)
             val mockPlatform = MovingMockPlatformEntity.createEntity(
-                this,
+                context, this,
                 movingObject.endPoint.x, movingObject.endPoint.y,
-                scene2D.width, scene2D.height
+                scene2D.width, scene2D.rotation
             ).apply {
-                linkedEntity("platform", this@run)
+                linkedEntity(context, "platform", this@run)
             }
-            linkedEntity("mockPlatform", mockPlatform)
+            linkedEntity(context, "mockPlatform", mockPlatform)
 
-            val dashedLine = DashedLineEntity.createEntity(this, mockPlatform)
+            val dashedLine = DashedLineEntity.createEntity(context, this, mockPlatform)
             mockPlatform.linkedEntity.add("dashedLine", dashedLine)
             this.linkedEntity.add("dashedLine", dashedLine)
+
+            eventQueue.add(UpdateRoundedPlatformsEvent())
         }
     }
 
     override fun unexecute() {
         affectedEntity.run {
+            oldSpeed = movingObject.speed
             removeComponent<MovingObjectComponent>()
             engine.removeEntity(linkedEntity.get("mockPlatform"))
             engine.removeEntity(linkedEntity.get("dashedLine"))
             removeComponent<LinkedEntityComponent>()
         }
+
+        eventQueue.add(UpdateRoundedPlatformsEvent())
     }
 }
 
-class MakeObjectNonMovingCommand(override val affectedEntity: Entity) : Command() {
-    private val makeMoving = MakeObjectMovingCommand(affectedEntity)
+class MakeObjectNonMovingCommand(
+    context: Context,
+    override val affectedEntity: Entity
+) : Command() {
+    private val makeMoving = MakeObjectMovingCommand(context, affectedEntity)
 
     override fun execute() {
         makeMoving.unexecute()
@@ -378,11 +390,14 @@ class MakeObjectNonMovingCommand(override val affectedEntity: Entity) : Command(
     }
 }
 
-class MakeObjectRotatingCommand(override val affectedEntity: Entity) : Command() {
+class MakeObjectRotatingCommand(
+    private val context: Context,
+    override val affectedEntity: Entity
+) : Command() {
     override fun execute() {
         affectedEntity.run {
-            rotatingObject()
-            rotatingIndicator()
+            rotatingObject(context)
+            rotatingIndicator(context)
         }
     }
 
@@ -394,8 +409,11 @@ class MakeObjectRotatingCommand(override val affectedEntity: Entity) : Command()
     }
 }
 
-class MakeObjectNonRotatingCommand(override val affectedEntity: Entity) : Command() {
-    private val makeRotating = MakeObjectRotatingCommand(affectedEntity)
+class MakeObjectNonRotatingCommand(
+    context: Context,
+    override val affectedEntity: Entity
+) : Command() {
+    private val makeRotating = MakeObjectRotatingCommand(context, affectedEntity)
 
     override fun execute() {
         makeRotating.unexecute()

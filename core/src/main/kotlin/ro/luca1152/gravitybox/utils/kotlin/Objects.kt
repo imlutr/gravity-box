@@ -18,25 +18,27 @@
 package ro.luca1152.gravitybox.utils.kotlin
 
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 /*
  * Used in dependency injection so I can inject more variables of the same type,
  * such as an UICamera and a GameCamera, both being OrthographicCameras.
  */
 
-object GameCamera : OrthographicCamera(720.pixelsToMeters, 1280.pixelsToMeters)
-object GameViewport : ExtendViewport(720.pixelsToMeters, 1280.pixelsToMeters, GameCamera)
-object GameStage : Stage(GameViewport, Injekt.get())
+class GameCamera : OrthographicCamera(720.pixelsToMeters, 1280.pixelsToMeters)
+class GameViewport(context: Context) : ExtendViewport(720.pixelsToMeters, 1280.pixelsToMeters, context.inject<GameCamera>())
+class GameStage(context: Context) : Stage(context.inject<GameViewport>(), context.inject())
 
-object OverlayCamera : OrthographicCamera()
-object OverlayViewport : ExtendViewport(720f, 1280f, OverlayCamera)
-object OverlayStage : Stage(OverlayViewport, Injekt.get())
+class OverlayCamera : OrthographicCamera()
+class OverlayViewport(context: Context) : ExtendViewport(720f, 1280f, context.inject<OverlayCamera>())
+class OverlayStage(context: Context) : Stage(context.inject<OverlayViewport>(), context.inject())
 
-object UICamera : OrthographicCamera()
-object UIViewport : ExtendViewport(720f, 1280f, UICamera)
-object UIStage : Stage(UIViewport, Injekt.get())
+class UICamera : OrthographicCamera()
+class UIViewport(context: Context) : ExtendViewport(720f, 1280f, context.inject<UICamera>())
+class UIStage(context: Context) : Stage(context.inject<UIViewport>(), context.inject())
+
+class DistanceFieldShader(vertexShader: String, fragmentShader: String) : ShaderProgram(vertexShader, fragmentShader)

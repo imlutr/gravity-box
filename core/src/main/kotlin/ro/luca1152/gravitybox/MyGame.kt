@@ -18,82 +18,65 @@
 package ro.luca1152.gravitybox
 
 import com.badlogic.ashley.core.PooledEngine
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.MapComponent
+import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.kotlin.*
-import ro.luca1152.gravitybox.utils.ui.Colors
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.addSingleton
-import uy.kohesive.injekt.api.get
+import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
     companion object {
-        const val LEVELS_NUMBER = 9
+        const val LEVELS_NUMBER = 270
     }
 
-    var transitionOldScreen: Screen? = null
+    private val context = Context()
 
     override fun create() {
         Box2D.init()
-        randomizeColorSchemeHue()
         initializeDependencyInjection()
-        addScreen(LoadingScreen())
+        addScreen(LoadingScreen(context))
         setScreen<LoadingScreen>()
     }
 
-    private fun randomizeColorSchemeHue() {
-        Colors.run {
-            hue = MathUtils.random(0, 360)
-            updateAllColors()
-        }
-    }
-
     private fun initializeDependencyInjection() {
-        Injekt.run {
-            addSingleton(this@MyGame)
-            addSingleton(SpriteBatch() as Batch)
-            addSingleton(AssetManager())
-            addSingleton(GameCamera)
-            addSingleton(GameStage)
-            addSingleton(GameViewport)
-            addSingleton(InputMultiplexer())
-            addSingleton(engine)
-            addSingleton(ShapeRenderer())
-            addSingleton(OverlayCamera)
-            addSingleton(OverlayViewport)
-            addSingleton(OverlayStage)
-            addSingleton(UICamera)
-            addSingleton(UIStage)
-            addSingleton(UIViewport)
-            addSingleton(World(Vector2(0f, MapComponent.GRAVITY), true))
+        context.register {
+            bindSingleton(this@MyGame)
+            bindSingleton(SpriteBatch() as Batch)
+            bindSingleton(AssetManager())
+            bindSingleton(EventQueue())
+            bindSingleton(InputMultiplexer())
+            bindSingleton(PooledEngine())
+            bindSingleton(ShapeRenderer())
+            bindSingleton(Gdx.app.getPreferences("Gravity Box by Luca1152"))
+            bindSingleton(World(Vector2(0f, MapComponent.GRAVITY), true))
+            bindSingleton(GameCamera())
+            bindSingleton(GameViewport(context))
+            bindSingleton(GameStage(context))
+            bindSingleton(OverlayCamera())
+            bindSingleton(OverlayViewport(context))
+            bindSingleton(OverlayStage(context))
+            bindSingleton(UICamera())
+            bindSingleton(UIViewport(context))
+            bindSingleton(UIStage(context))
+            bindSingleton(DistanceFieldShader(DistanceFieldLabel.vertexShader, DistanceFieldLabel.fragmentShader))
         }
     }
 
     override fun dispose() {
         super.dispose() // Disposes every screen
-        disposeHeavyInjectedObjects()
-    }
-
-    private fun disposeHeavyInjectedObjects() {
-        Injekt.run {
-            get<Batch>().dispose()
-            get<AssetManager>().dispose()
-            get<ShapeRenderer>().dispose()
-            get<World>().dispose()
-        }
+        context.dispose()
     }
 }
-
-val engine = PooledEngine()

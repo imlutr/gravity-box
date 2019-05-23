@@ -21,13 +21,15 @@ package ro.luca1152.gravitybox.utils.ui
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
+import ktx.inject.Context
+import ro.luca1152.gravitybox.utils.kotlin.DistanceFieldShader
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
 
 class DistanceFieldLabel(
+    context: Context,
     text: CharSequence,
     skin: Skin,
     styleName: String,
@@ -35,7 +37,7 @@ class DistanceFieldLabel(
     color: Color = Color.WHITE
 ) : Label(text, skin, styleName, Color.WHITE) {
     companion object {
-        private val vertexShader = """
+        val vertexShader = """
             uniform mat4 u_projTrans;
 
             attribute vec4 a_position;
@@ -52,7 +54,7 @@ class DistanceFieldLabel(
             }
         """.trimIndent()
 
-        private val fragmentShader = """
+        val fragmentShader = """
             #ifdef GL_ES
             precision mediump float;
             #endif
@@ -71,12 +73,11 @@ class DistanceFieldLabel(
             }
         """.trimIndent()
 
-        private val distanceFieldShader = ShaderProgram(vertexShader, fragmentShader)
-
         private const val DEFAULT_FONT_SIZE = 32f
     }
 
-    var syncColorsWithColorScheme = true
+    private var syncColorsWithColorScheme = true
+    private val distanceFieldShader: DistanceFieldShader = context.inject()
 
     init {
         this.color = color

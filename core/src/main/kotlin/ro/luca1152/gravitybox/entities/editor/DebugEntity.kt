@@ -17,13 +17,14 @@
 
 package ro.luca1152.gravitybox.entities.editor
 
+import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.debugShape
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
 
 @Suppress("unused")
 object DebugEntity {
-    fun createEntity() = newEntity()
-        .debugShape()
-        .addToEngine()
+    fun createEntity(context: Context) = newEntity(context)
+        .debugShape(context)
+        .addToEngine(context)
 }
