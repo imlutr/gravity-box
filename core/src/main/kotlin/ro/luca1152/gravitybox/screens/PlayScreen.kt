@@ -544,8 +544,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(heartButton)
         }
         val middlePart = Table(skin).apply {
-            add(audioButton).padRight(46f)
-            add(leaderboardsButton)
+            add(audioButton)
+//                .padRight(46f)
+//            add(leaderboardsButton)
         }
         val rightPart = Table(skin).apply {
             add(noAdsButton)
