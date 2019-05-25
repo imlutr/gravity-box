@@ -24,9 +24,8 @@ import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.inject.Context
-import ro.luca1152.gravitybox.MyGame
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
@@ -44,7 +43,7 @@ class LevelFinishSystem(
     private val preferences: Preferences = context.inject()
     private val uiStage: UIStage = context.inject()
     private val gameStage: GameStage = context.inject()
-    private val eventQueue: EventQueue = context.inject()
+    private val gameRules: GameRules = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -89,7 +88,7 @@ class LevelFinishSystem(
                             flush()
                         }
                         levelEntity.level.run {
-                            levelId = Math.min(levelId + 1, MyGame.LEVELS_NUMBER)
+                            levelId = Math.min(levelId + 1, gameRules.LEVEL_COUNT)
                             loadMap = true
                             forceUpdateMap = true
                         }

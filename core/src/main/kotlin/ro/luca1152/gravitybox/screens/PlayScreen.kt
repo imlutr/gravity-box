@@ -283,7 +283,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                             shouldUpdateLevelLabel = true
                             levelEntity.level.run {
                                 levelId = if (levelId == 1) {
-                                    if (gameRules.CAN_LOAD_ANY_LEVEL) MyGame.LEVELS_NUMBER
+                                    if (gameRules.CAN_LOAD_ANY_LEVEL) gameRules.LEVEL_COUNT
                                     else gameRules.HIGHEST_FINISHED_LEVEL + 1
                                 } else levelId - 1
                                 loadMap = true
@@ -319,7 +319,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                             shouldUpdateLevelLabel = true
                             levelEntity.level.run {
                                 levelId =
-                                    if (levelId == MyGame.LEVELS_NUMBER && gameRules.CAN_LOAD_ANY_LEVEL) 1
+                                    if (levelId == gameRules.LEVEL_COUNT && gameRules.CAN_LOAD_ANY_LEVEL) 1
                                     else if (levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1 && !gameRules.CAN_LOAD_ANY_LEVEL) 1
                                     else levelId + 1
                                 loadMap = true
@@ -345,7 +345,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             gameRules.CAN_LOAD_ANY_LEVEL -> 1
             else -> Math.min(
                 preferences.getInteger("highestFinishedLevel", 0) + 1,
-                MyGame.LEVELS_NUMBER
+                gameRules.LEVEL_COUNT
             )
         }}",
         skin, "semi-bold", 37f, Colors.gameColor
@@ -752,7 +752,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 gameRules.CAN_LOAD_ANY_LEVEL -> 1
                 else -> Math.min(
                     preferences.getInteger("highestFinishedLevel", 0) + 1,
-                    MyGame.LEVELS_NUMBER
+                    gameRules.LEVEL_COUNT
                 )
             }
         ).apply {
@@ -871,7 +871,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         rightButton.run {
             styleName =
-                if ((gameRules.CAN_LOAD_ANY_LEVEL && levelEntity.level.levelId == MyGame.LEVELS_NUMBER) ||
+                if ((gameRules.CAN_LOAD_ANY_LEVEL && levelEntity.level.levelId == gameRules.LEVEL_COUNT) ||
                     (!gameRules.CAN_LOAD_ANY_LEVEL && levelEntity.level.levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1)
                 ) "double-right-button"
                 else "right-button"

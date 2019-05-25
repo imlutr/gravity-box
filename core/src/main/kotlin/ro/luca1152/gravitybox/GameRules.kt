@@ -31,6 +31,7 @@ class GameRules(private val context: Context) {
     val CAN_LOAD_ANY_LEVEL = false
     val LOAD_SPECIFIC_LEVEL = -1
 
+    val LEVEL_COUNT = 270
     val ENABLE_LEVEL_EDITOR = !IS_MOBILE
     var HIGHEST_FINISHED_LEVEL
         get() = context.inject<Preferences>().getInteger("highestFinishedLevel")
