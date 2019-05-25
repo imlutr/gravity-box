@@ -1,0 +1,86 @@
+{
+  "hue": 22,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": -64,
+      "y": 103.83658
+    }
+  },
+  "finish": {
+    "position": {
+      "x": 1815.9998,
+      "y": 136.37671
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -64,
+        "y": 63.83658
+      },
+      "width": 128
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -32,
+        "y": -160
+      },
+      "movingTo": {
+        "x": 1783.9998,
+        "y": -160
+      },
+      "speed": 224,
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -135.99994,
+        "y": 64
+      },
+      "width": 464,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 875.9999,
+        "y": 288
+      },
+      "width": 2007.9998
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 1815.9999,
+        "y": 64.37671
+      },
+      "width": 128.00024
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 1888,
+        "y": 64
+      },
+      "width": 464,
+      "rotation": 270
+    },
+    {
+      "type": "text",
+      "string": "Almost there...",
+      "position": {
+        "x": 1021.28174,
+        "y": 66.49306
+      }
+    }
+  ]
+}

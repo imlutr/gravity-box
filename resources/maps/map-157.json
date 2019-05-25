@@ -1,0 +1,61 @@
+{
+  "hue": 27,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": -64,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": 256,
+      "y": 360
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -64,
+        "y": 32
+      },
+      "width": 128,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -136,
+        "y": 108
+      },
+      "width": 168,
+      "rotation": 270,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 256,
+        "y": 288
+      },
+      "width": 127.99999,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 328,
+        "y": 396
+      },
+      "width": 231.99997,
+      "rotation": 270,
+      "isDestroyable": true
+    }
+  ]
+}

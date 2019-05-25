@@ -1,0 +1,69 @@
+{
+  "hue": 332,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": -32,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -320,
+      "y": 104
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -105.3085,
+        "y": 32
+      },
+      "width": 557.383,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -160,
+        "y": 136
+      },
+      "width": 192,
+      "rotation": 270,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -140,
+        "y": -96
+      },
+      "width": 872,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 288,
+        "y": -48.442696
+      },
+      "width": 79.11461,
+      "rotation": 270,
+      "isDestroyable": true
+    },
+    {
+      "type": "text",
+      "string": "Not worth trying...",
+      "position": {
+        "x": -135.4624,
+        "y": 292.70184
+      }
+    }
+  ]
+}
