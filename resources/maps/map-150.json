@@ -1,0 +1,42 @@
+{
+  "hue": 285,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": 64,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -383.99994,
+      "y": 104
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -159.99994,
+        "y": 32
+      },
+      "width": 576,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 136,
+        "y": 108.00001
+      },
+      "width": 168.00002,
+      "rotation": 270,
+      "isDestroyable": true
+    }
+  ]
+}

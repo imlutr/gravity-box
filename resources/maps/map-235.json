@@ -1,0 +1,128 @@
+{
+  "hue": 316,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": -224,
+      "y": -120
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -256,
+      "y": 2792
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -32,
+        "y": -160
+      },
+      "movingTo": {
+        "x": -32,
+        "y": 800
+      },
+      "speed": 224,
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -224,
+        "y": -160
+      },
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -224,
+        "y": 1760
+      },
+      "movingTo": {
+        "x": -224,
+        "y": 800
+      },
+      "speed": 224,
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -32,
+        "y": 1760
+      },
+      "movingTo": {
+        "x": -32,
+        "y": 2720
+      },
+      "speed": 224,
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -256,
+        "y": 2720
+      },
+      "width": 128
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -328.00024,
+        "y": 1408
+      },
+      "width": 3152,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -128,
+        "y": 2976
+      },
+      "width": 384
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 72,
+        "y": 1407.9998
+      },
+      "width": 3151.9995,
+      "rotation": 270
+    },
+    {
+      "type": "text",
+      "string": "3...",
+      "position": {
+        "x": -121.57201,
+        "y": 326
+      }
+    },
+    {
+      "type": "text",
+      "string": "2...",
+      "position": {
+        "x": -122,
+        "y": 1282
+      }
+    },
+    {
+      "type": "text",
+      "string": "1...",
+      "position": {
+        "x": -124,
+        "y": 2252
+      }
+    }
+  ]
+}

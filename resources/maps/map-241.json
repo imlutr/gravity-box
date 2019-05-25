@@ -1,0 +1,44 @@
+{
+  "hue": 348,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": -32,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": 160,
+      "y": 488
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -32,
+        "y": 32
+      },
+      "movingTo": {
+        "x": 608,
+        "y": 32
+      },
+      "speed": 224,
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 160,
+        "y": 416
+      },
+      "width": 192
+    }
+  ]
+}

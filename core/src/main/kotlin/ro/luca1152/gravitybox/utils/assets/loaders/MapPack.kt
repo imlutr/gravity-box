@@ -15,15 +15,23 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.assets
+package ro.luca1152.gravitybox.utils.assets.loaders
 
-import com.badlogic.gdx.assets.AssetDescriptor
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import ro.luca1152.gravitybox.utils.assets.loaders.MapPack
+import com.badlogic.gdx.files.FileHandle
+import com.badlogic.gdx.utils.Json
+import ro.luca1152.gravitybox.utils.assets.json.MapFactory
 
-object Assets {
-    val uiSkin = AssetDescriptor<Skin>("skins/uiskin.json", Skin::class.java)
-    val tileset = AssetDescriptor<TextureAtlas>("graphics/tileset.atlas", TextureAtlas::class.java)
-    val gameMaps = AssetDescriptor<MapPack>("maps/game-maps.json", MapPack::class.java)
+class MapPack {
+    var mapPackFactory = MapPackFactory()
+
+    constructor(byteArray: ByteArray) {
+        val mapPackContent = String(byteArray)
+        mapPackFactory = Json().fromJson(MapPackFactory::class.java, mapPackContent)
+    }
+
+    constructor(file: FileHandle) : this(file.readBytes())
+}
+
+class MapPackFactory {
+    var maps = ArrayList<MapFactory>()
 }

@@ -21,11 +21,9 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.utils.Json
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.utils.assets.json.MapFactory
-import ro.luca1152.gravitybox.utils.assets.loaders.Text
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.ui.Colors
 
@@ -52,11 +50,12 @@ class MapLoadingSystem(private val context: Context) : EntitySystem() {
     }
 
     private fun loadMap() {
-        val jsonData = manager.get<Text>("maps/game/map-${levelEntity.level.levelId}.json").string
-        val mapFactory = Json().fromJson(MapFactory::class.java, jsonData)
         levelEntity.run {
             level.loadMap = false
-            map.loadMap(context, mapFactory, playerEntity, finishEntity)
+            map.loadMap(
+                context, manager.get(Assets.gameMaps).mapPackFactory.maps[levelEntity.level.levelId - 1],
+                playerEntity, finishEntity
+            )
         }
         initializeColorScheme()
     }

@@ -1,0 +1,78 @@
+{
+  "hue": 337,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": 32,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -64,
+      "y": 104
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": 12,
+        "y": 32
+      },
+      "width": 280
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 160,
+        "y": 107.71762
+      },
+      "width": 167.43524,
+      "rotation": 270
+    },
+    {
+      "type": "text",
+      "string": "Tip: the angle you shoot at\nmatters",
+      "position": {
+        "x": 18,
+        "y": -27.999992
+      }
+    },
+    {
+      "type": "dashed-line",
+      "start": {
+        "x": 32,
+        "y": 72
+      },
+      "end": {
+        "x": 160,
+        "y": 72
+      }
+    },
+    {
+      "type": "text",
+      "string": "vs.",
+      "position": {
+        "x": 120,
+        "y": 105
+      }
+    },
+    {
+      "type": "dashed-line",
+      "start": {
+        "x": 32,
+        "y": 72
+      },
+      "end": {
+        "x": 160,
+        "y": 185
+      }
+    }
+  ]
+}

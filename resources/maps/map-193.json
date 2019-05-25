@@ -1,0 +1,126 @@
+{
+  "hue": 31,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": -431.8522,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -600.00024,
+      "y": 1320
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -435.00015,
+        "y": 32
+      },
+      "width": 490.00018
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -182.00006,
+        "y": 184
+      },
+      "width": 320,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -18.000015,
+        "y": 352
+      },
+      "width": 344.0001
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 162.00003,
+        "y": 872
+      },
+      "width": 1056,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -431.12494,
+        "y": 672
+      },
+      "width": 222.25003
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -672.00024,
+        "y": 712
+      },
+      "width": 1344,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -82.00003,
+        "y": 992
+      },
+      "width": 216.00003
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -492.00006,
+        "y": 1248
+      },
+      "width": 344.00034
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -608,
+        "y": 672
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -256,
+        "y": 480
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 96,
+        "y": 992
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -351.99994,
+        "y": 992
+      }
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -263.00027,
+        "y": 1392
+      },
+      "width": 833.99994
+    }
+  ]
+}
