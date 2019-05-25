@@ -38,6 +38,7 @@ import ktx.app.KtxScreen
 import ktx.graphics.copy
 import ktx.inject.Context
 import ktx.log.info
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
@@ -60,6 +61,7 @@ import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
 
+@Suppress("ConstantConditionIf")
 class PlayScreen(private val context: Context) : KtxScreen {
     // Injected objects
     private val manager: AssetManager = context.inject()
@@ -75,13 +77,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val gameStage: GameStage = context.inject()
     private val preferences: Preferences = context.inject()
     private val eventQueue: EventQueue = context.inject()
+    private val gameRules: GameRules = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
-
-    private val canLoadAnyLevel = true // debug
-    private val cycleFromFirstToLastLevel = true
-    private val loadSpecificLevel = -1 // If not -1, the specified level will be loaded first instead of [the last finished level+1]
 
     private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, uiCamera), context.inject())
     private val padTopBottom = 38f
@@ -283,8 +282,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
                         Actions.run {
                             shouldUpdateLevelLabel = true
                             levelEntity.level.run {
-                                if (levelId == 1) levelId = MyGame.LEVELS_NUMBER
-                                else levelId--
+                                levelId = if (levelId == 1) {
+                                    if (gameRules.CAN_LOAD_ANY_LEVEL) MyGame.LEVELS_NUMBER
+                                    else gameRules.HIGHEST_FINISHED_LEVEL + 1
+                                } else levelId - 1
                                 loadMap = true
                                 forceUpdateMap = true
                             }
@@ -317,7 +318,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
                         Actions.run {
                             shouldUpdateLevelLabel = true
                             levelEntity.level.run {
-                                levelId++
+                                levelId =
+                                    if (levelId == MyGame.LEVELS_NUMBER && gameRules.CAN_LOAD_ANY_LEVEL) 1
+                                    else if (levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1 && !gameRules.CAN_LOAD_ANY_LEVEL) 1
+                                    else levelId + 1
                                 loadMap = true
                                 forceUpdateMap = true
                             }
@@ -336,10 +340,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val levelLabel = DistanceFieldLabel(
         context,
-        "#${if (loadSpecificLevel != -1) loadSpecificLevel else if (canLoadAnyLevel) 1 else (Math.min(
-            preferences.getInteger("highestFinishedLevel", 0) + 1,
-            MyGame.LEVELS_NUMBER
-        ))}",
+        "#${when {
+            gameRules.LOAD_SPECIFIC_LEVEL != -1 -> gameRules.LOAD_SPECIFIC_LEVEL
+            gameRules.CAN_LOAD_ANY_LEVEL -> 1
+            else -> Math.min(
+                preferences.getInteger("highestFinishedLevel", 0) + 1,
+                MyGame.LEVELS_NUMBER
+            )
+        }}",
         skin, "semi-bold", 37f, Colors.gameColor
     ).apply {
         addListener(object : ClickListener() {
@@ -356,7 +364,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addAction(Actions.fadeOut(0f))
     }
     private val topTable = Table(skin).apply {
-        add(levelEditorButton).expand().top().left().padLeft(-levelEditorButton.prefWidth)
+        if (gameRules.ENABLE_LEVEL_EDITOR) {
+            add(levelEditorButton).expand().top().left().padLeft(-levelEditorButton.prefWidth)
+        }
         add(githubButton).expand().top().right().padRight(-githubButton.prefWidth)
     }
     private val topPart = Table(skin).apply {
@@ -443,9 +453,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 style = skin.get(styleName, Button.ButtonStyle::class.java)
             }
         })
-    }
-    private val leaderboardsButton = ClickButton(skin, "empty-round-button").apply {
-        addIcon("leaderboards-icon")
     }
     private val noAdsPopUp = NewPopUp(context, 600f, 820f, skin).apply popup@{
         val text = DistanceFieldLabel(
@@ -545,8 +552,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         val middlePart = Table(skin).apply {
             add(audioButton)
-//                .padRight(46f)
-//            add(leaderboardsButton)
         }
         val rightPart = Table(skin).apply {
             add(noAdsButton)
@@ -742,12 +747,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private fun createGameEntities() {
         levelEntity = LevelEntity.createEntity(
             context,
-            if (loadSpecificLevel != -1) loadSpecificLevel
-            else if (canLoadAnyLevel) 1 else
-                Math.min(
+            when {
+                gameRules.LOAD_SPECIFIC_LEVEL != -1 -> gameRules.LOAD_SPECIFIC_LEVEL
+                gameRules.CAN_LOAD_ANY_LEVEL -> 1
+                else -> Math.min(
                     preferences.getInteger("highestFinishedLevel", 0) + 1,
                     MyGame.LEVELS_NUMBER
                 )
+            }
         ).apply {
             level.loadMap = true
             level.forceUpdateMap = true
@@ -832,7 +839,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun update() {
-        updateLeftRightButtons()
         updateLevelLabel()
         shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
@@ -846,24 +852,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
         menuOverlayStage.draw()
     }
 
-    private fun updateLeftRightButtons() {
-        if (levelEntity.level.levelId == 1 && !cycleFromFirstToLastLevel) {
-            makeButtonUntouchable(leftButton)
-        } else {
-            makeButtonTouchable(leftButton)
-        }
-
-        if (levelEntity.level.levelId == if (canLoadAnyLevel) MyGame.LEVELS_NUMBER else Math.min(
-                MyGame.LEVELS_NUMBER,
-                preferences.getInteger("highestFinishedLevel", 0) + 1
-            )
-        ) {
-            makeButtonUntouchable(rightButton)
-        } else {
-            makeButtonTouchable(rightButton)
-        }
-    }
-
     private fun updateLevelLabel() {
         if (shouldUpdateLevelLabel) {
             levelLabel.run {
@@ -872,23 +860,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
             rootOverlayTable.setLayoutEnabled(false)
             shouldUpdateLevelLabel = false
-        }
-    }
-
-    private fun makeButtonUntouchable(button: ClickButton) {
-        button.run {
-            syncColorsWithColorScheme = false
-            color.set(Colors.gameColor)
-            color.a = .3f
-            downColor = color
-            upColor = color
-        }
-    }
-
-    private fun makeButtonTouchable(button: ClickButton) {
-        button.run {
-            syncColorsWithColorScheme = true
-            color.a = 1f
         }
     }
 

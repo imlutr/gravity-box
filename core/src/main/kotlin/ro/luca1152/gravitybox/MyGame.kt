@@ -71,6 +71,7 @@ class MyGame : KtxGame<Screen>() {
             bindSingleton(UICamera())
             bindSingleton(UIViewport(context))
             bindSingleton(UIStage(context))
+            bindSingleton(GameRules(context))
             bindSingleton(DistanceFieldShader(DistanceFieldLabel.vertexShader, DistanceFieldLabel.fragmentShader))
         }
     }
