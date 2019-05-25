@@ -840,6 +840,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun update() {
         updateLevelLabel()
+        updateLeftRightButtons()
         shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
         menuOverlayStage.act()
@@ -860,6 +861,21 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
             rootOverlayTable.setLayoutEnabled(false)
             shouldUpdateLevelLabel = false
+        }
+    }
+
+    private fun updateLeftRightButtons() {
+        leftButton.run {
+            styleName = if (levelEntity.level.levelId == 1) "double-left-button" else "left-button"
+            style = skin.get(styleName, Button.ButtonStyle::class.java)
+        }
+        rightButton.run {
+            styleName =
+                if ((gameRules.CAN_LOAD_ANY_LEVEL && levelEntity.level.levelId == MyGame.LEVELS_NUMBER) ||
+                    (!gameRules.CAN_LOAD_ANY_LEVEL && levelEntity.level.levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1)
+                ) "double-right-button"
+                else "right-button"
+            style = skin.get(styleName, Button.ButtonStyle::class.java)
         }
     }
 

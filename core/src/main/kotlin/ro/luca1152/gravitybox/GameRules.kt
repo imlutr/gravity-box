@@ -26,13 +26,16 @@ import ktx.inject.Context
 
 class GameRules(private val context: Context) {
     val IS_MOBILE = Gdx.app.type == Application.ApplicationType.Android || Gdx.app.type == Application.ApplicationType.iOS
-    val ENABLE_LEVEL_EDITOR = !IS_MOBILE
+
+    // Debug
     val CAN_LOAD_ANY_LEVEL = false
     val LOAD_SPECIFIC_LEVEL = -1
 
+    val ENABLE_LEVEL_EDITOR = !IS_MOBILE
     var HIGHEST_FINISHED_LEVEL
         get() = context.inject<Preferences>().getInteger("highestFinishedLevel")
         set(value) {
             context.inject<Preferences>().putInteger("highestFinishedLevel", value)
         }
+
 }

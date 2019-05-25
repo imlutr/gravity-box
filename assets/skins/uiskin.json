@@ -61,6 +61,14 @@
       up: right-button
       down: right-button
     }
+    double-left-button: {
+      up: double-left-button
+      down: double-left-button
+    }
+    double-right-button: {
+      up: double-right-button
+      down: double-right-button
+    }
     long-button: {
       up: long-button
       down: long-button
