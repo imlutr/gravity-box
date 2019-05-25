@@ -581,10 +581,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                         Application.ApplicationType.Android -> Gdx.net.openURI("market://details?id=ro.luca1152.gravitybox")
                         else -> Gdx.net.openURI("https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox")
                     }
-                    preferences.run {
-                        putBoolean("didRateGame", true)
-                        flush()
-                    }
+                    gameRules.DID_RATE_THE_GAME = true
                     makeHeartButtonFull()
                     this@popup.hide()
                 }
@@ -597,6 +594,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
+                    gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN =
+                        gameRules.PLAY_TIME + gameRules.DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
                     this@popup.hide()
                 }
             })
@@ -608,10 +607,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
-                    preferences.run {
-                        putBoolean("neverPromptUserToRate", true)
-                        flush()
-                    }
+                    gameRules.NEVER_PROMPT_USER_TO_RATE_THE_GAME = true
                     this@popup.hide()
                 }
             })
@@ -766,6 +762,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun addGameSystems() {
         engine.run {
+            addSystem(PlayTimeSystem(context))
             addSystem(MapLoadingSystem(context))
             addSystem(MapBodiesCreationSystem(context))
             addSystem(CombinedBodiesCreationSystem(context))

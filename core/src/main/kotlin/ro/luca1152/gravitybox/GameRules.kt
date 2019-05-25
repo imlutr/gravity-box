@@ -24,19 +24,64 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import ktx.inject.Context
 
-class GameRules(private val context: Context) {
-    val IS_MOBILE = Gdx.app.type == Application.ApplicationType.Android || Gdx.app.type == Application.ApplicationType.iOS
+class GameRules(context: Context) {
+    private val preferences: Preferences = context.inject()
+
+    // Stats
+    var HIGHEST_FINISHED_LEVEL
+        get() = preferences.getInteger("highestFinishedLevel", 0)
+        set(value) {
+            preferences.run {
+                putInteger("highestFinishedLevel", value)
+                flush()
+            }
+        }
+    /** The time (in seconds) a user spent playing the game. */
+    var PLAY_TIME
+        get() = preferences.getFloat("playTime", 0f)
+        set(value) {
+            preferences.run {
+                putFloat("playTime", value)
+                flush()
+            }
+        }
 
     // Debug
     val CAN_LOAD_ANY_LEVEL = false
     val LOAD_SPECIFIC_LEVEL = -1
 
+    // Rules
     val LEVEL_COUNT = 270
+    val IS_MOBILE = Gdx.app.type == Application.ApplicationType.Android || Gdx.app.type == Application.ApplicationType.iOS
     val ENABLE_LEVEL_EDITOR = !IS_MOBILE
-    var HIGHEST_FINISHED_LEVEL
-        get() = context.inject<Preferences>().getInteger("highestFinishedLevel")
-        set(value) {
-            context.inject<Preferences>().putInteger("highestFinishedLevel", value)
-        }
 
+    // Rate-related
+    val MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT = 13
+    var DID_RATE_THE_GAME
+        get() = preferences.getBoolean("didRateGame", false)
+        set(value) {
+            preferences.run {
+                putBoolean("didRateGame", value)
+                flush()
+            }
+        }
+    /** True if the player pressed the `Never` button when asked to rate the game. */
+    var NEVER_PROMPT_USER_TO_RATE_THE_GAME
+        get() = preferences.getBoolean("neverPromptUserToRate", false)
+        set(value) {
+            preferences.run {
+                putBoolean("neverPromptUserToRate", value)
+                flush()
+            }
+        }
+    val DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN = 7.5f * 60 // 7.5 minutes
+    /** The player will be asked to rate the game again after the PLAY_TIME exceeds this value if he chose to rate the game `Later`.*/
+    var MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN
+        get() = preferences.getFloat("minPlayTimeToPromptUserToRateTheGameAgain", 0f)
+        set(value) {
+            preferences.run {
+                putFloat("minPlayTimeToPromptUserToRateTheGameAgain", value)
+                flush()
+            }
+        }
 }

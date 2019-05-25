@@ -106,16 +106,15 @@ class LevelFinishSystem(
 
     private fun promptUserToRate() {
         if (playScreen == null) return
-        if (preferences.getBoolean("neverPromptUserToRate", false)) return
-        if (preferences.getInteger("promptUserToRateAfterFinishingLevel", 3) != levelEntity.level.levelId) return
-        if (preferences.getBoolean("didRateGame", false)) return
+        if (gameRules.DID_RATE_THE_GAME) return
+        if (gameRules.NEVER_PROMPT_USER_TO_RATE_THE_GAME) return
+        if (levelEntity.level.levelId < gameRules.MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT) return
+        if (gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN != 0f &&
+            gameRules.PLAY_TIME < gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN
+        ) return
         uiStage.addAction(Actions.sequence(
             Actions.delay(.25f),
             Actions.run { uiStage.addActor(playScreen.rateGamePromptPopUp) }
         ))
-        preferences.run {
-            val oldValue = preferences.getInteger("promptUserToRateAfterFinishingLevel", 3)
-            putInteger("promptUserToRateAfterFinishingLevel", oldValue + 4)
-        }
     }
 }
