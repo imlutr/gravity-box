@@ -42,6 +42,6 @@ object MapPacker {
             packedContent += "$content,\n"
         }
         packedContent += "\n\t]\n}"
-        Gdx.files.local("maps/game-maps.json").writeString(packedContent, false)
+        Gdx.files.local("maps/game/maps.json").writeString(packedContent, false)
     }
 }

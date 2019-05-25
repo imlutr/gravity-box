@@ -25,5 +25,5 @@ import ro.luca1152.gravitybox.utils.assets.loaders.MapPack
 object Assets {
     val uiSkin = AssetDescriptor<Skin>("skins/uiskin.json", Skin::class.java)
     val tileset = AssetDescriptor<TextureAtlas>("graphics/tileset.atlas", TextureAtlas::class.java)
-    val gameMaps = AssetDescriptor<MapPack>("maps/game-maps.json", MapPack::class.java)
+    val gameMaps = AssetDescriptor<MapPack>("maps/game/maps.json", MapPack::class.java)
 }
