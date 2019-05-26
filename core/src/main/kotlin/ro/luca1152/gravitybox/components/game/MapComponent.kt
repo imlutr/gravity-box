@@ -31,10 +31,7 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
-import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
-import ro.luca1152.gravitybox.components.editor.editorObject
-import ro.luca1152.gravitybox.components.editor.json
-import ro.luca1152.gravitybox.components.editor.rotatingIndicator
+import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
 import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.DashedLineEntity
@@ -251,7 +248,9 @@ class MapComponent : Component, Poolable {
             Family.exclude(
                 PlayerComponent::class.java,
                 FinishComponent::class.java,
-                LevelComponent::class.java
+                LevelComponent::class.java,
+                UndoRedoComponent::class.java,
+                InputComponent::class.java
             ).get()
         ).forEach {
             entitiesToRemove.add(it)

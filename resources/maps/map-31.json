@@ -1,0 +1,73 @@
+{
+  "hue": 238,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": 32,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -386.53992,
+      "y": 104
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": 32,
+        "y": 32
+      },
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -384,
+        "y": 32
+      },
+      "width": 133.07983
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -458.53998,
+        "y": 129.64595
+      },
+      "width": 211.2919,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 120,
+        "y": 137.64595
+      },
+      "width": 195.2919,
+      "rotation": 270
+    },
+    {
+      "type": "text",
+      "string": "Be careful...",
+      "position": {
+        "x": -179.02203,
+        "y": 203.42738
+      }
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -169.27002,
+        "y": 243.2919
+      },
+      "width": 594.54004
+    }
+  ]
+}

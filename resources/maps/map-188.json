@@ -1,0 +1,140 @@
+{
+  "hue": 1,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": -32,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -192.00006,
+      "y": 808
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -38.968033,
+        "y": 32
+      },
+      "width": 205.93607
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -5.6495285,
+        "y": 499.71936
+      },
+      "width": 192,
+      "rotation": 31
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 72,
+        "y": 384
+      },
+      "width": 720,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -328.00012,
+        "y": 824
+      },
+      "width": 1088,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -51.182068,
+        "y": 983.8987
+      },
+      "width": 511.79736,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -181.5911,
+        "y": 736
+      },
+      "width": 276.81793
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 250.64258,
+        "y": 914.70984
+      },
+      "width": 512,
+      "rotation": 45
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 429.28516,
+        "y": 1236.0004
+      },
+      "width": 295.99927,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 42.642548,
+        "y": 1376
+      },
+      "width": 757.2852
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 95.506996,
+        "y": 1135.3094
+      },
+      "width": 352.19925,
+      "rotation": 327
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -230.82423,
+        "y": 159.94524
+      },
+      "width": 328.36246,
+      "rotation": 307
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -288,
+        "y": 690.5693
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -11.182068,
+        "y": 1148.135
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 389.28516,
+        "y": 1336
+      }
+    }
+  ]
+}

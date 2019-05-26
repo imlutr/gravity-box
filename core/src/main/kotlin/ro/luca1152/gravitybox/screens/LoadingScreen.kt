@@ -30,6 +30,8 @@ import ktx.inject.Context
 import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.assets.Assets
+import ro.luca1152.gravitybox.utils.assets.loaders.MapPack
+import ro.luca1152.gravitybox.utils.assets.loaders.MapPackLoader
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.assets.loaders.TextLoader
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -44,7 +46,6 @@ class LoadingScreen(private val context: Context) : KtxScreen {
     private val overlayViewport: OverlayViewport = context.inject()
 
     private var loadingAssetsTimer = 0f
-    private var loadedEditorMaps = false
     private val finishedLoadingAssets
         get() = manager.update()
     private val gravityBoxText = Image(Texture(Gdx.files.internal("graphics/gravity-box-text.png")).apply {
@@ -58,6 +59,7 @@ class LoadingScreen(private val context: Context) : KtxScreen {
         showSplashScreen()
         loadGraphics()
         loadGameMaps()
+        loadEditorMaps()
     }
 
     private fun showSplashScreen() {
@@ -72,9 +74,14 @@ class LoadingScreen(private val context: Context) : KtxScreen {
     }
 
     private fun loadGameMaps() {
-        manager.setLoader(Text::class.java, TextLoader(InternalFileHandleResolver()))
-        for (i in 1..MyGame.LEVELS_NUMBER) {
-            manager.load<Text>("maps/game/map-$i.json")
+        manager.setLoader(MapPack::class.java, MapPackLoader(InternalFileHandleResolver()))
+        manager.load(Assets.gameMaps)
+    }
+
+    private fun loadEditorMaps() {
+        manager.setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
+        Gdx.files.local("maps/editor").list().forEach {
+            manager.load<Text>(it.path())
         }
     }
 
@@ -87,24 +94,9 @@ class LoadingScreen(private val context: Context) : KtxScreen {
     private fun update(delta: Float) {
         loadingAssetsTimer += delta
         if (finishedLoadingAssets) {
-            // The editor maps are loaded after because they use a different loader, as they are stored locally,
-            // not internally, and the AssetManager doesn't support two loaders for a class
-            if (!loadedEditorMaps) {
-                loadEditorMaps()
-                loadedEditorMaps = true
-                return
-            } else {
-                logLoadingTime()
-                addScreens()
-                showPlayScreen()
-            }
-        }
-    }
-
-    private fun loadEditorMaps() {
-        manager.setLoader(Text::class.java, TextLoader(LocalFileHandleResolver()))
-        Gdx.files.local("maps/editor").list().forEach {
-            manager.load<Text>(it.path())
+            logLoadingTime()
+            addScreens()
+            showPlayScreen()
         }
     }
 

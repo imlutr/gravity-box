@@ -24,9 +24,8 @@ import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.inject.Context
-import ro.luca1152.gravitybox.MyGame
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
@@ -44,7 +43,7 @@ class LevelFinishSystem(
     private val preferences: Preferences = context.inject()
     private val uiStage: UIStage = context.inject()
     private val gameStage: GameStage = context.inject()
-    private val eventQueue: EventQueue = context.inject()
+    private val gameRules: GameRules = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -89,7 +88,7 @@ class LevelFinishSystem(
                             flush()
                         }
                         levelEntity.level.run {
-                            levelId = Math.min(levelId + 1, MyGame.LEVELS_NUMBER)
+                            levelId = Math.min(levelId + 1, gameRules.LEVEL_COUNT)
                             loadMap = true
                             forceUpdateMap = true
                         }
@@ -107,16 +106,15 @@ class LevelFinishSystem(
 
     private fun promptUserToRate() {
         if (playScreen == null) return
-        if (preferences.getBoolean("neverPromptUserToRate", false)) return
-        if (preferences.getInteger("promptUserToRateAfterFinishingLevel", 3) != levelEntity.level.levelId) return
-        if (preferences.getBoolean("didRateGame", false)) return
+        if (gameRules.DID_RATE_THE_GAME) return
+        if (gameRules.NEVER_PROMPT_USER_TO_RATE_THE_GAME) return
+        if (levelEntity.level.levelId < gameRules.MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT) return
+        if (gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN != 0f &&
+            gameRules.PLAY_TIME < gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN
+        ) return
         uiStage.addAction(Actions.sequence(
             Actions.delay(.25f),
             Actions.run { uiStage.addActor(playScreen.rateGamePromptPopUp) }
         ))
-        preferences.run {
-            val oldValue = preferences.getInteger("promptUserToRateAfterFinishingLevel", 3)
-            putInteger("promptUserToRateAfterFinishingLevel", oldValue + 4)
-        }
     }
 }

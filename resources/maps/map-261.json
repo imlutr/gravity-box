@@ -1,0 +1,136 @@
+{
+  "hue": 153,
+  "padding": {
+    "left": 4,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": -32,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -32,
+      "y": 104
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -32,
+        "y": 32
+      },
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -120,
+        "y": 296
+      },
+      "movingTo": {
+        "x": -120,
+        "y": 4909.201
+      },
+      "speed": 350,
+      "width": 512,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 56,
+        "y": 296
+      },
+      "movingTo": {
+        "x": 56,
+        "y": 4909.201
+      },
+      "speed": 350,
+      "width": 512,
+      "rotation": 270
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -64,
+        "y": 928
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -32,
+        "y": 480
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -80,
+        "y": 1376
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 16,
+        "y": 1824
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -80,
+        "y": 2272
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -32,
+        "y": 2720
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -32,
+        "y": 3168
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -79.99999,
+        "y": 3616
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": 16,
+        "y": 4064
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -80.00001,
+        "y": 4512
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -32,
+        "y": 4896
+      }
+    }
+  ]
+}

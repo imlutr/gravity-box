@@ -1,0 +1,50 @@
+{
+  "hue": 145,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": 32,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -128,
+      "y": 104
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -43.99997,
+        "y": 32
+      },
+      "width": 296.00006,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 96,
+        "y": 116
+      },
+      "width": 152,
+      "rotation": 270,
+      "isDestroyable": true
+    },
+    {
+      "type": "text",
+      "string": "You know the drill...",
+      "position": {
+        "x": -40.97461,
+        "y": -31.680878
+      }
+    }
+  ]
+}

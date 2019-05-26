@@ -1,0 +1,125 @@
+{
+  "hue": 147,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": -64,
+      "y": 72
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -64,
+      "y": -664
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -64,
+        "y": 32
+      },
+      "width": 128,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -64,
+        "y": 16
+      },
+      "width": 128,
+      "isDestroyable": true
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -64,
+        "y": -120
+      }
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -63.843113,
+        "y": -160
+      },
+      "width": 112.09002,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -63.843117,
+        "y": -176
+      },
+      "width": 112.09001,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -64,
+        "y": -352
+      },
+      "width": 87.88812,
+      "isDestroyable": true
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -64,
+        "y": -312
+      }
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -64,
+        "y": -368
+      },
+      "width": 87.88812,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -64,
+        "y": -544
+      },
+      "width": 64,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -64,
+        "y": -560
+      },
+      "width": 64,
+      "isDestroyable": true
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -64.60022,
+        "y": -736
+      },
+      "width": 128,
+      "isDestroyable": true
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -64,
+        "y": -504
+      }
+    }
+  ]
+}

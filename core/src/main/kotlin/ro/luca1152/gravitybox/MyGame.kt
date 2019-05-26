@@ -38,10 +38,6 @@ import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
-    companion object {
-        const val LEVELS_NUMBER = 270
-    }
-
     private val context = Context()
 
     override fun create() {
@@ -71,6 +67,7 @@ class MyGame : KtxGame<Screen>() {
             bindSingleton(UICamera())
             bindSingleton(UIViewport(context))
             bindSingleton(UIStage(context))
+            bindSingleton(GameRules(context))
             bindSingleton(DistanceFieldShader(DistanceFieldLabel.vertexShader, DistanceFieldLabel.fragmentShader))
         }
     }

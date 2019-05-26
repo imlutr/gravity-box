@@ -1,0 +1,73 @@
+{
+  "hue": 180,
+  "padding": {
+    "left": 2,
+    "right": 2,
+    "top": 5,
+    "bottom": 5
+  },
+  "player": {
+    "position": {
+      "x": -32,
+      "y": 392
+    }
+  },
+  "finish": {
+    "position": {
+      "x": -32,
+      "y": 104
+    }
+  },
+  "objects": [
+    {
+      "type": "platform",
+      "position": {
+        "x": -31.999977,
+        "y": 32
+      },
+      "width": 240.00005
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -32,
+        "y": 352
+      },
+      "width": 64
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -32,
+        "y": 480
+      },
+      "width": 240
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 96,
+        "y": 256
+      },
+      "width": 464,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -160.00002,
+        "y": 256
+      },
+      "width": 463.99997,
+      "rotation": 270
+    },
+    {
+      "type": "text",
+      "string": "Good old days...",
+      "position": {
+        "x": -32.90622,
+        "y": 525.1677
+      }
+    }
+  ]
+}
