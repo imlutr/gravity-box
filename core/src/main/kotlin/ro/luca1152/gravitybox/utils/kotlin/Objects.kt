@@ -41,4 +41,9 @@ class UICamera : OrthographicCamera()
 class UIViewport(context: Context) : ExtendViewport(720f, 1280f, context.inject<UICamera>())
 class UIStage(context: Context) : Stage(context.inject<UIViewport>(), context.inject())
 
+// The MenuOverlayStage is used for showing the menu that pops from the side when tapping the menu button
+class MenuOverlayViewport(context: Context) : ExtendViewport(720f, 1280f, context.inject<UICamera>())
+
+class MenuOverlayStage(context: Context) : Stage(context.inject<UIViewport>(), context.inject())
+
 class DistanceFieldShader(vertexShader: String, fragmentShader: String) : ShaderProgram(vertexShader, fragmentShader)

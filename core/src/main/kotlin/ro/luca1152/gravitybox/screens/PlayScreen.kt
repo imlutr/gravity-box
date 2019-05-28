@@ -25,7 +25,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Button
@@ -33,7 +32,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.graphics.copy
 import ktx.inject.Context
@@ -78,11 +76,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val preferences: Preferences = context.inject()
     private val eventQueue: EventQueue = context.inject()
     private val gameRules: GameRules = context.inject()
+    private val menuOverlayStage: MenuOverlayStage = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
 
-    private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, uiCamera), context.inject())
     private val padTopBottom = 38f
     private val padLeftRight = 43f
     private val bottomGrayStripHeight = 128f
@@ -891,8 +889,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun handleUiInput() {
         // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
-        inputMultiplexer.addProcessor(0, uiStage)
-        inputMultiplexer.addProcessor(1, menuOverlayStage)
+        inputMultiplexer.addProcessor(0, menuOverlayStage)
+        inputMultiplexer.addProcessor(1, uiStage)
         inputMultiplexer.addProcessor(2, clearPreferencesListener)
 
         // Back key

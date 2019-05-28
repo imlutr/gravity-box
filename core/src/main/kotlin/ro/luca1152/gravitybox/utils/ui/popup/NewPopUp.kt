@@ -30,6 +30,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.graphics.copy
 import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.assets.Assets
+import ro.luca1152.gravitybox.utils.kotlin.MenuOverlayStage
+import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.UIViewport
 
 /** A redesigned [PopUp]. */
@@ -41,6 +43,8 @@ class NewPopUp(
     // Injected objects
     private val uiViewport: UIViewport = context.inject()
     private val manager: AssetManager = context.inject()
+    private val uiStage: UIStage = context.inject()
+    private val menuOverlayStage: MenuOverlayStage = context.inject()
 
     private val whitePopUp = Image(skin.getDrawable("pop-up")).apply {
         setSize(width, height)
@@ -49,7 +53,16 @@ class NewPopUp(
     }
 
     /** Blocks touches outside the pop-up. */
-    private val touchableImage = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
+    private val touchableImage1 = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
+        color.a = 0f
+        setSize(uiViewport.worldWidth, uiViewport.worldHeight)
+        addListener(object : ClickListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                return true
+            }
+        })
+    }
+    private val touchableImage2 = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         color.a = 0f
         setSize(uiViewport.worldWidth, uiViewport.worldHeight)
         addListener(object : ClickListener() {
@@ -72,7 +85,6 @@ class NewPopUp(
     }
 
     init {
-        addActor(touchableImage)
         addActor(widget)
     }
 
@@ -98,7 +110,14 @@ class NewPopUp(
     override fun setStage(stage: Stage?) {
         super.setStage(stage)
         if (stage != null) {
+            uiStage.addActor(touchableImage1)
+            menuOverlayStage.addActor(touchableImage2)
             show()
+            widget.toFront()
+            toFront()
+        } else {
+            touchableImage1.remove()
+            touchableImage2.remove()
         }
     }
 }
