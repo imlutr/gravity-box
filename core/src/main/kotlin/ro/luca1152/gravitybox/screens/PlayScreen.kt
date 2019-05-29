@@ -261,7 +261,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                stage.addActor(githubPopUp)
+                menuOverlayStage.addActor(githubPopUp)
             }
         })
     }
@@ -306,7 +306,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                stage.addActor(levelEditorPopUp)
+                menuOverlayStage.addActor(levelEditorPopUp)
             }
         })
     }
@@ -497,7 +497,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                stage.addActor(heartPopUp)
+                menuOverlayStage.addActor(heartPopUp)
             }
         })
     }
@@ -592,7 +592,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                stage.addActor(noAdsPopUp)
+                menuOverlayStage.addActor(noAdsPopUp)
             }
         })
     }
