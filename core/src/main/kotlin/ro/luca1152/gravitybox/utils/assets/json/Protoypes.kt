@@ -33,13 +33,11 @@ class PositionPrototype {
 }
 
 class PlayerPrototype {
-    var id = 0
     var position = PositionPrototype()
     var rotation = 0
 }
 
 class FinishPrototype {
-    var id = 0
     var position = PositionPrototype()
     var rotation = 0
 }
