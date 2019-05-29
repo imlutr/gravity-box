@@ -69,7 +69,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val world: World = context.inject()
     private val inputMultiplexer: InputMultiplexer = context.inject()
     private val uiStage: UIStage = context.inject()
-    private val uiCamera: UICamera = context.inject()
     private val uiViewport: UIViewport = context.inject()
     private val overlayViewport: OverlayViewport = context.inject()
     private val gameStage: GameStage = context.inject()
@@ -196,6 +195,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addClickRunnable(Runnable {
             if (!levelEntity.level.isRestarting) {
                 levelEntity.level.restartLevel = true
+                gameRules.RESTART_COUNT++
             }
         })
     }
@@ -830,6 +830,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun addGameSystems() {
         engine.run {
+            addSystem(GameFinishSystem(context))
             addSystem(PlayTimeSystem(context))
             addSystem(MapLoadingSystem(context))
             addSystem(MapBodiesCreationSystem(context))
@@ -841,12 +842,12 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(PhysicsSyncSystem())
             addSystem(ShootingSystem(context))
             addSystem(BulletCollisionSystem(context))
-            addSystem(PlatformRemovalSystem())
-            addSystem(OffScreenLevelRestartSystem())
+            addSystem(PlatformRemovalSystem(context))
+            addSystem(OffScreenLevelRestartSystem(context))
             addSystem(OffScreenBulletDeletionSystem(context))
             addSystem(KeyboardLevelRestartSystem(context))
             addSystem(LevelFinishDetectionSystem())
-            addSystem(PointsCollectionSystem())
+            addSystem(PointsCollectionSystem(context))
             addSystem(LevelRestartSystem(context))
             addSystem(CanFinishLevelSystem(context))
             addSystem(FinishPointColorSystem())
