@@ -40,6 +40,7 @@ www-test/
 *.iws
 *.iml
 out/
+cloc.exe
 
 ## Eclipse
 .classpath
