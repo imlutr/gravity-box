@@ -455,7 +455,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
         var minLastEditedTime = Long.MAX_VALUE
         var minLastEditedFile = FileHandle("")
         Gdx.files.local("maps/editor").list().forEach {
-            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())
+            val formatter = SimpleDateFormat("yyyy-MM-dd HHmmss z", Locale.getDefault())
             try {
                 val levelDate = formatter.parse(it.nameWithoutExtension())
                 val currentDate = Date(TimeUtils.millis())
@@ -579,7 +579,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
 
     private fun getLastEditedString(fileNameWithoutExtension: String): String {
         try {
-            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())
+            val formatter = SimpleDateFormat("yyyy-MM-dd HHmmss z", Locale.getDefault())
             val levelDate = formatter.parse(fileNameWithoutExtension)
             val currentDate = Date(TimeUtils.millis())
 

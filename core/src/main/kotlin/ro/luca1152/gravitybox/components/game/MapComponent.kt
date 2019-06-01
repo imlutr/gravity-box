@@ -388,7 +388,7 @@ class MapComponent : Component, Poolable {
 
     private fun getNewFileName(): String {
         val date = Date(TimeUtils.millis())
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z'.json'", Locale.getDefault())
+        val formatter = SimpleDateFormat("yyyy-MM-dd HHmmss z'.json'", Locale.getDefault())
         return formatter.format(date)
     }
 
