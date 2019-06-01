@@ -830,8 +830,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun addGameSystems() {
         engine.run {
-            addSystem(GameFinishSystem(context))
             addSystem(PlayTimeSystem(context))
+            addSystem(GameFinishSystem(context))
             addSystem(MapLoadingSystem(context))
             addSystem(MapBodiesCreationSystem(context))
             addSystem(CombinedBodiesCreationSystem(context))
@@ -856,6 +856,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem(context, this@PlayScreen))
             addSystem(UpdateGameCameraSystem(context))
+            addSystem(ShowFinishStatsSystem(context))
             addSystem(DashedLineRenderingSystem(context))
             addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
