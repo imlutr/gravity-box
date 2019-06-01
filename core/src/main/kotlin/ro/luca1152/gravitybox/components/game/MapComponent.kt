@@ -66,10 +66,6 @@ val Float.metersToPixels: Float
 @Suppress("PrivatePropertyName")
 /** Contains map information. */
 class MapComponent : Component, Poolable {
-    companion object : ComponentResolver<MapComponent>(MapComponent::class.java) {
-        const val GRAVITY = -25f
-    }
-
     // Injected objects
     private lateinit var engine: PooledEngine
     private lateinit var manager: AssetManager
@@ -418,8 +414,9 @@ class MapComponent : Component, Poolable {
             it.body.destroyBody()
         }
     }
-}
 
+    companion object : ComponentResolver<MapComponent>(MapComponent::class.java)
+}
 val Entity.map: MapComponent
     get() = MapComponent[this]
 
