@@ -28,18 +28,16 @@ class PaddingPrototype {
 }
 
 class PositionPrototype {
-    var x = 0f
-    var y = 0f
+    var x = Float.POSITIVE_INFINITY
+    var y = Float.POSITIVE_INFINITY
 }
 
 class PlayerPrototype {
-    var id = 0
     var position = PositionPrototype()
     var rotation = 0
 }
 
 class FinishPrototype {
-    var id = 0
     var position = PositionPrototype()
     var rotation = 0
 }

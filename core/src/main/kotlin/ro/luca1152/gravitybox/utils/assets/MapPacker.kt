@@ -15,6 +15,8 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("unused")
+
 package ro.luca1152.gravitybox.utils.assets
 
 import com.badlogic.gdx.Gdx

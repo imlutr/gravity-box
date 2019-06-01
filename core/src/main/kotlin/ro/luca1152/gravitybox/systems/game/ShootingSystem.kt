@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxInputAdapter
 import ktx.inject.Context
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.BulletComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.body
@@ -35,9 +36,12 @@ import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
 
 /** Shoots bullet when the screen is touched. */
 class ShootingSystem(private val context: Context) : EntitySystem() {
+    // Injected objects
     private val inputMultiplexer: InputMultiplexer = context.inject()
     private val gameCamera: GameCamera = context.inject()
+    private val gameRules: GameRules = context.inject()
 
+    // Entities
     private lateinit var playerEntity: Entity
 
     private val inputAdapter = object : KtxInputAdapter {
@@ -45,6 +49,7 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
             gameCamera.update()
             val worldCoordinates = screenToWorldCoordinates(context, screenX, screenY)
             createBullet(worldCoordinates.x, worldCoordinates.y)
+            gameRules.BULLET_COUNT++
             return true
         }
     }

@@ -20,11 +20,16 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import ktx.inject.Context
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.*
 
 /** Removes every platform marked for removal. */
-class PlatformRemovalSystem :
+class PlatformRemovalSystem(context: Context) :
     IteratingSystem(Family.all(DestroyablePlatformComponent::class.java, BodyComponent::class.java).get()) {
+    // Injected objects
+    private val gameRules: GameRules = context.inject()
+
     override fun processEntity(entity: Entity, deltaTime: Float) {
         entity.run {
             if (destroyablePlatform.remove) {
@@ -34,6 +39,7 @@ class PlatformRemovalSystem :
                     remove = false
                     isRemoved = true
                 }
+                gameRules.DESTROYED_PLATFORMS_COUNT++
             }
         }
     }

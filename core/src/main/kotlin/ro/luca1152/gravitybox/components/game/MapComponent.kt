@@ -66,10 +66,6 @@ val Float.metersToPixels: Float
 @Suppress("PrivatePropertyName")
 /** Contains map information. */
 class MapComponent : Component, Poolable {
-    companion object : ComponentResolver<MapComponent>(MapComponent::class.java) {
-        const val GRAVITY = -25f
-    }
-
     // Injected objects
     private lateinit var engine: PooledEngine
     private lateinit var manager: AssetManager
@@ -388,7 +384,7 @@ class MapComponent : Component, Poolable {
 
     private fun getNewFileName(): String {
         val date = Date(TimeUtils.millis())
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z'.json'", Locale.getDefault())
+        val formatter = SimpleDateFormat("yyyy-MM-dd HHmmss z'.json'", Locale.getDefault())
         return formatter.format(date)
     }
 
@@ -418,8 +414,9 @@ class MapComponent : Component, Poolable {
             it.body.destroyBody()
         }
     }
-}
 
+    companion object : ComponentResolver<MapComponent>(MapComponent::class.java)
+}
 val Entity.map: MapComponent
     get() = MapComponent[this]
 

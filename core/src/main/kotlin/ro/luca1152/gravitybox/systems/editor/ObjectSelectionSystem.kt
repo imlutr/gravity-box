@@ -43,12 +43,10 @@ class ObjectSelectionSystem(context: Context) : EntitySystem() {
         lateinit var touchedActors: List<Actor>
 
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            if (!moveToolIsSelected())
-                return false
+            if (!moveToolIsSelected()) return false
 
-            touchedActors =
-                gameStage.hitAllScreen(screenX, screenY).filter { isMapObject(it) }.distinctBy { it.userObject }
-                    .sortedBy { it.zIndex }
+            touchedActors = gameStage.hitAllScreen(screenX, screenY).filter { isMapObject(it) }.distinctBy { it.userObject }
+                .sortedBy { it.zIndex }
 
             if (touchedActors.isEmpty()) {
                 return false

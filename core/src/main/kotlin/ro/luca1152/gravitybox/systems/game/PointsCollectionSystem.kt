@@ -21,6 +21,8 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import ktx.inject.Context
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
@@ -28,7 +30,11 @@ import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Handles what happens when the player collides with a collectible point. */
-class PointsCollectionSystem : IteratingSystem(Family.all(CollectiblePointComponent::class.java).get()) {
+class PointsCollectionSystem(context: Context) : IteratingSystem(Family.all(CollectiblePointComponent::class.java).get()) {
+    // Injected objects
+    private val gameRules: GameRules = context.inject()
+
+    // Entities
     private lateinit var playerEntity: Entity
     private lateinit var levelEntity: Entity
 
@@ -58,6 +64,7 @@ class PointsCollectionSystem : IteratingSystem(Family.all(CollectiblePointCompon
                 scene2D.isVisible = false
             }
             levelEntity.map.collectedPointsCount++
+            gameRules.COLLECTED_POINT_COUNT++
         }
     }
 }

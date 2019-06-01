@@ -24,6 +24,7 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.utils.TimeUtils
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
@@ -38,12 +39,15 @@ class TapThroughObjectsSystem(context: Context) : EntitySystem() {
     private val gameStage: GameStage = context.inject()
 
     private val gestureListener = object : GestureDetector(GestureAdapter()) {
-        init {
-            setLongPressSeconds(.75f)
+        private var gestureStartTime = 0L
+
+        override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
+            gestureStartTime = TimeUtils.nanoTime()
+            return super.touchDown(x, y, pointer, button)
         }
 
         override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean {
-            if (isLongPressed) {
+            if (TimeUtils.nanoTime() - gestureStartTime > 0.75f * (1e9 + 1)) {
                 val sortedHitActors = gameStage.hitAllScreen(x, y).filter { isMapObject(it) }.sortedBy { it.zIndex }
                     .distinctBy { (it.userObject as Entity) }
                 if (sortedHitActors.isEmpty()) {

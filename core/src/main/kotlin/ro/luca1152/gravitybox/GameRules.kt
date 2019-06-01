@@ -27,7 +27,18 @@ import ktx.inject.Context
 class GameRules(context: Context) {
     private val preferences: Preferences = context.inject()
 
+    // Debug
+    val CAN_LOAD_ANY_LEVEL = false
+    val LOAD_SPECIFIC_LEVEL = -1
+
+    // Rules
+    val LEVEL_COUNT = 271
+    val GRAVITY = -25f
+    val IS_MOBILE = Gdx.app.type == Application.ApplicationType.Android || Gdx.app.type == Application.ApplicationType.iOS
+    val ENABLE_LEVEL_EDITOR = !IS_MOBILE
+
     // Stats
+    /** The highest level the player finished. */
     var HIGHEST_FINISHED_LEVEL
         get() = preferences.getInteger("highestFinishedLevel", 0)
         set(value) {
@@ -45,15 +56,116 @@ class GameRules(context: Context) {
                 flush()
             }
         }
+    /** How many bullets did the player shot. */
+    var BULLET_COUNT
+        get() = preferences.getInteger("bulletCount", 0)
+        set(value) {
+            preferences.run {
+                putInteger("bulletCount", value)
+                flush()
+            }
+        }
+    /** How many times did the player manually restart (by pressing the restart button, not by dying) a level*/
+    var RESTART_COUNT
+        get() = preferences.getInteger("restartCount", 0)
+        set(value) {
+            preferences.run {
+                putInteger("restartCount", value)
+                flush()
+            }
+        }
+    /** How many times did the player die. */
+    var DEATH_COUNT
+        get() = preferences.getInteger("deathCount", 0)
+        set(value) {
+            preferences.run {
+                putInteger("deathCount", value)
+                flush()
+            }
+        }
+    /** How many destroyable platforms did the player destroy. */
+    var DESTROYED_PLATFORMS_COUNT
+        get() = preferences.getInteger("destroyedPlatformsCount", 0)
+        set(value) {
+            preferences.run {
+                putInteger("destroyedPlatformsCount", value)
+                flush()
+            }
+        }
+    /** How many points did the player collect. */
+    var COLLECTED_POINT_COUNT
+        get() = preferences.getInteger("collectedPointCount", 0)
+        set(value) {
+            preferences.run {
+                putInteger("collectedPointCount", value)
+                flush()
+            }
+        }
 
-    // Debug
-    val CAN_LOAD_ANY_LEVEL = false
-    val LOAD_SPECIFIC_LEVEL = -1
-
-    // Rules
-    val LEVEL_COUNT = 270
-    val IS_MOBILE = Gdx.app.type == Application.ApplicationType.Android || Gdx.app.type == Application.ApplicationType.iOS
-    val ENABLE_LEVEL_EDITOR = !IS_MOBILE
+    // Finish game stats (the stats shown on the last level)
+    /** True if the last level was reached. */
+    var DID_FINISH_GAME
+        get() = preferences.getBoolean("didFinishGame", false)
+        set(value) {
+            preferences.run {
+                putBoolean("didFinishGame", value)
+                flush()
+            }
+        }
+    /** The time (in seconds) the player finished the game in. */
+    var FINISH_TIME
+        get() = preferences.getFloat("finishGameTime", 0f)
+        set(value) {
+            preferences.run {
+                putFloat("finishGameTime", value)
+                flush()
+            }
+        }
+    /** How many bullets did the player shot until finishing the game. */
+    var FINISH_BULLET_COUNT
+        get() = preferences.getInteger("finishBulletsCount", 0)
+        set(value) {
+            preferences.run {
+                putInteger("finishBulletsCount", value)
+                flush()
+            }
+        }
+    /** How many times did the player manually restart (by pressing the restart button, not by dying) a level until finishing the game. */
+    var FINISH_RESTART_COUNT
+        get() = preferences.getInteger("finishRestartCount", 0)
+        set(value) {
+            preferences.run {
+                putInteger("finishRestartCount", value)
+                flush()
+            }
+        }
+    /** How many times did the player die until finishing the game. */
+    var FINISH_DEATH_COUNT
+        get() = preferences.getInteger("finishDeathCount", 0)
+        set(value) {
+            preferences.run {
+                putInteger("finishDeathCount", value)
+                flush()
+            }
+        }
+    /** How many destroyable platforms did the player destroy until finishing the game. */
+    var FINISH_DESTROYED_PLATFORM_COUNT
+        get() = preferences.getInteger("finishDestroyedPlatformCount", 0)
+        set(value) {
+            preferences.run {
+                putInteger("finishDestroyedPlatformCount", value)
+                flush()
+            }
+        }
+    /** How many points did the player collect until finishing the game. */
+    var FINISH_COLLECTED_POINT_COUNT
+        get() = preferences.getInteger("finishCollectedPointCount", 0)
+        set(value) {
+            preferences.run {
+                putInteger("finishCollectedPointCount", value)
+                flush()
+            }
+        }
 
     // Rate-related
     val MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT = 13
