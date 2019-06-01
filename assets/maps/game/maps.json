@@ -28449,12 +28449,6 @@
           "y": 96
         }
       },
-      "finish": {
-        "position": {
-          "x": 96,
-          "y": 640
-        }
-      },
       "objects": [
         {
           "type": "platform",
