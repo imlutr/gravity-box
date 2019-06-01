@@ -72,11 +72,11 @@ class ShowFinishStatsSystem(private val context: Context) : EntitySystem() {
         TextEntity.createEntity(
             context, """
             Here are some interesting stats:
-            You shot ${gameRules.FINISH_BULLET_COUNT} times.
-            You restarted ${gameRules.FINISH_RESTART_COUNT} times.
-            You died ${gameRules.FINISH_DEATH_COUNT} times.
-            You destroyed ${gameRules.FINISH_DESTROYED_PLATFORM_COUNT} platforms.
-            You collected ${gameRules.FINISH_COLLECTED_POINT_COUNT} points.
+            You shot ${gameRules.FINISH_BULLET_COUNT} time${if (gameRules.FINISH_BULLET_COUNT != 1) "s" else ""}.
+            You restarted ${gameRules.FINISH_RESTART_COUNT} time${if (gameRules.FINISH_RESTART_COUNT != 1) "s" else ""}.
+            You died ${gameRules.FINISH_DEATH_COUNT} time${if (gameRules.FINISH_DEATH_COUNT != 1) "s" else ""}.
+            You destroyed ${gameRules.FINISH_DESTROYED_PLATFORM_COUNT} platform${if (gameRules.FINISH_DESTROYED_PLATFORM_COUNT != 1) "s" else ""}.
+            You collected ${gameRules.FINISH_COLLECTED_POINT_COUNT} point${if (gameRules.FINISH_COLLECTED_POINT_COUNT != 1) "s" else ""}.
         """.trimIndent(), 96f, 280.177f
         )
 
@@ -92,7 +92,7 @@ class ShowFinishStatsSystem(private val context: Context) : EntitySystem() {
 
     private fun secondsToTimeString(seconds: Float): String {
         val finishHours = MathUtils.floor(seconds / 3600f)
-        val finishMinutes = MathUtils.floor((seconds % 60) / 60f)
+        val finishMinutes = MathUtils.floor((seconds % 3600) / 60f)
         val finishSeconds = MathUtils.floor(seconds % 60)
         return "${if (finishHours != 0) "${finishHours}h " else ""}${finishMinutes}m ${finishSeconds}s"
     }
