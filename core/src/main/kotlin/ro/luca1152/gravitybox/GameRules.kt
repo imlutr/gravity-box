@@ -32,7 +32,7 @@ class GameRules(context: Context) {
     val LOAD_SPECIFIC_LEVEL = -1
 
     // Rules
-    val LEVEL_COUNT = 271
+    val LEVEL_COUNT = 270
     val GRAVITY = -25f
     val IS_MOBILE = Gdx.app.type == Application.ApplicationType.Android || Gdx.app.type == Application.ApplicationType.iOS
     val ENABLE_LEVEL_EDITOR = !IS_MOBILE

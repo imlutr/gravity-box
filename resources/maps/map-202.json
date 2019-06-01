@@ -1,5 +1,5 @@
 {
-  "hue": 68,
+  "hue": 147,
   "padding": {
     "left": 2,
     "right": 2,
@@ -14,8 +14,8 @@
   },
   "finish": {
     "position": {
-      "x": -210.8638,
-      "y": 832
+      "x": -32,
+      "y": 103.98222
     }
   },
   "objects": [
@@ -31,58 +31,48 @@
       "type": "platform",
       "position": {
         "x": -120,
-        "y": 404
+        "y": 864
       },
-      "width": 728,
+      "width": 1648,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
         "x": 56,
-        "y": 512
+        "y": 872
       },
-      "width": 943.99994,
+      "width": 1664,
       "rotation": 270
     },
     {
       "type": "point",
       "position": {
-        "x": -80,
-        "y": 352
+        "x": 16,
+        "y": 736
+      }
+    },
+    {
+      "type": "point",
+      "position": {
+        "x": -79.99999,
+        "y": 1184
       }
     },
     {
       "type": "point",
       "position": {
         "x": 16,
-        "y": 800
+        "y": 1656
       }
     },
     {
       "type": "platform",
       "position": {
-        "x": -224.00012,
-        "y": 760
+        "x": -32,
+        "y": 1696
       },
       "width": 192
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -128.00005,
-        "y": 992
-      },
-      "width": 384.00015
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -312.00012,
-        "y": 876
-      },
-      "width": 216,
-      "rotation": 270
     }
   ]
 }

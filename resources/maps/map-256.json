@@ -1,5 +1,5 @@
 {
-  "hue": 165,
+  "hue": 57,
   "padding": {
     "left": 2,
     "right": 2,
@@ -8,25 +8,25 @@
   },
   "player": {
     "position": {
-      "x": -256,
-      "y": 339.99988
+      "x": 64,
+      "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": -256,
-      "y": 371.99988
+      "x": -704,
+      "y": 103.72757
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -192,
+        "x": 64,
         "y": 32
       },
       "movingTo": {
-        "x": 704,
+        "x": -512,
         "y": 32
       },
       "speed": 224,
@@ -35,50 +35,50 @@
     {
       "type": "platform",
       "position": {
-        "x": -256,
-        "y": 299.99988
+        "x": 95.20001,
+        "y": 288
+      },
+      "width": 193.59998
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -295.9999,
+        "y": 496
+      },
+      "width": 976.0002
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 200,
+        "y": 264
+      },
+      "width": 480,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -704,
+        "y": 32
       },
       "width": 128
     },
     {
       "type": "platform",
       "position": {
-        "x": -328,
-        "y": 237.99994
+        "x": -776,
+        "y": 256
       },
-      "width": 427.99988,
+      "width": 464,
       "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 256,
-        "y": 443.99988
-      },
-      "width": 1152
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 840,
-        "y": 237.99994
-      },
-      "width": 427.99988,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 768,
-        "y": 299.99988
-      },
-      "width": 128
     },
     {
       "type": "point",
       "position": {
-        "x": 768,
-        "y": 339.99988
+        "x": 94.40003,
+        "y": 328
       }
     }
   ]

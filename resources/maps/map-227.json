@@ -1,5 +1,5 @@
 {
-  "hue": 146,
+  "hue": 26,
   "padding": {
     "left": 2,
     "right": 2,
@@ -8,59 +8,43 @@
   },
   "player": {
     "position": {
-      "x": 96,
+      "x": -248,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 64,
-      "y": 488
+      "x": -216,
+      "y": 872
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -64,
+        "x": -248,
         "y": 32
       },
-      "width": 384
+      "width": 64
     },
     {
       "type": "platform",
       "position": {
-        "x": 64,
-        "y": 416
-      },
-      "width": 128
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 136,
+        "x": -288,
         "y": 128
       },
       "movingTo": {
-        "x": 136,
-        "y": 512
+        "x": -288,
+        "y": 896
       },
-      "speed": 224,
-      "width": 207.99998,
+      "speed": 210,
+      "width": 208,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -63.99997,
-        "y": 608
-      },
-      "width": 384.00006
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -224,
+        "x": 120,
         "y": 224
       },
       "width": 64
@@ -68,16 +52,48 @@
     {
       "type": "platform",
       "position": {
-        "x": -264,
+        "x": 160,
         "y": 128
       },
       "movingTo": {
-        "x": -264,
-        "y": 512
+        "x": 160,
+        "y": 896
       },
-      "speed": 224,
+      "speed": 210,
       "width": 208,
       "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -248,
+        "y": 416
+      },
+      "width": 64
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 120,
+        "y": 608
+      },
+      "width": 64
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -216,
+        "y": 800
+      },
+      "width": 127.99999
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -64,
+        "y": 992
+      },
+      "width": 432
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "hue": 223,
+  "hue": 41,
   "padding": {
     "left": 2,
     "right": 2,
@@ -14,71 +14,84 @@
   },
   "finish": {
     "position": {
-      "x": 536,
-      "y": 104
+      "x": -103.99988,
+      "y": -152
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": 224.00005,
+        "x": -263.99988,
         "y": 32
       },
-      "width": 751.99994
+      "width": 448
     },
     {
       "type": "platform",
       "position": {
-        "x": -159.99994,
-        "y": 152
+        "x": -32,
+        "y": 24
       },
-      "width": 256,
+      "width": 512,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 216.00005,
+        "x": -288,
+        "y": 93.27072
+      },
+      "movingTo": {
+        "x": -288,
+        "y": 226.72928
+      },
+      "speed": 224,
+      "width": 106.541435,
+      "rotation": 270
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -351.99988,
         "y": 288
       },
-      "width": 767.99994
+      "width": 656.00024
     },
     {
       "type": "platform",
       "position": {
-        "x": 96,
-        "y": 224
+        "x": -359.99988,
+        "y": -224
+      },
+      "width": 640.00024
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -288,
+        "y": -29.270718
       },
       "movingTo": {
-        "x": 96,
-        "y": 96
+        "x": -288,
+        "y": -162.72928
       },
       "speed": 224,
-      "width": 112.00001,
+      "width": 106.541435,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 608,
-        "y": 160
-      },
-      "width": 272,
-      "rotation": 270
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 352,
-        "y": 96
+        "x": -672,
+        "y": 184
       },
       "movingTo": {
-        "x": 352,
-        "y": 224
+        "x": -672,
+        "y": -120
       },
       "speed": 224,
-      "width": 112.00001,
+      "width": 192,
       "rotation": 270
     }
   ]

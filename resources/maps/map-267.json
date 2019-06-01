@@ -1,5 +1,5 @@
 {
-  "hue": 15,
+  "hue": 154,
   "padding": {
     "left": 2,
     "right": 2,
@@ -14,8 +14,8 @@
   },
   "finish": {
     "position": {
-      "x": 96,
-      "y": 448
+      "x": -32,
+      "y": 768
     }
   },
   "objects": [
@@ -30,19 +30,20 @@
     {
       "type": "platform",
       "position": {
-        "x": 96,
+        "x": -224,
         "y": 352
       },
       "width": 64,
       "rotation": 270
     },
     {
-      "type": "text",
-      "string": ":)",
+      "type": "platform",
       "position": {
-        "x": -30.426132,
-        "y": -14.884987
-      }
+        "x": -32,
+        "y": 672
+      },
+      "width": 64,
+      "rotation": 270
     }
   ]
 }
