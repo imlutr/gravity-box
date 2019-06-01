@@ -50,7 +50,6 @@ class GameFinishSystem(context: Context) : EntitySystem() {
     }
 
     private fun storeStats() {
-        println("cal")
         gameRules.run {
             DID_FINISH_GAME = true
             FINISH_TIME = PLAY_TIME
