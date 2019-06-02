@@ -1,7 +1,7 @@
 {
-  "hue": 150,
+  "hue": 249,
   "padding": {
-    "left": 2,
+    "left": 4,
     "right": 2,
     "top": 5,
     "bottom": 5
@@ -14,8 +14,8 @@
   },
   "finish": {
     "position": {
-      "x": 160,
-      "y": 1880
+      "x": 112,
+      "y": 6184
     }
   },
   "objects": [
@@ -30,72 +30,85 @@
     {
       "type": "platform",
       "position": {
-        "x": 72,
-        "y": 248
+        "x": -120,
+        "y": 3144
       },
-      "width": 448,
+      "width": 6208,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -119.99997,
-        "y": 696
+        "x": 56,
+        "y": 3080
       },
-      "width": 448,
-      "rotation": 90
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 72,
-        "y": 1144
-      },
-      "width": 448,
+      "width": 6080,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -119.99997,
-        "y": 1677.1771
+        "x": 128,
+        "y": 6112
       },
-      "width": 618.3541,
+      "width": 128
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 184,
+        "y": 6184
+      },
+      "width": 159.99979,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 160,
-        "y": 1808
+        "x": 32,
+        "y": 6256
       },
-      "width": 192
+      "width": 320
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "Long way...",
       "position": {
-        "x": 64,
-        "y": 1994.3542
-      },
-      "width": 384
+        "x": -23.823166,
+        "y": -13.383636
+      }
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "Hooray!",
       "position": {
-        "x": 264,
-        "y": 1901.1772
-      },
-      "width": 202.35402,
-      "rotation": 270
+        "x": -32.64734,
+        "y": 6219.3447
+      }
     },
     {
-      "type": "platform",
+      "type": "text",
+      "string": "3...",
       "position": {
-        "x": 72,
-        "y": 1731.9999
-      },
-      "width": 136.00024,
-      "rotation": 270
+        "x": -24.869839,
+        "y": 1438
+      }
+    },
+    {
+      "type": "text",
+      "string": "2...",
+      "position": {
+        "x": -31.303608,
+        "y": 3080
+      }
+    },
+    {
+      "type": "text",
+      "string": "1...",
+      "position": {
+        "x": -32.647354,
+        "y": 4730
+      }
     }
   ]
 }

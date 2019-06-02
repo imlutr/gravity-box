@@ -1,5 +1,5 @@
 {
-  "hue": 315,
+  "hue": 214,
   "padding": {
     "left": 2,
     "right": 2,
@@ -8,74 +8,65 @@
   },
   "player": {
     "position": {
-      "x": -64,
-      "y": 72
+      "x": 96,
+      "y": -248
     }
   },
   "finish": {
     "position": {
-      "x": -285.64993,
-      "y": 522.6135
+      "x": 96,
+      "y": 296
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -54.74579,
-        "y": 32
+        "x": -19.999985,
+        "y": -288
       },
-      "width": 274.50842
+      "width": 424.00003
     },
     {
       "type": "platform",
       "position": {
-        "x": -283.99994,
-        "y": 450.61353
+        "x": 96,
+        "y": 224
       },
-      "width": 152.00003
+      "width": 192
     },
     {
       "type": "platform",
       "position": {
-        "x": -199.99994,
-        "y": 270.3181
+        "x": 200,
+        "y": 56
       },
-      "width": 492.63623,
+      "width": 704,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -367.99994,
-        "y": 529.30676
+        "x": -224,
+        "y": 56
       },
-      "width": 173.3865,
+      "width": 704,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 74.50841,
-        "y": 320
+        "x": -12,
+        "y": 416
       },
-      "width": 592,
-      "rotation": 270
+      "width": 440
     },
     {
       "type": "point",
       "position": {
-        "x": 32,
-        "y": 299
+        "x": -64,
+        "y": 296.32245
       }
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -138.74579,
-        "y": 608
-      },
-      "width": 442.50842
     }
   ]
 }

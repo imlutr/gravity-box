@@ -1,91 +1,83 @@
 {
-  "hue": 256,
+  "hue": 59,
   "padding": {
-    "left": 2,
+    "left": 5,
     "right": 2,
     "top": 5,
     "bottom": 5
   },
   "player": {
     "position": {
-      "x": -32,
+      "x": -46.523926,
       "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": -26.996521,
-      "y": 1692
+      "x": 512.00006,
+      "y": 2248.4922
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -29.49826,
+        "x": -43.75448,
         "y": 32
       },
-      "width": 165.00348
+      "width": 168.49104
     },
     {
       "type": "platform",
       "position": {
-        "x": -120,
-        "y": 366.37497
+        "x": -136.00012,
+        "y": 753.26
       },
-      "width": 684.74994,
+      "width": 1458.52,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 61.00348,
-        "y": 557.3205
+        "x": 48.491028,
+        "y": 464.82245
       },
-      "width": 1066.641,
+      "width": 881.6449,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -492.83173,
-        "y": 700.74994
+        "x": 48.491028,
+        "y": 2089.5063
       },
-      "width": 166.33658
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -584.00006,
-        "y": 1295.5
-      },
-      "width": 1205.4999,
+      "width": 1213.9714,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -401.66357,
-        "y": 1290.5599
+        "x": 224,
+        "y": 1545.0685
       },
-      "width": 640,
+      "width": 1278.8474,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -29.498337,
-        "y": 1620
+        "x": 480.00006,
+        "y": 2176.4922
       },
-      "width": 197.00363
+      "width": 192
     },
     {
       "type": "platform",
       "position": {
-        "x": 77.00348,
-        "y": 1755.1249
+        "x": 584,
+        "y": 2432.492
       },
-      "width": 286.2503,
+      "width": 528.00024,
       "rotation": 270
     }
   ]

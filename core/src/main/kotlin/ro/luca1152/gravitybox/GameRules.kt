@@ -28,11 +28,11 @@ class GameRules(context: Context) {
     private val preferences: Preferences = context.inject()
 
     // Debug
-    val CAN_LOAD_ANY_LEVEL = false
-    val LOAD_SPECIFIC_LEVEL = -1
+    val CAN_PLAY_ANY_LEVEL = false
+    val PLAY_SPECIFIC_LEVEL = -1
 
     // Rules
-    val LEVEL_COUNT = 271
+    val LEVEL_COUNT = 269
     val GRAVITY = -25f
     val IS_MOBILE = Gdx.app.type == Application.ApplicationType.Android || Gdx.app.type == Application.ApplicationType.iOS
     val ENABLE_LEVEL_EDITOR = !IS_MOBILE
