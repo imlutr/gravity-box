@@ -1,7 +1,7 @@
 {
   "hue": 206,
   "padding": {
-    "left": 4,
+    "left": 5,
     "right": 2,
     "top": 5,
     "bottom": 5
@@ -102,6 +102,15 @@
         "x": -44.000023,
         "y": 4402
       }
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 328,
+        "y": 5405.201
+      },
+      "width": 511.9997,
+      "rotation": 270
     }
   ]
 }

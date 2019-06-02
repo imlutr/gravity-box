@@ -1,8 +1,8 @@
 {
   "hue": 18,
   "padding": {
-    "left": 2,
-    "right": 2,
+    "left": 5,
+    "right": 5,
     "top": 5,
     "bottom": 5
   },
@@ -207,8 +207,7 @@
         "x": 116.47537,
         "y": 672
       },
-      "width": 232.95074,
-      "isDestroyable": true
+      "width": 232.95074
     }
   ]
 }

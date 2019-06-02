@@ -100,46 +100,6 @@
       },
       "width": 128,
       "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": -256.00006,
-        "y": 992
-      },
-      "width": 128.00003,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 320,
-        "y": 992
-      },
-      "width": 127.999985,
-      "isDestroyable": true
-    },
-    {
-      "type": "point",
-      "position": {
-        "x": -256,
-        "y": 1032
-      }
-    },
-    {
-      "type": "point",
-      "position": {
-        "x": 320,
-        "y": 1032
-      }
-    },
-    {
-      "type": "text",
-      "string": "Don't give up...",
-      "position": {
-        "x": 2.9021912,
-        "y": -30.1694
-      }
     }
   ]
 }

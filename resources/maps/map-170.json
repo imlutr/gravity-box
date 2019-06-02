@@ -1,8 +1,8 @@
 {
-  "hue": 183,
+  "hue": 193,
   "padding": {
     "left": 2,
-    "right": 2,
+    "right": 5,
     "top": 5,
     "bottom": 5
   },
@@ -14,7 +14,7 @@
   },
   "finish": {
     "position": {
-      "x": -205.27866,
+      "x": -207.34406,
       "y": 3672
     }
   },
@@ -120,10 +120,10 @@
     {
       "type": "platform",
       "position": {
-        "x": -312.00006,
-        "y": 3719.9998
+        "x": -312.00015,
+        "y": 3829.888
       },
-      "width": 256,
+      "width": 475.77484,
       "rotation": 270,
       "isDestroyable": true
     }
