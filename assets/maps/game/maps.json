@@ -1995,7 +1995,7 @@
     {
       "hue": 147,
       "padding": {
-        "left": 2,
+        "left": 4,
         "right": 2,
         "top": 5,
         "bottom": 5
@@ -2547,7 +2547,7 @@
         "left": 2,
         "right": 2,
         "top": 5,
-        "bottom": 6
+        "bottom": 5
       },
       "player": {
         "position": {
@@ -3293,7 +3293,7 @@
     {
       "hue": 265,
       "padding": {
-        "left": 4,
+        "left": 5,
         "right": 2,
         "top": 5,
         "bottom": 5
@@ -5578,7 +5578,7 @@
     {
       "hue": 133,
       "padding": {
-        "left": 5,
+        "left": 6,
         "right": 2,
         "top": 5,
         "bottom": 5
