@@ -22,15 +22,6 @@
     {
       "type": "platform",
       "position": {
-        "x": "Infinity",
-        "y": "Infinity"
-      },
-      "width": 182.59116,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
         "x": 32,
         "y": 184
       },
@@ -50,15 +41,6 @@
     {
       "type": "platform",
       "position": {
-        "x": "Infinity",
-        "y": "Infinity"
-      },
-      "width": 119.999985,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
         "x": -898.81177,
         "y": 32
       },
@@ -68,28 +50,10 @@
     {
       "type": "platform",
       "position": {
-        "x": "Infinity",
-        "y": "Infinity"
-      },
-      "width": 192,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
         "x": -839.3366,
         "y": -152.00002
       },
       "width": 41.073143,
-      "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": "Infinity",
-        "y": "Infinity"
-      },
-      "width": 422.59918,
       "isDestroyable": true
     },
     {

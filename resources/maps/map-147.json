@@ -137,14 +137,6 @@
       },
       "width": 632,
       "isDestroyable": true
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": "Infinity",
-        "y": "Infinity"
-      },
-      "width": 64
     }
   ]
 }

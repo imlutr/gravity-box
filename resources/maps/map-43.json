@@ -121,14 +121,6 @@
     {
       "type": "platform",
       "position": {
-        "x": "Infinity",
-        "y": "Infinity"
-      },
-      "width": 73.99988
-    },
-    {
-      "type": "platform",
-      "position": {
         "x": 736,
         "y": 6.006439
       },
