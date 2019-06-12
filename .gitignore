@@ -10,9 +10,6 @@ build/
 hs_err_pid*
 
 ## Android:
-android/libs/armeabi/
-android/libs/armeabi-v7a/
-android/libs/x86/
 android/gen/
 android/release/*
 android/release-keystore.jks
