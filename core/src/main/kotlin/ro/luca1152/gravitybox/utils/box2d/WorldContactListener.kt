@@ -19,6 +19,7 @@ package ro.luca1152.gravitybox.utils.box2d
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.Contact
 import com.badlogic.gdx.physics.box2d.ContactImpulse
@@ -32,6 +33,8 @@ import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Reacts accordingly to every Box2D collision. */
 class WorldContactListener(private val context: Context) : ContactListener {
+    private val engine: PooledEngine = context.inject()
+
     override fun beginContact(contact: Contact) {
         val bodyA = contact.fixtureA.body
         val bodyB = contact.fixtureB.body
@@ -51,20 +54,30 @@ class WorldContactListener(private val context: Context) : ContactListener {
         val movingPlatformEntity = findEntity(MovingObjectComponent, entityA, entityB)
         val playerEntity = findEntity(PlayerComponent, entityA, entityB)
 
-        // A bullet and a platform collided
-        if (bulletEntity != null && (platformEntity != null || destroyablePlatformEntity != null)) {
-            // Remove the bullet
-            bulletEntity.bullet.collidedWithPlatform = true
-            bulletEntity.bullet.collidedWith = platformEntity ?: destroyablePlatformEntity
+        // The bullet didn't already collide with another platform
+        if (bulletEntity != null && !bulletEntity.bullet.collidedWithPlatform) {
+            // A bullet and a platform collided
+            if (platformEntity != null || destroyablePlatformEntity != null) {
+                // The bullet collided with a destroyable platform that was hit by another bullet as well
+                // So the bullet should simply be removed, without applying a blast impulse
+                if (destroyablePlatformEntity != null && destroyablePlatformEntity.destroyablePlatform.remove) {
+                    engine.removeEntity(bulletEntity)
+                } else {
+                    // Remove the bullet
+                    bulletEntity.bullet.collidedWithPlatform = true
+                    bulletEntity.bullet.collidedWith = platformEntity ?: destroyablePlatformEntity
 
-            if (destroyablePlatformEntity != null) {
-                destroyablePlatformEntity.destroyablePlatform.remove = true
+                    if (destroyablePlatformEntity != null) {
+                        destroyablePlatformEntity.destroyablePlatform.remove = true
+                    }
+                }
             }
-        }
 
-        if (bulletEntity != null && combinedPlatformEntity != null) {
-            bulletEntity.bullet.collidedWithPlatform = true
-            bulletEntity.bullet.collidedWith = combinedPlatformEntity
+            // A bullet collided a combined platform
+            if (combinedPlatformEntity != null) {
+                bulletEntity.bullet.collidedWithPlatform = true
+                bulletEntity.bullet.collidedWith = combinedPlatformEntity
+            }
         }
 
         if (playerEntity != null && movingPlatformEntity != null) {

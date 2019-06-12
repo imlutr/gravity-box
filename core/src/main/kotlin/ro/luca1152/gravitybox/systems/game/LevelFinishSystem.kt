@@ -27,10 +27,7 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.screens.PlayScreen
-import ro.luca1152.gravitybox.utils.kotlin.GameStage
-import ro.luca1152.gravitybox.utils.kotlin.UIStage
-import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
-import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Handles what happens when a level is finished. */
@@ -44,6 +41,7 @@ class LevelFinishSystem(
     private val uiStage: UIStage = context.inject()
     private val gameStage: GameStage = context.inject()
     private val gameRules: GameRules = context.inject()
+    private val menuOverlayStage: MenuOverlayStage = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -114,7 +112,7 @@ class LevelFinishSystem(
         ) return
         uiStage.addAction(Actions.sequence(
             Actions.delay(.25f),
-            Actions.run { uiStage.addActor(playScreen.rateGamePromptPopUp) }
+            Actions.run { menuOverlayStage.addActor(playScreen.rateGamePromptPopUp) }
         ))
     }
 }

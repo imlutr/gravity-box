@@ -25,7 +25,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Button
@@ -33,7 +32,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ktx.graphics.copy
 import ktx.inject.Context
@@ -71,18 +69,17 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val world: World = context.inject()
     private val inputMultiplexer: InputMultiplexer = context.inject()
     private val uiStage: UIStage = context.inject()
-    private val uiCamera: UICamera = context.inject()
     private val uiViewport: UIViewport = context.inject()
     private val overlayViewport: OverlayViewport = context.inject()
     private val gameStage: GameStage = context.inject()
     private val preferences: Preferences = context.inject()
     private val eventQueue: EventQueue = context.inject()
     private val gameRules: GameRules = context.inject()
+    private val menuOverlayStage: MenuOverlayStage = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
 
-    private val menuOverlayStage = Stage(ExtendViewport(720f, 1280f, uiCamera), context.inject())
     private val padTopBottom = 38f
     private val padLeftRight = 43f
     private val bottomGrayStripHeight = 128f
@@ -90,6 +87,76 @@ class PlayScreen(private val context: Context) : KtxScreen {
     var shiftCameraYBy = 0f
     var shouldUpdateLevelLabel = false
     private var isChangingLevel = false
+    private val exitGameConfirmationPopUp = NewPopUp(context, 600f, 370f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            """
+            Are you sure you want to quit
+            the game?
+            """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val exitButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(
+                context,
+                "Exit",
+                skin, "regular", 36f, Color.WHITE
+            )
+            add(buttonText)
+            color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    Gdx.app.exit()
+                }
+            })
+        }
+        val keepPlayingButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(
+                context,
+                "Keep playing",
+                skin, "regular", 36f, Color.WHITE
+            )
+            add(buttonText)
+            color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(33f).expand().top().row()
+            add(exitButton).width(492f).padBottom(32f).row()
+            add(keepPlayingButton).width(492f).row()
+        }
+    }
+    private val backKeyListener = object : InputAdapter() {
+        override fun keyDown(keycode: Int): Boolean {
+            if (keycode == Input.Keys.BACK) {
+                when {
+                    githubPopUp.stage != null && !githubPopUp.hasActions() -> githubPopUp.hide()
+                    levelEditorPopUp.stage != null && !levelEditorPopUp.hasActions() -> levelEditorPopUp.hide()
+                    heartPopUp.stage != null && !heartPopUp.hasActions() -> heartPopUp.hide()
+                    noAdsPopUp.stage != null && !noAdsPopUp.hasActions() -> noAdsPopUp.hide()
+                    rateGamePromptPopUp.stage != null && !rateGamePromptPopUp.hasActions() -> {
+                        rateGamePromptPopUp.hide()
+                        // Prompt the player to rate the game later
+                        gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN =
+                            gameRules.PLAY_TIME + gameRules.DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
+                    }
+                    exitGameConfirmationPopUp.stage != null && !exitGameConfirmationPopUp.hasActions() -> exitGameConfirmationPopUp.hide()
+                    bottomGrayStrip.y == 0f -> hideMenuOverlay()
+                    exitGameConfirmationPopUp.stage == null -> {
+                        menuOverlayStage.addActor(exitGameConfirmationPopUp)
+                        exitGameConfirmationPopUp.toFront()
+                    }
+                }
+                return true
+            }
+            return false
+        }
+    }
     private val clearPreferencesListener = object : InputAdapter() {
         override fun keyDown(keycode: Int): Boolean {
             if (keycode == Input.Keys.F5 && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
@@ -128,6 +195,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addClickRunnable(Runnable {
             if (!levelEntity.level.isRestarting) {
                 levelEntity.level.restartLevel = true
+                gameRules.RESTART_COUNT++
             }
         })
     }
@@ -193,7 +261,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                stage.addActor(githubPopUp)
+                menuOverlayStage.addActor(githubPopUp)
             }
         })
     }
@@ -238,7 +306,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                stage.addActor(levelEditorPopUp)
+                menuOverlayStage.addActor(levelEditorPopUp)
             }
         })
     }
@@ -283,7 +351,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                             shouldUpdateLevelLabel = true
                             levelEntity.level.run {
                                 levelId = if (levelId == 1) {
-                                    if (gameRules.CAN_LOAD_ANY_LEVEL) gameRules.LEVEL_COUNT
+                                    if (gameRules.CAN_PLAY_ANY_LEVEL) gameRules.LEVEL_COUNT
                                     else gameRules.HIGHEST_FINISHED_LEVEL + 1
                                 } else levelId - 1
                                 loadMap = true
@@ -319,8 +387,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
                             shouldUpdateLevelLabel = true
                             levelEntity.level.run {
                                 levelId =
-                                    if (levelId == gameRules.LEVEL_COUNT && gameRules.CAN_LOAD_ANY_LEVEL) 1
-                                    else if (levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1 && !gameRules.CAN_LOAD_ANY_LEVEL) 1
+                                    if (levelId == gameRules.LEVEL_COUNT && gameRules.CAN_PLAY_ANY_LEVEL) 1
+                                    else if (levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1 && !gameRules.CAN_PLAY_ANY_LEVEL) 1
                                     else levelId + 1
                                 loadMap = true
                                 forceUpdateMap = true
@@ -341,8 +409,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val levelLabel = DistanceFieldLabel(
         context,
         "#${when {
-            gameRules.LOAD_SPECIFIC_LEVEL != -1 -> gameRules.LOAD_SPECIFIC_LEVEL
-            gameRules.CAN_LOAD_ANY_LEVEL -> 1
+            gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
+            gameRules.CAN_PLAY_ANY_LEVEL -> 1
             else -> Math.min(
                 preferences.getInteger("highestFinishedLevel", 0) + 1,
                 gameRules.LEVEL_COUNT
@@ -429,7 +497,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                stage.addActor(heartPopUp)
+                menuOverlayStage.addActor(heartPopUp)
             }
         })
     }
@@ -524,7 +592,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                stage.addActor(noAdsPopUp)
+                menuOverlayStage.addActor(noAdsPopUp)
             }
         })
     }
@@ -744,8 +812,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         levelEntity = LevelEntity.createEntity(
             context,
             when {
-                gameRules.LOAD_SPECIFIC_LEVEL != -1 -> gameRules.LOAD_SPECIFIC_LEVEL
-                gameRules.CAN_LOAD_ANY_LEVEL -> 1
+                gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
+                gameRules.CAN_PLAY_ANY_LEVEL -> 1
                 else -> Math.min(
                     preferences.getInteger("highestFinishedLevel", 0) + 1,
                     gameRules.LEVEL_COUNT
@@ -763,6 +831,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private fun addGameSystems() {
         engine.run {
             addSystem(PlayTimeSystem(context))
+            addSystem(GameFinishSystem(context))
             addSystem(MapLoadingSystem(context))
             addSystem(MapBodiesCreationSystem(context))
             addSystem(CombinedBodiesCreationSystem(context))
@@ -773,12 +842,12 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(PhysicsSyncSystem())
             addSystem(ShootingSystem(context))
             addSystem(BulletCollisionSystem(context))
-            addSystem(PlatformRemovalSystem())
-            addSystem(OffScreenLevelRestartSystem())
+            addSystem(PlatformRemovalSystem(context))
+            addSystem(OffScreenLevelRestartSystem(context))
             addSystem(OffScreenBulletDeletionSystem(context))
             addSystem(KeyboardLevelRestartSystem(context))
             addSystem(LevelFinishDetectionSystem())
-            addSystem(PointsCollectionSystem())
+            addSystem(PointsCollectionSystem(context))
             addSystem(LevelRestartSystem(context))
             addSystem(CanFinishLevelSystem(context))
             addSystem(FinishPointColorSystem())
@@ -787,6 +856,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem(context, this@PlayScreen))
             addSystem(UpdateGameCameraSystem(context))
+            addSystem(ShowFinishStatsSystem(context))
             addSystem(DashedLineRenderingSystem(context))
             addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
@@ -821,9 +891,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun handleUiInput() {
         // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
-        inputMultiplexer.addProcessor(0, uiStage)
-        inputMultiplexer.addProcessor(1, menuOverlayStage)
+        inputMultiplexer.addProcessor(0, menuOverlayStage)
+        inputMultiplexer.addProcessor(1, uiStage)
         inputMultiplexer.addProcessor(2, clearPreferencesListener)
+
+        // Back key
+        inputMultiplexer.addProcessor(3, backKeyListener)
+        Gdx.input.isCatchBackKey = true
     }
 
     private var loadedAnyMap = false
@@ -868,8 +942,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         rightButton.run {
             styleName =
-                if ((gameRules.CAN_LOAD_ANY_LEVEL && levelEntity.level.levelId == gameRules.LEVEL_COUNT) ||
-                    (!gameRules.CAN_LOAD_ANY_LEVEL && levelEntity.level.levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1)
+                if ((gameRules.CAN_PLAY_ANY_LEVEL && levelEntity.level.levelId == gameRules.LEVEL_COUNT) ||
+                    (!gameRules.CAN_PLAY_ANY_LEVEL && levelEntity.level.levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1)
                 ) "double-right-button"
                 else "right-button"
             style = skin.get(styleName, Button.ButtonStyle::class.java)

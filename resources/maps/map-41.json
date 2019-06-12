@@ -1,7 +1,7 @@
 {
-  "hue": 37,
+  "hue": 73,
   "padding": {
-    "left": 2,
+    "left": 4,
     "right": 2,
     "top": 5,
     "bottom": 5
@@ -14,110 +14,69 @@
   },
   "finish": {
     "position": {
-      "x": 24,
-      "y": -40
+      "x": 112,
+      "y": 766.65625
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -24,
+        "x": -32,
         "y": 32
       },
-      "width": 256
+      "width": 192
     },
     {
       "type": "platform",
       "position": {
-        "x": -160.00015,
-        "y": 96
+        "x": -119.99988,
+        "y": 466.54364
       },
-      "width": 144,
+      "width": 853.0873,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 639.99994,
-        "y": 160
+        "x": 56,
+        "y": 371.32812
       },
-      "width": 1583.9999
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 416,
-        "y": 32
-      },
-      "width": 256
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 864.00024,
-        "y": 32
-      },
-      "width": 256
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 791.74646,
-        "y": 304
-      },
-      "width": 2192.507
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 1307.9999,
-        "y": 32
-      },
-      "width": 248
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 1760,
-        "y": 32
-      },
-      "width": 256
-    },
-    {
-      "type": "platform",
-      "position": {
-        "x": 1896,
-        "y": 168
-      },
-      "width": 288,
+      "width": 662.65625,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": -296.50702,
-        "y": 88
+        "x": 120,
+        "y": 694.65625
       },
-      "width": 416,
-      "rotation": 270
+      "width": 112
     },
     {
       "type": "platform",
       "position": {
-        "x": -92.25351,
-        "y": -112
+        "x": 24,
+        "y": 901.0873
       },
-      "width": 392.50702
+      "width": 304
     },
     {
       "type": "platform",
       "position": {
-        "x": 96,
-        "y": -40
+        "x": 184,
+        "y": 797.87177
       },
-      "width": 128,
+      "width": 222.43108,
       "rotation": 270
+    },
+    {
+      "type": "text",
+      "string": "Wall Jumping",
+      "position": {
+        "x": -32.746246,
+        "y": -14.296001
+      }
     }
   ]
 }

@@ -22,30 +22,42 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
-import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.components.game.LevelComponent
+import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
-/** Marks the level as to be restarted when the player is off-screen. */
-class OffScreenLevelRestartSystem(context: Context) : EntitySystem() {
+/** Updates the appropriate stats when the player finished every level. */
+class GameFinishSystem(context: Context) : EntitySystem() {
     // Injected objects
     private val gameRules: GameRules = context.inject()
 
     // Entities
-    private lateinit var playerEntity: Entity
     private lateinit var levelEntity: Entity
 
-    private val playerIsOffScreen
-        get() = playerEntity.body.body!!.worldCenter.y < -15f + levelEntity.map.mapBottom
+    private val isLastLevel
+        get() = levelEntity.level.levelId == gameRules.LEVEL_COUNT
+    private val alreadyStoredStats
+        get() = gameRules.DID_FINISH_GAME
 
     override fun addedToEngine(engine: Engine) {
-        playerEntity = engine.getSingleton<PlayerComponent>()
+        super.addedToEngine(engine)
         levelEntity = engine.getSingleton<LevelComponent>()
     }
 
     override fun update(deltaTime: Float) {
-        if (playerIsOffScreen && !levelEntity.level.isRestarting) {
-            levelEntity.level.restartLevel = true
-            gameRules.DEATH_COUNT++
+        if (!isLastLevel || alreadyStoredStats) return
+        storeStats()
+    }
+
+    private fun storeStats() {
+        gameRules.run {
+            DID_FINISH_GAME = true
+            FINISH_TIME = PLAY_TIME
+            FINISH_BULLET_COUNT = BULLET_COUNT
+            FINISH_RESTART_COUNT = RESTART_COUNT
+            FINISH_DEATH_COUNT = DEATH_COUNT
+            FINISH_DESTROYED_PLATFORM_COUNT = DESTROYED_PLATFORMS_COUNT
+            FINISH_COLLECTED_POINT_COUNT = COLLECTED_POINT_COUNT
         }
     }
 }

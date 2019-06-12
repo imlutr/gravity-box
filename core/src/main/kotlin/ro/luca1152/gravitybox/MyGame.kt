@@ -30,7 +30,6 @@ import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
 import ktx.inject.Context
-import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -57,7 +56,8 @@ class MyGame : KtxGame<Screen>() {
             bindSingleton(PooledEngine())
             bindSingleton(ShapeRenderer())
             bindSingleton(Gdx.app.getPreferences("Gravity Box by Luca1152"))
-            bindSingleton(World(Vector2(0f, MapComponent.GRAVITY), true))
+            bindSingleton(GameRules(context))
+            bindSingleton(World(Vector2(0f, context.inject<GameRules>().GRAVITY), true))
             bindSingleton(GameCamera())
             bindSingleton(GameViewport(context))
             bindSingleton(GameStage(context))
@@ -67,7 +67,8 @@ class MyGame : KtxGame<Screen>() {
             bindSingleton(UICamera())
             bindSingleton(UIViewport(context))
             bindSingleton(UIStage(context))
-            bindSingleton(GameRules(context))
+            bindSingleton(MenuOverlayViewport(context))
+            bindSingleton(MenuOverlayStage(context))
             bindSingleton(DistanceFieldShader(DistanceFieldLabel.vertexShader, DistanceFieldLabel.fragmentShader))
         }
     }

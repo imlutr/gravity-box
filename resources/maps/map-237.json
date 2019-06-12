@@ -1,5 +1,5 @@
 {
-  "hue": 22,
+  "hue": 148,
   "padding": {
     "left": 2,
     "right": 2,
@@ -8,34 +8,26 @@
   },
   "player": {
     "position": {
-      "x": -64,
-      "y": 103.83658
+      "x": -32,
+      "y": 72
     }
   },
   "finish": {
     "position": {
-      "x": 1815.9998,
-      "y": 136.37671
+      "x": -32,
+      "y": 936
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": -64,
-        "y": 63.83658
-      },
-      "width": 128
-    },
-    {
-      "type": "platform",
-      "position": {
         "x": -32,
-        "y": -160
+        "y": 32
       },
       "movingTo": {
-        "x": 1783.9998,
-        "y": -160
+        "x": 288,
+        "y": 32
       },
       "speed": 224,
       "width": 192
@@ -43,44 +35,57 @@
     {
       "type": "platform",
       "position": {
-        "x": -135.99994,
-        "y": 64
+        "x": -136,
+        "y": 608
       },
-      "width": 464,
+      "width": 1168,
       "rotation": 270
     },
     {
       "type": "platform",
       "position": {
-        "x": 875.9999,
-        "y": 288
+        "x": -32,
+        "y": 352
       },
-      "width": 2007.9998
+      "width": 192
     },
     {
       "type": "platform",
       "position": {
-        "x": 1815.9999,
-        "y": 64.37671
+        "x": 287.99997,
+        "y": 608
       },
-      "width": 128.00024
+      "movingTo": {
+        "x": -31.999954,
+        "y": 608
+      },
+      "speed": 224,
+      "width": 192.00009
     },
     {
       "type": "platform",
       "position": {
-        "x": 1888,
-        "y": 64
+        "x": -32,
+        "y": 864
       },
-      "width": 464,
+      "width": 192
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 128,
+        "y": 1184
+      },
+      "width": 512
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": 392,
+        "y": 608
+      },
+      "width": 1168,
       "rotation": 270
-    },
-    {
-      "type": "text",
-      "string": "Almost there...",
-      "position": {
-        "x": 1021.28174,
-        "y": 66.49306
-      }
     }
   ]
 }

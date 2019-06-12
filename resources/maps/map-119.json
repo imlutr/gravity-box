@@ -1,5 +1,5 @@
 {
-  "hue": 227,
+  "hue": 46,
   "padding": {
     "left": 2,
     "right": 2,
@@ -15,10 +15,10 @@
   },
   "finish": {
     "position": {
-      "x": -524.0973,
-      "y": 240.80988
+      "x": -150.93329,
+      "y": 612.94885
     },
-    "rotation": 344
+    "rotation": 15
   },
   "objects": [
     {
@@ -37,7 +37,16 @@
         "y": 173.26173
       },
       "width": 128,
-      "rotation": 344
+      "rotation": 343
+    },
+    {
+      "type": "platform",
+      "position": {
+        "x": -128,
+        "y": 544
+      },
+      "width": 128,
+      "rotation": 15
     }
   ]
 }
