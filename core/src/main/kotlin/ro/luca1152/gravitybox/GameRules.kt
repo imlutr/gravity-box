@@ -32,10 +32,16 @@ class GameRules(context: Context) {
     val PLAY_SPECIFIC_LEVEL = -1
 
     // Rules
+    /** How many levels the game has. */
     val LEVEL_COUNT = 269
+    /** The Box2D World's gravity. */
     val GRAVITY = -25f
+    /** True if the device runs Android or iOS. */
     val IS_MOBILE = Gdx.app.type == Application.ApplicationType.Android || Gdx.app.type == Application.ApplicationType.iOS
+    /** If true, the level editor button is shown. */
     val ENABLE_LEVEL_EDITOR = !IS_MOBILE
+    /** The minimum delay in seconds between two shots. */
+    val DELAY_BETWEEN_SHOTS = 0.05f
 
     // Stats
     /** The highest level the player finished. */

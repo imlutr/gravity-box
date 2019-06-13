@@ -44,12 +44,18 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
     // Entities
     private lateinit var playerEntity: Entity
 
+    private var shootingTimer = gameRules.DELAY_BETWEEN_SHOTS
+
     private val inputAdapter = object : KtxInputAdapter {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+            if (shootingTimer > 0f)
+                return false
+
             gameCamera.update()
             val worldCoordinates = screenToWorldCoordinates(context, screenX, screenY)
             createBullet(worldCoordinates.x, worldCoordinates.y)
             gameRules.BULLET_COUNT++
+            shootingTimer = gameRules.DELAY_BETWEEN_SHOTS
             return true
         }
     }
@@ -69,6 +75,10 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
     override fun addedToEngine(engine: Engine) {
         playerEntity = engine.getSingleton<PlayerComponent>()
         inputMultiplexer.addProcessor(inputAdapter)
+    }
+
+    override fun update(deltaTime: Float) {
+        shootingTimer -= deltaTime
     }
 
     override fun removedFromEngine(engine: Engine?) {
