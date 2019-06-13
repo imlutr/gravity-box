@@ -1,8 +1,9 @@
+//noinspection AbbrClass
 {
-  Color: {
+  com.badlogic.gdx.graphics.Color: {
     text-gold: { r: 0.819, g: 0.647, b: 0.180 }
   }
-  BitmapFont: {
+  com.badlogic.gdx.graphics.g2d.BitmapFont: {
     regular: {
       file: regular.fnt
     }
@@ -10,7 +11,7 @@
       file: semi-bold.fnt
     }
   }
-  LabelStyle: {
+  com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
     regular: {
       font: regular
     }
@@ -18,7 +19,7 @@
       font: semi-bold
     }
   }
-  ButtonStyle: {
+  com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
     simple-button: {
     }
     small-button: {
