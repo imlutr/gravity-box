@@ -23,3 +23,6 @@
 -keep public class ro.luca1152.gravitybox.desktop.DesktopLauncher {
     public static void main(java.lang.String[]);
 }
+
+# gdx-pay
+-keep class com.android.vending.billing.**
