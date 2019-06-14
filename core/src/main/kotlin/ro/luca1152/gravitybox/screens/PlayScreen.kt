@@ -547,14 +547,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         val muffinButton = Button(skin, "long-button").apply {
             val muffinText = DistanceFieldLabel(context, "Muffin", skin, "regular", 36f, Color.WHITE)
-            val priceText = DistanceFieldLabel(context, "$7.49", skin, "regular", 36f, Color.WHITE)
+            val priceText = DistanceFieldLabel(context, "$7.99", skin, "regular", 36f, Color.WHITE)
             add(muffinText).padLeft(47f).expand().left()
             add(priceText).padRight(47f).expand().right()
             color.set(24 / 255f, 178 / 255f, 230 / 255f, 1f)
         }
         val pizzaButton = Button(skin, "long-button").apply {
             val pizzaText = DistanceFieldLabel(context, "Pizza", skin, "regular", 36f, Color.WHITE)
-            val priceText = DistanceFieldLabel(context, "$12.49", skin, "regular", 36f, Color.WHITE)
+            val priceText = DistanceFieldLabel(context, "$14.99", skin, "regular", 36f, Color.WHITE)
             add(pizzaText).padLeft(47f).expand().left()
             add(priceText).padRight(47f).expand().right()
             color.set(24 / 255f, 154 / 255f, 230 / 255f, 1f)
