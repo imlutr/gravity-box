@@ -202,4 +202,14 @@ class GameRules(context: Context) {
                 flush()
             }
         }
+
+    // Ads
+    var SHOW_ADS
+        get() = preferences.getBoolean("showAds", true)
+        set(value) {
+            preferences.run {
+                putBoolean("showAds", value)
+                flush()
+            }
+        }
 }

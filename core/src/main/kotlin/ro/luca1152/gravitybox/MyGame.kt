@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.pay.PurchaseManager
 import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
@@ -37,6 +38,9 @@ import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
+    // Initialized in AndroidLauncher
+    lateinit var purchaseManager: PurchaseManager
+
     private val context = Context()
 
     override fun create() {
@@ -70,6 +74,10 @@ class MyGame : KtxGame<Screen>() {
             bindSingleton(MenuOverlayViewport(context))
             bindSingleton(MenuOverlayStage(context))
             bindSingleton(DistanceFieldShader(DistanceFieldLabel.vertexShader, DistanceFieldLabel.fragmentShader))
+
+            if (context.inject<GameRules>().IS_MOBILE) {
+                bindSingleton(purchaseManager)
+            }
         }
     }
 
