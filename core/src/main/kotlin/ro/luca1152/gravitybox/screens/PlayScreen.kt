@@ -23,6 +23,7 @@ import com.badlogic.gdx.*
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.pay.*
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Touchable
@@ -76,6 +77,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val eventQueue: EventQueue = context.inject()
     private val gameRules: GameRules = context.inject()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
+    private val purchaseManager: PurchaseManager? = if (context.contains<PurchaseManager>()) context.inject() else null
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -134,22 +136,16 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val backKeyListener = object : InputAdapter() {
         override fun keyDown(keycode: Int): Boolean {
             if (keycode == Input.Keys.BACK) {
-                when {
-                    githubPopUp.stage != null && !githubPopUp.hasActions() -> githubPopUp.hide()
-                    levelEditorPopUp.stage != null && !levelEditorPopUp.hasActions() -> levelEditorPopUp.hide()
-                    heartPopUp.stage != null && !heartPopUp.hasActions() -> heartPopUp.hide()
-                    noAdsPopUp.stage != null && !noAdsPopUp.hasActions() -> noAdsPopUp.hide()
-                    rateGamePromptPopUp.stage != null && !rateGamePromptPopUp.hasActions() -> {
-                        rateGamePromptPopUp.hide()
-                        // Prompt the player to rate the game later
-                        gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN =
-                            gameRules.PLAY_TIME + gameRules.DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
-                    }
-                    exitGameConfirmationPopUp.stage != null && !exitGameConfirmationPopUp.hasActions() -> exitGameConfirmationPopUp.hide()
-                    bottomGrayStrip.y == 0f -> hideMenuOverlay()
-                    exitGameConfirmationPopUp.stage == null -> {
-                        menuOverlayStage.addActor(exitGameConfirmationPopUp)
-                        exitGameConfirmationPopUp.toFront()
+                val popUp = menuOverlayStage.root.findActor<NewPopUp>("NewPopUp")
+                if (popUp != null && !popUp.hasActions()) {
+                    popUp.backButtonRunnable.run()
+                } else {
+                    when {
+                        bottomGrayStrip.y == 0f -> hideMenuOverlay()
+                        exitGameConfirmationPopUp.stage == null -> {
+                            menuOverlayStage.addActor(exitGameConfirmationPopUp)
+                            exitGameConfirmationPopUp.toFront()
+                        }
                     }
                 }
                 return true
@@ -412,7 +408,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
             gameRules.CAN_PLAY_ANY_LEVEL -> 1
             else -> Math.min(
-                preferences.getInteger("highestFinishedLevel", 0) + 1,
+                gameRules.HIGHEST_FINISHED_LEVEL + 1,
                 gameRules.LEVEL_COUNT
             )
         }}",
@@ -463,10 +459,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                         Application.ApplicationType.Android -> Gdx.net.openURI("market://details?id=ro.luca1152.gravitybox")
                         else -> Gdx.net.openURI("https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox")
                     }
-                    preferences.run {
-                        putBoolean("didRateGame", true)
-                        flush()
-                    }
+                    gameRules.DID_RATE_THE_GAME = true
                     makeHeartButtonFull()
                     this@popup.hide()
                 }
@@ -491,7 +484,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val heartButton = ClickButton(
         skin,
-        if (preferences.getBoolean("didRateGame")) "white-full-round-button" else "empty-round-button"
+        if (gameRules.DID_RATE_THE_GAME) "white-full-round-button" else "empty-round-button"
     ).apply {
         addIcon("heart-icon")
         addListener(object : ClickListener() {
@@ -522,14 +515,23 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
         })
     }
-    private val noAdsPopUp = NewPopUp(context, 600f, 820f, skin).apply popup@{
+
+    private fun createNoAdsPopUp() = NewPopUp(context, 600f, if (gameRules.SHOW_ADS) 924f else 856f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
-            """
-            Any amount below will support
-            the development & REMOVE
-            ADS! <3
-        """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+            (if (gameRules.SHOW_ADS)
+                """
+                Any amount below will support
+                the development & REMOVE
+                ADS! <3
+                """
+            else
+                """
+                The game is now ad-free!
+
+                Any amount below will support
+                the development! <3
+                """).trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
         )
         val coffeeButton = Button(skin, "long-button").apply {
             val coffeeText = DistanceFieldLabel(context, "Coffee", skin, "regular", 36f, Color.WHITE)
@@ -537,6 +539,18 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(coffeeText).padLeft(47f).expand().left()
             add(priceText).padRight(47f).expand().right()
             color.set(0 / 255f, 190 / 255f, 214 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    purchaseManager?.purchase("coffee")
+                    this@popup.hide()
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE) {
+                        gameRules.SHOW_ADS = false
+                    }
+                    return true
+                }
+            })
         }
         val iceCreamButton = Button(skin, "long-button").apply {
             val iceCreamText = DistanceFieldLabel(context, "Ice Cream (best)", skin, "regular", 36f, Color.WHITE)
@@ -544,20 +558,56 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(iceCreamText).padLeft(47f).expand().left()
             add(priceText).padRight(47f).expand().right()
             color.set(207 / 255f, 0 / 255f, 214 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    purchaseManager?.purchase("ice_cream")
+                    this@popup.hide()
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE) {
+                        gameRules.SHOW_ADS = false
+                    }
+                    return true
+                }
+            })
         }
         val muffinButton = Button(skin, "long-button").apply {
             val muffinText = DistanceFieldLabel(context, "Muffin", skin, "regular", 36f, Color.WHITE)
-            val priceText = DistanceFieldLabel(context, "$7.49", skin, "regular", 36f, Color.WHITE)
+            val priceText = DistanceFieldLabel(context, "$7.99", skin, "regular", 36f, Color.WHITE)
             add(muffinText).padLeft(47f).expand().left()
             add(priceText).padRight(47f).expand().right()
             color.set(24 / 255f, 178 / 255f, 230 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    purchaseManager?.purchase("muffin")
+                    this@popup.hide()
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE) {
+                        gameRules.SHOW_ADS = false
+                    }
+                    return true
+                }
+            })
         }
         val pizzaButton = Button(skin, "long-button").apply {
             val pizzaText = DistanceFieldLabel(context, "Pizza", skin, "regular", 36f, Color.WHITE)
-            val priceText = DistanceFieldLabel(context, "$12.49", skin, "regular", 36f, Color.WHITE)
+            val priceText = DistanceFieldLabel(context, "$14.99", skin, "regular", 36f, Color.WHITE)
             add(pizzaText).padLeft(47f).expand().left()
             add(priceText).padRight(47f).expand().right()
             color.set(24 / 255f, 154 / 255f, 230 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    purchaseManager?.purchase("pizza")
+                    this@popup.hide()
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE) {
+                        gameRules.SHOW_ADS = false
+                    }
+                    return true
+                }
+            })
         }
         val sushiButton = Button(skin, "long-button").apply {
             val sushiText = DistanceFieldLabel(context, "Sushi", skin, "regular", 36f, Color.WHITE)
@@ -565,9 +615,34 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(sushiText).padLeft(47f).expand().left()
             add(priceText).padRight(47f).expand().right()
             color.set(0 / 255f, 125 / 255f, 213 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    purchaseManager?.purchase("sushi")
+                    this@popup.hide()
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE) {
+                        gameRules.SHOW_ADS = false
+                    }
+                    return true
+                }
+            })
+        }
+        val alreadyPaidButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(context, "I already paid...", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    purchaseManager?.purchaseRestore()
+                    this@popup.hide()
+                }
+            })
         }
         val noThanksButton = Button(skin, "long-button").apply {
-            val buttonText = DistanceFieldLabel(context, "No Thanks :(", skin, "regular", 36f, Color.WHITE)
+            val buttonText =
+                DistanceFieldLabel(context, "No, thanks${if (gameRules.SHOW_ADS) " :(" else ""}", skin, "regular", 36f, Color.WHITE)
             add(buttonText)
             color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
             addListener(object : ClickListener() {
@@ -584,15 +659,19 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(muffinButton).width(492f).padBottom(32f).row()
             add(pizzaButton).width(492f).padBottom(32f).row()
             add(sushiButton).width(492f).padBottom(32f).row()
+            if (gameRules.SHOW_ADS) {
+                add(alreadyPaidButton).width(492f).padBottom(32f).row()
+            }
             add(noThanksButton).width(492f).row()
         }
     }
+
     private val noAdsButton = ClickButton(skin, "empty-round-button").apply {
         addIcon("no-ads-icon")
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                menuOverlayStage.addActor(noAdsPopUp)
+                menuOverlayStage.addActor(createNoAdsPopUp())
             }
         })
     }
@@ -686,11 +765,216 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(maybeLaterButton).width(492f).padBottom(32f).row()
             add(neverButton).width(492f).row()
         }
+        backButtonRunnable = Runnable {
+            hide()
+
+            // Prompt the player to rate the game later
+            gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN =
+                gameRules.PLAY_TIME + gameRules.DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
+        }
+    }
+    private val anErrorOccurredPopUp = NewPopUp(context, 600f, 230f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            "An error occurred...", skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val okayButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(okayButton).width(492f).row()
+        }
+    }
+    private val anErrorOccurredRestorePopUp = NewPopUp(context, 600f, 370f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            """
+            An error occurred while
+            restoring purchases....
+
+            Please make sure you are
+            connected to the internet.""".trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val okayButton = Button(skin, "long-button").apply {
+            val closeButton = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
+            add(closeButton)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(okayButton).width(492f).row()
+        }
+    }
+    private val anErrorOccurredPurchasePopUp = NewPopUp(context, 600f, 260f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            """
+            An error occurred while
+            purchasing....""".trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val okayButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(okayButton).width(492f).row()
+        }
+    }
+    private val successfulRestorePopUp = NewPopUp(context, 600f, 230f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            "Purchases successfully restored.", skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val okayButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(context, "Okay :)", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(okayButton).width(492f).row()
+        }
+    }
+    private val noPurchasesToRestorePopUp = NewPopUp(context, 600f, 230f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            "No purchases to restore...", skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val okayButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(okayButton).width(492f).row()
+        }
+    }
+    private val successfulPurchasePopUp = NewPopUp(context, 600f, 340f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            """
+            Successful purchase!
+
+            Thanks for supporting the
+            game's development! <3
+            """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val okayButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(context, "Close :)", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(okayButton).width(492f).row()
+        }
     }
     private val rootOverlayTable = Table().apply {
         setFillParent(true)
         add(topPart).expand().fill().row()
         add(bottomGrayStrip).fillX().height(bottomGrayStripHeight).bottom().padBottom(-128f)
+    }
+
+    init {
+        initializePurchaseManager()
+    }
+
+    private fun initializePurchaseManager() {
+        if (!gameRules.IS_MOBILE)
+            return
+
+        val purchaseObserver = object : PurchaseObserver {
+            override fun handleInstall() {}
+
+            override fun handleInstallError(e: Throwable?) {
+                menuOverlayStage.addActor(anErrorOccurredPopUp)
+            }
+
+            override fun handleRestore(transactions: Array<out Transaction>) {
+                if (transactions.isEmpty()) {
+                    menuOverlayStage.addActor(noPurchasesToRestorePopUp)
+                } else {
+                    transactions.forEach {
+                        handleTransaction(it)
+                    }
+                    menuOverlayStage.addActor(successfulRestorePopUp)
+                }
+            }
+
+            override fun handleRestoreError(e: Throwable?) {
+                menuOverlayStage.addActor(anErrorOccurredRestorePopUp)
+            }
+
+            override fun handlePurchase(transaction: Transaction) {
+                handleTransaction(transaction)
+                menuOverlayStage.addActor(successfulPurchasePopUp)
+            }
+
+            private fun handleTransaction(transaction: Transaction) {
+                if (transaction.isPurchased && transaction.affectsAds()) {
+                    gameRules.SHOW_ADS = false
+                }
+            }
+
+            override fun handlePurchaseError(e: Throwable?) {
+                menuOverlayStage.addActor(anErrorOccurredPurchasePopUp)
+            }
+
+            override fun handlePurchaseCanceled() {}
+
+            private fun Transaction.affectsAds() =
+                identifier == "coffee" || identifier == "ice_cream" || identifier == "muffin" || identifier == "pizza" || identifier == "sushi"
+        }
+        val purchaseManagerConfig = PurchaseManagerConfig().apply {
+            addOffer(Offer().setType(OfferType.CONSUMABLE).setIdentifier("coffee"))
+            addOffer(Offer().setType(OfferType.CONSUMABLE).setIdentifier("ice_cream"))
+            addOffer(Offer().setType(OfferType.CONSUMABLE).setIdentifier("muffin"))
+            addOffer(Offer().setType(OfferType.CONSUMABLE).setIdentifier("pizza"))
+            addOffer(Offer().setType(OfferType.CONSUMABLE).setIdentifier("sushi"))
+        }
+        purchaseManager!!.install(purchaseObserver, purchaseManagerConfig, true)
     }
 
     private fun showMenuOverlay() {
@@ -815,7 +1099,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
                 gameRules.CAN_PLAY_ANY_LEVEL -> 1
                 else -> Math.min(
-                    preferences.getInteger("highestFinishedLevel", 0) + 1,
+                    gameRules.HIGHEST_FINISHED_LEVEL + 1,
                     gameRules.LEVEL_COUNT
                 )
             }

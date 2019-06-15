@@ -22,6 +22,7 @@ import android.view.WindowManager
 
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
+import com.badlogic.gdx.pay.android.googlebilling.PurchaseManagerGoogleBilling
 import ro.luca1152.gravitybox.MyGame
 
 /** Launches the Android application. */
@@ -29,6 +30,8 @@ class AndroidLauncher : AndroidApplication() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        initialize(MyGame(), AndroidApplicationConfiguration())
+        initialize(MyGame().apply {
+            purchaseManager = PurchaseManagerGoogleBilling(this@AndroidLauncher)
+        }, AndroidApplicationConfiguration())
     }
 }

@@ -5,21 +5,84 @@
 -dontwarn com.badlogic.**
 -dontwarn org.lwjgl.**
 
+# Java
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+-keepclassmembers class * extends java.lang.Enum {
+    <fields>;
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
 # LWJGL
 -keep class org.lwjgl.**
 -keepclassmembers class org.lwjgl.** { *; }
 
 # LibGDX
--keep class com.badlogic.**
--keepclassmembers class com.badlogic.** { *; }
+-keep public class com.badlogic.gdx.Gdx {
+    public protected *;
+}
+-keep public class com.badlogic.gdx.Application {
+    public protected *;
+}
 
-# Serialization
+# Box2D
+-keepclassmembers class com.badlogic.gdx.physics.box2d.World {
+   boolean contactFilter(long, long);
+   void beginContact(long);
+   void endContact(long);
+   void preSolve(long, long);
+   void postSolve(long, long);
+   boolean reportFixture(long);
+   float reportRayFixture(long, float, float, float, float, float);
+}
+
+# Desktop
+-keep public class ro.luca1152.gravitybox.desktop.DesktopLauncher {
+    public static void main(java.lang.String[]);
+}
+
+# Android
+-keepclassmembers class com.badlogic.gdx.backends.android.AndroidInput* {
+   <init>(com.badlogic.gdx.Application, android.content.Context, java.lang.Object, com.badlogic.gdx.backends.android.AndroidApplicationConfiguration);
+}
+-keep public class com.badlogic.gdx.backends.android.AndroidEventListener {
+    public protected *;
+}
+-keep public class com.badlogic.gdx.backends.android.AndroidApplication {
+    public protected *;
+}
+
+# Skin serialization
+-keep public class com.badlogic.gdx.graphics.Color {
+    public protected *;
+}
+-keep public class com.badlogic.gdx.graphics.g2d.BitmapFont {
+    public protected *;
+}
+-keep public class com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle {
+    public protected *;
+}
+-keep public class com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle {
+    public protected *;
+}
+
+# Maps serialization
 -keepattributes Signature # Keep type parameters
 -keep class ro.luca1152.gravitybox.utils.assets.json.** { *; }
 -keep class ro.luca1152.gravitybox.utils.assets.loaders.MapPack { *; }
 -keep class ro.luca1152.gravitybox.utils.assets.loaders.MapPackFactory { *; }
 
-# Desktop
--keep public class ro.luca1152.gravitybox.desktop.DesktopLauncher {
-    public static void main(java.lang.String[]);
+# IAP
+-keep class com.android.vending.billing.**
+-keep class com.sec.android.iap.**
+-keep public class com.badlogic.gdx.pay.android.IAP {
+    public protected *;
+}
+-keep public class com.badlogic.gdx.pay.android.openiab.PurchaseManagerAndroidOpenIAB {
+    public protected *;
+}
+-keep public class com.badlogic.gdx.pay.android.googleplay.AndroidGooglePlayPurchaseManager {
+    public protected *;
 }
