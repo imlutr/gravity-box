@@ -27,7 +27,11 @@ class UpdateRoundedPlatformsEvent : Event
 open class FadeOutFadeInEvent(
     val fadeOutDuration: Float, val fadeOutInterpolation: Interpolation,
     val fadeInDuration: Float, val fadeInInterpolation: Interpolation
-) : Event
+) : Event {
+    companion object {
+        val CLEAR_ACTIONS = Float.NEGATIVE_INFINITY
+    }
+}
 
 class FadeOutEvent(fadeOutDuration: Float, fadeOutInterpolation: Interpolation = Interpolation.linear) :
     FadeOutFadeInEvent(fadeOutDuration, fadeOutInterpolation, 0f, Interpolation.linear)
