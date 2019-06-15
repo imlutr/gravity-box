@@ -902,7 +902,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     menuOverlayStage.addActor(noPurchasesToRestorePopUp)
                 } else {
                     transactions.forEach {
-                        handlePurchase(it, true)
+                        handleTransaction(it)
                     }
                     menuOverlayStage.addActor(successfulRestorePopUp)
                 }
@@ -913,13 +913,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
 
             override fun handlePurchase(transaction: Transaction) {
-                handlePurchase(transaction, false)
+                handleTransaction(transaction)
                 menuOverlayStage.addActor(successfulPurchasePopUp)
             }
 
-            private fun handlePurchase(transaction: Transaction, fromRestore: Boolean) {
+            private fun handleTransaction(transaction: Transaction) {
                 if (transaction.isPurchased && transaction.affectsAds()) {
-                    gameRules.SHOW_ADS = !fromRestore
+                    gameRules.SHOW_ADS = false
                 }
             }
 
