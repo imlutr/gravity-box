@@ -778,27 +778,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 gameRules.PLAY_TIME + gameRules.DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
         }
     }
-    private val anErrorOccurredPopUp = NewPopUp(context, 600f, 230f, skin).apply popup@{
-        val text = DistanceFieldLabel(
-            context,
-            "An error occurred...", skin, "regular", 36f, skin.getColor("text-gold")
-        )
-        val okayButton = Button(skin, "long-button").apply {
-            val buttonText = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
-            add(buttonText)
-            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
-            addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    super.clicked(event, x, y)
-                    this@popup.hide()
-                }
-            })
-        }
-        widget.run {
-            add(text).padBottom(32f).row()
-            add(okayButton).width(492f).row()
-        }
-    }
     private val anErrorOccurredRestorePopUp = NewPopUp(context, 600f, 370f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
@@ -936,12 +915,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 }
             }
 
-            override fun handleInstallError(e: Throwable?) {
-                // Silently handle install errors on Android
-                if (gameRules.IS_IOS) {
-                    menuOverlayStage.addActor(anErrorOccurredPopUp)
-                }
-            }
+            override fun handleInstallError(e: Throwable?) {}
 
             override fun handleRestore(transactions: Array<out Transaction>) {
                 if (transactions.isEmpty() && gameRules.IS_IOS) {
