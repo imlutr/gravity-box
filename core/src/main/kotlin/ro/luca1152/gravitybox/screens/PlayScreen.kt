@@ -641,7 +641,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
             })
         }
         val noThanksButton = Button(skin, "long-button").apply {
-            val buttonText = DistanceFieldLabel(context, "No thanks :(", skin, "regular", 36f, Color.WHITE)
+            val buttonText =
+                DistanceFieldLabel(context, "No, thanks${if (gameRules.SHOW_ADS) " :(" else ""}", skin, "regular", 36f, Color.WHITE)
             add(buttonText)
             color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
             addListener(object : ClickListener() {
