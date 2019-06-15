@@ -719,7 +719,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(neverButton).width(492f).row()
         }
     }
-    private val anErrorOccurredPopUp = NewPopUp(context, 600f, 400f, skin).apply popup@{
+    private val anErrorOccurredPopUp = NewPopUp(context, 600f, 230f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
             "An error occurred...", skin, "regular", 36f, skin.getColor("text-gold")
@@ -740,7 +740,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(okayButton).width(492f).row()
         }
     }
-    private val anErrorOccurredRestorePopUp = NewPopUp(context, 600f, 470f, skin).apply popup@{
+    private val anErrorOccurredRestorePopUp = NewPopUp(context, 600f, 260f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
             """
@@ -748,8 +748,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
             restoring purchases....""".trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
         )
         val okayButton = Button(skin, "long-button").apply {
-            val buttonText = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
-            add(buttonText)
+            val closeButton = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
+            add(closeButton)
             color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
             addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -763,7 +763,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(okayButton).width(492f).row()
         }
     }
-    private val anErrorOccurredPurchasePopUp = NewPopUp(context, 600f, 470f, skin).apply popup@{
+    private val anErrorOccurredPurchasePopUp = NewPopUp(context, 600f, 260f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
             """
@@ -786,13 +786,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(okayButton).width(492f).row()
         }
     }
-    private val successfulRestorePopUp = NewPopUp(context, 600f, 470f, skin).apply popup@{
+    private val successfulRestorePopUp = NewPopUp(context, 600f, 230f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
             "Purchases successfully restored.", skin, "regular", 36f, skin.getColor("text-gold")
         )
         val okayButton = Button(skin, "long-button").apply {
-            val buttonText = DistanceFieldLabel(context, "Okay", skin, "regular", 36f, Color.WHITE)
+            val buttonText = DistanceFieldLabel(context, "Okay :)", skin, "regular", 36f, Color.WHITE)
             add(buttonText)
             color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
             addListener(object : ClickListener() {
@@ -807,7 +807,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(okayButton).width(492f).row()
         }
     }
-    private val successfulPurchasePopUp = NewPopUp(context, 600f, 570f, skin).apply popup@{
+    private val successfulPurchasePopUp = NewPopUp(context, 600f, 340f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
             """
@@ -818,7 +818,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
         )
         val okayButton = Button(skin, "long-button").apply {
-            val buttonText = DistanceFieldLabel(context, "Okay", skin, "regular", 36f, Color.WHITE)
+            val buttonText = DistanceFieldLabel(context, "Close :)", skin, "regular", 36f, Color.WHITE)
             add(buttonText)
             color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
             addListener(object : ClickListener() {
