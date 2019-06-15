@@ -136,22 +136,16 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val backKeyListener = object : InputAdapter() {
         override fun keyDown(keycode: Int): Boolean {
             if (keycode == Input.Keys.BACK) {
-                when {
-                    githubPopUp.stage != null && !githubPopUp.hasActions() -> githubPopUp.hide()
-                    levelEditorPopUp.stage != null && !levelEditorPopUp.hasActions() -> levelEditorPopUp.hide()
-                    heartPopUp.stage != null && !heartPopUp.hasActions() -> heartPopUp.hide()
-                    noAdsPopUp.stage != null && !noAdsPopUp.hasActions() -> noAdsPopUp.hide()
-                    rateGamePromptPopUp.stage != null && !rateGamePromptPopUp.hasActions() -> {
-                        rateGamePromptPopUp.hide()
-                        // Prompt the player to rate the game later
-                        gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN =
-                            gameRules.PLAY_TIME + gameRules.DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
-                    }
-                    exitGameConfirmationPopUp.stage != null && !exitGameConfirmationPopUp.hasActions() -> exitGameConfirmationPopUp.hide()
-                    bottomGrayStrip.y == 0f -> hideMenuOverlay()
-                    exitGameConfirmationPopUp.stage == null -> {
-                        menuOverlayStage.addActor(exitGameConfirmationPopUp)
-                        exitGameConfirmationPopUp.toFront()
+                val popUp = menuOverlayStage.root.findActor<NewPopUp>("NewPopUp")
+                if (popUp != null && !popUp.hasActions()) {
+                    popUp.backButtonRunnable.run()
+                } else {
+                    when {
+                        bottomGrayStrip.y == 0f -> hideMenuOverlay()
+                        exitGameConfirmationPopUp.stage == null -> {
+                            menuOverlayStage.addActor(exitGameConfirmationPopUp)
+                            exitGameConfirmationPopUp.toFront()
+                        }
                     }
                 }
                 return true
@@ -735,6 +729,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(rateButton).width(492f).padBottom(32f).row()
             add(maybeLaterButton).width(492f).padBottom(32f).row()
             add(neverButton).width(492f).row()
+        }
+        backButtonRunnable = Runnable {
+            hide()
+
+            // Prompt the player to rate the game later
+            gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN =
+                gameRules.PLAY_TIME + gameRules.DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
         }
     }
     private val anErrorOccurredPopUp = NewPopUp(context, 600f, 230f, skin).apply popup@{
