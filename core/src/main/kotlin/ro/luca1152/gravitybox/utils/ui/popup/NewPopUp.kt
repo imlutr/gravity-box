@@ -46,6 +46,11 @@ class NewPopUp(
     private val uiStage: UIStage = context.inject()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
 
+    /** What happens with the pop-up when the back button is pressed. */
+    var backButtonRunnable = Runnable {
+        hide()
+    }
+
     private val whitePopUp = Image(skin.getDrawable("pop-up")).apply {
         setSize(width, height)
         setOrigin(width / 2f, height / 2f)
@@ -86,6 +91,7 @@ class NewPopUp(
 
     init {
         addActor(widget)
+        name = "NewPopUp"
     }
 
     fun hide() {

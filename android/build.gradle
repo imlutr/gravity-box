@@ -28,7 +28,7 @@ android {
         }
     }
     buildToolsVersion '28.0.3'
-    compileSdkVersion 28
+    compileSdkVersion 29
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -60,11 +60,17 @@ android {
     defaultConfig {
         applicationId 'ro.luca1152.gravitybox'
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 29
     }
     buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
+        }
         debug {
             signingConfig signingConfigs.debug
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
         }
     }
 }
@@ -74,6 +80,7 @@ configurations { natives }
 dependencies {
     api project(':core')
     api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+    api "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"

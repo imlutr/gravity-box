@@ -36,8 +36,12 @@ class GameRules(context: Context) {
     val LEVEL_COUNT = 269
     /** The Box2D World's gravity. */
     val GRAVITY = -25f
+    /** True if the device runs Android. */
+    val IS_ANDROID = Gdx.app.type == Application.ApplicationType.Android
+    /** True if the device runs iOS. */
+    val IS_IOS = Gdx.app.type == Application.ApplicationType.iOS
     /** True if the device runs Android or iOS. */
-    val IS_MOBILE = Gdx.app.type == Application.ApplicationType.Android || Gdx.app.type == Application.ApplicationType.iOS
+    val IS_MOBILE = IS_ANDROID || IS_IOS
     /** If true, the level editor button is shown. */
     val ENABLE_LEVEL_EDITOR = !IS_MOBILE
     /** The minimum delay in seconds between two shots. */
@@ -199,6 +203,16 @@ class GameRules(context: Context) {
         set(value) {
             preferences.run {
                 putFloat("minPlayTimeToPromptUserToRateTheGameAgain", value)
+                flush()
+            }
+        }
+
+    // Ads
+    var SHOW_ADS
+        get() = preferences.getBoolean("showAds", true)
+        set(value) {
+            preferences.run {
+                putBoolean("showAds", value)
                 flush()
             }
         }

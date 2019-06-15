@@ -15,6 +15,8 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import proguard.gradle.ProGuardTask
+
 apply plugin: 'application'
 
 sourceSets.main.resources.srcDirs += [rootProject.file('assets').absolutePath]
@@ -41,4 +43,11 @@ jar {
 
 run {
     ignoreExitValue = true
+}
+
+task obfuscate(type: ProGuardTask) {
+    configuration files("../android/proguard-project.txt")
+    libraryjars files("C:/Program Files (x86)/Java/jre1.8.0_211/lib/rt.jar", "C:/Program Files (x86)/Java/jre1.8.0_211/lib/jce.jar")
+    injars files("build/libs/desktop-${version}-all.jar")
+    outjars files("build/libs/obfuscated.jar")
 }

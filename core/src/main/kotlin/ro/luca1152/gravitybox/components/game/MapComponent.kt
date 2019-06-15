@@ -38,6 +38,8 @@ import ro.luca1152.gravitybox.entities.game.DashedLineEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.TextEntity
 import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.events.FadeInEvent
+import ro.luca1152.gravitybox.events.FadeOutFadeInEvent
 import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
@@ -212,7 +214,13 @@ class MapComponent : Component, Poolable {
         createFinish(mapFactory.finish, finishEntity)
         createObjects(context, mapFactory.objects, isLevelEditor)
         updateMapBounds()
-        eventQueue.add(UpdateRoundedPlatformsEvent())
+        eventQueue.run {
+            clear()
+            add(UpdateRoundedPlatformsEvent())
+
+            // Clear all actions in case the level was restarting, causing visual glitches
+            add(FadeInEvent(FadeOutFadeInEvent.CLEAR_ACTIONS))
+        }
     }
 
     fun resetPassengers() {
@@ -417,6 +425,7 @@ class MapComponent : Component, Poolable {
 
     companion object : ComponentResolver<MapComponent>(MapComponent::class.java)
 }
+
 val Entity.map: MapComponent
     get() = MapComponent[this]
 

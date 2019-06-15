@@ -67,14 +67,18 @@ class FadeOutFadeInSystem(context: Context) :
     private fun addEffect(event: FadeOutFadeInEvent) {
         gameStage.addActor(whiteImage)
         whiteImage.run {
-            if (event.fadeOutDuration != 0f) {
-                // Fading in the image = fade out
-                addAction(Actions.fadeIn(event.fadeOutDuration, event.fadeOutInterpolation))
-            }
-            if (event.fadeInDuration != 0f) {
-                // Fading out the image = fade in
-                addAction(Actions.after(Actions.fadeOut(event.fadeInDuration, event.fadeInInterpolation)))
-                addAction(Actions.after(Actions.removeActor()))
+            if (event.fadeInDuration == FadeOutFadeInEvent.CLEAR_ACTIONS || event.fadeOutDuration == FadeOutFadeInEvent.CLEAR_ACTIONS) {
+                clearActions()
+            } else {
+                if (event.fadeOutDuration != 0f) {
+                    // Fading in the image = fade out
+                    addAction(Actions.fadeIn(event.fadeOutDuration, event.fadeOutInterpolation))
+                }
+                if (event.fadeInDuration != 0f) {
+                    // Fading out the image = fade in
+                    addAction(Actions.after(Actions.fadeOut(event.fadeInDuration, event.fadeInInterpolation)))
+                    addAction(Actions.after(Actions.removeActor()))
+                }
             }
         }
     }
