@@ -61,3 +61,14 @@ tasks.eclipse.doLast {
   delete '.classpath'
   delete '.settings/'
 }
+
+def getLocalProperty(String propertyName) {
+    def propsFile = rootProject.file('local.properties')
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        return props[propertyName]
+    } else {
+        return ""
+    }
+}

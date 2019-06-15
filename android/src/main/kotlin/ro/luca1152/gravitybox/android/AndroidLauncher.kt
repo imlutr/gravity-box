@@ -23,13 +23,22 @@ import android.view.WindowManager
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.badlogic.gdx.pay.android.googlebilling.PurchaseManagerGoogleBilling
+import com.google.android.gms.ads.MobileAds
+import ro.luca1152.gravitybox.BuildConfig
 import ro.luca1152.gravitybox.MyGame
 
 /** Launches the Android application. */
 class AndroidLauncher : AndroidApplication() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Don't dim the screen
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        // Initialize AdMob
+        MobileAds.initialize(this, BuildConfig.AD_MOB_APP_ID)
+
+        // Initialize the game
         initialize(MyGame().apply {
             purchaseManager = PurchaseManagerGoogleBilling(this@AndroidLauncher)
         }, AndroidApplicationConfiguration())
