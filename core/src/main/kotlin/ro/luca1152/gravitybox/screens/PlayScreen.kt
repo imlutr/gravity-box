@@ -516,7 +516,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         })
     }
 
-    private fun createNoAdsPopUp() = NewPopUp(context, 600f, if (gameRules.SHOW_ADS) 924f else 960f, skin).apply popup@{
+    private fun createNoAdsPopUp() = NewPopUp(context, 600f, if (gameRules.SHOW_ADS) 924f else 856f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
             (if (gameRules.SHOW_ADS)
@@ -659,7 +659,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(muffinButton).width(492f).padBottom(32f).row()
             add(pizzaButton).width(492f).padBottom(32f).row()
             add(sushiButton).width(492f).padBottom(32f).row()
-            add(alreadyPaidButton).width(492f).padBottom(32f).row()
+            if (gameRules.SHOW_ADS) {
+                add(alreadyPaidButton).width(492f).padBottom(32f).row()
+            }
             add(noThanksButton).width(492f).row()
         }
     }
