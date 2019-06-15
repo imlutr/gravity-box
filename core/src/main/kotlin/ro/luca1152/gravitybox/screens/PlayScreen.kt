@@ -537,6 +537,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                     purchaseManager?.purchase("coffee")
                     this@popup.hide()
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE) {
+                        gameRules.SHOW_ADS = false
+                    }
                     return true
                 }
             })
@@ -551,6 +556,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                     purchaseManager?.purchase("ice_cream")
                     this@popup.hide()
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE) {
+                        gameRules.SHOW_ADS = false
+                    }
                     return true
                 }
             })
@@ -565,6 +575,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                     purchaseManager?.purchase("muffin")
                     this@popup.hide()
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE) {
+                        gameRules.SHOW_ADS = false
+                    }
                     return true
                 }
             })
@@ -579,6 +594,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                     purchaseManager?.purchase("pizza")
                     this@popup.hide()
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE) {
+                        gameRules.SHOW_ADS = false
+                    }
                     return true
                 }
             })
@@ -593,6 +613,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                     purchaseManager?.purchase("sushi")
                     this@popup.hide()
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE) {
+                        gameRules.SHOW_ADS = false
+                    }
                     return true
                 }
             })
