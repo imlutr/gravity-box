@@ -59,7 +59,8 @@ android {
     }
     defaultConfig {
         applicationId 'ro.luca1152.gravitybox'
-        minSdkVersion 14
+        //noinspection MinSdkTooLow
+        minSdkVersion 9
         targetSdkVersion 29
     }
     buildTypes {
