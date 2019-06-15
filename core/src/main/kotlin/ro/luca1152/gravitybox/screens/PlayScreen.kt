@@ -515,7 +515,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
         })
     }
 
-    private fun createNoAdsPopUp() = NewPopUp(context, 600f, if (gameRules.SHOW_ADS) 924f else 856f, skin).apply popup@{
+    private fun createNoAdsPopUp() = NewPopUp(
+        context, 600f,
+        if (gameRules.SHOW_ADS) {
+            if (gameRules.IS_IOS) 924f // Show the "I already paid..." button
+            else 820f // Hide the "I already paid..." button
+        } else 856f, skin
+    ).apply popup@{
         val text = DistanceFieldLabel(
             context,
             (if (gameRules.SHOW_ADS)
@@ -658,7 +664,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(muffinButton).width(492f).padBottom(32f).row()
             add(pizzaButton).width(492f).padBottom(32f).row()
             add(sushiButton).width(492f).padBottom(32f).row()
-            if (gameRules.SHOW_ADS) {
+            if (gameRules.SHOW_ADS && gameRules.IS_IOS) {
                 add(alreadyPaidButton).width(492f).padBottom(32f).row()
             }
             add(noThanksButton).width(492f).row()
@@ -916,34 +922,47 @@ class PlayScreen(private val context: Context) : KtxScreen {
         add(bottomGrayStrip).fillX().height(bottomGrayStripHeight).bottom().padBottom(-128f)
     }
 
-    init {
-        initializePurchaseManager()
-    }
-
     private fun initializePurchaseManager() {
         if (!gameRules.IS_MOBILE)
             return
 
         val purchaseObserver = object : PurchaseObserver {
-            override fun handleInstall() {}
+            override fun handleInstall() {
+                // Restore purchases every time the game launches, thus if the game is reinstalled, the game remains ad-free (if a purchase was made)
+                // Do this only on Android, as Apple forbids restoring purchases without any user interaction
+                // => on iOS there will be an "I already paid..." button
+                if (gameRules.IS_ANDROID) {
+                    purchaseManager!!.purchaseRestore()
+                }
+            }
 
             override fun handleInstallError(e: Throwable?) {
-                menuOverlayStage.addActor(anErrorOccurredPopUp)
+                // Silently handle install errors on Android
+                if (gameRules.IS_IOS) {
+                    menuOverlayStage.addActor(anErrorOccurredPopUp)
+                }
             }
 
             override fun handleRestore(transactions: Array<out Transaction>) {
-                if (transactions.isEmpty()) {
+                if (transactions.isEmpty() && gameRules.IS_IOS) {
                     menuOverlayStage.addActor(noPurchasesToRestorePopUp)
                 } else {
                     transactions.forEach {
                         handleTransaction(it)
                     }
-                    menuOverlayStage.addActor(successfulRestorePopUp)
+
+                    // Silently restore on Android
+                    if (gameRules.IS_IOS) {
+                        menuOverlayStage.addActor(successfulRestorePopUp)
+                    }
                 }
             }
 
             override fun handleRestoreError(e: Throwable?) {
-                menuOverlayStage.addActor(anErrorOccurredRestorePopUp)
+                // Silently handle restore errors on Android
+                if (gameRules.IS_IOS) {
+                    menuOverlayStage.addActor(anErrorOccurredRestorePopUp)
+                }
             }
 
             override fun handlePurchase(transaction: Transaction) {
@@ -1072,6 +1091,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 )
             )
         }
+    }
+
+    init {
+        initializePurchaseManager()
     }
 
     override fun show() {
