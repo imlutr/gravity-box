@@ -88,7 +88,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val skin = manager.get(Assets.uiSkin)
     var shiftCameraYBy = 0f
     var shouldUpdateLevelLabel = false
-    private var isChangingLevel = false
     private val exitGameConfirmationPopUp = NewPopUp(context, 600f, 370f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
@@ -333,13 +332,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val leftButton = ClickButton(skin, "left-button").apply {
         touchable = Touchable.disabled
         addClickRunnable(Runnable {
-            if (color.a == 1f && !isChangingLevel) {
+            if (color.a == 1f && !levelEntity.level.isChangingLevel) {
                 val fadeOutDuration = .2f
                 val fadeInDuration = .2f
                 gameStage.addAction(
                     Actions.sequence(
                         Actions.run {
-                            isChangingLevel = true
+                            levelEntity.level.isChangingLevel = true
                             eventQueue.add(FadeOutEvent(fadeOutDuration))
                         },
                         Actions.delay(fadeOutDuration),
@@ -360,7 +359,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                         },
                         Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
                         Actions.delay(fadeInDuration),
-                        Actions.run { isChangingLevel = false }
+                        Actions.run { levelEntity.level.isChangingLevel = false }
                     )
                 )
             }
@@ -369,13 +368,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val rightButton = ClickButton(skin, "right-button").apply {
         touchable = Touchable.disabled
         addClickRunnable(Runnable {
-            if (color.a == 1f && !isChangingLevel) {
+            if (color.a == 1f && !levelEntity.level.isChangingLevel) {
                 val fadeOutDuration = .2f
                 val fadeInDuration = .2f
                 gameStage.addAction(
                     Actions.sequence(
                         Actions.run {
-                            isChangingLevel = true
+                            levelEntity.level.isChangingLevel = true
                             eventQueue.add(FadeOutEvent(fadeOutDuration))
                         },
                         Actions.delay(fadeOutDuration),
@@ -396,7 +395,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                         },
                         Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
                         Actions.delay(fadeInDuration),
-                        Actions.run { isChangingLevel = false }
+                        Actions.run { levelEntity.level.isChangingLevel = false }
                     )
                 )
             }

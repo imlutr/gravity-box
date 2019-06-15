@@ -31,6 +31,7 @@ class LevelComponent : Component, Poolable {
     var forceUpdateMap = false
     var restartLevel = false
     var isRestarting = false
+    var isChangingLevel = false
     var levelId = 1
 
     /** True if every point (if any) was collected. */
@@ -46,6 +47,7 @@ class LevelComponent : Component, Poolable {
         forceUpdateMap = false
         restartLevel = false
         isRestarting = false
+        isChangingLevel = false
         levelId = 1
     }
 

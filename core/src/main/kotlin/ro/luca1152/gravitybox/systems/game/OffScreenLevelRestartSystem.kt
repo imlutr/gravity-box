@@ -43,7 +43,7 @@ class OffScreenLevelRestartSystem(context: Context) : EntitySystem() {
     }
 
     override fun update(deltaTime: Float) {
-        if (playerIsOffScreen && !levelEntity.level.isRestarting) {
+        if (playerIsOffScreen && !levelEntity.level.isRestarting && !levelEntity.level.isChangingLevel) {
             levelEntity.level.restartLevel = true
             gameRules.DEATH_COUNT++
         }
