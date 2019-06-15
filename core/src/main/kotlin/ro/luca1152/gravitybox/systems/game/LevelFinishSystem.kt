@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.inject.Context
@@ -37,7 +36,6 @@ class LevelFinishSystem(
     private val playScreen: PlayScreen? = null
 ) : EntitySystem() {
     // Injected objects
-    private val preferences: Preferences = context.inject()
     private val uiStage: UIStage = context.inject()
     private val gameStage: GameStage = context.inject()
     private val gameRules: GameRules = context.inject()
@@ -80,11 +78,7 @@ class LevelFinishSystem(
                     Actions.run { levelEntity.level.isRestarting = true },
                     Actions.fadeOut(0f),
                     Actions.run {
-                        preferences.run {
-                            val previousHigh = getInteger("highestFinishedLevel", 0)
-                            putInteger("highestFinishedLevel", Math.max(previousHigh, levelEntity.level.levelId))
-                            flush()
-                        }
+                        gameRules.HIGHEST_FINISHED_LEVEL = Math.max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
                         levelEntity.level.run {
                             levelId = Math.min(levelId + 1, gameRules.LEVEL_COUNT)
                             loadMap = true

@@ -408,7 +408,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
             gameRules.CAN_PLAY_ANY_LEVEL -> 1
             else -> Math.min(
-                preferences.getInteger("highestFinishedLevel", 0) + 1,
+                gameRules.HIGHEST_FINISHED_LEVEL + 1,
                 gameRules.LEVEL_COUNT
             )
         }}",
@@ -459,10 +459,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                         Application.ApplicationType.Android -> Gdx.net.openURI("market://details?id=ro.luca1152.gravitybox")
                         else -> Gdx.net.openURI("https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox")
                     }
-                    preferences.run {
-                        putBoolean("didRateGame", true)
-                        flush()
-                    }
+                    gameRules.DID_RATE_THE_GAME = true
                     makeHeartButtonFull()
                     this@popup.hide()
                 }
@@ -487,7 +484,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val heartButton = ClickButton(
         skin,
-        if (preferences.getBoolean("didRateGame")) "white-full-round-button" else "empty-round-button"
+        if (gameRules.DID_RATE_THE_GAME) "white-full-round-button" else "empty-round-button"
     ).apply {
         addIcon("heart-icon")
         addListener(object : ClickListener() {
@@ -518,14 +515,23 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
         })
     }
-    private val noAdsPopUp = NewPopUp(context, 600f, 924f, skin).apply popup@{
+
+    private fun createNoAdsPopUp() = NewPopUp(context, 600f, if (gameRules.SHOW_ADS) 924f else 960f, skin).apply popup@{
         val text = DistanceFieldLabel(
             context,
-            """
-            Any amount below will support
-            the development & REMOVE
-            ADS! <3
-        """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+            (if (gameRules.SHOW_ADS)
+                """
+                Any amount below will support
+                the development & REMOVE
+                ADS! <3
+                """
+            else
+                """
+                The game is now ad-free!
+
+                Any amount below will support
+                the development! <3
+                """).trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
         )
         val coffeeButton = Button(skin, "long-button").apply {
             val coffeeText = DistanceFieldLabel(context, "Coffee", skin, "regular", 36f, Color.WHITE)
@@ -635,7 +641,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             })
         }
         val noThanksButton = Button(skin, "long-button").apply {
-            val buttonText = DistanceFieldLabel(context, "No Thanks :(", skin, "regular", 36f, Color.WHITE)
+            val buttonText = DistanceFieldLabel(context, "No thanks :(", skin, "regular", 36f, Color.WHITE)
             add(buttonText)
             color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
             addListener(object : ClickListener() {
@@ -656,12 +662,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(noThanksButton).width(492f).row()
         }
     }
+
     private val noAdsButton = ClickButton(skin, "empty-round-button").apply {
         addIcon("no-ads-icon")
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                menuOverlayStage.addActor(noAdsPopUp)
+                menuOverlayStage.addActor(createNoAdsPopUp())
             }
         })
     }
@@ -1089,7 +1096,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
                 gameRules.CAN_PLAY_ANY_LEVEL -> 1
                 else -> Math.min(
-                    preferences.getInteger("highestFinishedLevel", 0) + 1,
+                    gameRules.HIGHEST_FINISHED_LEVEL + 1,
                     gameRules.LEVEL_COUNT
                 )
             }
