@@ -82,6 +82,7 @@ class LevelFinishSystem(
                     },
                     Actions.fadeOut(0f),
                     Actions.run {
+                        showInterstitialAd()
                         gameRules.HIGHEST_FINISHED_LEVEL = Math.max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
                         levelEntity.level.run {
                             levelId = Math.min(levelId + 1, gameRules.LEVEL_COUNT)
@@ -92,7 +93,6 @@ class LevelFinishSystem(
                             forceCenterCameraOnPlayer = true
                             resetPassengers()
                         }
-                        showInterstitialAd()
                     },
                     Actions.fadeIn(.25f, Interpolation.pow3In),
                     Actions.run {
