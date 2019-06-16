@@ -33,6 +33,7 @@ import ktx.app.KtxGame
 import ktx.inject.Context
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
+import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
@@ -40,6 +41,7 @@ import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 class MyGame : KtxGame<Screen>() {
     // Initialized in AndroidLauncher
     lateinit var purchaseManager: PurchaseManager
+    lateinit var adsController: AdsController
 
     private val context = Context()
 
@@ -74,9 +76,9 @@ class MyGame : KtxGame<Screen>() {
             bindSingleton(MenuOverlayViewport(context))
             bindSingleton(MenuOverlayStage(context))
             bindSingleton(DistanceFieldShader(DistanceFieldLabel.vertexShader, DistanceFieldLabel.fragmentShader))
-
             if (context.inject<GameRules>().IS_MOBILE) {
                 bindSingleton(purchaseManager)
+                bindSingleton(adsController)
             }
         }
     }

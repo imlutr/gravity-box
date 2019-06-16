@@ -62,6 +62,7 @@ tasks.eclipse.doLast {
   delete '.settings/'
 }
 
+@SuppressWarnings("LibGDXGradleTestId")
 def getLocalProperty(String propertyName) {
     def propsFile = rootProject.file('local.properties')
     if (propsFile.exists()) {
@@ -69,6 +70,14 @@ def getLocalProperty(String propertyName) {
         props.load(new FileInputStream(propsFile))
         return props[propertyName]
     } else {
-        return ""
+        if (propertyName == "admob.appid"){
+            // Debug App ID
+            return "ca-app-pub-3940256099942544~3347511713"
+        } else if (propertyName == "admob.interstitial.adunitid"){
+            // Debug interstitial ad unit ID
+            return "ca-app-pub-3940256099942544/1033173712"
+        } else {
+            return ""
+        }
     }
 }
