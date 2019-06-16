@@ -196,7 +196,7 @@ class GameRules(context: Context) {
                 flush()
             }
         }
-    val DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN = 7.5f * 60 // 7.5 minutes
+    val DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN = 5f * 60 // 5 minutes
     /** The player will be asked to rate the game again after the PLAY_TIME exceeds this value if he chose to rate the game `Later`.*/
     var MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN
         get() = preferences.getFloat("minPlayTimeToPromptUserToRateTheGameAgain", 0f)
