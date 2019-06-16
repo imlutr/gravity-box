@@ -58,6 +58,13 @@ android {
         exclude 'META-INF/dependencies.txt'
     }
     defaultConfig {
+        // So @string/ad_mob_app_id works in AndroidManifest
+        resValue "string", "ad_mob_app_id", "\""+getLocalProperty("admob.appid")+"\""
+
+        // So BuildConfig.AD_MOB_APP_ID and BuildConfig.AD_MOB_INTERSTITIAL_AD_UNIT_ID works in AndroidLauncher
+        buildConfigField "String", "AD_MOB_APP_ID", "\""+getLocalProperty("admob.appid")+"\""
+        buildConfigField "String", "AD_MOB_INTERSTITIAL_AD_UNIT_ID", "\""+getLocalProperty("admob.interstitial.adunitid")+"\""
+
         applicationId 'ro.luca1152.gravitybox'
         minSdkVersion 14
         targetSdkVersion 29
@@ -69,8 +76,8 @@ android {
         }
         debug {
             signingConfig signingConfigs.debug
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
         }
     }
 }

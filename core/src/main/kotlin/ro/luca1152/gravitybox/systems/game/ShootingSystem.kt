@@ -44,7 +44,7 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
     // Entities
     private lateinit var playerEntity: Entity
 
-    private var shootingTimer = gameRules.DELAY_BETWEEN_SHOTS
+    private var shootingTimer = gameRules.TIME_DELAY_BETWEEN_SHOTS
 
     private val inputAdapter = object : KtxInputAdapter {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
@@ -55,7 +55,7 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
             val worldCoordinates = screenToWorldCoordinates(context, screenX, screenY)
             createBullet(worldCoordinates.x, worldCoordinates.y)
             gameRules.BULLET_COUNT++
-            shootingTimer = gameRules.DELAY_BETWEEN_SHOTS
+            shootingTimer = gameRules.TIME_DELAY_BETWEEN_SHOTS
             return true
         }
     }

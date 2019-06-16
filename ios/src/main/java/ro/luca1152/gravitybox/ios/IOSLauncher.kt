@@ -29,7 +29,9 @@ import ro.luca1152.gravitybox.MyGame
 class IOSLauncher : IOSApplication.Delegate() {
     override fun createApplication(): IOSApplication {
         val configuration = IOSApplicationConfiguration().apply {
-            this.preventScreenDimming = true
+            orientationLandscape = false
+            orientationPortrait = true
+            preventScreenDimming = true
         }
         return IOSApplication(MyGame(), configuration)
     }

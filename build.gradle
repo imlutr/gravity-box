@@ -44,7 +44,7 @@ configure(subprojects - project(':android')) {
 }
 
 subprojects {
-  version = '0.8'
+  version = '0.9'
   ext.appName = 'gravity-box'
   repositories {
     mavenLocal()
@@ -60,4 +60,24 @@ tasks.eclipse.doLast {
   delete '.project'
   delete '.classpath'
   delete '.settings/'
+}
+
+@SuppressWarnings("LibGDXGradleTestId")
+def getLocalProperty(String propertyName) {
+    def propsFile = rootProject.file('local.properties')
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        return props[propertyName]
+    } else {
+        if (propertyName == "admob.appid"){
+            // Debug App ID
+            return "ca-app-pub-3940256099942544~3347511713"
+        } else if (propertyName == "admob.interstitial.adunitid"){
+            // Debug interstitial ad unit ID
+            return "ca-app-pub-3940256099942544/1033173712"
+        } else {
+            return ""
+        }
+    }
 }

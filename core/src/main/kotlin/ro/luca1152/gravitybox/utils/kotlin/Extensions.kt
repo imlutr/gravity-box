@@ -206,3 +206,5 @@ fun Entity.addToEngine(context: Context): Entity {
 }
 
 fun newEntity(context: Context) = context.inject<PooledEngine>().createEntity()!!
+
+inline fun <reified Type : Any> Context.injectNullable(): Type? = if (contains<Type>()) getProvider(Type::class.java)() else null

@@ -26,6 +26,7 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.screens.PlayScreen
+import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 
@@ -40,6 +41,7 @@ class LevelFinishSystem(
     private val gameStage: GameStage = context.inject()
     private val gameRules: GameRules = context.inject()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
+    private val adsController: AdsController? = context.injectNullable()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -75,9 +77,12 @@ class LevelFinishSystem(
         else {
             gameStage.addAction(
                 Actions.sequence(
-                    Actions.run { levelEntity.level.isRestarting = true },
+                    Actions.run {
+                        levelEntity.level.isRestarting = true
+                    },
                     Actions.fadeOut(0f),
                     Actions.run {
+                        showInterstitialAd()
                         gameRules.HIGHEST_FINISHED_LEVEL = Math.max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
                         levelEntity.level.run {
                             levelId = Math.min(levelId + 1, gameRules.LEVEL_COUNT)
@@ -90,13 +95,16 @@ class LevelFinishSystem(
                         }
                     },
                     Actions.fadeIn(.25f, Interpolation.pow3In),
-                    Actions.run { levelEntity.level.isRestarting = false }
+                    Actions.run {
+                        levelEntity.level.isRestarting = false
+                    }
                 )
             )
         }
     }
 
     private fun promptUserToRate() {
+        if (gameRules.SHOULD_SHOW_INTERSTITIAL_AD && levelEntity.level.levelId != gameRules.MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT) return
         if (playScreen == null) return
         if (gameRules.DID_RATE_THE_GAME) return
         if (gameRules.NEVER_PROMPT_USER_TO_RATE_THE_GAME) return
@@ -108,5 +116,16 @@ class LevelFinishSystem(
             Actions.delay(.25f),
             Actions.run { menuOverlayStage.addActor(playScreen.rateGamePromptPopUp) }
         ))
+    }
+
+    private fun showInterstitialAd() {
+        if (!gameRules.IS_MOBILE) return
+        if (gameRules.IS_AD_FREE) return
+        if (!gameRules.SHOULD_SHOW_INTERSTITIAL_AD) return
+        if (levelEntity.level.levelId == gameRules.MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT) return
+        if (!adsController!!.isNetworkConnected()) return
+        if (!adsController.isInterstitialAdLoaded()) return
+        adsController.showInterstitialAd()
+        gameRules.SHOULD_SHOW_INTERSTITIAL_AD = false
     }
 }

@@ -33,5 +33,6 @@ dependencies {
     api "io.github.libktx:ktx-math:$ktxVersion"
     api "io.github.libktx:ktx-scene2d:$ktxVersion"
     api "com.badlogicgames.gdxpay:gdx-pay-client:$gdxPayVersion"
+    api "com.google.android.gms:play-services-ads:$playServicesAdsVersion"
 }
         
