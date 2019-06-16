@@ -26,6 +26,7 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.screens.PlayScreen
+import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 
@@ -40,6 +41,7 @@ class LevelFinishSystem(
     private val gameStage: GameStage = context.inject()
     private val gameRules: GameRules = context.inject()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
+    private val adsController: AdsController? = context.injectNullable()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -73,6 +75,9 @@ class LevelFinishSystem(
         if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
         else {
+            if (adsController?.isNetworkConnected() == true) {
+                adsController.showInterstitialAd()
+            }
             gameStage.addAction(
                 Actions.sequence(
                     Actions.run { levelEntity.level.isRestarting = true },

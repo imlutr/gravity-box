@@ -77,7 +77,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val eventQueue: EventQueue = context.inject()
     private val gameRules: GameRules = context.inject()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
-    private val purchaseManager: PurchaseManager? = if (context.contains<PurchaseManager>()) context.inject() else null
+    private val purchaseManager: PurchaseManager? = context.injectNullable()
 
     // Entities
     private lateinit var levelEntity: Entity

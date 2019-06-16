@@ -58,8 +58,13 @@ android {
         exclude 'META-INF/dependencies.txt'
     }
     defaultConfig {
-        manifestPlaceholders = [admob:getLocalProperty("admob.appid")]
-        buildConfigField "String", "AD_MOB_APP_ID", "\""+[admob:getLocalProperty("admob.appid")]+"\""
+        // So @string/ad_mob_app_id works in AndroidManifest
+        resValue "string", "ad_mob_app_id", "\""+getLocalProperty("admob.appid")+"\""
+
+        // So BuildConfig.AD_MOB_APP_ID and BuildConfig.AD_MOB_INTERSTITIAL_AD_UNIT_ID works in AndroidLauncher
+        buildConfigField "String", "AD_MOB_APP_ID", "\""+getLocalProperty("admob.appid")+"\""
+        buildConfigField "String", "AD_MOB_INTERSTITIAL_AD_UNIT_ID", "\""+getLocalProperty("admob.interstitial.adunitid")+"\""
+
         applicationId 'ro.luca1152.gravitybox'
         minSdkVersion 14
         targetSdkVersion 29
@@ -83,7 +88,6 @@ dependencies {
     api project(':core')
     api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
     api "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
-    api 'com.google.android.gms:play-services-ads:17.2.1'
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
