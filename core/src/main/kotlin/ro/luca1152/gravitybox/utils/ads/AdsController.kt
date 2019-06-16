@@ -19,5 +19,6 @@ package ro.luca1152.gravitybox.utils.ads
 
 interface AdsController {
     fun showInterstitialAd()
+    fun isInterstitialAdLoaded(): Boolean
     fun isNetworkConnected(): Boolean
 }

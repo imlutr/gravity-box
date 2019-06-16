@@ -75,12 +75,11 @@ class LevelFinishSystem(
         if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
         else {
-            if (adsController?.isNetworkConnected() == true) {
-                adsController.showInterstitialAd()
-            }
             gameStage.addAction(
                 Actions.sequence(
-                    Actions.run { levelEntity.level.isRestarting = true },
+                    Actions.run {
+                        levelEntity.level.isRestarting = true
+                    },
                     Actions.fadeOut(0f),
                     Actions.run {
                         gameRules.HIGHEST_FINISHED_LEVEL = Math.max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
@@ -93,15 +92,19 @@ class LevelFinishSystem(
                             forceCenterCameraOnPlayer = true
                             resetPassengers()
                         }
+                        showInterstitialAd()
                     },
                     Actions.fadeIn(.25f, Interpolation.pow3In),
-                    Actions.run { levelEntity.level.isRestarting = false }
+                    Actions.run {
+                        levelEntity.level.isRestarting = false
+                    }
                 )
             )
         }
     }
 
     private fun promptUserToRate() {
+        if (gameRules.SHOULD_SHOW_INTERSTITIAL_AD && levelEntity.level.levelId != gameRules.MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT) return
         if (playScreen == null) return
         if (gameRules.DID_RATE_THE_GAME) return
         if (gameRules.NEVER_PROMPT_USER_TO_RATE_THE_GAME) return
@@ -113,5 +116,16 @@ class LevelFinishSystem(
             Actions.delay(.25f),
             Actions.run { menuOverlayStage.addActor(playScreen.rateGamePromptPopUp) }
         ))
+    }
+
+    private fun showInterstitialAd() {
+        if (!gameRules.IS_MOBILE) return
+        if (gameRules.IS_AD_FREE) return
+        if (!gameRules.SHOULD_SHOW_INTERSTITIAL_AD) return
+        if (levelEntity.level.levelId == gameRules.MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT) return
+        if (!adsController!!.isNetworkConnected()) return
+        if (!adsController.isInterstitialAdLoaded()) return
+        adsController.showInterstitialAd()
+        gameRules.SHOULD_SHOW_INTERSTITIAL_AD = false
     }
 }

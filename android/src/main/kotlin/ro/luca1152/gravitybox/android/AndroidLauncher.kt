@@ -88,6 +88,14 @@ class AndroidLauncher : AndroidApplication() {
                     }
                 }
 
+                override fun isInterstitialAdLoaded(): Boolean {
+                    var isLoaded = false
+                    this@AndroidLauncher.runOnUiThread {
+                        isLoaded = interstitialAd.isLoaded
+                    }
+                    return isLoaded
+                }
+
                 override fun isNetworkConnected(): Boolean {
                     val connectionType = getConnectionType(this@AndroidLauncher)
                     return connectionType == 1 || connectionType == 2

@@ -517,14 +517,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun createNoAdsPopUp() = NewPopUp(
         context, 600f,
-        if (gameRules.SHOW_ADS) {
+        if (!gameRules.IS_AD_FREE) {
             if (gameRules.IS_IOS) 924f // Show the "I already paid..." button
             else 820f // Hide the "I already paid..." button
         } else 856f, skin
     ).apply popup@{
         val text = DistanceFieldLabel(
             context,
-            (if (gameRules.SHOW_ADS)
+            (if (!gameRules.IS_AD_FREE)
                 """
                 Any amount below will support
                 the development & REMOVE
@@ -551,7 +551,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
                     // Debug
                     if (!gameRules.IS_MOBILE) {
-                        gameRules.SHOW_ADS = false
+                        gameRules.IS_AD_FREE = true
                     }
                     return true
                 }
@@ -570,7 +570,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
                     // Debug
                     if (!gameRules.IS_MOBILE) {
-                        gameRules.SHOW_ADS = false
+                        gameRules.IS_AD_FREE = true
                     }
                     return true
                 }
@@ -589,7 +589,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
                     // Debug
                     if (!gameRules.IS_MOBILE) {
-                        gameRules.SHOW_ADS = false
+                        gameRules.IS_AD_FREE = true
                     }
                     return true
                 }
@@ -608,7 +608,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
                     // Debug
                     if (!gameRules.IS_MOBILE) {
-                        gameRules.SHOW_ADS = false
+                        gameRules.IS_AD_FREE = true
                     }
                     return true
                 }
@@ -627,7 +627,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
                     // Debug
                     if (!gameRules.IS_MOBILE) {
-                        gameRules.SHOW_ADS = false
+                        gameRules.IS_AD_FREE = true
                     }
                     return true
                 }
@@ -647,7 +647,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         val noThanksButton = Button(skin, "long-button").apply {
             val buttonText =
-                DistanceFieldLabel(context, "No, thanks${if (gameRules.SHOW_ADS) " :(" else ""}", skin, "regular", 36f, Color.WHITE)
+                DistanceFieldLabel(context, "No, thanks${if (!gameRules.IS_AD_FREE) " :(" else ""}", skin, "regular", 36f, Color.WHITE)
             add(buttonText)
             color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
             addListener(object : ClickListener() {
@@ -664,7 +664,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(muffinButton).width(492f).padBottom(32f).row()
             add(pizzaButton).width(492f).padBottom(32f).row()
             add(sushiButton).width(492f).padBottom(32f).row()
-            if (gameRules.SHOW_ADS && gameRules.IS_IOS) {
+            if (!gameRules.IS_AD_FREE && gameRules.IS_IOS) {
                 add(alreadyPaidButton).width(492f).padBottom(32f).row()
             }
             add(noThanksButton).width(492f).row()
@@ -747,7 +747,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
                     gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN =
-                        gameRules.PLAY_TIME + gameRules.DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
+                        gameRules.PLAY_TIME + gameRules.TIME_DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
                     this@popup.hide()
                 }
             })
@@ -775,7 +775,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
             // Prompt the player to rate the game later
             gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN =
-                gameRules.PLAY_TIME + gameRules.DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
+                gameRules.PLAY_TIME + gameRules.TIME_DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
         }
     }
     private val anErrorOccurredRestorePopUp = NewPopUp(context, 600f, 370f, skin).apply popup@{
@@ -946,7 +946,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
             private fun handleTransaction(transaction: Transaction) {
                 if (transaction.isPurchased && transaction.affectsAds()) {
-                    gameRules.SHOW_ADS = false
+                    gameRules.IS_AD_FREE = true
                 }
             }
 
@@ -1111,6 +1111,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private fun addGameSystems() {
         engine.run {
             addSystem(PlayTimeSystem(context))
+            addSystem(InterstitialAdsSystem(context))
             addSystem(GameFinishSystem(context))
             addSystem(MapLoadingSystem(context))
             addSystem(MapBodiesCreationSystem(context))

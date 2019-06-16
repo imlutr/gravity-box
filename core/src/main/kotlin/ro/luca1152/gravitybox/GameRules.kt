@@ -45,7 +45,7 @@ class GameRules(context: Context) {
     /** If true, the level editor button is shown. */
     val ENABLE_LEVEL_EDITOR = !IS_MOBILE
     /** The minimum delay in seconds between two shots. */
-    val DELAY_BETWEEN_SHOTS = 0.05f
+    val TIME_DELAY_BETWEEN_SHOTS = 0.05f
 
     // Stats
     /** The highest level the player finished. */
@@ -196,7 +196,7 @@ class GameRules(context: Context) {
                 flush()
             }
         }
-    val DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN = 5f * 60 // 5 minutes
+    val TIME_DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN = 5f * 60 // 5 minutes
     /** The player will be asked to rate the game again after the PLAY_TIME exceeds this value if he chose to rate the game `Later`.*/
     var MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN
         get() = preferences.getFloat("minPlayTimeToPromptUserToRateTheGameAgain", 0f)
@@ -208,12 +208,23 @@ class GameRules(context: Context) {
         }
 
     // Ads
-    var SHOW_ADS
-        get() = preferences.getBoolean("showAds", true)
+    /** Is true after any donation. */
+    var IS_AD_FREE
+        get() = preferences.getBoolean("isAdFree", false)
         set(value) {
             preferences.run {
-                putBoolean("showAds", value)
+                putBoolean("isAdFree", value)
                 flush()
             }
         }
+    /** There must be at least a delay of 1.75 minutes between two interstitial ads. */
+    val TIME_DELAY_BETWEEN_INTERSTITIAL_ADS = 1.75f * 60
+    /** A maximum of 4 interstitial ads should be shown in one session (until the game is closed). */
+    val MAX_INTERSTITIAL_ADS_PER_SESSION = 4
+    /**
+     * True when an ad should be shown.
+     * Set true by the InterstitialAdsSystem.
+     * Set false by the LevelFinishSystem.
+     */
+    var SHOULD_SHOW_INTERSTITIAL_AD = false
 }
