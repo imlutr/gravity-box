@@ -24,5 +24,8 @@ All code is licensed under the GNU General Public License v3.0 License - see the
 
 All assets including graphics, sounds, icons and maps are licensed under the [Creative Commons BY-NC 4.0 license](https://creativecommons.org/licenses/by-nc/4.0/legalcode) unless otherwise indicated.
 
+## Acknowledgments
+- [∞ Infinity Loop](https://play.google.com/store/apps/details?id=com.balysv.loop&hl=en) - for the UI design, color scheme
+
 ## Downloads
 <a href="https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox"><img src="https://i.imgur.com/nmfa0AR.png" width="auto" height="75"></a>
