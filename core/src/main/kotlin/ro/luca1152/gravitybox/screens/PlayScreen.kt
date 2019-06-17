@@ -230,6 +230,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     // Debug
                     if (!gameRules.IS_MOBILE || adsController == null) {
                         gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN = gameRules.TIME_DELAY_BETWEEN_REWARDED_ADS
+                        skipLevel()
                         return
                     }
 
@@ -1217,6 +1218,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             override fun onRewardedEvent(type: String, amount: Int) {
                 Gdx.app.log("AdMob", "Rewarding player with [$type, $amount].")
                 gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN = gameRules.TIME_DELAY_BETWEEN_REWARDED_ADS
+                skipLevel()
             }
 
             override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {
@@ -1363,6 +1365,41 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private var loadedAnyMap = false
+    private var isSkippingLevel = false
+    private fun skipLevel() {
+        gameRules.HIGHEST_FINISHED_LEVEL = levelEntity.level.levelId
+        isSkippingLevel = true
+
+        val fadeOutDuration = .2f
+        val fadeInDuration = .2f
+        gameStage.addAction(
+            Actions.sequence(
+                Actions.run {
+                    levelEntity.level.isChangingLevel = true
+                    eventQueue.add(FadeOutEvent(fadeOutDuration))
+                },
+                Actions.delay(fadeOutDuration),
+                Actions.run {
+                    shouldUpdateLevelLabel = true
+                    levelEntity.level.run {
+                        levelId++
+                        loadMap = true
+                        forceUpdateMap = true
+                    }
+                    levelEntity.map.run {
+                        eventQueue.add(UpdateRoundedPlatformsEvent())
+                        forceCenterCameraOnPlayer = true
+                    }
+                },
+                Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
+                Actions.delay(fadeInDuration),
+                Actions.run {
+                    levelEntity.level.isChangingLevel = false
+                    isSkippingLevel = false
+                }
+            )
+        )
+    }
 
     override fun render(delta: Float) {
         update()
@@ -1401,10 +1438,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private fun updateSkipLevelButton() {
         // The skip level button should be hidden if the current level is not the highest finished one
         skipLevelButton.run {
-            if (levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1) {
+            if (levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1 && !isSkippingLevel) {
                 color.a = 0f
                 touchable = Touchable.disabled
-            } else if (!isTouchable) {
+            } else if (!isTouchable || isSkippingLevel) {
                 color.a = 1f
                 touchable = Touchable.enabled
             }
