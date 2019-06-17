@@ -1443,7 +1443,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private fun updateSkipLevelButton() {
         // The skip level button should be hidden if the current level is not the highest finished one
         skipLevelButton.run {
-            if (levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1 && !isSkippingLevel) {
+            if (levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1 && !isSkippingLevel &&
+                // On Android it takes a bit to update Preferences, thus the skip level button flashed a bit without this condition
+                levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 2
+            ) {
                 color.a = 0f
                 touchable = Touchable.disabled
             } else if (!isTouchable || isSkippingLevel) {
