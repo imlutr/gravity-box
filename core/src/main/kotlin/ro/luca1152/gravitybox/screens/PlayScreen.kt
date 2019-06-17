@@ -205,7 +205,44 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addIcon("skip-level-icon")
         iconCell!!.padLeft(4f) // The icon doesn't SEEM centered
         addClickRunnable(Runnable {
+            menuOverlayStage.addActor(skipLevelPopUp)
         })
+    }
+    private val skipLevelPopUp = NewPopUp(context, 600f, 370f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            """
+            Watch a short video to skip
+            this level?
+        """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val skipLevelButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(context, "Skip level", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        val noThanksButton = Button(skin, "long-button").apply {
+            val buttonText = DistanceFieldLabel(context, "No, thanks", skin, "regular", 36f, Color.WHITE)
+            add(buttonText)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(skipLevelButton).width(492f).padBottom(32f).row()
+            add(noThanksButton).width(492f).row()
+        }
     }
     private val bottomRow = Table().apply {
         add(menuButton).expand().padLeft(restartButton.prefWidth)
