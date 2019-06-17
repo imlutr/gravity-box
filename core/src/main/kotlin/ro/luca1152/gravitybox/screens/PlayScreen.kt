@@ -1367,7 +1367,12 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private var loadedAnyMap = false
     private var isSkippingLevel = false
     private fun skipLevel() {
+        if (levelEntity.level.levelId == gameRules.LEVEL_COUNT) {
+            return
+        }
+
         gameRules.HIGHEST_FINISHED_LEVEL = levelEntity.level.levelId
+        levelEntity.level.levelId++
         isSkippingLevel = true
 
         val fadeOutDuration = .2f
@@ -1382,7 +1387,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 Actions.run {
                     shouldUpdateLevelLabel = true
                     levelEntity.level.run {
-                        levelId++
                         loadMap = true
                         forceUpdateMap = true
                     }
@@ -1444,6 +1448,15 @@ class PlayScreen(private val context: Context) : KtxScreen {
             } else if (!isTouchable || isSkippingLevel) {
                 color.a = 1f
                 touchable = Touchable.enabled
+            }
+
+            // The skip level button should be hidden if the current level is the last one.
+            if (levelEntity.level.levelId == gameRules.LEVEL_COUNT) {
+                color.a = 0f
+                touchable = Touchable.disabled
+                if (skipLevelPopUp.stage != null) {
+                    skipLevelPopUp.hide()
+                }
             }
         }
     }
