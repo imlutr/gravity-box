@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.utils.ads
 abstract class AdsController {
     // Interstitial ad
     abstract fun showInterstitialAd()
-
     abstract fun isInterstitialAdLoaded(): Boolean
 
     // Rewarded ad

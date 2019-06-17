@@ -227,7 +227,6 @@ class AndroidLauncher : AndroidApplication() {
             override fun onRewardedVideoAdClosed() {
                 this@AndroidLauncher.runOnUiThread {
                     Gdx.app.log("AdMob", "Rewarded video closed.")
-                    adsController.rewardedAdEventListener!!.onRewardedVideoAdClosedEvent()
                     loadRewardedVideoAd()
                 }
             }

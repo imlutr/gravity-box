@@ -19,6 +19,5 @@ package ro.luca1152.gravitybox.utils.ads
 
 interface RewardedAdEventListener {
     fun onRewardedEvent(type: String, amount: Int)
-    fun onRewardedVideoAdClosedEvent()
     fun onRewardedVideoAdFailedToLoad(errorCode: Int)
 }
