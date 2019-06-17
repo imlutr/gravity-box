@@ -52,64 +52,44 @@ class GameRules(context: Context) {
     var HIGHEST_FINISHED_LEVEL
         get() = preferences.getInteger("highestFinishedLevel", 0)
         set(value) {
-            preferences.run {
-                putInteger("highestFinishedLevel", value)
-                flush()
-            }
+            preferences.putInteger("highestFinishedLevel", value)
         }
+
     /** The time (in seconds) a user spent playing the game. */
     var PLAY_TIME
         get() = preferences.getFloat("playTime", 0f)
         set(value) {
-            preferences.run {
-                putFloat("playTime", value)
-                flush()
-            }
+            preferences.putFloat("playTime", value)
         }
     /** How many bullets did the player shot. */
     var BULLET_COUNT
         get() = preferences.getInteger("bulletCount", 0)
         set(value) {
-            preferences.run {
-                putInteger("bulletCount", value)
-                flush()
-            }
+            preferences.putInteger("bulletCount", value)
         }
     /** How many times did the player manually restart (by pressing the restart button, not by dying) a level*/
     var RESTART_COUNT
         get() = preferences.getInteger("restartCount", 0)
         set(value) {
-            preferences.run {
-                putInteger("restartCount", value)
-                flush()
-            }
+            preferences.putInteger("restartCount", value)
         }
     /** How many times did the player die. */
     var DEATH_COUNT
         get() = preferences.getInteger("deathCount", 0)
         set(value) {
-            preferences.run {
-                putInteger("deathCount", value)
-                flush()
-            }
+            preferences.putInteger("deathCount", value)
         }
     /** How many destroyable platforms did the player destroy. */
     var DESTROYED_PLATFORMS_COUNT
         get() = preferences.getInteger("destroyedPlatformsCount", 0)
         set(value) {
-            preferences.run {
-                putInteger("destroyedPlatformsCount", value)
-                flush()
-            }
+            preferences.putInteger("destroyedPlatformsCount", value)
         }
     /** How many points did the player collect. */
     var COLLECTED_POINT_COUNT
         get() = preferences.getInteger("collectedPointCount", 0)
         set(value) {
-            preferences.run {
-                putInteger("collectedPointCount", value)
-                flush()
-            }
+            preferences.putInteger("collectedPointCount", value)
         }
 
     // Finish game stats (the stats shown on the last level)
@@ -117,64 +97,43 @@ class GameRules(context: Context) {
     var DID_FINISH_GAME
         get() = preferences.getBoolean("didFinishGame", false)
         set(value) {
-            preferences.run {
-                putBoolean("didFinishGame", value)
-                flush()
-            }
+            preferences.putBoolean("didFinishGame", value)
         }
     /** The time (in seconds) the player finished the game in. */
     var FINISH_TIME
         get() = preferences.getFloat("finishGameTime", 0f)
         set(value) {
-            preferences.run {
-                putFloat("finishGameTime", value)
-                flush()
-            }
+            preferences.putFloat("finishGameTime", value)
         }
     /** How many bullets did the player shot until finishing the game. */
     var FINISH_BULLET_COUNT
         get() = preferences.getInteger("finishBulletsCount", 0)
         set(value) {
-            preferences.run {
-                putInteger("finishBulletsCount", value)
-                flush()
-            }
+            preferences.putInteger("finishBulletsCount", value)
         }
     /** How many times did the player manually restart (by pressing the restart button, not by dying) a level until finishing the game. */
     var FINISH_RESTART_COUNT
         get() = preferences.getInteger("finishRestartCount", 0)
         set(value) {
-            preferences.run {
-                putInteger("finishRestartCount", value)
-                flush()
-            }
+            preferences.putInteger("finishRestartCount", value)
         }
     /** How many times did the player die until finishing the game. */
     var FINISH_DEATH_COUNT
         get() = preferences.getInteger("finishDeathCount", 0)
         set(value) {
-            preferences.run {
-                putInteger("finishDeathCount", value)
-                flush()
-            }
+            preferences.putInteger("finishDeathCount", value)
         }
     /** How many destroyable platforms did the player destroy until finishing the game. */
     var FINISH_DESTROYED_PLATFORM_COUNT
         get() = preferences.getInteger("finishDestroyedPlatformCount", 0)
         set(value) {
-            preferences.run {
-                putInteger("finishDestroyedPlatformCount", value)
-                flush()
-            }
+            preferences.putInteger("finishDestroyedPlatformCount", value)
         }
     /** How many points did the player collect until finishing the game. */
     var FINISH_COLLECTED_POINT_COUNT
         get() = preferences.getInteger("finishCollectedPointCount", 0)
         set(value) {
-            preferences.run {
-                putInteger("finishCollectedPointCount", value)
-                flush()
-            }
+            preferences.putInteger("finishCollectedPointCount", value)
         }
 
     // Rate-related
@@ -182,29 +141,20 @@ class GameRules(context: Context) {
     var DID_RATE_THE_GAME
         get() = preferences.getBoolean("didRateGame", false)
         set(value) {
-            preferences.run {
-                putBoolean("didRateGame", value)
-                flush()
-            }
+            preferences.putBoolean("didRateGame", value)
         }
     /** True if the player pressed the `Never` button when asked to rate the game. */
     var NEVER_PROMPT_USER_TO_RATE_THE_GAME
         get() = preferences.getBoolean("neverPromptUserToRate", false)
         set(value) {
-            preferences.run {
-                putBoolean("neverPromptUserToRate", value)
-                flush()
-            }
+            preferences.putBoolean("neverPromptUserToRate", value)
         }
     val TIME_DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN = 5f * 60 // 5 minutes
     /** The player will be asked to rate the game again after the PLAY_TIME exceeds this value if he chose to rate the game `Later`.*/
     var MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN
         get() = preferences.getFloat("minPlayTimeToPromptUserToRateTheGameAgain", 0f)
         set(value) {
-            preferences.run {
-                putFloat("minPlayTimeToPromptUserToRateTheGameAgain", value)
-                flush()
-            }
+            preferences.putFloat("minPlayTimeToPromptUserToRateTheGameAgain", value)
         }
 
     // Ads
@@ -212,10 +162,7 @@ class GameRules(context: Context) {
     var IS_AD_FREE
         get() = preferences.getBoolean("isAdFree", false)
         set(value) {
-            preferences.run {
-                putBoolean("isAdFree", value)
-                flush()
-            }
+            preferences.putBoolean("isAdFree", value)
         }
 
     // Interstitial ads
@@ -242,9 +189,6 @@ class GameRules(context: Context) {
     var TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN
         get() = preferences.getFloat("timeUntilRewardedAdCanBeShown", 0f)
         set(value) {
-            preferences.run {
-                putFloat("timeUntilRewardedAdCanBeShown", value)
-                flush()
-            }
+            preferences.putFloat("timeUntilRewardedAdCanBeShown", value)
         }
 }

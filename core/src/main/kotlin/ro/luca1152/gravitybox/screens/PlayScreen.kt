@@ -1292,6 +1292,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun addGameSystems() {
         engine.run {
+            addSystem(FlushPreferencesSystem(context))
             addSystem(PlayTimeSystem(context))
             addSystem(RewardedAdTimerSystem(context))
             addSystem(InterstitialAdsSystem(context))
