@@ -207,7 +207,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val skipLevelButton = ClickButton(skin, "color-round-button").apply {
         addIcon("skip-level-icon")
-        iconCell!!.padLeft(4f) // The icon doesn't SEEM centered
+        iconCell!!.padLeft(6f) // The icon doesn't SEEM centered
         addClickRunnable(Runnable {
             menuOverlayStage.addActor(skipLevelPopUp)
         })

@@ -20,7 +20,7 @@ button
   index: -1
 checkbox-x-icon
   rotate: false
-  xy: 167, 767
+  xy: 113, 683
   size: 30, 30
   orig: 30, 30
   offset: 0, 0
@@ -83,7 +83,7 @@ full-round-button
   index: -1
 full-star
   rotate: false
-  xy: 199, 771
+  xy: 80, 400
   size: 30, 28
   orig: 30, 28
   offset: 0, 0
@@ -118,7 +118,7 @@ help-icon
   index: -1
 leaderboards-icon
   rotate: false
-  xy: 80, 499
+  xy: 441, 993
   size: 40, 37
   orig: 40, 37
   offset: 0, 0
@@ -176,7 +176,7 @@ moving-platform-icon
   index: -1
 music-icon
   rotate: false
-  xy: 80, 457
+  xy: 80, 540
   size: 36, 40
   orig: 36, 40
   offset: 0, 0
@@ -299,9 +299,9 @@ settings-icon
   index: -1
 skip-level-icon
   rotate: false
-  xy: 80, 538
-  size: 40, 42
-  orig: 40, 42
+  xy: 483, 991
+  size: 37, 39
+  orig: 37, 39
   offset: 0, 0
   index: -1
 small-button
@@ -329,7 +329,7 @@ small-horizontal-arrow
   index: -1
 small-left-arrow-icon
   rotate: false
-  xy: 113, 755
+  xy: 80, 430
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
@@ -350,14 +350,14 @@ small-plus-icon
   index: -1
 small-right-arrow-icon
   rotate: false
-  xy: 113, 715
+  xy: 113, 755
   size: 26, 38
   orig: 26, 38
   offset: 0, 0
   index: -1
 small-rotate-icon
   rotate: false
-  xy: 80, 420
+  xy: 80, 503
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
@@ -385,14 +385,14 @@ small-settings-icon
   index: -1
 small-vertical-arrow
   rotate: false
-  xy: 141, 759
+  xy: 113, 715
   size: 24, 38
   orig: 24, 38
   offset: 0, 0
   index: -1
 small-x-icon
   rotate: false
-  xy: 483, 998
+  xy: 141, 765
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -406,7 +406,7 @@ sounds-and-music-icon
   index: -1
 sounds-icon
   rotate: false
-  xy: 441, 999
+  xy: 80, 470
   size: 40, 31
   orig: 40, 31
   offset: 0, 0
