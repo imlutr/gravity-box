@@ -75,6 +75,8 @@ class LevelFinishSystem(
         if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
         else {
+            gameRules.HIGHEST_FINISHED_LEVEL = Math.max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
+            levelEntity.level.levelId = Math.min(levelEntity.level.levelId + 1, gameRules.LEVEL_COUNT)
             gameStage.addAction(
                 Actions.sequence(
                     Actions.run {
@@ -83,9 +85,7 @@ class LevelFinishSystem(
                     Actions.fadeOut(0f),
                     Actions.run {
                         showInterstitialAd()
-                        gameRules.HIGHEST_FINISHED_LEVEL = Math.max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
                         levelEntity.level.run {
-                            levelId = Math.min(levelId + 1, gameRules.LEVEL_COUNT)
                             loadMap = true
                             forceUpdateMap = true
                         }

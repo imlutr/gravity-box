@@ -15,21 +15,18 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.ads
+package ro.luca1152.gravitybox.systems.game
 
-abstract class AdsController {
-    // Interstitial ad
-    abstract fun showInterstitialAd()
-    abstract fun isInterstitialAdLoaded(): Boolean
+import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.gdx.Preferences
+import ktx.inject.Context
 
-    // Rewarded ad
-    /** True when rewardedVideoAd.show() was called (in AndroidLauncher), but an ad wasn't yet loaded. */
-    var isShowingRewardedAdScheduled = false
-    var rewardedAdEventListener: RewardedAdEventListener? = null
-    abstract fun loadRewardedAd()
-    abstract fun showRewardedAd()
-    abstract fun isRewardedAdLoaded(): Boolean
+/** Flushes the [Preferences] every frame. */
+class FlushPreferencesSystem(context: Context) : EntitySystem() {
+    // Injected objects
+    private val preferences: Preferences = context.inject()
 
-    // Network
-    abstract fun isNetworkConnected(): Boolean
+    override fun update(deltaTime: Float) {
+        preferences.flush()
+    }
 }

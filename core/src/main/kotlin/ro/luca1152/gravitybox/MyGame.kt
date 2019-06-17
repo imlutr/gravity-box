@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -84,7 +85,12 @@ class MyGame : KtxGame<Screen>() {
     }
 
     override fun dispose() {
-        super.dispose() // Disposes every screen
+        // Make sure Preferences are flushed
+        context.inject<Preferences>().flush()
+
+        // Disposes every screen
+        super.dispose()
+
         context.dispose()
     }
 }
