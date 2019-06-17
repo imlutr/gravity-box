@@ -832,14 +832,15 @@ class PlayScreen(private val context: Context) : KtxScreen {
         val leftPart = Table(skin).apply {
             add(heartButton)
         }
-        val middlePart = Table(skin).apply {
+        // For now the game has no audio
+        @Suppress("UNUSED_VARIABLE") val middlePart = Table(skin).apply {
             add(audioButton)
         }
         val rightPart = Table(skin).apply {
             add(noAdsButton)
         }
         add(leftPart).padLeft(padLeftRight).expand().left()
-        add(middlePart).expand()
+//        add(middlePart).expand()
         add(rightPart).padRight(padLeftRight).expand().right()
     }
     val rateGamePromptPopUp = NewPopUp(context, 600f, 570f, skin).apply popup@{
