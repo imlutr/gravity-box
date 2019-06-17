@@ -34,5 +34,6 @@ dependencies {
     api "io.github.libktx:ktx-scene2d:$ktxVersion"
     api "com.badlogicgames.gdxpay:gdx-pay-client:$gdxPayVersion"
     api "com.google.android.gms:play-services-ads:$playServicesAdsVersion"
+    api "com.flurry.android:analytics:$flurryVersion"
 }
         
