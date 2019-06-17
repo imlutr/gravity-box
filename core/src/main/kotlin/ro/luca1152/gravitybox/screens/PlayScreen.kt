@@ -283,6 +283,29 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(okayButton).width(492f).row()
         }
     }
+    private val rewardedVideoClosedPopUp = NewPopUp(context, 600f, 262f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            """
+            You have to watch the entire
+            video to skip the level.""".trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val okayButton = Button(skin, "long-button").apply {
+            val closeButton = DistanceFieldLabel(context, "Okay", skin, "regular", 36f, Color.WHITE)
+            add(closeButton)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(okayButton).width(492f).row()
+        }
+    }
     private val bottomRow = Table().apply {
         add(menuButton).expand().padLeft(restartButton.prefWidth)
         add(restartButton).right()
@@ -1180,6 +1203,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
 
             override fun onRewardedVideoAdClosedEvent() {
+                menuOverlayStage.addActor(rewardedVideoClosedPopUp)
             }
 
             override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {

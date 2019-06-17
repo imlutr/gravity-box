@@ -181,10 +181,9 @@ class AndroidLauncher : AndroidApplication() {
     }
 
     private fun initializeRewardedVideoAds(adsController: AdsController) = MobileAds.getRewardedVideoAdInstance(this).apply {
-        val rewardedAdEventListener = adsController.rewardedAdEventListener
         rewardedVideoAdListener = object : RewardedVideoAdListener {
             override fun onRewarded(p0: RewardItem) {
-                rewardedAdEventListener?.onRewardedEvent(p0.type, p0.amount)
+                adsController.rewardedAdEventListener!!.onRewardedEvent(p0.type, p0.amount)
             }
 
             override fun onRewardedVideoAdLoaded() {
@@ -200,8 +199,10 @@ class AndroidLauncher : AndroidApplication() {
 
                 // The player specifically asked to load an ad, so the ad wasn't loaded when the game launched
                 if (adsController.isShowingRewardedAdScheduled) {
-                    rewardedAdEventListener?.onRewardedVideoAdFailedToLoad(p0)
-                    adsController.isShowingRewardedAdScheduled = false
+                    adsController.run {
+                        rewardedAdEventListener!!.onRewardedVideoAdFailedToLoad(p0)
+                        isShowingRewardedAdScheduled = false
+                    }
                 }
             }
 
@@ -215,7 +216,7 @@ class AndroidLauncher : AndroidApplication() {
 
             override fun onRewardedVideoAdClosed() {
                 Gdx.app.log("AdMob", "Rewarded video closed.")
-                rewardedAdEventListener?.onRewardedVideoAdClosedEvent()
+                adsController.rewardedAdEventListener!!.onRewardedVideoAdClosedEvent()
                 loadRewardedVideoAd()
             }
 
