@@ -1209,8 +1209,15 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     init {
+        layoutTables()
         initializePurchaseManager()
         initializeRewardedAds()
+    }
+
+    private fun layoutTables() {
+        // Fixes issue #55 (UI bug)
+        rootOverlayTable.layout()
+        rootTable.layout()
     }
 
     private fun initializeRewardedAds() {
