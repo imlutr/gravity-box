@@ -44,7 +44,7 @@ configure(subprojects - project(':android')) {
 }
 
 subprojects {
-  version = '0.9'
+  version = '0.10'
   ext.appName = 'gravity-box'
   repositories {
     mavenLocal()
@@ -76,6 +76,9 @@ def getLocalProperty(String propertyName) {
         } else if (propertyName == "admob.interstitial.adunitid"){
             // Debug interstitial ad unit ID
             return "ca-app-pub-3940256099942544/1033173712"
+        } else if (propertyName == "admob.rewarded.adunitid"){
+            // Debug rewarded ad unit ID
+            return "ca-app-pub-3940256099942544/5224354917"
         } else {
             return ""
         }

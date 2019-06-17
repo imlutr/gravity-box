@@ -551,6 +551,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
 
     fun addGameSystems() {
         engine.run {
+            addSystem(FlushPreferencesSystem(context))
             addSystem(PlayTimeSystem(context))
             addSystem(UndoRedoSystem(context))
             addSystem(SelectedObjectColorSystem())

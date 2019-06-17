@@ -23,6 +23,7 @@ import com.badlogic.gdx.*
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.pay.*
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -52,6 +53,8 @@ import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.systems.editor.DashedLineRenderingSystem
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
+import ro.luca1152.gravitybox.utils.ads.AdsController
+import ro.luca1152.gravitybox.utils.ads.RewardedAdEventListener
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -78,6 +81,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val gameRules: GameRules = context.inject()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
     private val purchaseManager: PurchaseManager? = context.injectNullable()
+    private val adsController: AdsController? = context.injectNullable()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -170,9 +174,16 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addAction(Actions.sequence(
                 Actions.run {
                     touchable = Touchable.disabled
-                    restartButton.addAction(
-                        Actions.moveTo(uiStage.viewport.worldWidth, 0f, .2f, Interpolation.pow3In)
-                    )
+                    skipLevelButton.run {
+                        addAction(
+                            Actions.moveTo(uiStage.viewport.worldWidth, y, .2f, Interpolation.pow3In)
+                        )
+                    }
+                    restartButton.run {
+                        addAction(
+                            Actions.moveTo(uiStage.viewport.worldWidth, y, .2f, Interpolation.pow3In)
+                        )
+                    }
                 },
                 Actions.delay(.1f),
                 Actions.parallel(
@@ -194,6 +205,124 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
         })
     }
+    private val skipLevelButton = ClickButton(skin, "color-round-button").apply {
+        addIcon("skip-level-icon")
+        iconCell!!.padLeft(6f) // The icon doesn't SEEM centered
+        addClickRunnable(Runnable {
+            menuOverlayStage.addActor(skipLevelPopUp)
+        })
+    }
+    private val skipLevelPopUp = object : NewPopUp(context, 600f, 370f, skin) {
+        val thisPopUp = this // Can't put a popup@... So this will do
+        val skipLevelButtonText = DistanceFieldLabel(context, "Skip level", skin, "regular", 36f, Color.WHITE)
+        val skipLevelButton = Button(skin, "long-button").apply {
+            add(skipLevelButtonText)
+            color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    hide()
+
+                    if (gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN > 0f) {
+                        return
+                    }
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE || adsController == null) {
+                        gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN = gameRules.TIME_DELAY_BETWEEN_REWARDED_ADS
+                        skipLevel()
+                        return
+                    }
+
+                    if (!adsController.isNetworkConnected()) {
+                        menuOverlayStage.addActor(noInternetRewardedVideoPopUp)
+                    } else {
+                        // Instantly hide the pop-up
+                        thisPopUp.run {
+                            clearActions()
+                            remove()
+                        }
+                        adsController.showRewardedAd()
+                    }
+                }
+            })
+        }
+
+        init {
+            val text = DistanceFieldLabel(
+                context,
+                """
+                Watch a short video to skip
+                this level?
+                """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+            )
+            val noThanksButton = Button(skin, "long-button").apply {
+                val buttonText = DistanceFieldLabel(context, "No, thanks", skin, "regular", 36f, Color.WHITE)
+                add(buttonText)
+                color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+                addListener(object : ClickListener() {
+                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                        super.clicked(event, x, y)
+                        hide()
+                    }
+                })
+            }
+            widget.run {
+                add(text).padBottom(32f).row()
+                add(skipLevelButton).width(492f).padBottom(32f).row()
+                add(noThanksButton).width(492f).row()
+            }
+        }
+
+        override fun act(delta: Float) {
+            super.act(delta)
+            if (gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN <= 0f) {
+                skipLevelButtonText.setText("Skip level")
+                skipLevelButton.run {
+                    setColor(0 / 255f, 129 / 255f, 213 / 255f, 1f)
+                }
+            } else {
+                skipLevelButtonText.setText("Wait ${secondsToTimeString(gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN)}")
+                skipLevelButton.run {
+                    setColor(99 / 255f, 116 / 255f, 132 / 255f, 1f)
+                }
+            }
+        }
+
+        private fun secondsToTimeString(seconds: Float): String {
+            val convertedHours = MathUtils.floor(seconds / 3600f)
+            val convertedMinutes = MathUtils.floor((seconds % 3600) / 60f)
+            val convertedSeconds = MathUtils.floor(seconds % 60)
+            return (if (convertedHours == 0) "" else if (convertedHours <= 9) "0$convertedHours:" else "$convertedHours}:") +
+                    (if (convertedMinutes == 0) "00:" else if (convertedMinutes <= 9) "0$convertedMinutes:" else "$convertedMinutes") +
+                    (if (convertedSeconds == 0) "00" else if (convertedSeconds <= 9) "0$convertedSeconds" else "$convertedSeconds")
+        }
+    }
+    private val noInternetRewardedVideoPopUp = NewPopUp(context, 600f, 334f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            """
+            Couldn't load rewarded video...
+
+            Please make sure you are
+            connected to the internet.""".trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val okayButton = Button(skin, "long-button").apply {
+            val closeButton = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
+            add(closeButton)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(okayButton).width(492f).row()
+        }
+    }
     private val bottomRow = Table().apply {
         add(menuButton).expand().padLeft(restartButton.prefWidth)
         add(restartButton).right()
@@ -202,6 +331,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         setFillParent(true)
         padLeft(padLeftRight).padRight(padLeftRight)
         padBottom(padTopBottom).padTop(padTopBottom)
+        add(skipLevelButton).expand().top().right().row()
         add(bottomRow).expand().fillX().bottom()
     }
     private val githubPopUp = NewPopUp(context, 600f, 440f, skin).apply popup@{
@@ -1027,6 +1157,17 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 )
             )
         )
+        skipLevelButton.run {
+            addAction(
+                Actions.sequence(
+                    Actions.delay(.1f),
+                    Actions.moveTo(
+                        uiStage.viewport.worldWidth - padLeftRight - prefWidth,
+                        y, .2f, Interpolation.pow3In
+                    )
+                )
+            )
+        }
         restartButton.run {
             addAction(
                 Actions.sequence(
@@ -1068,7 +1209,55 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     init {
+        layoutTables()
         initializePurchaseManager()
+        initializeRewardedAds()
+    }
+
+    private fun layoutTables() {
+        // Fixes issue #55 (UI bug)
+        rootOverlayTable.layout()
+        rootTable.layout()
+    }
+
+    private fun initializeRewardedAds() {
+        adsController?.rewardedAdEventListener = object : RewardedAdEventListener {
+            override fun onRewardedEvent(type: String, amount: Int) {
+                Gdx.app.log("AdMob", "Rewarding player with [$type, $amount].")
+                gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN = gameRules.TIME_DELAY_BETWEEN_REWARDED_ADS
+                skipLevel()
+            }
+
+            override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {
+                menuOverlayStage.addActor(anErrorOccurredRewardedAd(errorCode))
+            }
+        }
+    }
+
+    private fun anErrorOccurredRewardedAd(errorCode: Int) = NewPopUp(context, 600f, 334f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            """
+            An error occurred while loading
+            the rewarded video...
+
+            Error code $errorCode.""".trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val okayButton = Button(skin, "long-button").apply {
+            val closeButton = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
+            add(closeButton)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(okayButton).width(492f).row()
+        }
     }
 
     override fun show() {
@@ -1110,7 +1299,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun addGameSystems() {
         engine.run {
+            addSystem(FlushPreferencesSystem(context))
             addSystem(PlayTimeSystem(context))
+            addSystem(RewardedAdTimerSystem(context))
             addSystem(InterstitialAdsSystem(context))
             addSystem(GameFinishSystem(context))
             addSystem(MapLoadingSystem(context))
@@ -1182,6 +1373,45 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private var loadedAnyMap = false
+    private var isSkippingLevel = false
+    private fun skipLevel() {
+        if (levelEntity.level.levelId == gameRules.LEVEL_COUNT) {
+            return
+        }
+
+        gameRules.HIGHEST_FINISHED_LEVEL = levelEntity.level.levelId
+        levelEntity.level.levelId++
+        isSkippingLevel = true
+
+        val fadeOutDuration = .2f
+        val fadeInDuration = .2f
+        gameStage.addAction(
+            Actions.sequence(
+                Actions.run {
+                    levelEntity.level.isChangingLevel = true
+                    eventQueue.add(FadeOutEvent(fadeOutDuration))
+                },
+                Actions.delay(fadeOutDuration),
+                Actions.run {
+                    shouldUpdateLevelLabel = true
+                    levelEntity.level.run {
+                        loadMap = true
+                        forceUpdateMap = true
+                    }
+                    levelEntity.map.run {
+                        eventQueue.add(UpdateRoundedPlatformsEvent())
+                        forceCenterCameraOnPlayer = true
+                    }
+                },
+                Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
+                Actions.delay(fadeInDuration),
+                Actions.run {
+                    levelEntity.level.isChangingLevel = false
+                    isSkippingLevel = false
+                }
+            )
+        )
+    }
 
     override fun render(delta: Float) {
         update()
@@ -1192,6 +1422,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun update() {
         updateLevelLabel()
+        updateSkipLevelButton()
         updateLeftRightButtons()
         shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
@@ -1213,6 +1444,31 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
             rootOverlayTable.setLayoutEnabled(false)
             shouldUpdateLevelLabel = false
+        }
+    }
+
+    private fun updateSkipLevelButton() {
+        // The skip level button should be hidden if the current level is not the highest finished one
+        skipLevelButton.run {
+            if (levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1 && !isSkippingLevel &&
+                // On Android it takes a bit to update Preferences, thus the skip level button flashed a bit without this condition
+                levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 2
+            ) {
+                color.a = 0f
+                touchable = Touchable.disabled
+            } else if (!isTouchable || isSkippingLevel) {
+                color.a = 1f
+                touchable = Touchable.enabled
+            }
+
+            // The skip level button should be hidden if the current level is the last one.
+            if (levelEntity.level.levelId == gameRules.LEVEL_COUNT) {
+                color.a = 0f
+                touchable = Touchable.disabled
+                if (skipLevelPopUp.stage != null) {
+                    skipLevelPopUp.hide()
+                }
+            }
         }
     }
 

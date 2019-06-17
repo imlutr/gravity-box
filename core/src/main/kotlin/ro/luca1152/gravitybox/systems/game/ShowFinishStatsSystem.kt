@@ -27,14 +27,12 @@ import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.entities.game.TextEntity
-import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 /** Creates a TextEntity at the last level, containing game stats. */
 class ShowFinishStatsSystem(private val context: Context) : EntitySystem() {
     // Injected objects
     private val gameRules: GameRules = context.inject()
-    private val gameStage: GameStage = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
