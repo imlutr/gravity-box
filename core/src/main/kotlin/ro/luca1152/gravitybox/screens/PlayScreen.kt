@@ -170,9 +170,16 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addAction(Actions.sequence(
                 Actions.run {
                     touchable = Touchable.disabled
-                    restartButton.addAction(
-                        Actions.moveTo(uiStage.viewport.worldWidth, 0f, .2f, Interpolation.pow3In)
-                    )
+                    skipLevelButton.run {
+                        addAction(
+                            Actions.moveTo(uiStage.viewport.worldWidth, y, .2f, Interpolation.pow3In)
+                        )
+                    }
+                    restartButton.run {
+                        addAction(
+                            Actions.moveTo(uiStage.viewport.worldWidth, y, .2f, Interpolation.pow3In)
+                        )
+                    }
                 },
                 Actions.delay(.1f),
                 Actions.parallel(
@@ -194,6 +201,12 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
         })
     }
+    private val skipLevelButton = ClickButton(skin, "color-round-button").apply {
+        addIcon("skip-level-icon")
+        iconCell!!.padLeft(4f) // The icon doesn't SEEM centered
+        addClickRunnable(Runnable {
+        })
+    }
     private val bottomRow = Table().apply {
         add(menuButton).expand().padLeft(restartButton.prefWidth)
         add(restartButton).right()
@@ -202,6 +215,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         setFillParent(true)
         padLeft(padLeftRight).padRight(padLeftRight)
         padBottom(padTopBottom).padTop(padTopBottom)
+        add(skipLevelButton).expand().top().right().row()
         add(bottomRow).expand().fillX().bottom()
     }
     private val githubPopUp = NewPopUp(context, 600f, 440f, skin).apply popup@{
@@ -1027,6 +1041,17 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 )
             )
         )
+        skipLevelButton.run {
+            addAction(
+                Actions.sequence(
+                    Actions.delay(.1f),
+                    Actions.moveTo(
+                        uiStage.viewport.worldWidth - padLeftRight - prefWidth,
+                        y, .2f, Interpolation.pow3In
+                    )
+                )
+            )
+        }
         restartButton.run {
             addAction(
                 Actions.sequence(
