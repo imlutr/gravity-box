@@ -64,6 +64,7 @@ android {
         // So BuildConfig.AD_MOB_APP_ID and BuildConfig.AD_MOB_INTERSTITIAL_AD_UNIT_ID works in AndroidLauncher
         buildConfigField "String", "AD_MOB_APP_ID", "\""+getLocalProperty("admob.appid")+"\""
         buildConfigField "String", "AD_MOB_INTERSTITIAL_AD_UNIT_ID", "\""+getLocalProperty("admob.interstitial.adunitid")+"\""
+        buildConfigField "String", "AD_MOB_REWARDED_AD_UNIT_ID", "\""+getLocalProperty("admob.rewarded.adunitid")+"\""
 
         applicationId 'ro.luca1152.gravitybox'
         minSdkVersion 14
