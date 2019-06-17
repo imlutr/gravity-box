@@ -231,4 +231,20 @@ class GameRules(context: Context) {
      * Set false by the LevelFinishSystem.
      */
     var SHOULD_SHOW_INTERSTITIAL_AD = false
+
+    // Rewarded ads
+    /** There must be a delay of at least 5 minutes between two rewarded ads. */
+    val TIME_DELAY_BETWEEN_REWARDED_ADS = 5f * 60
+    /**
+     * The time in seconds until a rewarded ad can be shown.
+     * Is kept in [Preferences] so the value is kept between restarts.
+     */
+    var TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN
+        get() = preferences.getFloat("timeUntilRewardedAdCanBeShown", 0f)
+        set(value) {
+            preferences.run {
+                putFloat("timeUntilRewardedAdCanBeShown", value)
+                flush()
+            }
+        }
 }

@@ -183,66 +183,82 @@ class AndroidLauncher : AndroidApplication() {
     private fun initializeRewardedVideoAds(adsController: AdsController) = MobileAds.getRewardedVideoAdInstance(this).apply {
         rewardedVideoAdListener = object : RewardedVideoAdListener {
             override fun onRewarded(p0: RewardItem) {
-                adsController.rewardedAdEventListener!!.onRewardedEvent(p0.type, p0.amount)
+                this@AndroidLauncher.runOnUiThread {
+                    adsController.rewardedAdEventListener!!.onRewardedEvent(p0.type, p0.amount)
+                }
             }
 
             override fun onRewardedVideoAdLoaded() {
-                Gdx.app.log("AdMob", "Rewarded video loaded.")
-                if (adsController.isShowingRewardedAdScheduled) {
-                    adsController.isShowingRewardedAdScheduled = false
-                    show()
+                this@AndroidLauncher.runOnUiThread {
+                    Gdx.app.log("AdMob", "Rewarded video loaded.")
+                    if (adsController.isShowingRewardedAdScheduled) {
+                        adsController.isShowingRewardedAdScheduled = false
+                        show()
+                    }
                 }
             }
 
             override fun onRewardedVideoAdFailedToLoad(p0: Int) {
-                Gdx.app.log("AdMob", "Rewarded video ad failed to load. Error code: $p0.")
+                this@AndroidLauncher.runOnUiThread {
+                    Gdx.app.log("AdMob", "Rewarded video ad failed to load. Error code: $p0.")
 
-                // The player specifically asked to load an ad, so the ad wasn't loaded when the game launched
-                if (adsController.isShowingRewardedAdScheduled) {
-                    adsController.run {
-                        rewardedAdEventListener!!.onRewardedVideoAdFailedToLoad(p0)
-                        isShowingRewardedAdScheduled = false
+                    // The player specifically asked to load an ad, so the ad wasn't loaded when the game launched
+                    if (adsController.isShowingRewardedAdScheduled) {
+                        adsController.run {
+                            rewardedAdEventListener!!.onRewardedVideoAdFailedToLoad(p0)
+                            isShowingRewardedAdScheduled = false
+                        }
                     }
                 }
             }
 
             override fun onRewardedVideoAdOpened() {
-                Gdx.app.log("AdMob", "Rewarded video opened.")
+                this@AndroidLauncher.runOnUiThread {
+                    Gdx.app.log("AdMob", "Rewarded video opened.")
+                }
             }
 
             override fun onRewardedVideoStarted() {
-                Gdx.app.log("AdMob", "Rewarded video started.")
+                this@AndroidLauncher.runOnUiThread {
+                    Gdx.app.log("AdMob", "Rewarded video started.")
+                }
             }
 
             override fun onRewardedVideoAdClosed() {
-                Gdx.app.log("AdMob", "Rewarded video closed.")
-                adsController.rewardedAdEventListener!!.onRewardedVideoAdClosedEvent()
-                loadRewardedVideoAd()
+                this@AndroidLauncher.runOnUiThread {
+                    Gdx.app.log("AdMob", "Rewarded video closed.")
+                    adsController.rewardedAdEventListener!!.onRewardedVideoAdClosedEvent()
+                    loadRewardedVideoAd()
+                }
             }
 
             override fun onRewardedVideoCompleted() {
-                Gdx.app.log("AdMob", "Rewarded video completed.")
-                loadRewardedVideoAd()
+                this@AndroidLauncher.runOnUiThread {
+                    Gdx.app.log("AdMob", "Rewarded video completed.")
+                    loadRewardedVideoAd()
+                }
             }
 
             override fun onRewardedVideoAdLeftApplication() {
-                Gdx.app.log("AdMob", "Left the application while watching a rewarded video.")
+                this@AndroidLauncher.runOnUiThread {
+                    Gdx.app.log("AdMob", "Left the application while watching a rewarded video.")
+                }
             }
         }
     }
 
     override fun onResume() {
-        rewardedVideoAd.resume(this)
+        this@AndroidLauncher.runOnUiThread {
+            rewardedVideoAd.resume(this)
+        }
         super.onResume()
     }
 
     override fun onPause() {
-        rewardedVideoAd.pause(this)
+        this@AndroidLauncher.runOnUiThread {
+            rewardedVideoAd.pause(this)
+        }
         super.onPause()
     }
 
-    override fun onDestroy() {
-        rewardedVideoAd.destroy(this)
-        super.onDestroy()
-    }
 }

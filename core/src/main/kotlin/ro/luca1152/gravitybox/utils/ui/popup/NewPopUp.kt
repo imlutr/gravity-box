@@ -35,7 +35,7 @@ import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.UIViewport
 
 /** A redesigned [PopUp]. */
-class NewPopUp(
+open class NewPopUp(
     context: Context,
     width: Float, height: Float,
     skin: Skin
@@ -90,6 +90,7 @@ class NewPopUp(
     }
 
     init {
+        @Suppress("LeakingThis")
         addActor(widget)
         name = "NewPopUp"
     }
