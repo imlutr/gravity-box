@@ -1373,6 +1373,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun update() {
         updateLevelLabel()
+        updateSkipLevelButton()
         updateLeftRightButtons()
         shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
@@ -1394,6 +1395,19 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
             rootOverlayTable.setLayoutEnabled(false)
             shouldUpdateLevelLabel = false
+        }
+    }
+
+    private fun updateSkipLevelButton() {
+        // The skip level button should be hidden if the current level is not the highest finished one
+        skipLevelButton.run {
+            if (levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1) {
+                color.a = 0f
+                touchable = Touchable.disabled
+            } else if (!isTouchable) {
+                color.a = 1f
+                touchable = Touchable.enabled
+            }
         }
     }
 
