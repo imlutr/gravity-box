@@ -17,20 +17,7 @@
 
 package ro.luca1152.gravitybox.utils.ads
 
-abstract class AdsController {
-    // Interstitial ad
-    abstract fun showInterstitialAd()
-
-    abstract fun isInterstitialAdLoaded(): Boolean
-
-    // Rewarded ad
-    /** True when rewardedVideoAd.show() was called (in AndroidLauncher), but an ad wasn't yet loaded. */
-    var isShowingRewardedAdScheduled = false
-    var rewardedAdEventListener: RewardedAdEventListener? = null
-    abstract fun loadRewardedAd()
-    abstract fun showRewardedAd()
-    abstract fun isRewardedAdLoaded(): Boolean
-
-    // Network
-    abstract fun isNetworkConnected(): Boolean
+interface RewardedAdEventListener {
+    fun onRewardedEvent(type: String, amount: Int)
+    fun onRewardedVideoAdClosedEvent()
 }

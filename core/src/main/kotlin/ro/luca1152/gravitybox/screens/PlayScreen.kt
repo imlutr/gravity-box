@@ -52,6 +52,8 @@ import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.systems.editor.DashedLineRenderingSystem
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
+import ro.luca1152.gravitybox.utils.ads.AdsController
+import ro.luca1152.gravitybox.utils.ads.RewardedAdEventListener
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.*
@@ -78,6 +80,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val gameRules: GameRules = context.inject()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
     private val purchaseManager: PurchaseManager? = context.injectNullable()
+    private val adsController: AdsController? = context.injectNullable()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -224,6 +227,17 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
                     this@popup.hide()
+
+                    // Debug
+                    if (!gameRules.IS_MOBILE || adsController == null) {
+                        return
+                    }
+
+                    if (!adsController.isNetworkConnected()) {
+                        menuOverlayStage.addActor(noInternetRewardedVideoPopUp)
+                    } else {
+                        adsController.showRewardedAd()
+                    }
                 }
             })
         }
@@ -242,6 +256,31 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(text).padBottom(32f).row()
             add(skipLevelButton).width(492f).padBottom(32f).row()
             add(noThanksButton).width(492f).row()
+        }
+    }
+    private val noInternetRewardedVideoPopUp = NewPopUp(context, 600f, 334f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            """
+            Couldn't load rewarded video...
+
+            Please make sure you are
+            connected to the internet.""".trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val okayButton = Button(skin, "long-button").apply {
+            val closeButton = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
+            add(closeButton)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(okayButton).width(492f).row()
         }
     }
     private val bottomRow = Table().apply {
@@ -1131,6 +1170,18 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     init {
         initializePurchaseManager()
+        initializeRewardedAds()
+    }
+
+    private fun initializeRewardedAds() {
+        adsController?.rewardedAdEventListener = object : RewardedAdEventListener {
+            override fun onRewardedEvent(type: String, amount: Int) {
+                Gdx.app.log("AdMob", "Rewarding player with [$type, $amount].")
+            }
+
+            override fun onRewardedVideoAdClosedEvent() {
+            }
+        }
     }
 
     override fun show() {

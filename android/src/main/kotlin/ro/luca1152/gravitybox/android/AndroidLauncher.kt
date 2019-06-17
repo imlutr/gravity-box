@@ -31,6 +31,9 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.reward.RewardItem
+import com.google.android.gms.ads.reward.RewardedVideoAd
+import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import ro.luca1152.gravitybox.BuildConfig
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ads.AdsController
@@ -38,7 +41,9 @@ import ro.luca1152.gravitybox.utils.ads.AdsController
 
 /** Launches the Android application. */
 class AndroidLauncher : AndroidApplication() {
+    private lateinit var adRequest: AdRequest
     private lateinit var interstitialAd: InterstitialAd
+    private lateinit var rewardedVideoAd: RewardedVideoAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,25 +55,13 @@ class AndroidLauncher : AndroidApplication() {
         MobileAds.initialize(this, BuildConfig.AD_MOB_APP_ID)
 
         // Test devices
-        val adRequest = AdRequest.Builder()
+        adRequest = AdRequest.Builder()
             .addTestDevice("782BFD7102248952BFA1C5BD83FDE48C")
+            .addTestDevice("FE5037566C41F6046E5DD6F3BA34694C")
             .build()
 
-        // Initialize the interstitial ad
-        interstitialAd = InterstitialAd(this).apply {
-            adUnitId = BuildConfig.AD_MOB_INTERSTITIAL_AD_UNIT_ID
-            loadAd(adRequest)
-            adListener = object : AdListener() {
-                override fun onAdClosed() {
-                    // Load the next interstitial
-                    loadAd(adRequest)
-                }
-
-                override fun onAdFailedToLoad(p0: Int) {
-                    Gdx.app.log("AdMob", "Ad failed to load. Error code: $p0.")
-                }
-            }
-        }
+        // Initialize interstitial ads
+        interstitialAd = initializeInterstitialAds()
 
         // Initialize the game
         initialize(MyGame().apply {
@@ -76,32 +69,77 @@ class AndroidLauncher : AndroidApplication() {
             purchaseManager = PurchaseManagerGoogleBilling(this@AndroidLauncher)
 
             // AdMob
-            adsController = object : AdsController {
-                override fun showInterstitialAd() {
-                    this@AndroidLauncher.runOnUiThread {
-                        if (interstitialAd.isLoaded) {
-                            Gdx.app.log("AdMob", "Showing interstitial ad.")
-                            interstitialAd.show()
-                        } else {
-                            Gdx.app.log("AdMob", "Interstitial ad is not loaded yet.")
-                        }
-                    }
-                }
+            adsController = initializeAdsController()
 
-                override fun isInterstitialAdLoaded(): Boolean {
-                    var isLoaded = false
-                    this@AndroidLauncher.runOnUiThread {
-                        isLoaded = interstitialAd.isLoaded
-                    }
-                    return isLoaded
-                }
+            // Initialize rewarded video ads
+            rewardedVideoAd = initializeRewardedVideoAds(adsController)
+            loadRewardedVideoAd()
+        }, AndroidApplicationConfiguration())
+    }
 
-                override fun isNetworkConnected(): Boolean {
-                    val connectionType = getConnectionType(this@AndroidLauncher)
-                    return connectionType == 1 || connectionType == 2
+    private fun initializeInterstitialAds() = InterstitialAd(this).apply {
+        adUnitId = BuildConfig.AD_MOB_INTERSTITIAL_AD_UNIT_ID
+        loadAd(adRequest)
+        adListener = object : AdListener() {
+            override fun onAdClosed() {
+                // Load the next interstitial
+                loadAd(adRequest)
+            }
+
+            override fun onAdFailedToLoad(p0: Int) {
+                Gdx.app.log("AdMob", "Ad failed to load. Error code: $p0.")
+            }
+        }
+    }
+
+    private fun initializeAdsController() = object : AdsController() {
+        override fun showInterstitialAd() {
+            this@AndroidLauncher.runOnUiThread {
+                if (interstitialAd.isLoaded) {
+                    Gdx.app.log("AdMob", "Showing interstitial ad.")
+                    interstitialAd.show()
+                } else {
+                    Gdx.app.log("AdMob", "Interstitial ad is not loaded yet.")
                 }
             }
-        }, AndroidApplicationConfiguration())
+        }
+
+        override fun isInterstitialAdLoaded(): Boolean {
+            var isLoaded = false
+            this@AndroidLauncher.runOnUiThread {
+                isLoaded = interstitialAd.isLoaded
+            }
+            return isLoaded
+        }
+
+        override fun loadRewardedAd() {
+            this@AndroidLauncher.runOnUiThread {
+                loadRewardedVideoAd()
+            }
+        }
+
+        override fun showRewardedAd() {
+            this@AndroidLauncher.runOnUiThread {
+                if (rewardedVideoAd.isLoaded) {
+                    rewardedVideoAd.show()
+                } else {
+                    isShowingRewardedAdScheduled = true
+                }
+            }
+        }
+
+        override fun isRewardedAdLoaded(): Boolean {
+            var isLoaded = false
+            this@AndroidLauncher.runOnUiThread {
+                isLoaded = rewardedVideoAd.isLoaded
+            }
+            return isLoaded
+        }
+
+        override fun isNetworkConnected(): Boolean {
+            val connectionType = getConnectionType(this@AndroidLauncher)
+            return connectionType == 1 || connectionType == 2
+        }
     }
 
     /**
@@ -136,5 +174,68 @@ class AndroidLauncher : AndroidApplication() {
             }
         }
         return result
+    }
+
+    private fun loadRewardedVideoAd() {
+        rewardedVideoAd.loadAd(BuildConfig.AD_MOB_REWARDED_AD_UNIT_ID, adRequest)
+    }
+
+    private fun initializeRewardedVideoAds(adsController: AdsController) = MobileAds.getRewardedVideoAdInstance(this).apply {
+        val rewardedAdEventListener = adsController.rewardedAdEventListener
+        rewardedVideoAdListener = object : RewardedVideoAdListener {
+            override fun onRewarded(p0: RewardItem) {
+                rewardedAdEventListener?.onRewardedEvent(p0.type, p0.amount)
+            }
+
+            override fun onRewardedVideoAdLoaded() {
+                Gdx.app.log("AdMob", "Rewarded video loaded.")
+                if (adsController.isShowingRewardedAdScheduled) {
+                    adsController.isShowingRewardedAdScheduled = false
+                    show()
+                }
+            }
+
+            override fun onRewardedVideoAdOpened() {
+                Gdx.app.log("AdMob", "Rewarded video opened.")
+            }
+
+            override fun onRewardedVideoStarted() {
+                Gdx.app.log("AdMob", "Rewarded video started.")
+            }
+
+            override fun onRewardedVideoAdClosed() {
+                Gdx.app.log("AdMob", "Rewarded video closed.")
+                rewardedAdEventListener?.onRewardedVideoAdClosedEvent()
+                loadRewardedVideoAd()
+            }
+
+            override fun onRewardedVideoCompleted() {
+                Gdx.app.log("AdMob", "Rewarded video completed.")
+                loadRewardedVideoAd()
+            }
+
+            override fun onRewardedVideoAdLeftApplication() {
+                Gdx.app.log("AdMob", "Left the application while watching a rewarded video.")
+            }
+
+            override fun onRewardedVideoAdFailedToLoad(p0: Int) {
+                Gdx.app.log("AdMob", "Rewarded video ad failed to load. Error code: $p0.")
+            }
+        }
+    }
+
+    override fun onResume() {
+        rewardedVideoAd.resume(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        rewardedVideoAd.pause(this)
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        rewardedVideoAd.destroy(this)
+        super.onDestroy()
     }
 }

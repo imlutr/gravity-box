@@ -217,6 +217,8 @@ class GameRules(context: Context) {
                 flush()
             }
         }
+
+    // Interstitial ads
     /** There must be a delay of at least 3 levels between two interstitial ads. */
     val LEVELS_DELAY_BETWEEN_INTERSTITIAL_ADS = 3
     /** There must be a delay of at least 2 minutes between two interstitial ads. */
