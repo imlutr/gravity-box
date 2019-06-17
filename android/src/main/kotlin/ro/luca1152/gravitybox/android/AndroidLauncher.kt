@@ -259,11 +259,4 @@ class AndroidLauncher : AndroidApplication() {
             rewardedVideoAd.pause(this)
         }
     }
-
-    override fun onDestroy() {
-        this@AndroidLauncher.runOnUiThread {
-            super.onDestroy()
-            rewardedVideoAd.destroy(this)
-        }
-    }
 }
