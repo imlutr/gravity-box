@@ -95,10 +95,10 @@ open class NewPopUp(
         name = "NewPopUp"
     }
 
-    fun hide() {
+    fun hide(fadeOutDuration: Float = .15f) {
         addAction(
             Actions.sequence(
-                Actions.fadeOut(.15f),
+                Actions.fadeOut(fadeOutDuration),
                 Actions.removeActor(),
                 Actions.fadeIn(0f)
             )

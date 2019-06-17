@@ -213,6 +213,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         })
     }
     private val skipLevelPopUp = object : NewPopUp(context, 600f, 370f, skin) {
+        val thisPopUp = this // Can't put a popup@... So this will do
         val skipLevelButtonText = DistanceFieldLabel(context, "Skip level", skin, "regular", 36f, Color.WHITE)
         val skipLevelButton = Button(skin, "long-button").apply {
             add(skipLevelButtonText)
@@ -235,6 +236,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     if (!adsController.isNetworkConnected()) {
                         menuOverlayStage.addActor(noInternetRewardedVideoPopUp)
                     } else {
+                        // Instantly hide the pop-up
+                        thisPopUp.run {
+                            clearActions()
+                            remove()
+                        }
                         adsController.showRewardedAd()
                     }
                 }
