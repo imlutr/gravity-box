@@ -195,6 +195,16 @@ class AndroidLauncher : AndroidApplication() {
                 }
             }
 
+            override fun onRewardedVideoAdFailedToLoad(p0: Int) {
+                Gdx.app.log("AdMob", "Rewarded video ad failed to load. Error code: $p0.")
+
+                // The player specifically asked to load an ad, so the ad wasn't loaded when the game launched
+                if (adsController.isShowingRewardedAdScheduled) {
+                    rewardedAdEventListener?.onRewardedVideoAdFailedToLoad(p0)
+                    adsController.isShowingRewardedAdScheduled = false
+                }
+            }
+
             override fun onRewardedVideoAdOpened() {
                 Gdx.app.log("AdMob", "Rewarded video opened.")
             }
@@ -216,10 +226,6 @@ class AndroidLauncher : AndroidApplication() {
 
             override fun onRewardedVideoAdLeftApplication() {
                 Gdx.app.log("AdMob", "Left the application while watching a rewarded video.")
-            }
-
-            override fun onRewardedVideoAdFailedToLoad(p0: Int) {
-                Gdx.app.log("AdMob", "Rewarded video ad failed to load. Error code: $p0.")
             }
         }
     }

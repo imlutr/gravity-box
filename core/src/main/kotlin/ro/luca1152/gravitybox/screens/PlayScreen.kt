@@ -1181,6 +1181,36 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
             override fun onRewardedVideoAdClosedEvent() {
             }
+
+            override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {
+                menuOverlayStage.addActor(anErrorOccurredRewardedAd(errorCode))
+            }
+        }
+    }
+
+    private fun anErrorOccurredRewardedAd(errorCode: Int) = NewPopUp(context, 600f, 334f, skin).apply popup@{
+        val text = DistanceFieldLabel(
+            context,
+            """
+            An error occurred while loading
+            the rewarded video...
+
+            Error code $errorCode.""".trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
+        )
+        val okayButton = Button(skin, "long-button").apply {
+            val closeButton = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
+            add(closeButton)
+            color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    this@popup.hide()
+                }
+            })
+        }
+        widget.run {
+            add(text).padBottom(32f).row()
+            add(okayButton).width(492f).row()
         }
     }
 
