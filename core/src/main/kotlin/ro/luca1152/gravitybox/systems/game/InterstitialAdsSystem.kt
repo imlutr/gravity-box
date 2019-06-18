@@ -35,7 +35,6 @@ class InterstitialAdsSystem(context: Context) : EntitySystem() {
     private lateinit var levelEntity: Entity
 
     /** How many ads were shown in the current session. */
-    private var adsShownCount = 0
     private var showAdsTimer = gameRules.TIME_DELAY_BETWEEN_INTERSTITIAL_ADS
     private var lastAdShownAtLevelId = -gameRules.LEVELS_DELAY_BETWEEN_INTERSTITIAL_ADS
 
@@ -50,7 +49,6 @@ class InterstitialAdsSystem(context: Context) : EntitySystem() {
             lastAdShownAtLevelId = levelEntity.level.levelId
             return
         }
-        if (adsShownCount + 1 > gameRules.MAX_INTERSTITIAL_ADS_PER_SESSION) return
         if (levelEntity.level.levelId - lastAdShownAtLevelId < gameRules.LEVELS_DELAY_BETWEEN_INTERSTITIAL_ADS) {
             showAdsTimer = gameRules.TIME_DELAY_BETWEEN_INTERSTITIAL_ADS
             return
@@ -61,7 +59,6 @@ class InterstitialAdsSystem(context: Context) : EntitySystem() {
     private fun updateShowAdsVariable(deltaTime: Float) {
         if (showAdsTimer <= 0f) {
             gameRules.SHOULD_SHOW_INTERSTITIAL_AD = true
-            adsShownCount++
             showAdsTimer = gameRules.TIME_DELAY_BETWEEN_INTERSTITIAL_ADS
             lastAdShownAtLevelId = levelEntity.level.levelId
         } else {

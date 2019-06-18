@@ -91,6 +91,12 @@ class GameRules(context: Context) {
         set(value) {
             preferences.putInteger("collectedPointCount", value)
         }
+    /** How many levels did the player skip. */
+    var SKIPPED_LEVELS_COUNT
+        get() = preferences.getInteger("skippedLevelsCount", 0)
+        set(value) {
+            preferences.putInteger("skippedLevelsCount", value)
+        }
 
     // Finish game stats (the stats shown on the last level)
     /** True if the last level was reached. */
@@ -135,6 +141,12 @@ class GameRules(context: Context) {
         set(value) {
             preferences.putInteger("finishCollectedPointCount", value)
         }
+    /** How many levels did the player skip until finishing the game. */
+    var FINISH_SKIPPED_LEVELS_COUNT
+        get() = preferences.getInteger("finishSkippedLevelsCount")
+        set(value) {
+            preferences.putInteger("finishSkippedLevelsCount", value)
+        }
 
     // Rate-related
     val MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT = 13
@@ -168,10 +180,8 @@ class GameRules(context: Context) {
     // Interstitial ads
     /** There must be a delay of at least 3 levels between two interstitial ads. */
     val LEVELS_DELAY_BETWEEN_INTERSTITIAL_ADS = 3
-    /** There must be a delay of at least 2 minutes between two interstitial ads. */
-    val TIME_DELAY_BETWEEN_INTERSTITIAL_ADS = 2f * 60
-    /** A maximum of 5 interstitial ads should be shown in one session (until the game is closed). */
-    val MAX_INTERSTITIAL_ADS_PER_SESSION = 4
+    /** There must be a delay of at least 4 minutes between two interstitial ads. */
+    val TIME_DELAY_BETWEEN_INTERSTITIAL_ADS = 4f * 60
     /**
      * True when an ad should be shown.
      * Set true by the InterstitialAdsSystem.

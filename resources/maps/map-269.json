@@ -9,15 +9,15 @@
   "player": {
     "position": {
       "x": 96,
-      "y": 96
+      "y": 78
     }
   },
   "objects": [
     {
       "type": "platform",
       "position": {
-        "x": 95.999985,
-        "y": 56
+        "x": 96,
+        "y": 38
       },
       "width": 624
     },

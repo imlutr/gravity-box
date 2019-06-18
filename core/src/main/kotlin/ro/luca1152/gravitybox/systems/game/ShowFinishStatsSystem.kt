@@ -74,15 +74,16 @@ class ShowFinishStatsSystem(private val context: Context) : EntitySystem() {
             You restarted ${gameRules.FINISH_RESTART_COUNT} time${if (gameRules.FINISH_RESTART_COUNT != 1) "s" else ""}.
             You died ${gameRules.FINISH_DEATH_COUNT} time${if (gameRules.FINISH_DEATH_COUNT != 1) "s" else ""}.
             You destroyed ${gameRules.FINISH_DESTROYED_PLATFORM_COUNT} platform${if (gameRules.FINISH_DESTROYED_PLATFORM_COUNT != 1) "s" else ""}.
-            You collected ${gameRules.FINISH_COLLECTED_POINT_COUNT} point${if (gameRules.FINISH_COLLECTED_POINT_COUNT != 1) "s" else ""}.
-        """.trimIndent(), 96f, 280.177f
+            You collected ${gameRules.FINISH_COLLECTED_POINT_COUNT} point${if (gameRules.FINISH_COLLECTED_POINT_COUNT != 1) "s" else ""}
+            You skipped ${gameRules.FINISH_SKIPPED_LEVELS_COUNT} level${if (gameRules.FINISH_SKIPPED_LEVELS_COUNT != 1) "s" else ""}
+        """.trimIndent(), 96f, 262.177f
         )
 
         TextEntity.createEntity(
             context, """
             Also, if you didn't yet rate the game, it
             would be awesome if you'd do it! <3
-        """.trimIndent(), 96f, -8.466f
+        """.trimIndent(), 96f, -26.466f
         )
 
         addedTextEntity = true
