@@ -106,16 +106,11 @@ class PlayerCameraSystem(
         }
 
         // Clamp vertical axis
-
-        // Clamp vertical axis
-        if (mapHeight < gameCamera.viewportHeight - 5f) {
-            lerpCameraPosition.y = mapTop - mapHeight / 2f
-        } else if (cameraBottom <= mapBottom) {
-            lerpCameraPosition.y = mapBottom + cameraHalfHeight
-        } else if (cameraTop >= mapTop && mapTop - 2 * cameraHalfHeight > mapBottom) {
-            lerpCameraPosition.y = mapTop - cameraHalfHeight
+        when {
+            mapHeight < gameCamera.viewportHeight -> lerpCameraPosition.y = mapTop - mapHeight / 2f
+            cameraBottom <= mapBottom -> lerpCameraPosition.y = mapBottom + cameraHalfHeight
+            cameraTop >= mapTop -> lerpCameraPosition.y = mapTop - cameraHalfHeight
         }
-
     }
 
     override fun removedFromEngine(engine: Engine) {
