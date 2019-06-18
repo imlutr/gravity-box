@@ -91,6 +91,12 @@ class GameRules(context: Context) {
         set(value) {
             preferences.putInteger("collectedPointCount", value)
         }
+    /** How many levels did the player skip. */
+    var SKIPPED_LEVELS_COUNT
+        get() = preferences.getInteger("skippedLevelsCount", 0)
+        set(value) {
+            preferences.putInteger("skippedLevelsCount", value)
+        }
 
     // Finish game stats (the stats shown on the last level)
     /** True if the last level was reached. */
@@ -134,6 +140,12 @@ class GameRules(context: Context) {
         get() = preferences.getInteger("finishCollectedPointCount", 0)
         set(value) {
             preferences.putInteger("finishCollectedPointCount", value)
+        }
+    /** How many levels did the player skip until finishing the game. */
+    var FINISH_SKIPPED_LEVELS_COUNT
+        get() = preferences.getInteger("finishSkippedLevelsCount")
+        set(value) {
+            preferences.putInteger("finishSkippedLevelsCount", value)
         }
 
     // Rate-related

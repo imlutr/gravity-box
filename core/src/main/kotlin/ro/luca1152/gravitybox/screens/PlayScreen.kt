@@ -1412,6 +1412,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 }
             )
         )
+
+        gameRules.SKIPPED_LEVELS_COUNT++
     }
 
     override fun render(delta: Float) {
