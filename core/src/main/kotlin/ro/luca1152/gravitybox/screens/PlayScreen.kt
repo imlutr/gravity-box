@@ -1329,11 +1329,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(ColorSyncSystem())
             addSystem(PlayerCameraSystem(context, this@PlayScreen))
             addSystem(UpdateGameCameraSystem(context))
-            addSystem(ShowFinishStatsSystem(context))
             addSystem(DashedLineRenderingSystem(context))
             addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
             addSystem(LevelFinishSystem(context, playScreen = this@PlayScreen))
+            addSystem(ShowFinishStatsSystem(context))
 //            addSystem(PhysicsDebugRenderingSystem(context))
             addSystem(DebugRenderingSystem(context))
         }

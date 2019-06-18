@@ -77,23 +77,19 @@ class LevelFinishSystem(
         else {
             gameRules.HIGHEST_FINISHED_LEVEL = Math.max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
             levelEntity.level.levelId = Math.min(levelEntity.level.levelId + 1, gameRules.LEVEL_COUNT)
+            levelEntity.level.isRestarting = true
+            levelEntity.level.run {
+                loadMap = true
+                forceUpdateMap = true
+            }
+            levelEntity.map.run {
+                forceCenterCameraOnPlayer = true
+                resetPassengers()
+            }
+            showInterstitialAd()
             gameStage.addAction(
                 Actions.sequence(
-                    Actions.run {
-                        levelEntity.level.isRestarting = true
-                    },
                     Actions.fadeOut(0f),
-                    Actions.run {
-                        showInterstitialAd()
-                        levelEntity.level.run {
-                            loadMap = true
-                            forceUpdateMap = true
-                        }
-                        levelEntity.map.run {
-                            forceCenterCameraOnPlayer = true
-                            resetPassengers()
-                        }
-                    },
                     Actions.fadeIn(.25f, Interpolation.pow3In),
                     Actions.run {
                         levelEntity.level.isRestarting = false
