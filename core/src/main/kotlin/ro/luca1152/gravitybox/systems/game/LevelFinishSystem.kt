@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.inject.Context
@@ -67,7 +66,6 @@ class LevelFinishSystem(
             return
         promptUserToRate()
         handleLevelFinish()
-        Gdx.input.vibrate(20)
         playScreen?.shouldUpdateLevelLabel = true
     }
 
