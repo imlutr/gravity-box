@@ -54,12 +54,15 @@ class ShowFinishStatsSystem(private val context: Context) : EntitySystem() {
             addedTextEntity = false
             return
         }
+        // The map is loading, which would cause the removal of all entities including the text entities added here
+        if (levelEntity.level.loadMap) {
+            return
+        }
         addTextEntity()
     }
 
     private fun addTextEntity() {
         if (addedTextEntity || !didStoreFinishStats) return
-
         TextEntity.createEntity(
             context, """
             You did it! You finished the game in
