@@ -251,18 +251,4 @@ class AndroidLauncher : AndroidApplication() {
             }
         }
     }
-
-    override fun onResume() {
-        this@AndroidLauncher.runOnUiThread {
-            super.onResume()
-            rewardedVideoAd.resume(this)
-        }
-    }
-
-    override fun onPause() {
-        this@AndroidLauncher.runOnUiThread {
-            super.onPause()
-            rewardedVideoAd.pause(this)
-        }
-    }
 }
