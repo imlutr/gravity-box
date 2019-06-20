@@ -1,6 +1,8 @@
 # Gravity Box
 [![Build Status](https://travis-ci.org/Luca1152/gravity-box.svg?branch=develop)](https://travis-ci.org/Luca1152/gravity-box) 
 
+<a href="https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox"><img src="https://i.imgur.com/nmfa0AR.png" width="auto" height="75"></a>
+
 A minimalist physics game written in Kotlin & libGDX. 
 
 This is the mobile port of my [Game Maker's Toolkit Jam 2018](https://itch.io/jam/gmtk-2018) entry, made in 48 hours, which placed 152nd (out of 1038). You can play the original version [here](https://luca1152.itch.io/gravity-box). 
@@ -26,6 +28,3 @@ All assets including graphics, sounds, icons and maps are licensed under the [Cr
 
 ## Acknowledgments
 - [∞ Infinity Loop](https://play.google.com/store/apps/details?id=com.balysv.loop&hl=en) - for the UI design, color scheme
-
-## Downloads
-<a href="https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox"><img src="https://i.imgur.com/nmfa0AR.png" width="auto" height="75"></a>
