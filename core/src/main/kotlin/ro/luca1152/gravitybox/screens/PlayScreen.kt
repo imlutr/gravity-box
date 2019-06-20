@@ -227,6 +227,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
                         return
                     }
 
+                    // Ad-free
+                    if (gameRules.IS_AD_FREE) {
+                        gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN = gameRules.TIME_DELAY_BETWEEN_REWARDED_ADS
+                        skipLevel()
+                        return
+                    }
+
                     // Debug
                     if (!gameRules.IS_MOBILE || adsController == null) {
                         gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN = gameRules.TIME_DELAY_BETWEEN_REWARDED_ADS
