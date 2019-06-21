@@ -59,13 +59,13 @@ android {
     }
     defaultConfig {
         // So @string/ad_mob_app_id works in AndroidManifest
-        resValue "string", "ad_mob_app_id", "\""+getLocalProperty("admob.appid")+"\""
+        resValue "string", "ad_mob_app_id", "\"" + getLocalProperty("admob.appid") + "\""
 
         // So BuildConfig.AD_MOB_APP_ID in AndroidLauncher
-        buildConfigField "String", "AD_MOB_APP_ID", "\""+getLocalProperty("admob.appid")+"\""
-        buildConfigField "String", "AD_MOB_INTERSTITIAL_AD_UNIT_ID", "\""+getLocalProperty("admob.interstitial.adunitid")+"\""
-        buildConfigField "String", "AD_MOB_REWARDED_AD_UNIT_ID", "\""+getLocalProperty("admob.rewarded.adunitid")+"\""
-        buildConfigField "String", "FLURRY_API_KEY", "\""+getLocalProperty("flurry.apikey")+"\""
+        buildConfigField "String", "AD_MOB_APP_ID", "\"" + getLocalProperty("admob.appid") + "\""
+        buildConfigField "String", "AD_MOB_INTERSTITIAL_AD_UNIT_ID", "\"" + getLocalProperty("admob.interstitial.adunitid") + "\""
+        buildConfigField "String", "AD_MOB_REWARDED_AD_UNIT_ID", "\"" + getLocalProperty("admob.rewarded.adunitid") + "\""
+        buildConfigField "String", "FLURRY_API_KEY", "\"" + getLocalProperty("flurry.apikey") + "\""
 
         applicationId 'ro.luca1152.gravitybox'
         minSdkVersion 16
