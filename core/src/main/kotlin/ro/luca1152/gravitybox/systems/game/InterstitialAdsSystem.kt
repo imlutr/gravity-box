@@ -34,8 +34,13 @@ class InterstitialAdsSystem(context: Context) : EntitySystem() {
     // Entities
     private lateinit var levelEntity: Entity
 
-    /** How many ads were shown in the current session. */
-    private var showAdsTimer = gameRules.TIME_DELAY_BETWEEN_INTERSTITIAL_ADS
+    /**
+     * Keeps track of when an interstitial ad should be shown.
+     *
+     * Is initially equal to TIME_DELAY_BEFORE_SHOWING_FIRST_INTERSTITIAL_AD, then becomes TIME_DELAY_BETWEEN_INTERSTITIAL_ADS
+     * after showing the first ad.
+     */
+    private var showAdsTimer = gameRules.TIME_DELAY_BEFORE_SHOWING_FIRST_INTERSTITIAL_AD
     private var lastAdShownAtLevelId = -gameRules.LEVELS_DELAY_BETWEEN_INTERSTITIAL_ADS
 
     override fun addedToEngine(engine: Engine) {

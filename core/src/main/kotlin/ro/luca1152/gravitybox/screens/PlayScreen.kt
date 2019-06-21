@@ -330,16 +330,16 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(okayButton).width(492f).row()
         }
     }
-    private val bottomRow = Table().apply {
-        add(menuButton).expand().padLeft(restartButton.prefWidth)
-        add(restartButton).right()
+    private val topRow = Table().apply {
+        add(menuButton).expand().padLeft(menuButton.prefWidth / 2f + padLeftRight / 2f).right()
+        add(skipLevelButton).expand().right()
     }
     private val rootTable = Table().apply {
         setFillParent(true)
         padLeft(padLeftRight).padRight(padLeftRight)
         padBottom(padTopBottom).padTop(padTopBottom)
-        add(skipLevelButton).expand().top().right().row()
-        add(bottomRow).expand().fillX().bottom()
+        add(topRow).fillX().row()
+        add(restartButton).expand().bottom().right()
     }
     private val githubPopUp = NewPopUp(context, 600f, 440f, skin).apply popup@{
         val text = DistanceFieldLabel(
@@ -1170,7 +1170,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 Actions.sequence(
                     Actions.delay(.1f),
                     Actions.moveTo(
-                        uiStage.viewport.worldWidth - padLeftRight - prefWidth,
+                        uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth,
                         y, .2f, Interpolation.pow3In
                     )
                 )
@@ -1181,7 +1181,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 Actions.sequence(
                     Actions.delay(.1f),
                     Actions.moveTo(
-                        uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth,
+                        uiStage.viewport.worldWidth - padLeftRight - prefWidth,
                         y, .2f, Interpolation.pow3In
                     )
                 )
