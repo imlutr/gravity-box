@@ -176,7 +176,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     touchable = Touchable.disabled
                     skipLevelButton.run {
                         addAction(
-                            Actions.moveTo(uiStage.viewport.worldWidth, y, .2f, Interpolation.pow3In)
+                            Actions.moveTo(-prefWidth - 2 * padLeftRight, y, .2f, Interpolation.pow3In)
                         )
                     }
                     restartButton.run {
@@ -331,15 +331,15 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
     }
     private val topRow = Table().apply {
-        add(menuButton).expand().padLeft(menuButton.prefWidth / 2f + padLeftRight / 2f).right()
-        add(skipLevelButton).expand().right()
+        add(skipLevelButton).expand().left()
+        add(menuButton).expand()
+        add(restartButton).expand().right()
     }
     private val rootTable = Table().apply {
         setFillParent(true)
         padLeft(padLeftRight).padRight(padLeftRight)
         padBottom(padTopBottom).padTop(padTopBottom)
-        add(topRow).fillX().row()
-        add(restartButton).expand().bottom().right()
+        add(topRow).growX().expandY().top().row()
     }
     private val githubPopUp = NewPopUp(context, 600f, 440f, skin).apply popup@{
         val text = DistanceFieldLabel(
@@ -1170,7 +1170,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 Actions.sequence(
                     Actions.delay(.1f),
                     Actions.moveTo(
-                        uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth,
+                        0f,
                         y, .2f, Interpolation.pow3In
                     )
                 )
@@ -1181,7 +1181,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 Actions.sequence(
                     Actions.delay(.1f),
                     Actions.moveTo(
-                        uiStage.viewport.worldWidth - padLeftRight - prefWidth,
+                        uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth,
                         y, .2f, Interpolation.pow3In
                     )
                 )
