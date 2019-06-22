@@ -28,7 +28,16 @@ buildscript {
     classpath "com.github.jengelman.gradle.plugins:shadow:$shadowVersion"
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
+    classpath "io.spring.gradle:dependency-management-plugin:$dependencyManagementPluginVersion"
   }
+}
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+    imports {
+        mavenBom "com.amazonaws:aws-java-sdk-bom:$awsSdkBomVersion"
+    }
 }
 
 allprojects {
