@@ -35,7 +35,7 @@ dependencies {
     api "com.badlogicgames.gdxpay:gdx-pay-client:$gdxPayVersion"
     api "com.google.android.gms:play-services-ads:$playServicesAdsVersion"
     api "com.flurry.android:analytics:$flurryVersion"
-    api "com.amazonaws:aws-java-sdk-s3:$awsSdkVersion"
+    api "com.amazonaws:aws-java-sdk-bom:$awsSdkBomVersion"
     api "com.amazonaws:aws-java-sdk-dynamodb:$awsSdkDynamoDbVersion"
 }
         

@@ -16,59 +16,51 @@
  */
 
 buildscript {
-  repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-    google()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-  }
-  dependencies {
-    classpath "com.android.tools.build:gradle:$androidPluginVersion"
-    classpath "com.github.jengelman.gradle.plugins:shadow:$shadowVersion"
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-    classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
-    classpath "io.spring.gradle:dependency-management-plugin:$dependencyManagementPluginVersion"
-  }
-}
-
-apply plugin: "io.spring.dependency-management"
-
-dependencyManagement {
-    imports {
-        mavenBom "com.amazonaws:aws-java-sdk-bom:$awsSdkBomVersion"
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        google()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath "com.github.jengelman.gradle.plugins:shadow:$shadowVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
     }
 }
 
+
 allprojects {
-  apply plugin: 'eclipse'
-  apply plugin: 'idea'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
 }
 
 configure(subprojects - project(':android')) {
-  apply plugin: 'com.github.johnrengelman.shadow'
-  apply plugin: 'java'
-  apply plugin: 'kotlin'
-  sourceCompatibility = 1.6
+    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'java'
+    apply plugin: 'kotlin'
+    sourceCompatibility = 1.6
 }
 
 subprojects {
-  version = '1.1.6'
-  ext.appName = 'gravity-box'
-  repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-    google()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-  }
+    version = '1.1.6'
+    ext.appName = 'gravity-box'
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        google()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
 }
 
 // Clearing Eclipse project data in root folder:
 tasks.eclipse.doLast {
-  delete '.project'
-  delete '.classpath'
-  delete '.settings/'
+    delete '.project'
+    delete '.classpath'
+    delete '.settings/'
 }
 
 @SuppressWarnings("LibGDXGradleTestId")
@@ -79,13 +71,13 @@ def getLocalProperty(String propertyName) {
         props.load(new FileInputStream(propsFile))
         return props[propertyName]
     } else {
-        if (propertyName == "admob.appid"){
+        if (propertyName == "admob.appid") {
             // Debug App ID
             return "ca-app-pub-3940256099942544~3347511713"
-        } else if (propertyName == "admob.interstitial.adunitid"){
+        } else if (propertyName == "admob.interstitial.adunitid") {
             // Debug interstitial ad unit ID
             return "ca-app-pub-3940256099942544/1033173712"
-        } else if (propertyName == "admob.rewarded.adunitid"){
+        } else if (propertyName == "admob.rewarded.adunitid") {
             // Debug rewarded ad unit ID
             return "ca-app-pub-3940256099942544/5224354917"
         } else {
