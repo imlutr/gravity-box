@@ -62,6 +62,7 @@ import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
+import kotlin.math.min
 
 @Suppress("ConstantConditionIf")
 class PlayScreen(private val context: Context) : KtxScreen {
@@ -543,10 +544,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         "#${when {
             gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
             gameRules.CAN_PLAY_ANY_LEVEL -> 1
-            else -> Math.min(
-                gameRules.HIGHEST_FINISHED_LEVEL + 1,
-                gameRules.LEVEL_COUNT
-            )
+            else -> min(gameRules.HIGHEST_FINISHED_LEVEL + 1, gameRules.LEVEL_COUNT)
         }}",
         skin, "semi-bold", 37f, Colors.gameColor
     ).apply {
@@ -1291,10 +1289,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             when {
                 gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
                 gameRules.CAN_PLAY_ANY_LEVEL -> 1
-                else -> Math.min(
-                    gameRules.HIGHEST_FINISHED_LEVEL + 1,
-                    gameRules.LEVEL_COUNT
-                )
+                else -> min(gameRules.HIGHEST_FINISHED_LEVEL + 1, gameRules.LEVEL_COUNT)
             }
         ).apply {
             level.loadMap = true

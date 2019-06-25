@@ -32,6 +32,7 @@ import ktx.app.KtxGame
 import ktx.app.clearScreen
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
+import kotlin.math.abs
 
 /** Linearly interpolates to the target values. */
 fun Vector3.lerp(targetX: Float, targetY: Float, targetZ: Float = 0f, progress: Float): Vector3 {
@@ -43,7 +44,7 @@ fun Vector3.lerp(targetX: Float, targetY: Float, targetZ: Float = 0f, progress: 
 
 /** Used to compare a color that was linearly interpolated using lerp, resulting in imprecision. */
 fun Color.approxEqualTo(color: Color): Boolean {
-    return (Math.abs(this.r - color.r) <= 3 / 255f) && (Math.abs(this.g - color.g) <= 3 / 255f) && (Math.abs(this.b - color.b) <= 3 / 255f)
+    return (abs(this.r - color.r) <= 3 / 255f) && (abs(this.g - color.g) <= 3 / 255f) && (abs(this.b - color.b) <= 3 / 255f)
 }
 
 fun Color.setWithoutAlpha(color: Color) {
@@ -63,8 +64,8 @@ fun Float.roundToNearest(nearest: Float, threshold: Float, startingValue: Float 
     val valueRoundedDown = MathUtils.floor(this / nearest) * nearest
     val valueRoundedUp = MathUtils.ceil(this / nearest) * nearest
     return when {
-        Math.abs((this + startingValue) - valueRoundedDown) < threshold -> valueRoundedDown - startingValue
-        Math.abs((this + startingValue) - valueRoundedUp) < threshold -> valueRoundedUp - startingValue
+        abs((this + startingValue) - valueRoundedDown) < threshold -> valueRoundedDown - startingValue
+        abs((this + startingValue) - valueRoundedUp) < threshold -> valueRoundedUp - startingValue
         else -> this
     }
 }
@@ -176,18 +177,18 @@ fun Stage.hitAllScreen(screenX: Int, screenY: Int, touchable: Boolean = true): A
 }
 
 val Polygon.leftmostX: Float
-    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 0 }.sorted().first()
+    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 0 }.min()!!
 
 val Polygon.rightmostX: Float
-    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 0 }.sorted().last()
+    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 0 }.max()!!
 
 val Polygon.bottommostY: Float
-    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 1 }.sorted().first()
+    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 1 }.min()!!
 
 val Polygon.topmostY: Float
-    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 1 }.sorted().last()
+    get() = transformedVertices.filterIndexed { index, _ -> index % 2 == 1 }.max()!!
 
-fun Float.approximatelyEqualTo(fl: Float) = Math.abs(this - fl) <= 1e-5f
+fun Float.approximatelyEqualTo(fl: Float) = abs(this - fl) <= 1e-5f
 
 inline fun <T> Iterable<T>.filterNullableSingleton(predicate: (T) -> Boolean): T? {
     val filteredList = filterTo(ArrayList(), predicate)

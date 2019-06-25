@@ -18,7 +18,7 @@
 package ro.luca1152.gravitybox.utils.leaderboards
 
 import com.amazonaws.handlers.AsyncHandler
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsync
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClient
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.ReturnValue
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest
@@ -29,7 +29,7 @@ import ro.luca1152.gravitybox.GameRules
 class ShotsLeaderboard(context: Context) {
     // Injected objects
     private val gameRules: GameRules = context.inject()
-    private val dynamoDBClient: AmazonDynamoDBAsync = context.inject()
+    private val dynamoDBClient: AmazonDynamoDBAsyncClient = context.inject()
 
     private fun incrementPlayerCountForShotsBy(level: Int, shots: Int, increment: Int) {
         val updateItemRequest = UpdateItemRequest()

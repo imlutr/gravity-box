@@ -1,15 +1,27 @@
 -verbose
 
+## Donts:
+## Kotlin
 -dontwarn kotlin.**
 -dontnote kotlin.**
+## Java
 -dontwarn org.objectweb.**
+## LibGDX
+-dontwarn ro.luca1152.gravitybox.**
 -dontwarn org.lwjgl.**
 -dontwarn com.badlogic.**
 -dontnote com.badlogic.**
+## AdMob
 -dontwarn com.google.android.gms.**
 -dontnote com.google.android.gms.**
+## Android
 -dontwarn android.support.**
--dontwarn ro.luca1152.gravitybox.**
+## AWS
+-dontwarn com.fasterxml.jackson.**
+-dontwarn org.apache.commons.logging.**
+-dontwarn org.apache.http.**
+-dontwarn com.amazonaws.http.**
+-dontwarn com.amazonaws.metrics.**
 
 # Java
 -keepclasseswithmembernames class * {
@@ -118,3 +130,8 @@
 -keepnames class * implements android.os.Parcelable {
    public static final ** CREATOR;
 }
+
+## AWS
+-keepnames class com.amazonaws.**
+-keepnames class com.amazon.**
+-keep class com.amazonaws.services.**.*Handler

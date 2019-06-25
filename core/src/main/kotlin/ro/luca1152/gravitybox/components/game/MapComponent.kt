@@ -52,6 +52,8 @@ import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.max
+import kotlin.math.min
 
 /** Pixels per meter. */
 const val PPM = 64f
@@ -118,10 +120,10 @@ class MapComponent : Component, Poolable {
         engine.getEntitiesFor(Family.all(PolygonComponent::class.java).get()).forEach {
             if ((it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) && !it.isScheduledForRemoval) {
                 it.polygon.run {
-                    mapLeft = if (leftmostX != Float.NEGATIVE_INFINITY) Math.min(mapLeft, leftmostX) else mapLeft
-                    mapRight = if (rightmostX != Float.POSITIVE_INFINITY) Math.max(mapRight, rightmostX) else mapRight
-                    mapBottom = if (bottommostY != Float.NEGATIVE_INFINITY) Math.min(mapBottom, bottommostY) else mapBottom
-                    mapTop = if (topmostY != Float.POSITIVE_INFINITY) Math.max(mapTop, topmostY) else mapTop
+                    mapLeft = if (leftmostX != Float.NEGATIVE_INFINITY) min(mapLeft, leftmostX) else mapLeft
+                    mapRight = if (rightmostX != Float.POSITIVE_INFINITY) max(mapRight, rightmostX) else mapRight
+                    mapBottom = if (bottommostY != Float.NEGATIVE_INFINITY) min(mapBottom, bottommostY) else mapBottom
+                    mapTop = if (topmostY != Float.POSITIVE_INFINITY) max(mapTop, topmostY) else mapTop
                 }
             }
         }
@@ -394,6 +396,7 @@ class MapComponent : Component, Poolable {
         return ""
     }
 
+    @Suppress("SpellCheckingInspection")
     private fun getNewFileName(): String {
         val date = Date(TimeUtils.millis())
         val formatter = SimpleDateFormat("yyyy-MM-dd HHmmss z'.json'", Locale.getDefault())

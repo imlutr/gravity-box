@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.utils.kotlin.*
+import kotlin.math.sign
 
 /** Contains a [Polygon]. */
 class PolygonComponent : Component, Poolable {
@@ -97,20 +98,20 @@ class PolygonComponent : Component, Poolable {
         val secondTopmostIndex = arrayY.lastIndexOf(sortedY[2]) * 2
 
         if (left != 0f) {
-            polygon.vertices[leftmostIndex] += left * Math.signum(MathUtils.cosDeg(polygon.rotation))
-            polygon.vertices[secondLeftmostIndex] += left * Math.signum(MathUtils.cosDeg(polygon.rotation))
+            polygon.vertices[leftmostIndex] += left * sign(MathUtils.cosDeg(polygon.rotation))
+            polygon.vertices[secondLeftmostIndex] += left * sign(MathUtils.cosDeg(polygon.rotation))
         }
         if (right != 0f) {
-            polygon.vertices[rightmostIndex] += right * Math.signum(MathUtils.cosDeg(polygon.rotation))
-            polygon.vertices[secondRightmostIndex] += right * Math.signum(MathUtils.cosDeg(polygon.rotation))
+            polygon.vertices[rightmostIndex] += right * sign(MathUtils.cosDeg(polygon.rotation))
+            polygon.vertices[secondRightmostIndex] += right * sign(MathUtils.cosDeg(polygon.rotation))
         }
         if (top != 0f) {
-            polygon.vertices[topmostIndex] += top * Math.signum(MathUtils.sinDeg(polygon.rotation))
-            polygon.vertices[secondTopmostIndex] += top * Math.signum(MathUtils.sinDeg(polygon.rotation))
+            polygon.vertices[topmostIndex] += top * sign(MathUtils.sinDeg(polygon.rotation))
+            polygon.vertices[secondTopmostIndex] += top * sign(MathUtils.sinDeg(polygon.rotation))
         }
         if (bottom != 0f) {
-            polygon.vertices[bottommostIndex] += bottom * Math.signum(MathUtils.sinDeg(polygon.rotation))
-            polygon.vertices[secondBottommostIndex] += bottom * Math.signum(MathUtils.sinDeg(polygon.rotation))
+            polygon.vertices[bottommostIndex] += bottom * sign(MathUtils.sinDeg(polygon.rotation))
+            polygon.vertices[secondBottommostIndex] += bottom * sign(MathUtils.sinDeg(polygon.rotation))
         }
         polygon.dirty()
     }

@@ -30,6 +30,7 @@ import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.removeComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
+import kotlin.math.abs
 
 /** Reacts accordingly to every Box2D collision. */
 class WorldContactListener(private val context: Context) : ContactListener {
@@ -81,7 +82,7 @@ class WorldContactListener(private val context: Context) : ContactListener {
         }
 
         if (playerEntity != null && movingPlatformEntity != null) {
-            if (Math.abs(movingPlatformEntity.body.body!!.transform.rotation * MathUtils.radiansToDegrees) <= 45f &&
+            if (abs(movingPlatformEntity.body.body!!.transform.rotation * MathUtils.radiansToDegrees) <= 45f &&
                 playerEntity.scene2D.centerY >= movingPlatformEntity.polygon.bottommostY
             ) {
                 playerEntity.passenger(context, movingPlatformEntity)

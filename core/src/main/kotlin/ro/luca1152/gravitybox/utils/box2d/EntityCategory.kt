@@ -24,7 +24,6 @@ package ro.luca1152.gravitybox.utils.box2d
 enum class EntityCategory(bits: Int) {
     NONE(0b00000),
     FINISH(0b00001),
-    POINT(0b00001),
     PLAYER(0b0010),
     BULLET(0b00100),
     PLATFORM(0b01000),

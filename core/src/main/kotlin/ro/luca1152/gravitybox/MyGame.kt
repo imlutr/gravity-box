@@ -17,10 +17,7 @@
 
 package ro.luca1152.gravitybox
 
-import com.amazonaws.ClientConfiguration
-import com.amazonaws.client.builder.AwsClientBuilder
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClientBuilder
-import com.amazonaws.services.dynamodbv2.document.DynamoDB
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClient
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
@@ -48,6 +45,7 @@ class MyGame : KtxGame<Screen>() {
     // Initialized in AndroidLauncher
     lateinit var purchaseManager: PurchaseManager
     lateinit var adsController: AdsController
+    lateinit var dynamoDBClient: AmazonDynamoDBAsyncClient
 
     private val context = Context()
 
@@ -88,22 +86,10 @@ class MyGame : KtxGame<Screen>() {
             }
 
             // Leaderboards
-            val dynamoDBClient = createDynamoDBClient()
             bindSingleton(dynamoDBClient)
-            bindSingleton(DynamoDB(dynamoDBClient))
             bindSingleton(ShotsLeaderboard(context))
         }
     }
-
-    private fun createDynamoDBClient() = AmazonDynamoDBAsyncClientBuilder.standard()
-        .withClientConfiguration(
-            ClientConfiguration()
-                .withConnectionTimeout(500)
-                .withClientExecutionTimeout(1000)
-                .withMaxErrorRetry(Integer.MAX_VALUE)
-        )
-        .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration("dynamodb.eu-central-1.amazonaws.com", "eu-central-1"))
-        .build()
 
     override fun dispose() {
         // Make sure Preferences are flushed
