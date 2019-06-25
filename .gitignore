@@ -32,7 +32,6 @@ www-test/
 .idea/*
 !.idea/runConfigurations
 !.idea/copyright
-!.idea/dictionaries
 *.ipr
 *.iws
 *.iml
