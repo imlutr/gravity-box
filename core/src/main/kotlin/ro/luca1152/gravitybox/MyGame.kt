@@ -19,7 +19,7 @@ package ro.luca1152.gravitybox
 
 import com.amazonaws.ClientConfiguration
 import com.amazonaws.client.builder.AwsClientBuilder
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClientBuilder
 import com.amazonaws.services.dynamodbv2.document.DynamoDB
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
@@ -88,22 +88,22 @@ class MyGame : KtxGame<Screen>() {
             }
 
             // Leaderboards
-            bindSingleton(createDynamoDB())
+            val dynamoDBClient = createDynamoDBClient()
+            bindSingleton(dynamoDBClient)
+            bindSingleton(DynamoDB(dynamoDBClient))
             bindSingleton(ShotsLeaderboard(context))
         }
     }
 
-    private fun createDynamoDB() = DynamoDB(
-        AmazonDynamoDBClientBuilder.standard()
-            .withClientConfiguration(
-                ClientConfiguration()
-                    .withConnectionTimeout(500)
-                    .withClientExecutionTimeout(1000)
-                    .withMaxErrorRetry(Integer.MAX_VALUE)
-            )
-            .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration("dynamodb.eu-central-1.amazonaws.com", "eu-central-1"))
-            .build()
-    )
+    private fun createDynamoDBClient() = AmazonDynamoDBAsyncClientBuilder.standard()
+        .withClientConfiguration(
+            ClientConfiguration()
+                .withConnectionTimeout(500)
+                .withClientExecutionTimeout(1000)
+                .withMaxErrorRetry(Integer.MAX_VALUE)
+        )
+        .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration("dynamodb.eu-central-1.amazonaws.com", "eu-central-1"))
+        .build()
 
     override fun dispose() {
         // Make sure Preferences are flushed

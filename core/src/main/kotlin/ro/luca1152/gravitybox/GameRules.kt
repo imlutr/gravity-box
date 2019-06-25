@@ -206,6 +206,7 @@ class GameRules(context: Context) {
         }
 
     // Leaderboard
+    val SHOTS_LEADERBOARD_TABLE_NAME = "GravityBox-ShotsLeaderboard"
     val DEFAULT_HIGHSCORE_VALUE = Int.MAX_VALUE
 
     /** Returns the least number of shots the game (not community) level [level] was finished in. */

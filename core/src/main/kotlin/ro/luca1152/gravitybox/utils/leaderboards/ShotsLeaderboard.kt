@@ -17,57 +17,57 @@
 
 package ro.luca1152.gravitybox.utils.leaderboards
 
-import com.amazonaws.services.dynamodbv2.document.DynamoDB
-import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec
-import com.amazonaws.services.dynamodbv2.document.utils.NameMap
-import com.amazonaws.services.dynamodbv2.document.utils.ValueMap
+import com.amazonaws.handlers.AsyncHandler
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsync
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.ReturnValue
+import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest
+import com.amazonaws.services.dynamodbv2.model.UpdateItemResult
 import ktx.inject.Context
+import ro.luca1152.gravitybox.GameRules
 
 class ShotsLeaderboard(context: Context) {
     // Injected objects
-    private val dynamoDB: DynamoDB = context.inject()
-
-    private val table = dynamoDB.getTable("GravityBox-ShotsLeaderboard")
+    private val gameRules: GameRules = context.inject()
+    private val dynamoDBClient: AmazonDynamoDBAsync = context.inject()
 
     private fun incrementPlayerCountForShotsBy(level: Int, shots: Int, increment: Int) {
-        val updateItemSpec = UpdateItemSpec()
-            .withPrimaryKey("Level ID", "game-$level")
+        val updateItemRequest = UpdateItemRequest()
+            .withTableName(gameRules.SHOTS_LEADERBOARD_TABLE_NAME)
+            .withKey(mapOf(Pair("Level ID", AttributeValue().withS("game-$level"))))
             .withUpdateExpression("SET Scores.#S = if_not_exists(Scores.#S, :zero) + :inc")
-            .withNameMap(
-                NameMap()
-                    .with("#S", "$shots")
-            )
-            .withValueMap(
-                ValueMap()
-                    .withInt(":inc", increment)
-                    .withInt(":zero", 0)
+            .withExpressionAttributeNames(mapOf(Pair("#S", "$shots")))
+            .withExpressionAttributeValues(
+                mapOf(
+                    Pair(":inc", AttributeValue().withN("$increment")),
+                    Pair(":zero", AttributeValue().withN("0"))
+                )
             )
             .withReturnValues(ReturnValue.UPDATED_NEW)
-        val outcome = table.updateItem(updateItemSpec)
 
-        // Delete the score if the players that finished it in [shots] shots is now 0 (or, for some reason, less than 0)
-        if (increment < 0) {
-            val stringPlayerCount = outcome.updateItemResult.attributes["Scores"]!!.m["$shots"]?.n
-            if (stringPlayerCount != null) {
-                val intPlayerCount = Integer.parseInt(stringPlayerCount)
-                if (intPlayerCount <= 0) {
-                    val deleteAttributeSpec = UpdateItemSpec()
-                        .withPrimaryKey("Level ID", "game-$level")
-                        .withConditionExpression("Scores.#S <= :zero")
-                        .withUpdateExpression("REMOVE Scores.#S")
-                        .withNameMap(
-                            NameMap()
-                                .with("#S", "$shots")
-                        )
-                        .withValueMap(
-                            ValueMap()
-                                .withInt(":zero", 0)
-                        )
-                    table.updateItem(deleteAttributeSpec)
+        dynamoDBClient.updateItemAsync(updateItemRequest, object : AsyncHandler<UpdateItemRequest, UpdateItemResult> {
+            override fun onSuccess(request: UpdateItemRequest?, result: UpdateItemResult) {
+                // Delete the score if the players that finished it in [shots] shots is now 0 (or, for some reason, less than 0)
+                if (increment < 0) {
+                    val stringPlayerCount = result.attributes["Scores"]!!.m["$shots"]?.n
+                    if (stringPlayerCount != null) {
+                        val intPlayerCount = Integer.parseInt(stringPlayerCount)
+                        if (intPlayerCount <= 0) {
+                            val deleteAttributeRequest = UpdateItemRequest()
+                                .withTableName(gameRules.SHOTS_LEADERBOARD_TABLE_NAME)
+                                .withKey(mapOf(Pair("Level ID", AttributeValue().withS("game-$level"))))
+                                .withConditionExpression("Scores.#S <= :zero")
+                                .withUpdateExpression("REMOVE Scores.#S")
+                                .withExpressionAttributeNames(mapOf(Pair("#S", "$shots")))
+                                .withExpressionAttributeValues(mapOf(Pair(":zero", AttributeValue().withN("0"))))
+                            dynamoDBClient.updateItemAsync(deleteAttributeRequest)
+                        }
+                    }
                 }
             }
-        }
+
+            override fun onError(exception: Exception?) {}
+        })
     }
 
     fun incrementPlayerCountForShots(level: Int, shots: Int) {
