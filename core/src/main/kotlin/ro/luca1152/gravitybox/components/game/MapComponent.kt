@@ -92,6 +92,9 @@ class MapComponent : Component, Poolable {
     var paddingTop = 5f
     var paddingBottom = 5f
 
+    /** How many time did the player shot in the current level. */
+    var shots = 0
+
     fun set(context: Context, levelId: Int, hue: Int) {
         this.levelId = levelId
         this.hue = hue
@@ -214,6 +217,7 @@ class MapComponent : Component, Poolable {
         createFinish(mapFactory.finish, finishEntity)
         createObjects(context, mapFactory.objects, isLevelEditor)
         updateMapBounds()
+        shots = 0
         eventQueue.run {
             clear()
             add(UpdateRoundedPlatformsEvent())
@@ -411,6 +415,7 @@ class MapComponent : Component, Poolable {
         paddingTop = 5f
         paddingBottom = 5f
         forceCenterCameraOnPlayer = false
+        shots = 0
     }
 
     fun destroyAllBodies() {

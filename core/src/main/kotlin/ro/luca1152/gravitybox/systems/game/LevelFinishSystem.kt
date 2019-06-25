@@ -28,7 +28,10 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 import ro.luca1152.gravitybox.utils.ui.Colors
+import kotlin.math.max
+import kotlin.math.min
 
 /** Handles what happens when a level is finished. */
 class LevelFinishSystem(
@@ -42,6 +45,7 @@ class LevelFinishSystem(
     private val gameRules: GameRules = context.inject()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
     private val adsController: AdsController? = context.injectNullable()
+    private val shotsLeaderboard: ShotsLeaderboard = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -65,6 +69,7 @@ class LevelFinishSystem(
         if (!levelIsFinished)
             return
         promptUserToRate()
+        updateLeaderboard()
         handleLevelFinish()
         playScreen?.shouldUpdateLevelLabel = true
     }
@@ -75,10 +80,10 @@ class LevelFinishSystem(
         if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
         else {
-            gameRules.HIGHEST_FINISHED_LEVEL = Math.max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
-            levelEntity.level.levelId = Math.min(levelEntity.level.levelId + 1, gameRules.LEVEL_COUNT)
-            levelEntity.level.isRestarting = true
+            gameRules.HIGHEST_FINISHED_LEVEL = max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
             levelEntity.level.run {
+                levelId = min(levelEntity.level.levelId + 1, gameRules.LEVEL_COUNT)
+                isRestarting = true
                 loadMap = true
                 forceUpdateMap = true
             }
@@ -123,5 +128,19 @@ class LevelFinishSystem(
         if (!adsController.isInterstitialAdLoaded()) return
         adsController.showInterstitialAd()
         gameRules.SHOULD_SHOW_INTERSTITIAL_AD = false
+    }
+
+    private fun updateLeaderboard() {
+        val shots = levelEntity.map.shots
+        levelEntity.level.run {
+            if (gameRules.getGameLevelHighscore(levelId) < shots)
+                return
+
+            shotsLeaderboard.incrementPlayerCountForShots(levelId, shots)
+            if (gameRules.getGameLevelHighscore(levelId) != gameRules.DEFAULT_HIGHSCORE_VALUE) {
+                shotsLeaderboard.decrementPlayerCountForShots(levelId, gameRules.getGameLevelHighscore(levelId))
+            }
+            gameRules.setGameLevelHighscore(levelId, shots)
+        }
     }
 }

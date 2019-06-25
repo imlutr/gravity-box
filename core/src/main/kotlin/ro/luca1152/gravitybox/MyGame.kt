@@ -17,6 +17,10 @@
 
 package ro.luca1152.gravitybox
 
+import com.amazonaws.ClientConfiguration
+import com.amazonaws.client.builder.AwsClientBuilder
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
+import com.amazonaws.services.dynamodbv2.document.DynamoDB
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
@@ -36,6 +40,7 @@ import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 /** The main class of the game. */
@@ -81,8 +86,24 @@ class MyGame : KtxGame<Screen>() {
                 bindSingleton(purchaseManager)
                 bindSingleton(adsController)
             }
+
+            // Leaderboards
+            bindSingleton(createDynamoDB())
+            bindSingleton(ShotsLeaderboard(context))
         }
     }
+
+    private fun createDynamoDB() = DynamoDB(
+        AmazonDynamoDBClientBuilder.standard()
+            .withClientConfiguration(
+                ClientConfiguration()
+                    .withConnectionTimeout(500)
+                    .withClientExecutionTimeout(1000)
+                    .withMaxErrorRetry(Integer.MAX_VALUE)
+            )
+            .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration("dynamodb.eu-central-1.amazonaws.com", "eu-central-1"))
+            .build()
+    )
 
     override fun dispose() {
         // Make sure Preferences are flushed

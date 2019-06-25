@@ -24,6 +24,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import ktx.inject.Context
 
+@Suppress("LibGDXMissingFlush")
 class GameRules(context: Context) {
     private val preferences: Preferences = context.inject()
 
@@ -203,4 +204,19 @@ class GameRules(context: Context) {
         set(value) {
             preferences.putFloat("timeUntilRewardedAdCanBeShown", value)
         }
+
+    // Leaderboard
+    val DEFAULT_HIGHSCORE_VALUE = Int.MAX_VALUE
+
+    /** Returns the least number of shots the game (not community) level [level] was finished in. */
+    fun getGameLevelHighscore(level: Int) = preferences.getInteger("game${level}Highscore", Int.MAX_VALUE)
+
+    /** Sets the least number of shots the game (not community) level [level] was finished in. */
+    fun setGameLevelHighscore(level: Int, highscore: Int) {
+        if (getGameLevelHighscore(level) > highscore) {
+            preferences.putInteger("game${level}Highscore", highscore)
+        } else {
+            Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
+        }
+    }
 }
