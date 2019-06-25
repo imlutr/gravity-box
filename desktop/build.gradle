@@ -31,6 +31,10 @@ dependencies {
     api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
     api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
     api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+
+    // Used by AWS, in DesktopLauncher, when creating the AmazonDynamoDBAsyncClient
+    // If I don't add this, it will complain saying that there is no class definition for android.util.Log
+    api "com.google.android:android:$androidSdkVersion"
 }
 
 jar {
