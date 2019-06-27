@@ -38,5 +38,4 @@ dependencies {
     api "com.amazonaws:aws-android-sdk-core:$awsAndroidSdkVersion"
     api "com.amazonaws:aws-android-sdk-ddb:$awsAndroidSdkVersion"
     api "com.amazonaws:aws-android-sdk-ddb-document:$awsAndroidSdkDdbDocumentVersion"
-    api "com.amazonaws:aws-dynamodb-encryption-java:$awsDynamoDbEncryptionVersion"
 }
