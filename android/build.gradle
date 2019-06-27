@@ -72,6 +72,7 @@ android {
         applicationId 'ro.luca1152.gravitybox'
         minSdkVersion 16
         targetSdkVersion 29
+        multiDexEnabled true
     }
     buildTypes {
         release {
