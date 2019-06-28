@@ -6,16 +6,20 @@
 -dontnote kotlin.**
 ## Java
 -dontwarn org.objectweb.**
+-dontwarn org.xml.sax.**
+-dontwarn org.w3c.**
+-dontwarn com.sun.**
+-dontwarn javax.**
 ## LibGDX
 -dontwarn ro.luca1152.gravitybox.**
 -dontwarn org.lwjgl.**
 -dontwarn com.badlogic.**
 -dontnote com.badlogic.**
-## AdMob
--dontwarn com.google.android.gms.**
--dontnote com.google.android.gms.**
 ## Android
 -dontwarn android.support.**
+## AndroidX
+-dontwarn com.google.android.material.**
+-dontwarn androidx.**
 ## AWS
 -dontwarn com.fasterxml.jackson.**
 -dontwarn org.apache.commons.logging.**
@@ -109,13 +113,21 @@
 }
 
 # Ads
+-keepattributes *Annotation* # For mediation
 -keep class com.google.ads.**
 -keep class com.google.protobuf.**
--keepattributes *Annotation* # For mediation
+-keep class android.os.WorkSource$WorkChain { *; }
+-keep class libcore.io.Memory { *; }
+-keep class org.robolectric.Robolectric { *; }
+-keep class com.google.firebase.analytics.FirebaseAnalytics { *; }
+-keep class android.os.SystemProperties { *; }
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.android.gms.dynamite.descriptors.com.google.android.gms.ads.dynamite.ModuleDescriptor { *; }
+-keep class com.google.android.gms.dynamite.DynamiteModule$DynamiteLoaderClassLoader { *; }
 
 # Google Play Services
 -keep class com.google.android.gms.** {
-    public *;
+    public protected *;
 }
 -keep class * extends java.util.ListResourceBundle {
    protected java.lang.Object[][] getContents();
@@ -130,8 +142,30 @@
 -keepnames class * implements android.os.Parcelable {
    public static final ** CREATOR;
 }
+-keep class com.google.protobuf.** {
+    public protected *;
+}
 
 ## AWS
 -keepnames class com.amazonaws.**
 -keepnames class com.amazon.**
--keep class com.amazonaws.services.**.*Handler
+-keep class org.apache.commons.logging.** { *; }
+-keep class com.amazonaws.services.sqs.QueueUrlHandler { *; }
+-keep class com.amazonaws.javax.xml.transform.sax.* { public *; }
+-keep class com.amazonaws.javax.xml.stream.** { *; }
+-keep class com.amazonaws.services.**.*Handler { *; }
+-keep class com.amazonaws.services.**.model.*Exception* { *; }
+-keep class org.codehaus.** { *; }
+-keep class com.amazonaws.metrics.internal.cloudwatch.DefaultMetricCollectorFactory { *; }
+
+## AndroidX
+-keep class com.google.android.material.** { *; }
+-keep class androidx.** { *; }
+-keep interface androidx.** { *; }
+-keep class android.support.v4.** { *; }
+-keep class android.support.v7.** { *; }
+
+## Flurry
+-keep class com.flurry.android.config.killswitch.KillSwitch { *; }
+-keep class com.flurry.android.bridge.FlurryBridgeModule { *; }
+-keep class com.google.android.instantapps.InstantApps { *; }
