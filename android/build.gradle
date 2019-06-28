@@ -94,7 +94,7 @@ dependencies {
     api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
     api "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
     api "com.google.android.gms:play-services-ads:$playServicesAdsVersion"
-    api "com.android.support:multidex:$multiDexVersion"
+    api "androidx.multidex:multidex:$multiDexVersion"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
