@@ -137,7 +137,9 @@ class LevelFinishSystem(
                 return
 
             shotsLeaderboard.incrementPlayerCountForShots(levelId, shots)
-            if (gameRules.getGameLevelHighscore(levelId) != gameRules.DEFAULT_HIGHSCORE_VALUE) {
+            if (gameRules.getGameLevelHighscore(levelId) != gameRules.DEFAULT_HIGHSCORE_VALUE &&
+                gameRules.getGameLevelHighscore(levelId) != gameRules.SKIPPED_LEVEL_SCORE_VALUE
+            ) {
                 shotsLeaderboard.decrementPlayerCountForShots(levelId, gameRules.getGameLevelHighscore(levelId))
             }
             gameRules.setGameLevelHighscore(levelId, shots)

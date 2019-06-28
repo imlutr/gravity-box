@@ -15,8 +15,6 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("PropertyName", "MemberVisibilityCanBePrivate")
-
 package ro.luca1152.gravitybox
 
 import com.badlogic.gdx.Application
@@ -24,7 +22,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import ktx.inject.Context
 
-@Suppress("LibGDXMissingFlush")
+@Suppress("LibGDXMissingFlush", "SpellCheckingInspection", "PropertyName", "MemberVisibilityCanBePrivate")
 class GameRules(context: Context) {
     private val preferences: Preferences = context.inject()
 
@@ -208,6 +206,7 @@ class GameRules(context: Context) {
     // Leaderboard
     val SHOTS_LEADERBOARD_TABLE_NAME = "GravityBox-ShotsLeaderboard"
     val DEFAULT_HIGHSCORE_VALUE = Int.MAX_VALUE
+    val SKIPPED_LEVEL_SCORE_VALUE = -1
 
     /** Returns the least number of shots the game (not community) level [level] was finished in. */
     fun getGameLevelHighscore(level: Int) = preferences.getInteger("game${level}Highscore", Int.MAX_VALUE)

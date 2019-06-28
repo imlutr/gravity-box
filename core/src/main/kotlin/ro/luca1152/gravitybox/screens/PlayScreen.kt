@@ -1382,7 +1382,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
             return
         }
 
-        gameRules.HIGHEST_FINISHED_LEVEL = levelEntity.level.levelId
+        gameRules.run {
+            if (getGameLevelHighscore(levelEntity.level.levelId) == gameRules.DEFAULT_HIGHSCORE_VALUE)
+                setGameLevelHighscore(levelEntity.level.levelId, gameRules.SKIPPED_LEVEL_SCORE_VALUE)
+            HIGHEST_FINISHED_LEVEL = levelEntity.level.levelId
+        }
         levelEntity.level.levelId++
         isSkippingLevel = true
 
