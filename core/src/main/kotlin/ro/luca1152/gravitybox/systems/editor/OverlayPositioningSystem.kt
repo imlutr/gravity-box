@@ -44,6 +44,9 @@ import ro.luca1152.gravitybox.utils.ui.button.Button
 import ro.luca1152.gravitybox.utils.ui.button.Checkbox
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.popup.PopUp
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.sign
 
 /** Positions the overlay. */
 class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
@@ -211,7 +214,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 newRotation = MathUtils.round(newRotation).toFloat()
                 newRotation = toPositiveAngle(newRotation)
                 newRotation =
-                    if (selectedMapObject!!.snap.rotationIsSnapped && Math.abs(newRotation - selectedMapObject!!.snap.snapRotationAngle) <= SnapComponent.ROTATION_SNAP_THRESHOLD) {
+                    if (selectedMapObject!!.snap.rotationIsSnapped && abs(newRotation - selectedMapObject!!.snap.snapRotationAngle) <= SnapComponent.ROTATION_SNAP_THRESHOLD) {
                         selectedMapObject!!.snap.snapRotationAngle
                     } else {
                         newRotation.roundToNearest(45f, 7f)
@@ -257,7 +260,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                         )
                     )
                 overlayLevel1.rotation = oldRotation
-                return Math.abs(
+                return abs(
                     MathUtils.atan2(
                         buttonCoords.y - objectCenterCoords.y,
                         buttonCoords.x - objectCenterCoords.x
@@ -312,9 +315,9 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 var newCenterY = initialImageY
                 if (horizontalPositionButtonTakesRotationIntoAccount) {
                     newCenterX = initialImageX + (mouseXInWorldCoords - initialMouseXInWorldCoords) *
-                            MathUtils.cosDeg(scene2D.rotation) * Math.signum(MathUtils.cosDeg(360f - scene2D.rotation))
+                            MathUtils.cosDeg(scene2D.rotation) * sign(MathUtils.cosDeg(360f - scene2D.rotation))
                     newCenterY = initialImageY + (mouseXInWorldCoords - initialMouseXInWorldCoords) *
-                            MathUtils.sinDeg(scene2D.rotation) * Math.signum(MathUtils.cosDeg(360f - scene2D.rotation))
+                            MathUtils.sinDeg(scene2D.rotation) * sign(MathUtils.cosDeg(360f - scene2D.rotation))
                     selectedMapObject!!.editorObject.isDraggingVertically = true
                 } else {
                     selectedMapObject!!.editorObject.isDraggingVertically = false
@@ -325,8 +328,8 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 }
 
                 if (selectedMapObject!!.tryGet(SnapComponent) != null &&
-                    Math.abs(newCenterX - selectedMapObject!!.snap.snapCenterX) <= DRAG_SNAP_THRESHOLD &&
-                    Math.abs(newCenterY - selectedMapObject!!.snap.snapCenterY) <= DRAG_SNAP_THRESHOLD
+                    abs(newCenterX - selectedMapObject!!.snap.snapCenterX) <= DRAG_SNAP_THRESHOLD &&
+                    abs(newCenterY - selectedMapObject!!.snap.snapCenterY) <= DRAG_SNAP_THRESHOLD
                 ) {
                     return
                 } else {
@@ -401,9 +404,9 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 var newCenterX = initialImageX
                 if (verticalPositionButtonTakesRotationIntoAccount) {
                     newCenterY = initialImageY + (mouseYInWorldCoords - initialMouseYInWorldCoords) *
-                            MathUtils.cosDeg(scene2D.rotation) * Math.signum(MathUtils.cosDeg(360f - scene2D.rotation))
+                            MathUtils.cosDeg(scene2D.rotation) * sign(MathUtils.cosDeg(360f - scene2D.rotation))
                     newCenterX = initialImageX + (mouseYInWorldCoords - initialMouseYInWorldCoords) *
-                            MathUtils.sinDeg(scene2D.rotation) * Math.signum(MathUtils.sinDeg(360f - scene2D.rotation))
+                            MathUtils.sinDeg(scene2D.rotation) * sign(MathUtils.sinDeg(360f - scene2D.rotation))
                     selectedMapObject!!.editorObject.isDraggingHorizontally = true
                 } else {
                     selectedMapObject!!.editorObject.isDraggingHorizontally = false
@@ -421,8 +424,8 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 }
 
                 if (selectedMapObject!!.tryGet(SnapComponent) != null &&
-                    Math.abs(selectedMapObject!!.snap.snapCenterY - newCenterY) <= DRAG_SNAP_THRESHOLD &&
-                    Math.abs(selectedMapObject!!.snap.snapCenterX - newCenterX) <= DRAG_SNAP_THRESHOLD
+                    abs(selectedMapObject!!.snap.snapCenterY - newCenterY) <= DRAG_SNAP_THRESHOLD &&
+                    abs(selectedMapObject!!.snap.snapCenterX - newCenterX) <= DRAG_SNAP_THRESHOLD
                 ) {
                     return
                 } else {
@@ -541,7 +544,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
         if (toRight) deltaX = -deltaX
 
         val scene2D = linkedMapObject.scene2D
-        var newWidth = Math.max(.5f, scene2D.width - deltaX)
+        var newWidth = max(.5f, scene2D.width - deltaX)
         newWidth = newWidth.roundToNearest(1f, .15f)
 
         // Scale the platform correctly, taking in consideration its rotation and the scaling direction
@@ -554,10 +557,10 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
             localLeft, localRight
         )
         selectedMapObject!!.snap.run {
-            if (Math.abs(selectedMapObjectPolygon.leftmostX - snapLeft) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
-                Math.abs(selectedMapObjectPolygon.rightmostX - snapRight) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
-                Math.abs(selectedMapObjectPolygon.bottommostY - snapBottom) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
-                Math.abs(selectedMapObjectPolygon.topmostY - snapTop) <= SnapComponent.RESIZE_SNAP_THRESHOLD
+            if (abs(selectedMapObjectPolygon.leftmostX - snapLeft) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
+                abs(selectedMapObjectPolygon.rightmostX - snapRight) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
+                abs(selectedMapObjectPolygon.bottommostY - snapBottom) <= SnapComponent.RESIZE_SNAP_THRESHOLD ||
+                abs(selectedMapObjectPolygon.topmostY - snapTop) <= SnapComponent.RESIZE_SNAP_THRESHOLD
             ) {
                 return
             }

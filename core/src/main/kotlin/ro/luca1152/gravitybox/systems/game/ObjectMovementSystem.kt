@@ -28,6 +28,7 @@ import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
+import kotlin.math.abs
 
 
 class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::class.java).get()) {
@@ -110,5 +111,5 @@ class ObjectMovementSystem : IteratingSystem(Family.all(MovingObjectComponent::c
         }
     }
 
-    private fun Float.approxEqualTo(f: Float) = Math.abs(this - f) <= 0.001f
+    private fun Float.approxEqualTo(f: Float) = abs(this - f) <= 0.001f
 }

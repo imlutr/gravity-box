@@ -31,6 +31,7 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
+import kotlin.math.abs
 
 class DashedLineRenderingSystem(context: Context) : IteratingSystem(Family.all(DashedLineComponent::class.java).get()) {
     private val shapeRenderer: ShapeRenderer = context.inject()
@@ -78,7 +79,7 @@ class DashedLineRenderingSystem(context: Context) : IteratingSystem(Family.all(D
                     val currentX = startX + direction.x * currentLength
                     val currentY = startY + direction.y * currentLength
                     val dashWidth =
-                        if (currentLength + DASH_WIDTH > lineLength) Math.abs(DASH_WIDTH - Math.abs(lineLength - currentLength + DASH_WIDTH))
+                        if (currentLength + DASH_WIDTH > lineLength) abs(DASH_WIDTH - abs(lineLength - currentLength + DASH_WIDTH))
                         else DASH_WIDTH
                     rectLine(
                         currentX, currentY,

@@ -17,6 +17,7 @@
 
 package ro.luca1152.gravitybox
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClient
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
@@ -36,6 +37,7 @@ import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 /** The main class of the game. */
@@ -43,6 +45,7 @@ class MyGame : KtxGame<Screen>() {
     // Initialized in AndroidLauncher
     lateinit var purchaseManager: PurchaseManager
     lateinit var adsController: AdsController
+    lateinit var dynamoDBClient: AmazonDynamoDBAsyncClient
 
     private val context = Context()
 
@@ -81,6 +84,10 @@ class MyGame : KtxGame<Screen>() {
                 bindSingleton(purchaseManager)
                 bindSingleton(adsController)
             }
+
+            // Leaderboards
+            bindSingleton(dynamoDBClient)
+            bindSingleton(ShotsLeaderboard(context))
         }
     }
 

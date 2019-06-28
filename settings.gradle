@@ -16,3 +16,4 @@
  */
 
 include 'desktop', 'core', 'headless', 'ios', 'android'
+enableFeaturePreview('IMPROVED_POM_SUPPORT')

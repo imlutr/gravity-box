@@ -29,6 +29,9 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class CombinedBodiesCreationSystem(private val context: Context) : EntitySystem() {
     private val world: World = context.inject()
@@ -84,10 +87,10 @@ class CombinedBodiesCreationSystem(private val context: Context) : EntitySystem(
         var bottommostY = Float.POSITIVE_INFINITY
         var topmostY = Float.NEGATIVE_INFINITY
         platforms.forEach {
-            leftmostX = Math.min(leftmostX, it.polygon.leftmostX)
-            rightmostX = Math.max(rightmostX, it.polygon.rightmostX)
-            bottommostY = Math.min(bottommostY, it.polygon.bottommostY)
-            topmostY = Math.max(topmostY, it.polygon.topmostY)
+            leftmostX = min(leftmostX, it.polygon.leftmostX)
+            rightmostX = max(rightmostX, it.polygon.rightmostX)
+            bottommostY = min(bottommostY, it.polygon.bottommostY)
+            topmostY = max(topmostY, it.polygon.topmostY)
         }
         bodyEntity.polygon.run {
             this.leftmostX = leftmostX
@@ -103,8 +106,8 @@ class CombinedBodiesCreationSystem(private val context: Context) : EntitySystem(
         leftmostX: Float, rightmostX: Float,
         bottommostY: Float, topmostY: Float
     ) {
-        val width = Math.abs(rightmostX - leftmostX)
-        val height = Math.abs(topmostY - bottommostY)
+        val width = abs(rightmostX - leftmostX)
+        val height = abs(topmostY - bottommostY)
         val centerX = leftmostX + width / 2f
         val centerY = bottommostY + height / 2f
         val bodyDef = BodyDef().apply {
