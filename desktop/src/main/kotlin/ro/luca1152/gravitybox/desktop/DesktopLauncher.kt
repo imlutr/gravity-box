@@ -21,7 +21,7 @@
 package ro.luca1152.gravitybox.desktop
 
 import com.amazonaws.ClientConfiguration
-import com.amazonaws.auth.PropertiesCredentials
+import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.internal.StaticCredentialsProvider
 import com.amazonaws.regions.Region
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClient
@@ -29,7 +29,6 @@ import com.badlogic.gdx.Files
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import ro.luca1152.gravitybox.MyGame
-import java.io.File
 
 /** Launches the desktop (LWJGL) application. */
 fun main(args: Array<String>) {
@@ -48,7 +47,7 @@ fun main(args: Array<String>) {
 }
 
 private fun createDynamoDBClient() = AmazonDynamoDBAsyncClient(
-    StaticCredentialsProvider(PropertiesCredentials(File("C:\\Users\\luktr\\.aws\\credentials"))),
+    StaticCredentialsProvider(BasicAWSCredentials("ACCESS_KEY", "SECRET_KEY")),
     ClientConfiguration()
         .withConnectionTimeout(500)
         .withSocketTimeout(1000)

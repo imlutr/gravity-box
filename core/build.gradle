@@ -37,6 +37,4 @@ dependencies {
     api "com.flurry.android:analytics:$flurryVersion"
     api "com.amazonaws:aws-android-sdk-core:$awsAndroidSdkVersion"
     api "com.amazonaws:aws-android-sdk-ddb:$awsAndroidSdkVersion"
-    api "com.amazonaws:aws-android-sdk-ddb-document:$awsAndroidSdkDdbDocumentVersion"
-    api "com.amazonaws:aws-android-sdk-s3:$awsAndroidSdkS3Version"
 }
