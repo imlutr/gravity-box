@@ -22,6 +22,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.support.multidex.MultiDex
 import android.view.WindowManager
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.backends.android.AndroidApplication
@@ -250,5 +251,10 @@ class AndroidLauncher : AndroidApplication() {
                 }
             }
         }
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        MultiDex.install(this)
     }
 }
