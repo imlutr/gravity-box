@@ -52,6 +52,8 @@ import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.max
+import kotlin.math.min
 
 /** Pixels per meter. */
 const val PPM = 64f
@@ -92,6 +94,9 @@ class MapComponent : Component, Poolable {
     var paddingTop = 5f
     var paddingBottom = 5f
 
+    /** How many time did the player shot in the current level. */
+    var shots = 0
+
     fun set(context: Context, levelId: Int, hue: Int) {
         this.levelId = levelId
         this.hue = hue
@@ -115,10 +120,10 @@ class MapComponent : Component, Poolable {
         engine.getEntitiesFor(Family.all(PolygonComponent::class.java).get()).forEach {
             if ((it.tryGet(EditorObjectComponent) == null || !it.editorObject.isDeleted) && !it.isScheduledForRemoval) {
                 it.polygon.run {
-                    mapLeft = if (leftmostX != Float.NEGATIVE_INFINITY) Math.min(mapLeft, leftmostX) else mapLeft
-                    mapRight = if (rightmostX != Float.POSITIVE_INFINITY) Math.max(mapRight, rightmostX) else mapRight
-                    mapBottom = if (bottommostY != Float.NEGATIVE_INFINITY) Math.min(mapBottom, bottommostY) else mapBottom
-                    mapTop = if (topmostY != Float.POSITIVE_INFINITY) Math.max(mapTop, topmostY) else mapTop
+                    mapLeft = if (leftmostX != Float.NEGATIVE_INFINITY) min(mapLeft, leftmostX) else mapLeft
+                    mapRight = if (rightmostX != Float.POSITIVE_INFINITY) max(mapRight, rightmostX) else mapRight
+                    mapBottom = if (bottommostY != Float.NEGATIVE_INFINITY) min(mapBottom, bottommostY) else mapBottom
+                    mapTop = if (topmostY != Float.POSITIVE_INFINITY) max(mapTop, topmostY) else mapTop
                 }
             }
         }
@@ -214,6 +219,7 @@ class MapComponent : Component, Poolable {
         createFinish(mapFactory.finish, finishEntity)
         createObjects(context, mapFactory.objects, isLevelEditor)
         updateMapBounds()
+        shots = 0
         eventQueue.run {
             clear()
             add(UpdateRoundedPlatformsEvent())
@@ -390,6 +396,7 @@ class MapComponent : Component, Poolable {
         return ""
     }
 
+    @Suppress("SpellCheckingInspection")
     private fun getNewFileName(): String {
         val date = Date(TimeUtils.millis())
         val formatter = SimpleDateFormat("yyyy-MM-dd HHmmss z'.json'", Locale.getDefault())
@@ -411,6 +418,7 @@ class MapComponent : Component, Poolable {
         paddingTop = 5f
         paddingBottom = 5f
         forceCenterCameraOnPlayer = false
+        shots = 0
     }
 
     fun destroyAllBodies() {

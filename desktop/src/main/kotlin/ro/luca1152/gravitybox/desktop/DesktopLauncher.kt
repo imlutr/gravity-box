@@ -20,15 +20,21 @@
 
 package ro.luca1152.gravitybox.desktop
 
+import com.amazonaws.ClientConfiguration
+import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.internal.StaticCredentialsProvider
+import com.amazonaws.regions.Region
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClient
 import com.badlogic.gdx.Files
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
-
 import ro.luca1152.gravitybox.MyGame
 
 /** Launches the desktop (LWJGL) application. */
 fun main(args: Array<String>) {
-    LwjglApplication(MyGame(), LwjglApplicationConfiguration().apply {
+    LwjglApplication(MyGame().apply {
+        dynamoDBClient = createDynamoDBClient()
+    }, LwjglApplicationConfiguration().apply {
         title = "Gravity Box"
         width = 540
         height = 960
@@ -39,3 +45,15 @@ fun main(args: Array<String>) {
         }
     })
 }
+
+private fun createDynamoDBClient() = AmazonDynamoDBAsyncClient(
+    StaticCredentialsProvider(BasicAWSCredentials("ACCESS_KEY", "SECRET_KEY")),
+    ClientConfiguration()
+        .withConnectionTimeout(500)
+        .withSocketTimeout(1000)
+        .withMaxErrorRetry(Integer.MAX_VALUE)
+).apply {
+    endpoint = "dynamodb.eu-central-1.amazonaws.com"
+    setRegion(Region.getRegion("eu-central-1"))
+}
+

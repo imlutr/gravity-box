@@ -80,7 +80,10 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                         resetDestroyablePlatforms()
                         resetCollectiblePoints()
                         removeBullets()
-                        levelEntity.map.forceCenterCameraOnPlayer = true
+                        levelEntity.map.run {
+                            forceCenterCameraOnPlayer = true
+                            shots = 0
+                        }
                     }
                 },
                 Actions.run { eventQueue.add(FadeInEvent(fadeInDuration, Interpolation.pow3In)) },

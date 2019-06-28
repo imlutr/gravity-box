@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.physics.box2d.World
 import ktx.inject.Context
+import kotlin.math.min
 
 /** Updates the Box2D simulation. */
 class PhysicsSystem(context: Context) : EntitySystem() {
@@ -27,7 +28,7 @@ class PhysicsSystem(context: Context) : EntitySystem() {
     private var accumulator = 0f
 
     override fun update(deltaTime: Float) {
-        accumulator += Math.min(deltaTime, 0.25f)
+        accumulator += min(deltaTime, 0.25f)
         while (accumulator >= TIME_STEP) {
             world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS)
             accumulator -= TIME_STEP

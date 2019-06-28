@@ -36,6 +36,7 @@ import ro.luca1152.gravitybox.utils.box2d.EntityCategory
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
+import kotlin.math.abs
 
 /** Creates Box2D bodies from entities. */
 class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
@@ -255,7 +256,7 @@ class MapBodiesCreationSystem(private val context: Context) : EntitySystem() {
     }
 
     private fun isSameRotation(entityA: Entity, entityB: Entity) =
-        entityA.polygon.polygon.rotation == entityB.polygon.polygon.rotation || Math.abs(entityA.polygon.polygon.rotation - 180f) == entityB.polygon.polygon.rotation
+        entityA.polygon.polygon.rotation == entityB.polygon.polygon.rotation || abs(entityA.polygon.polygon.rotation - 180f) == entityB.polygon.polygon.rotation
 
     private fun isHorizontalOrVertical(entity: Entity) = entity.polygon.polygon.rotation % 90 == 0f
 }

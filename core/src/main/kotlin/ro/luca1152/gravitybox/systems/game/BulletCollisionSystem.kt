@@ -31,6 +31,7 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.ExplosionImageEntity
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
+import kotlin.math.min
 
 
 /** Handles what happens when a bullet collides with a map object. */
@@ -96,7 +97,7 @@ class BulletCollisionSystem(private val context: Context) :
         val invDistance = 1f / distance
 
         // Calculate the impulse's magnitude
-        val impulseMag = Math.min(blastPower * invDistance * invDistance, 21f)
+        val impulseMag = min(blastPower * invDistance * invDistance, 21f)
 
         // Apply the force
         this.applyLinearImpulse(

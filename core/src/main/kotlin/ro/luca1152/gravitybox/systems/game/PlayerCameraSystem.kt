@@ -30,6 +30,7 @@ import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.lerp
+import kotlin.math.abs
 
 /** Makes the game [gameCamera] follow the [playerEntity]. */
 class PlayerCameraSystem(
@@ -91,8 +92,8 @@ class PlayerCameraSystem(
         val mapRight = (levelEntity.map.mapRight + levelEntity.map.paddingRight) * zoom
         val mapBottom = (levelEntity.map.mapBottom - levelEntity.map.paddingBottom) * zoom
         val mapTop = (levelEntity.map.mapTop + levelEntity.map.paddingTop) * zoom
-        val mapWidth = Math.abs(mapRight - mapLeft)
-        val mapHeight = Math.abs(mapTop - mapBottom)
+        val mapWidth = abs(mapRight - mapLeft)
+        val mapHeight = abs(mapTop - mapBottom)
         val cameraLeft = lerpCameraPosition.x - cameraHalfWidth
         val cameraRight = lerpCameraPosition.x + cameraHalfWidth
         val cameraBottom = lerpCameraPosition.y - cameraHalfHeight

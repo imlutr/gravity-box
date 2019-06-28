@@ -66,6 +66,8 @@ android {
         buildConfigField "String", "AD_MOB_INTERSTITIAL_AD_UNIT_ID", "\"" + getLocalProperty("admob.interstitial.adunitid") + "\""
         buildConfigField "String", "AD_MOB_REWARDED_AD_UNIT_ID", "\"" + getLocalProperty("admob.rewarded.adunitid") + "\""
         buildConfigField "String", "FLURRY_API_KEY", "\"" + getLocalProperty("flurry.apikey") + "\""
+        buildConfigField "String", "AWS_ACCESS_KEY", "\"" + getLocalProperty("aws.accesskey") + "\""
+        buildConfigField "String", "AWS_SECRET_KEY", "\"" + getLocalProperty("aws.secretkey") + "\""
 
         applicationId 'ro.luca1152.gravitybox'
         minSdkVersion 16
@@ -79,8 +81,8 @@ android {
         }
         debug {
             signingConfig signingConfigs.debug
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
         }
     }
 }

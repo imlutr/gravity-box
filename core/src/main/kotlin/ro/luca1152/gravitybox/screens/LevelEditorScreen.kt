@@ -63,6 +63,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 class LevelEditorScreen(private val context: Context) : KtxScreen {
     // Injected objects
@@ -451,6 +452,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
             inputEntity.input.placeToolObjectType = objectType
         }
 
+    @Suppress("SpellCheckingInspection")
     private fun getLastEditedMapFile(): FileHandle {
         var minLastEditedTime = Long.MAX_VALUE
         var minLastEditedFile = FileHandle("")
@@ -459,7 +461,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
             try {
                 val levelDate = formatter.parse(it.nameWithoutExtension())
                 val currentDate = Date(TimeUtils.millis())
-                val diffInMills = Math.abs(currentDate.time - levelDate.time)
+                val diffInMills = abs(currentDate.time - levelDate.time)
                 if (diffInMills < minLastEditedTime) {
                     minLastEditedTime = diffInMills
                     minLastEditedFile = it
@@ -578,13 +580,14 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
         }
     }
 
+    @Suppress("SpellCheckingInspection")
     private fun getLastEditedString(fileNameWithoutExtension: String): String {
         try {
             val formatter = SimpleDateFormat("yyyy-MM-dd HHmmss z", Locale.getDefault())
             val levelDate = formatter.parse(fileNameWithoutExtension)
             val currentDate = Date(TimeUtils.millis())
 
-            val diffInMills = Math.abs(currentDate.time - levelDate.time)
+            val diffInMills = abs(currentDate.time - levelDate.time)
             val diffInYears = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 365
             val diffInMonths = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 30
             val diffInWeeks = TimeUnit.DAYS.convert(diffInMills, TimeUnit.MILLISECONDS) / 7

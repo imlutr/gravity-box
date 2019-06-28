@@ -26,9 +26,7 @@ import com.badlogic.gdx.utils.Pools
 import ktx.app.KtxInputAdapter
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
-import ro.luca1152.gravitybox.components.game.BulletComponent
-import ro.luca1152.gravitybox.components.game.PlayerComponent
-import ro.luca1152.gravitybox.components.game.body
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.BulletEntity
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
@@ -43,6 +41,7 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
 
     // Entities
     private lateinit var playerEntity: Entity
+    private lateinit var levelEntity: Entity
 
     private var shootingTimer = gameRules.TIME_DELAY_BETWEEN_SHOTS
 
@@ -55,6 +54,7 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
             val worldCoordinates = screenToWorldCoordinates(context, screenX, screenY)
             createBullet(worldCoordinates.x, worldCoordinates.y)
             gameRules.BULLET_COUNT++
+            levelEntity.map.shots++
             shootingTimer = gameRules.TIME_DELAY_BETWEEN_SHOTS
             return true
         }
@@ -74,6 +74,7 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
 
     override fun addedToEngine(engine: Engine) {
         playerEntity = engine.getSingleton<PlayerComponent>()
+        levelEntity = engine.getSingleton<LevelComponent>()
         inputMultiplexer.addProcessor(inputAdapter)
     }
 
