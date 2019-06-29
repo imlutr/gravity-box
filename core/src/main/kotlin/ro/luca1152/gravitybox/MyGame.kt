@@ -60,8 +60,12 @@ class MyGame : KtxGame<Screen>() {
     }
 
     private fun initializeFirebase() {
-        GdxFIRApp.inst().configure()
-        GdxFIRCrash.inst().initialize()
+        try {
+            GdxFIRApp.inst().configure()
+            GdxFIRCrash.inst().initialize()
+        } catch (e: Exception) {
+            Gdx.app.log("Firebase", "$e thrown while loading Firebase.")
+        }
     }
 
     private fun initializePhysicsEngine() {
