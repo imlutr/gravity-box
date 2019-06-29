@@ -45,7 +45,6 @@ import ro.luca1152.gravitybox.BuildConfig
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ads.AdsController
 
-
 /** Launches the Android application. */
 class AndroidLauncher : AndroidApplication() {
     private lateinit var adRequest: AdRequest

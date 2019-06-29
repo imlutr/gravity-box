@@ -34,6 +34,7 @@ import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
 import ktx.inject.Context
 import pl.mk5.gdx.fireapp.GdxFIRApp
+import pl.mk5.gdx.fireapp.GdxFIRCrash
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.ads.AdsController
@@ -60,6 +61,7 @@ class MyGame : KtxGame<Screen>() {
 
     private fun initializeFirebase() {
         GdxFIRApp.inst().configure()
+        GdxFIRCrash.inst().initialize()
     }
 
     private fun initializePhysicsEngine() {
