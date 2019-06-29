@@ -93,6 +93,8 @@ dependencies {
     api project(':core')
     api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
     api "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
+    // Hopefully fixes ClassNotFoundException ( https://groups.google.com/forum/#!msg/google-admob-ads-sdk/1OFaL07H5HU/QDXk14ZVBwAJ )
+    api "com.google.android.gms:play-services-measurement-impl:$playServicesMeasurementImplVersion"
     api "com.google.android.gms:play-services-ads:$playServicesAdsVersion"
     api "androidx.multidex:multidex:$multiDexVersion"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
