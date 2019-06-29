@@ -28,6 +28,16 @@ android {
             storeFile file('debug.keystore')
             storePassword 'android'
         }
+        release {
+            if (project.hasProperty("RELEASE_KEYSTORE_FILE")) {
+                storeFile file(RELEASE_KEYSTORE_FILE)
+                storePassword RELEASE_KEYSTORE_PASSWORD
+                keyAlias RELEASE_KEY_ALIAS
+                keyPassword RELEASE_KEY_PASSWORD
+            } else {
+                println("No release keystore found.")
+            }
+        }
     }
     buildToolsVersion '28.0.3'
     compileSdkVersion 29
@@ -82,7 +92,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
         }
         debug {
-            signingConfig signingConfigs.debug
+            if (project.hasProperty("RELEASE_KEYSTORE_FILE") && signDebugBuildUsingReleaseSigningConfig == "true") {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
         }
