@@ -30,7 +30,8 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
         classpath "com.google.gms:google-services:$googleServicesVersion"
-        classpath "io.fabric.tools:gradle:$crashlyticsPluginVersion"
+        classpath "io.fabric.tools:gradle:$firebaseCrashlyticsPluginVersion"
+        classpath "com.google.firebase:perf-plugin:$firebasePerformancePluginVersion"
     }
 }
 

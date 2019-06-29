@@ -18,6 +18,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
     signingConfigs {
@@ -103,7 +104,8 @@ dependencies {
     // Google Services
     api "com.google.android.gms:play-services-ads:$playServicesAdsVersion"
     api "com.google.firebase:firebase-core:$firebaseVersion"
-    api "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion"
+    api "com.crashlytics.sdk.android:crashlytics:$firebaseCrashlyticsVersion"
+    api "com.google.firebase:firebase-perf:$firebasePerformanceVersion"
 
     // Natives
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
