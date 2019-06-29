@@ -33,7 +33,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.badlogic.gdx.pay.android.googlebilling.PurchaseManagerGoogleBilling
-import com.flurry.android.FlurryAgent
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
@@ -80,11 +79,6 @@ class AndroidLauncher : AndroidApplication() {
             // Initialize rewarded video ads
             rewardedVideoAd = initializeRewardedVideoAds(adsController)
             loadRewardedVideoAd()
-
-            // Flurry
-            FlurryAgent.Builder()
-                .withLogEnabled(true)
-                .build(this@AndroidLauncher, BuildConfig.FLURRY_API_KEY)
 
             // AWS
             dynamoDBClient = createDynamoDBClient()
