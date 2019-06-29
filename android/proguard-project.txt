@@ -1,26 +1,26 @@
 -verbose
 
-## Donts:
-## Kotlin
+### Donts: ###
+# Kotlin
 -dontwarn kotlin.**
 -dontnote kotlin.**
-## Java
+# Java
 -dontwarn org.objectweb.**
 -dontwarn org.xml.sax.**
 -dontwarn org.w3c.**
 -dontwarn com.sun.**
 -dontwarn javax.**
-## LibGDX
+# LibGDX
 -dontwarn ro.luca1152.gravitybox.**
 -dontwarn org.lwjgl.**
 -dontwarn com.badlogic.**
 -dontnote com.badlogic.**
-## AdMob
+# AdMob
 -dontwarn com.google.android.gms.**
 -dontnote com.google.android.gms.**
-## Android
+# Android
 -dontwarn android.support.**
-## AWS
+# AWS
 -dontwarn com.fasterxml.jackson.**
 -dontwarn org.apache.commons.logging.**
 -dontwarn org.apache.http.**
@@ -135,7 +135,7 @@
    public static final ** CREATOR;
 }
 
-## AWS
+# AWS
 -keepnames class com.amazonaws.**
 -keepnames class com.amazon.**
 -keep class org.apache.commons.logging.** { *; }
@@ -145,3 +145,6 @@
 -keep class com.amazonaws.services.**.*Handler { *; }
 -keep class com.amazonaws.services.**.model.*Exception* { *; }
 -keep class org.codehaus.** { *; }
+
+# Firebase
+-keep class pl.mk5.gdx.fireapp.** { *; }

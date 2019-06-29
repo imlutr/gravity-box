@@ -28,6 +28,7 @@ buildscript {
         classpath "com.github.jengelman.gradle.plugins:shadow:$shadowVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
+        classpath "com.google.gms:google-services:$googleServicesVersion"
     }
 }
 

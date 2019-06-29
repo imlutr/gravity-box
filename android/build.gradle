@@ -56,6 +56,7 @@ android {
         exclude 'META-INF/DEPENDENCIES.txt'
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/INDEX.LIST'
     }
     defaultConfig {
         // So @string/ad_mob_app_id works in AndroidManifest
@@ -90,11 +91,20 @@ android {
 configurations { natives }
 
 dependencies {
+    // LibGDX
     api project(':core')
     api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
     api "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
-    api "com.google.android.gms:play-services-ads:$playServicesAdsVersion"
+    api "pl.mk5.gdx-fireapp:gdx-fireapp-android:$gdxFireappVersion"
+
+    // Android
     api "com.android.support:multidex:$multiDexVersion"
+
+    // Google Services
+    api "com.google.firebase:firebase-core:$firebaseVersion"
+    api "com.google.android.gms:play-services-ads:$playServicesAdsVersion"
+
+    // Natives
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
@@ -112,6 +122,7 @@ dependencies {
 // so they get packed with the APK.
 task copyAndroidNatives() {
     doFirst {
+        environment "FOO", "BAR"
         file("libs/armeabi/").mkdirs()
         file("libs/armeabi-v7a/").mkdirs()
         file("libs/arm64-v8a/").mkdirs()
@@ -210,3 +221,5 @@ idea {
         }
     }
 }
+
+apply plugin: 'com.google.gms.google-services'

@@ -19,10 +19,13 @@
 eclipse.project.name = appName + '-core'
 
 dependencies {
+    // Language
+    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+    // LibGDX
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
     api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
     api "com.badlogicgames.ashley:ashley:$ashleyVersion"
-    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     api "io.github.libktx:ktx-inject:$ktxVersion"
     api "io.github.libktx:ktx-actors:$ktxVersion"
     api "io.github.libktx:ktx-app:$ktxVersion"
@@ -33,7 +36,12 @@ dependencies {
     api "io.github.libktx:ktx-math:$ktxVersion"
     api "io.github.libktx:ktx-scene2d:$ktxVersion"
     api "com.badlogicgames.gdxpay:gdx-pay-client:$gdxPayVersion"
-    api "com.flurry.android:analytics:$flurryVersion"
+    api "pl.mk5.gdx-fireapp:gdx-fireapp-core:$gdxFireappVersion"
+
+    // Amazon Services
     api "com.amazonaws:aws-android-sdk-core:$awsAndroidSdkVersion"
     api "com.amazonaws:aws-android-sdk-ddb:$awsAndroidSdkVersion"
+
+    // Flurry
+    api "com.flurry.android:analytics:$flurryVersion"
 }
