@@ -40,12 +40,18 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.functions.FirebaseFunctions
 import ro.luca1152.gravitybox.BuildConfig
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ads.AdsController
 
 /** Launches the Android application. */
 class AndroidLauncher : AndroidApplication() {
+    // Firebase
+    private lateinit var firebaseAuth: FirebaseAuth
+
+    // AdMob
     private lateinit var adRequest: AdRequest
     private lateinit var interstitialAd: InterstitialAd
     private lateinit var rewardedVideoAd: RewardedVideoAd
@@ -56,16 +62,37 @@ class AndroidLauncher : AndroidApplication() {
         // Don't dim the screen
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+        // Initialize Firebase
+        firebaseAuth = FirebaseAuth.getInstance()
+        if (isNetworkConnected()){
+            firebaseAuth.signInAnonymously()
+                .addOnCompleteListener(this) { task ->
+                    println("complete plmmm")
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        val user = firebaseAuth.currentUser!!
+                        user.getIdToken(true).addOnCompleteListener {
+                            println("${it.result!!.token} plmmmm")
+                            FirebaseFunctions.getInstance()
+                                .getHttpsCallable("getApiKeys")
+                                .call()
+                                .continueWith {
+                                    val result = task.result
+                                    println("$result plmmmmmm ce dracuuuuuu")
+                                }
+                        }
+                    } else {
+                        println("fail plmmm ${task.exception}")
+                    }
+                }
+        }
+
         // Initialize AdMob
         MobileAds.initialize(this, BuildConfig.AD_MOB_APP_ID)
-
-        // Test devices
         adRequest = AdRequest.Builder()
             .addTestDevice("782BFD7102248952BFA1C5BD83FDE48C")
             .addTestDevice("FE5037566C41F6046E5DD6F3BA34694C")
             .build()
-
-        // Initialize interstitial ads
         interstitialAd = initializeInterstitialAds()
 
         // Initialize the game
@@ -156,10 +183,7 @@ class AndroidLauncher : AndroidApplication() {
             return isLoaded
         }
 
-        override fun isNetworkConnected(): Boolean {
-            val connectionType = getConnectionType(this@AndroidLauncher)
-            return connectionType == 1 || connectionType == 2
-        }
+        override fun isNetworkConnected() = this@AndroidLauncher.isNetworkConnected()
     }
 
     /**
@@ -194,6 +218,11 @@ class AndroidLauncher : AndroidApplication() {
             }
         }
         return result
+    }
+
+    fun isNetworkConnected(): Boolean {
+        val connectionType = getConnectionType(this)
+        return connectionType == 1 || connectionType == 2
     }
 
     private fun loadRewardedVideoAd() {

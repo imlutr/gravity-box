@@ -121,6 +121,7 @@ dependencies {
     api "com.crashlytics.sdk.android:crashlytics:$firebaseCrashlyticsVersion"
     api "com.google.firebase:firebase-perf:$firebasePerformanceVersion"
     api "com.google.firebase:firebase-auth:$firebaseAuthVersion"
+    api "com.google.firebase:firebase-functions:$firebaseFunctionsVersion"
 
     // Natives
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
