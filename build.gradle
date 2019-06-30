@@ -73,19 +73,21 @@ def getLocalProperty(String propertyName) {
     if (propsFile.exists()) {
         def props = new Properties()
         props.load(new FileInputStream(propsFile))
-        return props[propertyName]
-    } else {
-        if (propertyName == "admob.appid") {
-            // Debug App ID
-            return "ca-app-pub-3940256099942544~3347511713"
-        } else if (propertyName == "admob.interstitial.adunitid") {
-            // Debug interstitial ad unit ID
-            return "ca-app-pub-3940256099942544/1033173712"
-        } else if (propertyName == "admob.rewarded.adunitid") {
-            // Debug rewarded ad unit ID
-            return "ca-app-pub-3940256099942544/5224354917"
+        if (props[propertyName] == null) {
+            if (propertyName == "admob.appid") {
+                // Debug App ID
+                return "ca-app-pub-3940256099942544~3347511713"
+            } else if (propertyName == "admob.interstitial.adunitid") {
+                // Debug interstitial ad unit ID
+                return "ca-app-pub-3940256099942544/1033173712"
+            } else if (propertyName == "admob.rewarded.adunitid") {
+                // Debug rewarded ad unit ID
+                return "ca-app-pub-3940256099942544/5224354917"
+            } else {
+                return ""
+            }
         } else {
-            return ""
+            return props[propertyName]
         }
     }
 }
