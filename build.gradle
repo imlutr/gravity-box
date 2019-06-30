@@ -29,12 +29,12 @@ buildscript {
         classpath "com.github.jengelman.gradle.plugins:shadow:$shadowVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
+        classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         classpath "com.google.gms:google-services:$googleServicesVersion"
         classpath "io.fabric.tools:gradle:$firebaseCrashlyticsPluginVersion"
         classpath "com.google.firebase:perf-plugin:$firebasePerformancePluginVersion"
     }
 }
-
 
 allprojects {
     apply plugin: 'eclipse'
@@ -43,9 +43,12 @@ allprojects {
 
 configure(subprojects - project(':android')) {
     apply plugin: 'com.github.johnrengelman.shadow'
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'kotlin'
-    sourceCompatibility = 1.6
+    sourceCompatibility = 1.7
+    compileJava {
+        options.incremental = true
+    }
 }
 
 subprojects {
@@ -57,6 +60,8 @@ subprojects {
         jcenter()
         google()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://jitpack.io' }
+        jcenter()
     }
 }
 
