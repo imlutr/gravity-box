@@ -41,16 +41,14 @@ import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.functions.FirebaseFunctions
+import okhttp3.*
 import ro.luca1152.gravitybox.BuildConfig
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ads.AdsController
+import java.io.IOException
 
 /** Launches the Android application. */
 class AndroidLauncher : AndroidApplication() {
-    // Firebase
-    private lateinit var firebaseAuth: FirebaseAuth
-
     // AdMob
     private lateinit var adRequest: AdRequest
     private lateinit var interstitialAd: InterstitialAd
@@ -62,29 +60,9 @@ class AndroidLauncher : AndroidApplication() {
         // Don't dim the screen
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        // Initialize Firebase
-        firebaseAuth = FirebaseAuth.getInstance()
-        if (isNetworkConnected()){
-            firebaseAuth.signInAnonymously()
-                .addOnCompleteListener(this) { task ->
-                    println("complete plmmm")
-                    if (task.isSuccessful) {
-                        // Sign in success, update UI with the signed-in user's information
-                        val user = firebaseAuth.currentUser!!
-                        user.getIdToken(true).addOnCompleteListener {
-                            println("${it.result!!.token} plmmmm")
-                            FirebaseFunctions.getInstance()
-                                .getHttpsCallable("getApiKeys")
-                                .call()
-                                .continueWith {
-                                    val result = task.result
-                                    println("$result plmmmmmm ce dracuuuuuu")
-                                }
-                        }
-                    } else {
-                        println("fail plmmm ${task.exception}")
-                    }
-                }
+        // Get API keys
+        if (isNetworkConnected()) {
+            getApiKeys()
         }
 
         // Initialize AdMob
@@ -93,7 +71,6 @@ class AndroidLauncher : AndroidApplication() {
             .addTestDevice("782BFD7102248952BFA1C5BD83FDE48C")
             .addTestDevice("FE5037566C41F6046E5DD6F3BA34694C")
             .build()
-        interstitialAd = initializeInterstitialAds()
 
         // Initialize the game
         initialize(MyGame().apply {
@@ -102,14 +79,38 @@ class AndroidLauncher : AndroidApplication() {
 
             // AdMob
             adsController = initializeAdsController()
-
-            // Initialize rewarded video ads
             rewardedVideoAd = initializeRewardedVideoAds(adsController)
+            interstitialAd = initializeInterstitialAds()
             loadRewardedVideoAd()
 
             // AWS
             dynamoDBClient = createDynamoDBClient()
         }, AndroidApplicationConfiguration())
+    }
+
+    private fun getApiKeys() {
+        val firebaseAuth = FirebaseAuth.getInstance()
+        firebaseAuth.signInAnonymously().addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                val user = firebaseAuth.currentUser!!
+                user.getIdToken(true).addOnCompleteListener {
+                    val a = Request
+                        .Builder()
+                        .url("https://us-central1-gravity-box-245112.cloudfunctions.net/getApiKeys")
+                        .addHeader("Authorization", "Bearer ${it.result!!.token}")
+                        .build()
+                    OkHttpClient.Builder().build().newCall(a).enqueue(object : Callback {
+                        override fun onFailure(call: Call, e: IOException) {}
+
+                        override fun onResponse(call: Call, response: Response) {
+                            // val returnedJson = response.body()!!.string()
+                            // Do something with the JSON...
+                        }
+                    })
+                }
+            }
+        }
+
     }
 
     private fun createDynamoDBClient() = AmazonDynamoDBAsyncClient(
