@@ -118,6 +118,8 @@ dependencies {
 
     // Google Services
     api "com.google.android.gms:play-services-ads:$playServicesAdsVersion"
+    api "com.google.android.gms:play-services-measurement:$playServicesMeasurementVersion"
+    api "com.google.android.gms:play-services-measurement-sdk:$playServicesMeasurementVersion"
     api "com.google.firebase:firebase-core:$firebaseVersion"
     api "com.crashlytics.sdk.android:crashlytics:$firebaseCrashlyticsVersion"
     api "com.google.firebase:firebase-perf:$firebasePerformanceVersion"
