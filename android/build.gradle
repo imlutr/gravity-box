@@ -123,6 +123,7 @@ dependencies {
     api "com.google.firebase:firebase-perf:$firebasePerformanceVersion"
     api "com.google.firebase:firebase-auth:$firebaseAuthVersion"
     api "com.google.firebase:firebase-functions:$firebaseFunctionsVersion"
+    api "com.google.firebase:firebase-database:$firebaseDatabaseVersion"
 
     // Natives
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"

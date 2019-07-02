@@ -17,57 +17,39 @@
 
 package ro.luca1152.gravitybox.utils.leaderboards
 
-import com.amazonaws.handlers.AsyncHandler
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClient
-import com.amazonaws.services.dynamodbv2.model.AttributeValue
-import com.amazonaws.services.dynamodbv2.model.ReturnValue
-import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest
-import com.amazonaws.services.dynamodbv2.model.UpdateItemResult
 import ktx.inject.Context
+import pl.mk5.gdx.fireapp.GdxFIRDatabase
 import ro.luca1152.gravitybox.GameRules
 
 class ShotsLeaderboard(context: Context) {
     // Injected objects
     private val gameRules: GameRules = context.inject()
-    private val dynamoDBClient: AmazonDynamoDBAsyncClient = context.inject()
+
+    private fun getIntFromString(string: String) = Integer.parseInt(string)
 
     private fun incrementPlayerCountForShotsBy(level: Int, shots: Int, increment: Int) {
-        val updateItemRequest = UpdateItemRequest()
-            .withTableName(gameRules.SHOTS_LEADERBOARD_TABLE_NAME)
-            .withKey(mapOf(Pair("Level ID", AttributeValue().withS("game-$level"))))
-            .withUpdateExpression("SET Scores.#S = if_not_exists(Scores.#S, :zero) + :inc")
-            .withExpressionAttributeNames(mapOf(Pair("#S", "$shots")))
-            .withExpressionAttributeValues(
-                mapOf(
-                    Pair(":inc", AttributeValue().withN("$increment")),
-                    Pair(":zero", AttributeValue().withN("0"))
-                )
-            )
-            .withReturnValues(ReturnValue.UPDATED_NEW)
-
-        dynamoDBClient.updateItemAsync(updateItemRequest, object : AsyncHandler<UpdateItemRequest, UpdateItemResult> {
-            override fun onSuccess(request: UpdateItemRequest?, result: UpdateItemResult) {
-                // Delete the score if the players that finished it in [shots] shots is now 0 (or, for some reason, less than 0)
-                if (increment < 0) {
-                    val stringPlayerCount = result.attributes["Scores"]!!.m["$shots"]?.n
-                    if (stringPlayerCount != null) {
-                        val intPlayerCount = Integer.parseInt(stringPlayerCount)
-                        if (intPlayerCount <= 0) {
-                            val deleteAttributeRequest = UpdateItemRequest()
-                                .withTableName(gameRules.SHOTS_LEADERBOARD_TABLE_NAME)
-                                .withKey(mapOf(Pair("Level ID", AttributeValue().withS("game-$level"))))
-                                .withConditionExpression("Scores.#S <= :zero")
-                                .withUpdateExpression("REMOVE Scores.#S")
-                                .withExpressionAttributeNames(mapOf(Pair("#S", "$shots")))
-                                .withExpressionAttributeValues(mapOf(Pair(":zero", AttributeValue().withN("0"))))
-                            dynamoDBClient.updateItemAsync(deleteAttributeRequest)
-                        }
+        if (!gameRules.IS_MOBILE) {
+            return
+        }
+        val databasePath = "shots-leaderboard/game/l$level/s$shots"
+        GdxFIRDatabase.inst()
+            // Update the player count for the given number of shots
+            .inReference(databasePath).transaction(String::class.java) { "${getIntFromString(it) + increment}" }
+            .then(GdxFIRDatabase.inst().inReference(databasePath).readValue(String::class.java))
+            // If the player count is 0 (or, for some reason, negative), delete the entry
+            .then<String> {
+                if (increment < 0 && getIntFromString(it) <= 0) {
+                    GdxFIRDatabase.inst().inReference(databasePath).removeValue()
+                }
+                // Do all of the above only after you made sure there is already a value
+            }.after(
+                GdxFIRDatabase.inst().inReference(databasePath).readValue(String::class.java).then<String> {
+                    if (it == null || it == "") {
+                        GdxFIRDatabase.inst().inReference(databasePath).setValue("1")
                     }
                 }
-            }
-
-            override fun onError(exception: Exception?) {}
-        })
+            )
+            .silentFail()
     }
 
     fun incrementPlayerCountForShots(level: Int, shots: Int) {

@@ -20,12 +20,6 @@
 -dontnote com.google.android.gms.**
 # Android
 -dontwarn android.support.**
-# AWS
--dontwarn com.fasterxml.jackson.**
--dontwarn org.apache.commons.logging.**
--dontwarn org.apache.http.**
--dontwarn com.amazonaws.http.**
--dontwarn com.amazonaws.metrics.**
 
 # Java
 -keepclasseswithmembernames class * {
@@ -134,17 +128,6 @@
 -keepnames class * implements android.os.Parcelable {
    public static final ** CREATOR;
 }
-
-# AWS
--keepnames class com.amazonaws.**
--keepnames class com.amazon.**
--keep class org.apache.commons.logging.** { *; }
--keep class com.amazonaws.services.sqs.QueueUrlHandler { *; }
--keep class com.amazonaws.javax.xml.transform.sax.* { public *; }
--keep class com.amazonaws.javax.xml.stream.** { *; }
--keep class com.amazonaws.services.**.*Handler { *; }
--keep class com.amazonaws.services.**.model.*Exception* { *; }
--keep class org.codehaus.** { *; }
 
 # Firebase
 -keep class pl.mk5.gdx.fireapp.** { *; }

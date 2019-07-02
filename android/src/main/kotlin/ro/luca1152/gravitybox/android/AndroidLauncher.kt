@@ -24,11 +24,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.multidex.MultiDex
 import android.view.WindowManager
-import com.amazonaws.ClientConfiguration
-import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.internal.StaticCredentialsProvider
-import com.amazonaws.regions.Region
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClient
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
@@ -82,9 +77,6 @@ class AndroidLauncher : AndroidApplication() {
             rewardedVideoAd = initializeRewardedVideoAds(adsController)
             interstitialAd = initializeInterstitialAds()
             loadRewardedVideoAd()
-
-            // AWS
-            dynamoDBClient = createDynamoDBClient()
         }, AndroidApplicationConfiguration())
     }
 
@@ -112,18 +104,6 @@ class AndroidLauncher : AndroidApplication() {
         }
 
     }
-
-    private fun createDynamoDBClient() = AmazonDynamoDBAsyncClient(
-        StaticCredentialsProvider(BasicAWSCredentials(BuildConfig.AWS_ACCESS_KEY, BuildConfig.AWS_SECRET_KEY)),
-        ClientConfiguration()
-            .withConnectionTimeout(500)
-            .withSocketTimeout(1000)
-            .withMaxErrorRetry(Integer.MAX_VALUE)
-    ).apply {
-        endpoint = "dynamodb.eu-central-1.amazonaws.com"
-        setRegion(Region.getRegion("eu-central-1"))
-    }
-
 
     private fun initializeInterstitialAds() = InterstitialAd(this).apply {
         adUnitId = BuildConfig.AD_MOB_INTERSTITIAL_AD_UNIT_ID
