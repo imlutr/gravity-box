@@ -22,9 +22,9 @@ mainClassName = 'ro.luca1152.gravitybox.headless.HeadlessLauncher'
 eclipse.project.name = appName + '-headless'
 
 dependencies {
-  api project(':core')
-  api "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-  api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-  api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-  api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+    api project(':core')
+    api "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+    api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
 }

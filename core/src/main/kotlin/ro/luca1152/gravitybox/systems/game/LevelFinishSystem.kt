@@ -133,7 +133,7 @@ class LevelFinishSystem(
     private fun updateLeaderboard() {
         val shots = levelEntity.map.shots
         levelEntity.level.run {
-            if (gameRules.getGameLevelHighscore(levelId) < shots)
+            if (gameRules.getGameLevelHighscore(levelId) <= shots)
                 return
 
             shotsLeaderboard.incrementPlayerCountForShots(levelId, shots)

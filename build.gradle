@@ -22,15 +22,19 @@ buildscript {
         jcenter()
         google()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$androidPluginVersion"
         classpath "com.github.jengelman.gradle.plugins:shadow:$shadowVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
+        classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        classpath "com.google.gms:google-services:$googleServicesVersion"
+        classpath "io.fabric.tools:gradle:$firebaseCrashlyticsPluginVersion"
+        classpath "com.google.firebase:perf-plugin:$firebasePerformancePluginVersion"
     }
 }
-
 
 allprojects {
     apply plugin: 'eclipse'
@@ -39,21 +43,25 @@ allprojects {
 
 configure(subprojects - project(':android')) {
     apply plugin: 'com.github.johnrengelman.shadow'
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'kotlin'
-    sourceCompatibility = 1.6
+    sourceCompatibility = 1.7
+    compileJava {
+        options.incremental = true
+    }
 }
 
 subprojects {
-  version = '1.2.3'
-  ext.appName = 'gravity-box'
-  repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-    google()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-  }
+    version = '1.2.3'
+    ext.appName = 'gravity-box'
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        google()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 // Clearing Eclipse project data in root folder:
@@ -63,25 +71,27 @@ tasks.eclipse.doLast {
     delete '.settings/'
 }
 
-@SuppressWarnings("LibGDXGradleTestId")
+@SuppressWarnings(["LibGDXGradleTestId", "unused"])
 def getLocalProperty(String propertyName) {
     def propsFile = rootProject.file('local.properties')
     if (propsFile.exists()) {
         def props = new Properties()
         props.load(new FileInputStream(propsFile))
-        return props[propertyName]
-    } else {
-        if (propertyName == "admob.appid") {
-            // Debug App ID
-            return "ca-app-pub-3940256099942544~3347511713"
-        } else if (propertyName == "admob.interstitial.adunitid") {
-            // Debug interstitial ad unit ID
-            return "ca-app-pub-3940256099942544/1033173712"
-        } else if (propertyName == "admob.rewarded.adunitid") {
-            // Debug rewarded ad unit ID
-            return "ca-app-pub-3940256099942544/5224354917"
+        if (props[propertyName] == null) {
+            if (propertyName == "admob.appid") {
+                // Debug App ID
+                return "ca-app-pub-3940256099942544~3347511713"
+            } else if (propertyName == "admob.interstitial.adunitid") {
+                // Debug interstitial ad unit ID
+                return "ca-app-pub-3940256099942544/1033173712"
+            } else if (propertyName == "admob.rewarded.adunitid") {
+                // Debug rewarded ad unit ID
+                return "ca-app-pub-3940256099942544/5224354917"
+            } else {
+                return ""
+            }
         } else {
-            return ""
+            return props[propertyName]
         }
     }
 }

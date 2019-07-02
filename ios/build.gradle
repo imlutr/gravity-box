@@ -20,7 +20,7 @@ apply plugin: 'robovm'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 ext {
-	mainClassName = "ro.luca1152.gravitybox.ios.IOSLauncher"
+    mainClassName = "ro.luca1152.gravitybox.ios.IOSLauncher"
 }
 
 launchIPhoneSimulator.dependsOn build
@@ -29,15 +29,15 @@ launchIOSDevice.dependsOn build
 createIPA.dependsOn build
 
 eclipse.project {
-  name = appName + "-ios"
-  natures 'org.robovm.eclipse.RoboVMNature'
+    name = appName + "-ios"
+    natures 'org.robovm.eclipse.RoboVMNature'
 }
 
 dependencies {
-  api project(':core')
-  api "com.mobidevelop.robovm:robovm-rt:$robovmVersion"
-  api "com.mobidevelop.robovm:robovm-cocoatouch:$robovmVersion"
-  api "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
-  api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
-  api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
+    api project(':core')
+    api "com.mobidevelop.robovm:robovm-rt:$robovmVersion"
+    api "com.mobidevelop.robovm:robovm-cocoatouch:$robovmVersion"
+    api "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+    api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
 }

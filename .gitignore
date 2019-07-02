@@ -64,3 +64,6 @@ nb-configuration.xml
 
 ## OS Specific
 .DS_Store
+
+## Firebase
+android/google-services.json

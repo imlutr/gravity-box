@@ -24,16 +24,10 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.multidex.MultiDex
-import com.amazonaws.ClientConfiguration
-import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.internal.StaticCredentialsProvider
-import com.amazonaws.regions.Region
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClient
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.badlogic.gdx.pay.android.googlebilling.PurchaseManagerGoogleBilling
-import com.flurry.android.FlurryAgent
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
@@ -41,13 +35,16 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
+import com.google.firebase.auth.FirebaseAuth
+import okhttp3.*
 import ro.luca1152.gravitybox.BuildConfig
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.ads.AdsController
-
+import java.io.IOException
 
 /** Launches the Android application. */
 class AndroidLauncher : AndroidApplication() {
+    // AdMob
     private lateinit var adRequest: AdRequest
     private lateinit var interstitialAd: InterstitialAd
     private lateinit var rewardedVideoAd: RewardedVideoAd
@@ -58,17 +55,17 @@ class AndroidLauncher : AndroidApplication() {
         // Don't dim the screen
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+        // Get API keys
+        if (isNetworkConnected()) {
+            getApiKeys()
+        }
+
         // Initialize AdMob
         MobileAds.initialize(this, BuildConfig.AD_MOB_APP_ID)
-
-        // Test devices
         adRequest = AdRequest.Builder()
             .addTestDevice("782BFD7102248952BFA1C5BD83FDE48C")
             .addTestDevice("FE5037566C41F6046E5DD6F3BA34694C")
             .build()
-
-        // Initialize interstitial ads
-        interstitialAd = initializeInterstitialAds()
 
         // Initialize the game
         initialize(MyGame().apply {
@@ -77,32 +74,36 @@ class AndroidLauncher : AndroidApplication() {
 
             // AdMob
             adsController = initializeAdsController()
-
-            // Initialize rewarded video ads
             rewardedVideoAd = initializeRewardedVideoAds(adsController)
+            interstitialAd = initializeInterstitialAds()
             loadRewardedVideoAd()
-
-            // Flurry
-            FlurryAgent.Builder()
-                .withLogEnabled(true)
-                .build(this@AndroidLauncher, BuildConfig.FLURRY_API_KEY)
-
-            // AWS
-            dynamoDBClient = createDynamoDBClient()
         }, AndroidApplicationConfiguration())
     }
 
-    private fun createDynamoDBClient() = AmazonDynamoDBAsyncClient(
-        StaticCredentialsProvider(BasicAWSCredentials(BuildConfig.AWS_ACCESS_KEY, BuildConfig.AWS_SECRET_KEY)),
-        ClientConfiguration()
-            .withConnectionTimeout(500)
-            .withSocketTimeout(1000)
-            .withMaxErrorRetry(Integer.MAX_VALUE)
-    ).apply {
-        endpoint = "dynamodb.eu-central-1.amazonaws.com"
-        setRegion(Region.getRegion("eu-central-1"))
-    }
+    private fun getApiKeys() {
+        val firebaseAuth = FirebaseAuth.getInstance()
+        firebaseAuth.signInAnonymously().addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                val user = firebaseAuth.currentUser!!
+                user.getIdToken(true).addOnCompleteListener {
+                    val a = Request
+                        .Builder()
+                        .url("https://us-central1-gravity-box-245112.cloudfunctions.net/getApiKeys")
+                        .addHeader("Authorization", "Bearer ${it.result!!.token}")
+                        .build()
+                    OkHttpClient.Builder().build().newCall(a).enqueue(object : Callback {
+                        override fun onFailure(call: Call, e: IOException) {}
 
+                        override fun onResponse(call: Call, response: Response) {
+                            // val returnedJson = response.body()!!.string()
+                            // Do something with the JSON...
+                        }
+                    })
+                }
+            }
+        }
+
+    }
 
     private fun initializeInterstitialAds() = InterstitialAd(this).apply {
         adUnitId = BuildConfig.AD_MOB_INTERSTITIAL_AD_UNIT_ID
@@ -163,10 +164,7 @@ class AndroidLauncher : AndroidApplication() {
             return isLoaded
         }
 
-        override fun isNetworkConnected(): Boolean {
-            val connectionType = getConnectionType(this@AndroidLauncher)
-            return connectionType == 1 || connectionType == 2
-        }
+        override fun isNetworkConnected() = this@AndroidLauncher.isNetworkConnected()
     }
 
     /**
@@ -201,6 +199,11 @@ class AndroidLauncher : AndroidApplication() {
             }
         }
         return result
+    }
+
+    fun isNetworkConnected(): Boolean {
+        val connectionType = getConnectionType(this)
+        return connectionType == 1 || connectionType == 2
     }
 
     private fun loadRewardedVideoAd() {
