@@ -25,8 +25,7 @@ class ShotsLeaderboard(context: Context) {
     // Injected objects
     private val gameRules: GameRules = context.inject()
 
-    private fun getIntFromString(string: String) = Integer.parseInt(string)
-
+    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
     private fun incrementPlayerCountForShotsBy(level: Int, shots: Int, increment: Int) {
         if (!gameRules.IS_MOBILE) {
             return
@@ -34,18 +33,18 @@ class ShotsLeaderboard(context: Context) {
         val databasePath = "shots-leaderboard/game/l$level/s$shots"
         GdxFIRDatabase.inst()
             // Update the player count for the given number of shots
-            .inReference(databasePath).transaction(String::class.java) { "${getIntFromString(it) + increment}" }
-            .then(GdxFIRDatabase.inst().inReference(databasePath).readValue(String::class.java))
+            .inReference(databasePath).transaction(java.lang.Long::class.java) { (it.toLong() + increment) as java.lang.Long }
+            .then(GdxFIRDatabase.inst().inReference(databasePath).readValue(java.lang.Long::class.java))
             // If the player count is 0 (or, for some reason, negative), delete the entry
-            .then<String> {
-                if (increment < 0 && getIntFromString(it) <= 0) {
+            .then<java.lang.Long> {
+                if (increment < 0 && it <= 0) {
                     GdxFIRDatabase.inst().inReference(databasePath).removeValue()
                 }
-                // Do all of the above only after you made sure there is already a value
+                // Do all of the above only after you made sure that the databasePath really points to an entry; if it doesn't, create one
             }.after(
-                GdxFIRDatabase.inst().inReference(databasePath).readValue(String::class.java).then<String> {
-                    if (it == null || it == "") {
-                        GdxFIRDatabase.inst().inReference(databasePath).setValue("1")
+                GdxFIRDatabase.inst().inReference(databasePath).readValue(java.lang.Long::class.java).then<java.lang.Long> {
+                    if (it == null) {
+                        GdxFIRDatabase.inst().inReference(databasePath).setValue(1)
                     }
                 }
             )

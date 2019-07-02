@@ -41,7 +41,6 @@ import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
-
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
     // Initialized in AndroidLauncher
