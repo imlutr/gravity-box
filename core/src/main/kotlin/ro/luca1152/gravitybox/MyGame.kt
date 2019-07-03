@@ -17,7 +17,6 @@
 
 package ro.luca1152.gravitybox
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClient
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
@@ -33,6 +32,8 @@ import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
 import ktx.inject.Context
+import pl.mk5.gdx.fireapp.GdxFIRApp
+import pl.mk5.gdx.fireapp.GdxFIRCrash
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.ads.AdsController
@@ -45,15 +46,19 @@ class MyGame : KtxGame<Screen>() {
     // Initialized in AndroidLauncher
     lateinit var purchaseManager: PurchaseManager
     lateinit var adsController: AdsController
-    lateinit var dynamoDBClient: AmazonDynamoDBAsyncClient
 
     private val context = Context()
 
     override fun create() {
-        Box2D.init()
+        initializePhysicsEngine()
         initializeDependencyInjection()
+        initializeFirebase()
         addScreen(LoadingScreen(context))
         setScreen<LoadingScreen>()
+    }
+
+    private fun initializePhysicsEngine() {
+        Box2D.init()
     }
 
     private fun initializeDependencyInjection() {
@@ -86,8 +91,14 @@ class MyGame : KtxGame<Screen>() {
             }
 
             // Leaderboards
-            bindSingleton(dynamoDBClient)
             bindSingleton(ShotsLeaderboard(context))
+        }
+    }
+
+    private fun initializeFirebase() {
+        if (context.inject<GameRules>().IS_MOBILE) {
+            GdxFIRApp.inst().configure()
+            GdxFIRCrash.inst().initialize()
         }
     }
 

@@ -19,7 +19,7 @@ import proguard.gradle.ProGuardTask
 
 apply plugin: 'application'
 
-sourceSets.main.resources.srcDirs += [rootProject.file('assets').absolutePath]
+sourceSets.main.resources.srcDirs += [rootProject.file('assets').path]
 mainClassName = 'ro.luca1152.gravitybox.desktop.DesktopLauncher'
 eclipse.project.name = appName + '-desktop'
 sourceCompatibility = 1.7
@@ -31,15 +31,11 @@ dependencies {
     api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
     api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
     api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-
-    // Used by AWS, in DesktopLauncher, when creating the AmazonDynamoDBAsyncClient
-    // If I don't add this, it will complain saying that there is no class definition for android.util.Log
-    api "com.google.android:android:$androidSdkVersion"
 }
 
 jar {
     archiveName "${appName}-${version}.jar"
-    from { configurations.compile.collect { zipTree(it) } }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest {
         attributes 'Main-Class': project.mainClassName
     }
@@ -52,6 +48,6 @@ run {
 task obfuscate(type: ProGuardTask) {
     configuration files("../android/proguard-project.txt")
     libraryjars files("C:/Program Files (x86)/Java/jre1.8.0_211/lib/rt.jar", "C:/Program Files (x86)/Java/jre1.8.0_211/lib/jce.jar")
-    injars files("build/libs/desktop-${version}-all.jar")
+    injars files("build/libs/desktop-${version}.jar")
     outjars files("build/libs/obfuscated.jar")
 }
