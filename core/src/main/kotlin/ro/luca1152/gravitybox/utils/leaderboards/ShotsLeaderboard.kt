@@ -30,7 +30,7 @@ class ShotsLeaderboard(context: Context) {
         if (!gameRules.IS_MOBILE) {
             return
         }
-        val databasePath = "shots-leaderboard/game/l$level/s$shots"
+        val databasePath = "shots-leaderboard/game/${gameRules.GAME_LEVELS_VERSION}/l$level/s$shots"
         GdxFIRDatabase.inst()
             // Update the player count for the given number of shots
             .inReference(databasePath).transaction(java.lang.Long::class.java) { (it.toLong() + increment) as java.lang.Long }

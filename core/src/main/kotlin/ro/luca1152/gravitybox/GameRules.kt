@@ -31,6 +31,11 @@ class GameRules(context: Context) {
     val PLAY_SPECIFIC_LEVEL = -1
 
     // Rules
+    /**
+     * The game levels' version. If they change in the future (their order/I add new ones),
+     * then the leaderboard would likely have to be updated as well.
+     */
+    val GAME_LEVELS_VERSION = "v1"
     /** How many levels the game has. */
     val LEVEL_COUNT = 269
     /** The Box2D World's gravity. */
