@@ -23,6 +23,8 @@
 # AdMob
 -dontwarn com.google.android.gms.**
 -dontnote com.google.android.gms.**
+# Firebase
+-dontwarn pl.mk5.gdx.fireapp.android.storage.**
 
 # Java
 -keepclasseswithmembernames class * {
