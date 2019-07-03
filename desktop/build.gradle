@@ -48,6 +48,6 @@ run {
 task obfuscate(type: ProGuardTask) {
     configuration files("../android/proguard-project.txt")
     libraryjars files("C:/Program Files (x86)/Java/jre1.8.0_211/lib/rt.jar", "C:/Program Files (x86)/Java/jre1.8.0_211/lib/jce.jar")
-    injars files("build/libs/desktop-${version}-all.jar")
+    injars files("build/libs/desktop-${version}.jar")
     outjars files("build/libs/obfuscated.jar")
 }
