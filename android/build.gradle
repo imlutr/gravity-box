@@ -85,6 +85,11 @@ android {
     }
     buildTypes {
         release {
+            if (project.hasProperty("RELEASE_KEYSTORE_FILE")) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
         }
