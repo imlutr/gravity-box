@@ -56,9 +56,9 @@ class AndroidLauncher : AndroidApplication() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // Get API keys
-        if (isNetworkConnected()) {
-            getApiKeys()
-        }
+//        if (isNetworkConnected()) {
+//            getApiKeys()
+//        }
 
         // Initialize AdMob
         MobileAds.initialize(this, BuildConfig.AD_MOB_APP_ID)
