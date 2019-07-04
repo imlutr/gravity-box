@@ -56,9 +56,9 @@ class AndroidLauncher : AndroidApplication() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // Get API keys
-        if (isNetworkConnected()) {
-            getApiKeys()
-        }
+//        if (isNetworkConnected()) {
+//            getApiKeys()
+//        }
 
         // Initialize AdMob
         MobileAds.initialize(this, BuildConfig.AD_MOB_APP_ID)
@@ -80,6 +80,7 @@ class AndroidLauncher : AndroidApplication() {
         }, AndroidApplicationConfiguration())
     }
 
+    @Suppress("unused")
     private fun getApiKeys() {
         val firebaseAuth = FirebaseAuth.getInstance()
         firebaseAuth.signInAnonymously().addOnCompleteListener(this) { task ->
@@ -152,6 +153,7 @@ class AndroidLauncher : AndroidApplication() {
                     rewardedVideoAd.show()
                 } else {
                     isShowingRewardedAdScheduled = true
+                    loadRewardedAd()
                 }
             }
         }

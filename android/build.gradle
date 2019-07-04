@@ -122,15 +122,15 @@ dependencies {
     api "com.android.support:multidex:$multiDexVersion"
 
     // Google Services
-    api "com.google.android.gms:play-services-ads:$playServicesAdsVersion"
-    api "com.google.android.gms:play-services-measurement:$playServicesMeasurementVersion"
     api "com.google.android.gms:play-services-measurement-sdk:$playServicesMeasurementVersion"
+    api "com.google.android.gms:play-services-measurement:$playServicesMeasurementVersion"
     api "com.google.firebase:firebase-core:$firebaseVersion"
     api "com.crashlytics.sdk.android:crashlytics:$firebaseCrashlyticsVersion"
-    api "com.google.firebase:firebase-perf:$firebasePerformanceVersion"
-    api "com.google.firebase:firebase-auth:$firebaseAuthVersion"
     api "com.google.firebase:firebase-functions:$firebaseFunctionsVersion"
     api "com.google.firebase:firebase-database:$firebaseDatabaseVersion"
+    api "com.google.firebase:firebase-perf:$firebasePerformanceVersion"
+    api "com.google.firebase:firebase-auth:$firebaseAuthVersion"
+    api "com.google.firebase:firebase-ads:$firebaseAdsVersion"
 
     // Natives
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
