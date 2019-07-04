@@ -80,6 +80,7 @@ class AndroidLauncher : AndroidApplication() {
         }, AndroidApplicationConfiguration())
     }
 
+    @Suppress("unused")
     private fun getApiKeys() {
         val firebaseAuth = FirebaseAuth.getInstance()
         firebaseAuth.signInAnonymously().addOnCompleteListener(this) { task ->
@@ -152,6 +153,7 @@ class AndroidLauncher : AndroidApplication() {
                     rewardedVideoAd.show()
                 } else {
                     isShowingRewardedAdScheduled = true
+                    loadRewardedAd()
                 }
             }
         }
