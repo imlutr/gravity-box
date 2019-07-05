@@ -24,6 +24,7 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 class LevelPlayTimeLoggingSystem(context: Context) : EntitySystem() {
@@ -38,6 +39,9 @@ class LevelPlayTimeLoggingSystem(context: Context) : EntitySystem() {
     }
 
     override fun update(deltaTime: Float) {
+        if (!levelEntity.map.shouldBeLoggingLevelPlayTime) {
+            return
+        }
         gameRules.setGameLevelPlayTime(levelEntity.level.levelId, gameRules.getGameLevelPlayTime(levelEntity.level.levelId) + deltaTime)
     }
 }

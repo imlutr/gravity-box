@@ -97,6 +97,12 @@ class MapComponent : Component, Poolable {
     var paddingTop = 5f
     var paddingBottom = 5f
 
+    /** True when a new level is loaded. */
+    var shouldLogLevelStart = false
+
+    /** True after the first shooting at least once. */
+    var shouldBeLoggingLevelPlayTime = false
+
     /** How many time did the player shot in the current level. */
     var shots = 0
 
@@ -224,7 +230,8 @@ class MapComponent : Component, Poolable {
         createFinish(mapFactory.finish, finishEntity)
         createObjects(context, mapFactory.objects, isLevelEditor)
         updateMapBounds()
-        logLevelStart()
+        shouldLogLevelStart = true
+        shouldBeLoggingLevelPlayTime = false
         shots = 0
         eventQueue.run {
             clear()
@@ -430,6 +437,8 @@ class MapComponent : Component, Poolable {
         paddingTop = 5f
         paddingBottom = 5f
         forceCenterCameraOnPlayer = false
+        shouldLogLevelStart = false
+        shouldBeLoggingLevelPlayTime = false
         shots = 0
     }
 
