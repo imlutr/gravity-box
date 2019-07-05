@@ -23,6 +23,7 @@ import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.inject.Context
+import pl.mk5.gdx.fireapp.GdxFIRAnalytics
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.screens.PlayScreen
@@ -68,10 +69,31 @@ class LevelFinishSystem(
     override fun update(deltaTime: Float) {
         if (!levelIsFinished)
             return
+        logLevelFinish()
         promptUserToRate()
         updateLeaderboard()
         handleLevelFinish()
         playScreen?.shouldUpdateLevelLabel = true
+    }
+
+    private fun logLevelFinish() {
+        gameRules.run {
+            setGameLevelFinishCount(levelEntity.level.levelId, gameRules.getGameLevelFinishCount(levelEntity.level.levelId) + 1)
+            flushUpdates()
+        }
+
+        // Analytics
+        GdxFIRAnalytics.inst().logEvent(
+            "level_finish",
+            mapOf(
+                Pair("level_id", "game/${levelEntity.level.levelId}"),
+                Pair("finish_time", "${gameRules.getGameLevelPlayTime(levelEntity.level.levelId)}"),
+                Pair("finish_count", "${gameRules.getGameLevelFinishCount(levelEntity.level.levelId)}")
+            )
+        )
+
+        // Reset the played time, so in case this level is replayed, a huge time won't be reported
+        gameRules.setGameLevelPlayTime(levelEntity.level.levelId, 0f)
     }
 
     private fun handleLevelFinish() {

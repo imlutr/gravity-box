@@ -1306,6 +1306,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(PlayTimeSystem(context))
             addSystem(RewardedAdTimerSystem(context))
             addSystem(InterstitialAdsSystem(context))
+            addSystem(LevelPlayTimeLoggingSystem(context))
             addSystem(GameFinishSystem(context))
             addSystem(MapLoadingSystem(context))
             addSystem(MapBodiesCreationSystem(context))

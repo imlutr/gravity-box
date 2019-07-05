@@ -26,6 +26,11 @@ import ktx.inject.Context
 class GameRules(context: Context) {
     private val preferences: Preferences = context.inject()
 
+    /** Makes sure updates are persisted. */
+    fun flushUpdates() {
+        preferences.flush()
+    }
+
     // Debug
     val CAN_PLAY_ANY_LEVEL = false
     val PLAY_SPECIFIC_LEVEL = -1
@@ -209,7 +214,6 @@ class GameRules(context: Context) {
         }
 
     // Leaderboard
-    val SHOTS_LEADERBOARD_TABLE_NAME = "GravityBox-ShotsLeaderboard"
     val DEFAULT_HIGHSCORE_VALUE = Int.MAX_VALUE
     val SKIPPED_LEVEL_SCORE_VALUE = -1
 
@@ -223,5 +227,22 @@ class GameRules(context: Context) {
         } else {
             Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
         }
+    }
+
+    // Analytics
+    /** Returns how much time a player spent playing the given level. */
+    fun getGameLevelPlayTime(level: Int) = preferences.getFloat("game${level}PlayTime", 0f)
+
+    /** Sets how much time a player spent playing the given level. */
+    fun setGameLevelPlayTime(level: Int, time: Float) {
+        preferences.putFloat("game${level}PlayTime", time)
+    }
+
+    /** Returns how many times a player finished the given level. */
+    fun getGameLevelFinishCount(level: Int) = preferences.getInteger("game${level}FinishCount", 0)
+
+    /** Sets how many time a player finishet the given level. */
+    fun setGameLevelFinishCount(level: Int, count: Int) {
+        preferences.putInteger("game${level}FinishCount", count)
     }
 }
