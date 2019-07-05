@@ -38,6 +38,7 @@ import ktx.app.KtxScreen
 import ktx.graphics.copy
 import ktx.inject.Context
 import ktx.log.info
+import pl.mk5.gdx.fireapp.GdxFIRAnalytics
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
@@ -1382,6 +1383,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         if (levelEntity.level.levelId == gameRules.LEVEL_COUNT) {
             return
         }
+
+        GdxFIRAnalytics.inst().logEvent("skip_level", mapOf(Pair("level_id", "${levelEntity.level.levelId}")))
 
         gameRules.run {
             if (getGameLevelHighscore(levelEntity.level.levelId) == gameRules.DEFAULT_HIGHSCORE_VALUE)
