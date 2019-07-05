@@ -414,7 +414,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
     private fun loadLastEditedLevel() {
         val lastEditedMapFile = getLastEditedMapFile()
         val mapFactory = getMapFactory(lastEditedMapFile.path())
-        levelEntity.map.loadMap(context, mapFactory, playerEntity, finishEntity, true)
+        levelEntity.map.loadMap(context, mapFactory, playerEntity, finishEntity, isLevelEditor = true)
         levelEntity.level.levelId = levelEntity.map.levelId
         isEditingNewLevel = false
         centerCameraOnPlayer()
@@ -664,7 +664,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
                     textLabel.setText("Are you sure you want to load the level #${mapFactory.id}?")
                     uiStage.addActor(this)
                     yesClickRunnable = Runnable {
-                        levelEntity.map.loadMap(context, mapFactory, playerEntity, finishEntity, true)
+                        levelEntity.map.loadMap(context, mapFactory, playerEntity, finishEntity, isLevelEditor = true)
                         centerCameraOnPlayer()
                         hideSettingsPopUp = true
                         isEditingNewLevel = false

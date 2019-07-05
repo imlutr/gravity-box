@@ -55,6 +55,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
         if (!levelEntity.level.restartLevel)
             return
         restartTheLevel()
+        levelEntity.map.logLevelStart()
     }
 
     private fun restartTheLevel() {

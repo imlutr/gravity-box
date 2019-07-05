@@ -50,6 +50,15 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
             if (shootingTimer > 0f)
                 return false
 
+            // Logging
+            levelEntity.map.run {
+                if (shouldLogLevelStart) {
+                    logLevelStart()
+                    shouldLogLevelStart = false
+                }
+                shouldBeLoggingLevelPlayTime = true
+            }
+
             gameCamera.update()
             val worldCoordinates = screenToWorldCoordinates(context, screenX, screenY)
             createBullet(worldCoordinates.x, worldCoordinates.y)
