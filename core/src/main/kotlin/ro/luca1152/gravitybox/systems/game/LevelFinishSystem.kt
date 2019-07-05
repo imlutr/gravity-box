@@ -83,14 +83,16 @@ class LevelFinishSystem(
         }
 
         // Analytics
-        GdxFIRAnalytics.inst().logEvent(
-            "level_finish",
-            mapOf(
-                Pair("level_id", "game/${levelEntity.level.levelId}"),
-                Pair("finish_time", "${gameRules.getGameLevelPlayTime(levelEntity.level.levelId)}"),
-                Pair("finish_count", "${gameRules.getGameLevelFinishCount(levelEntity.level.levelId)}")
+        if (gameRules.IS_MOBILE) {
+            GdxFIRAnalytics.inst().logEvent(
+                "level_finish",
+                mapOf(
+                    Pair("level_id", "game/${levelEntity.level.levelId}"),
+                    Pair("finish_time", "${gameRules.getGameLevelPlayTime(levelEntity.level.levelId)}"),
+                    Pair("finish_count", "${gameRules.getGameLevelFinishCount(levelEntity.level.levelId)}")
+                )
             )
-        )
+        }
 
         // Reset the played time, so in case this level is replayed, a huge time won't be reported
         gameRules.setGameLevelPlayTime(levelEntity.level.levelId, 0f)

@@ -243,7 +243,7 @@ class MapComponent : Component, Poolable {
     }
 
     fun logLevelStart() {
-        if (levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1) {
+        if (levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1 && gameRules.IS_MOBILE) {
             GdxFIRAnalytics.inst().logEvent("level_begin", mapOf(Pair("level_id", "game/$levelId")))
         }
     }
