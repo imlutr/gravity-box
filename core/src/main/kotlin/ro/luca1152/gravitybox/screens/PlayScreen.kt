@@ -1385,7 +1385,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
 
         if (gameRules.IS_MOBILE) {
-            GdxFIRAnalytics.inst().logEvent("skip_level", mapOf(Pair("level_id", "${levelEntity.level.levelId}")))
+            GdxFIRAnalytics.inst().logEvent("skip_level", mapOf(Pair("level_id", "game/${levelEntity.level.levelId}")))
         }
 
         gameRules.run {
