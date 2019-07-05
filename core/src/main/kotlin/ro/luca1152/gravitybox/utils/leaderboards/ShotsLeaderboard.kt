@@ -34,25 +34,29 @@ class ShotsLeaderboard(context: Context) {
             return
         }
         val databasePath = "shots-leaderboard/game/${gameRules.GAME_LEVELS_VERSION}/l$level/s$shots"
-        GdxFIRAuth.inst().signInAnonymously().then<GdxFirebaseUser> {
-            GdxFIRCrash.inst().log("Signing in anonymously into Firebase")
-            GdxFIRDatabase.inst().inReference(databasePath).readValue(java.lang.Long::class.java).then<java.lang.Long> {
-                if (it == null) {
-                    GdxFIRCrash.inst().log("Setting the value at $databasePath to 0")
-                    GdxFIRDatabase.inst().inReference(databasePath).setValue(0)
-                }
-            }.then<java.lang.Long> {
-                GdxFIRDatabase.inst().inReference(databasePath).transaction(java.lang.Long::class.java) { value ->
-                    GdxFIRCrash.inst()
-                        .log("Incrementing the value at $databasePath by $increment ($value becomes ${value.toLong() + increment})")
-                    (value.toLong() + increment) as java.lang.Long
-                }
-            }.then<java.lang.Long> {
-                if (increment < 0 && (it != null && it.toLong() + increment <= 0)) {
-                    GdxFIRCrash.inst().log("Removing the value at $databasePath")
-                    GdxFIRDatabase.inst().inReference(databasePath).removeValue()
+        try {
+            GdxFIRAuth.inst().signInAnonymously().then<GdxFirebaseUser> {
+                GdxFIRCrash.inst().log("Signing in anonymously into Firebase")
+                GdxFIRDatabase.inst().inReference(databasePath).readValue(java.lang.Long::class.java).then<java.lang.Long> {
+                    if (it == null) {
+                        GdxFIRCrash.inst().log("Setting the value at $databasePath to 0")
+                        GdxFIRDatabase.inst().inReference(databasePath).setValue(0)
+                    }
+                }.then<java.lang.Long> {
+                    GdxFIRDatabase.inst().inReference(databasePath).transaction(java.lang.Long::class.java) { value ->
+                        GdxFIRCrash.inst()
+                            .log("Incrementing the value at $databasePath by $increment ($value becomes ${value.toLong() + increment})")
+                        (value.toLong() + increment) as java.lang.Long
+                    }
+                }.then<java.lang.Long> {
+                    if (increment < 0 && (it != null && it.toLong() + increment <= 0)) {
+                        GdxFIRCrash.inst().log("Removing the value at $databasePath")
+                        GdxFIRDatabase.inst().inReference(databasePath).removeValue()
+                    }
                 }
             }
+        } catch (e: Throwable) {
+            GdxFIRCrash.inst().log("Exception thrown when updating the value at $databasePath")
         }
     }
 
