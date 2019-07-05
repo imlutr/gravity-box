@@ -30,6 +30,8 @@ import com.badlogic.gdx.utils.JsonWriter
 import com.badlogic.gdx.utils.Pool.Poolable
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.inject.Context
+import pl.mk5.gdx.fireapp.GdxFIRAnalytics
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.ComponentResolver
 import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.entities.editor.MovingMockPlatformEntity
@@ -75,6 +77,7 @@ class MapComponent : Component, Poolable {
     private lateinit var manager: AssetManager
     private lateinit var world: World
     private lateinit var eventQueue: EventQueue
+    private lateinit var gameRules: GameRules
 
     var levelId = 1
     var hue = 180
@@ -108,6 +111,7 @@ class MapComponent : Component, Poolable {
         manager = context.inject()
         world = context.inject()
         eventQueue = context.inject()
+        gameRules = context.inject()
     }
 
     fun updateMapBounds() {
@@ -208,17 +212,19 @@ class MapComponent : Component, Poolable {
         mapFactory: MapFactory,
         playerEntity: Entity,
         finishEntity: Entity,
+        levelId: Int = 0,
         isLevelEditor: Boolean = false
     ) {
         resetPoints()
         resetFinish(context)
         removeObjects()
         resetPassengers()
-        createMap(mapFactory.id, mapFactory.hue, mapFactory.padding)
+        createMap(if (isLevelEditor) mapFactory.id else levelId, mapFactory.hue, mapFactory.padding)
         createPlayer(mapFactory.player, playerEntity)
         createFinish(mapFactory.finish, finishEntity)
         createObjects(context, mapFactory.objects, isLevelEditor)
         updateMapBounds()
+        logLevelStart()
         shots = 0
         eventQueue.run {
             clear()
@@ -226,6 +232,12 @@ class MapComponent : Component, Poolable {
 
             // Clear all actions in case the level was restarting, causing visual glitches
             add(FadeInEvent(FadeOutFadeInEvent.CLEAR_ACTIONS))
+        }
+    }
+
+    fun logLevelStart() {
+        if (levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1) {
+            GdxFIRAnalytics.inst().logEvent("level_begin", mapOf(Pair("level_id", "game/$levelId")))
         }
     }
 
