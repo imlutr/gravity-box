@@ -38,6 +38,10 @@
       up: full-round-button
       down: full-round-button
     }
+    color-round-button-padded: {
+      up: full-round-button-padded
+      down: full-round-button-padded
+    }
     white-full-round-button: {
       up: full-round-button
       down: full-round-button

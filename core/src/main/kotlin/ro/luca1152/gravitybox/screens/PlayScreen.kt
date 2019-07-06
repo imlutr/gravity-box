@@ -198,7 +198,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             ))
         })
     }
-    private val restartButton = ClickButton(skin, "color-round-button").apply {
+    private val restartButton = ClickButton(skin, "color-round-button-padded").apply {
         addIcon("restart-icon")
         addClickRunnable(Runnable {
             if (!levelEntity.level.isRestarting) {
@@ -207,9 +207,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
         })
     }
-    private val skipLevelButton = ClickButton(skin, "color-round-button").apply {
+    private val skipLevelButton = ClickButton(skin, "color-round-button-padded").apply {
         addIcon("skip-level-icon")
-        iconCell!!.padLeft(6f) // The icon doesn't SEEM centered
+        iconCell!!.padLeft(6f) // The icon doesn't look centered
         addClickRunnable(Runnable {
             menuOverlayStage.addActor(skipLevelPopUp)
         })
@@ -333,9 +333,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
     }
     private val topRow = Table().apply {
-        add(skipLevelButton).expand().left()
-        add(menuButton).expand()
-        add(restartButton).expand().right()
+        add(skipLevelButton).expand().left().padTop(-25f).padLeft(-25f)
+        add(menuButton).expand().padTop(-25f)
+        add(restartButton).expand().right().padTop(-25f).padRight(-25f)
     }
     private val rootTable = Table().apply {
         setFillParent(true)
@@ -1169,7 +1169,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 Actions.sequence(
                     Actions.delay(.1f),
                     Actions.moveTo(
-                        0f,
+                        -25f,
                         y, .2f, Interpolation.pow3In
                     )
                 )
@@ -1180,7 +1180,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 Actions.sequence(
                     Actions.delay(.1f),
                     Actions.moveTo(
-                        uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth,
+                        uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth + 25f,
                         y, .2f, Interpolation.pow3In
                     )
                 )
@@ -1190,7 +1190,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             Actions.sequence(
                 Actions.delay(.1f),
                 Actions.parallel(
-                    Actions.moveTo(menuButton.x, 0f, .2f, Interpolation.pow3In),
+                    Actions.moveTo(menuButton.x, 25f, .2f, Interpolation.pow3In),
                     Actions.fadeIn(.2f, Interpolation.pow3In)
                 ),
                 Actions.run {
