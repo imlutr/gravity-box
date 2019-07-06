@@ -38,6 +38,7 @@ import ktx.app.KtxScreen
 import ktx.graphics.copy
 import ktx.inject.Context
 import ktx.log.info
+import pl.mk5.gdx.fireapp.GdxFIRAnalytics
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
@@ -197,7 +198,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             ))
         })
     }
-    private val restartButton = ClickButton(skin, "color-round-button").apply {
+    private val restartButton = ClickButton(skin, "color-round-button-padded").apply {
         addIcon("restart-icon")
         addClickRunnable(Runnable {
             if (!levelEntity.level.isRestarting) {
@@ -206,9 +207,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
         })
     }
-    private val skipLevelButton = ClickButton(skin, "color-round-button").apply {
+    private val skipLevelButton = ClickButton(skin, "color-round-button-padded").apply {
         addIcon("skip-level-icon")
-        iconCell!!.padLeft(6f) // The icon doesn't SEEM centered
+        iconCell!!.padLeft(6f) // The icon doesn't look centered
         addClickRunnable(Runnable {
             menuOverlayStage.addActor(skipLevelPopUp)
         })
@@ -332,9 +333,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
     }
     private val topRow = Table().apply {
-        add(skipLevelButton).expand().left()
-        add(menuButton).expand()
-        add(restartButton).expand().right()
+        add(skipLevelButton).expand().left().padTop(-25f).padLeft(-25f)
+        add(menuButton).expand().padTop(-25f)
+        add(restartButton).expand().right().padTop(-25f).padRight(-25f)
     }
     private val rootTable = Table().apply {
         setFillParent(true)
@@ -1168,7 +1169,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 Actions.sequence(
                     Actions.delay(.1f),
                     Actions.moveTo(
-                        0f,
+                        -25f,
                         y, .2f, Interpolation.pow3In
                     )
                 )
@@ -1179,7 +1180,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 Actions.sequence(
                     Actions.delay(.1f),
                     Actions.moveTo(
-                        uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth,
+                        uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth + 25f,
                         y, .2f, Interpolation.pow3In
                     )
                 )
@@ -1189,7 +1190,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             Actions.sequence(
                 Actions.delay(.1f),
                 Actions.parallel(
-                    Actions.moveTo(menuButton.x, 0f, .2f, Interpolation.pow3In),
+                    Actions.moveTo(menuButton.x, 25f, .2f, Interpolation.pow3In),
                     Actions.fadeIn(.2f, Interpolation.pow3In)
                 ),
                 Actions.run {
@@ -1306,6 +1307,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(PlayTimeSystem(context))
             addSystem(RewardedAdTimerSystem(context))
             addSystem(InterstitialAdsSystem(context))
+            addSystem(LevelPlayTimeLoggingSystem(context))
             addSystem(GameFinishSystem(context))
             addSystem(MapLoadingSystem(context))
             addSystem(MapBodiesCreationSystem(context))
@@ -1380,6 +1382,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private fun skipLevel() {
         if (levelEntity.level.levelId == gameRules.LEVEL_COUNT) {
             return
+        }
+
+        if (gameRules.IS_MOBILE) {
+            GdxFIRAnalytics.inst().logEvent("skip_level", mapOf(Pair("level_id", "game/${levelEntity.level.levelId}")))
         }
 
         gameRules.run {

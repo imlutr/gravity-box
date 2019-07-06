@@ -53,8 +53,10 @@ class MapLoadingSystem(private val context: Context) : EntitySystem() {
         levelEntity.run {
             level.loadMap = false
             map.loadMap(
-                context, manager.get(Assets.gameMaps).mapPackFactory.maps[levelEntity.level.levelId - 1],
-                playerEntity, finishEntity
+                context,
+                manager.get(Assets.gameMaps).mapPackFactory.maps[levelEntity.level.levelId - 1],
+                playerEntity, finishEntity,
+                levelEntity.level.levelId
             )
         }
         initializeColorScheme()

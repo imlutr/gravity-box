@@ -57,7 +57,7 @@ abstract class Button(
         // TODO: use downColor and upColor instead of referencing colors directly
         val isToggled = if (userObject == null) false else userObject as Boolean
         when (styleName) {
-            "color-round-button" -> {
+            "color-round-button", "color-round-button-padded" -> {
                 when (isPressed || isToggled) {
                     true -> color.setWithoutAlpha(Colors.uiDownColor)
                     false -> color.setWithoutAlpha(Colors.gameColor)

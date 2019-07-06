@@ -34,6 +34,7 @@ import ktx.app.KtxGame
 import ktx.inject.Context
 import pl.mk5.gdx.fireapp.GdxFIRApp
 import pl.mk5.gdx.fireapp.GdxFIRCrash
+import pl.mk5.gdx.fireapp.promises.FuturePromise
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.ads.AdsController
@@ -99,6 +100,7 @@ class MyGame : KtxGame<Screen>() {
         if (context.inject<GameRules>().IS_MOBILE) {
             GdxFIRApp.inst().configure()
             GdxFIRCrash.inst().initialize()
+            FuturePromise.setThrowFailByDefault(false)
         }
     }
 
