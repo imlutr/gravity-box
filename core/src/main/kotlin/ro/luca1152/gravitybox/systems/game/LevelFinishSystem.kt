@@ -69,6 +69,8 @@ class LevelFinishSystem(
     override fun update(deltaTime: Float) {
         if (!levelIsFinished)
             return
+        if (levelEntity.level.isRestarting)
+            return
         logLevelFinish()
         promptUserToRate()
         updateLeaderboard()
@@ -99,8 +101,6 @@ class LevelFinishSystem(
     }
 
     private fun handleLevelFinish() {
-        if (levelEntity.level.isRestarting) return
-
         if (restartLevelWhenFinished)
             levelEntity.level.restartLevel = true
         else {
