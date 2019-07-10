@@ -37,19 +37,19 @@ class ShotsLeaderboard(context: Context) {
         try {
             GdxFIRAuth.inst().signInAnonymously().then<GdxFirebaseUser> {
                 GdxFIRCrash.inst().log("Signing in anonymously into Firebase")
-                GdxFIRDatabase.inst().inReference(databasePath).readValue(java.lang.Long::class.java).then<java.lang.Long> {
+                GdxFIRDatabase.inst().inReference(databasePath).readValue(Long::class.java).then<Long> {
                     if (it == null) {
                         GdxFIRCrash.inst().log("Setting the value at $databasePath to 0")
                         GdxFIRDatabase.inst().inReference(databasePath).setValue(0)
                     }
-                }.then<java.lang.Long> {
-                    GdxFIRDatabase.inst().inReference(databasePath).transaction(java.lang.Long::class.java) { value ->
+                }.then<Long> {
+                    GdxFIRDatabase.inst().inReference(databasePath).transaction(Long::class.java) { value ->
                         GdxFIRCrash.inst()
-                            .log("Incrementing the value at $databasePath by $increment ($value becomes ${value.toLong() + increment})")
-                        (value.toLong() + increment) as java.lang.Long
+                            .log("Incrementing the value at $databasePath by $increment ($value becomes ${value + increment})")
+                        value + increment
                     }
-                }.then<java.lang.Long> {
-                    if (increment < 0 && (it != null && it.toLong() + increment <= 0)) {
+                }.then<Long> {
+                    if (increment < 0 && (it != null && it + increment <= 0)) {
                         GdxFIRCrash.inst().log("Removing the value at $databasePath")
                         GdxFIRDatabase.inst().inReference(databasePath).removeValue()
                     }
