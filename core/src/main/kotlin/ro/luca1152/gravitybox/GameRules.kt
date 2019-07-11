@@ -214,7 +214,9 @@ class GameRules(context: Context) {
         }
 
     // Leaderboard
+    /** The default value returned when reading a non-existent highscore using [getGameLevelHighscore]. */
     val DEFAULT_HIGHSCORE_VALUE = Int.MAX_VALUE
+    /** The score stored in the [Preferences] to mark that the level was skipped. */
     val SKIPPED_LEVEL_SCORE_VALUE = -1
 
     /** Returns the least number of shots the game (not community) level [level] was finished in. */
@@ -228,6 +230,22 @@ class GameRules(context: Context) {
             Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
         }
     }
+
+    /** The delay in miliseconds between leaderboard caches to storage. */
+    val TIME_DELAY_BETWEEN_CACHING_LEADERBOARD = 6L * 3600 * 1000
+
+    /** The time in seconds until the entire leaderboard is cached to storage. */
+    var NEXT_LEADERBOARD_CACHE_TIME
+        get() = preferences.getLong("nextLeaderboardCacheTime", 0L)
+        set(value) {
+            preferences.putLong("nextLeaderboardCacheTime", value)
+        }
+
+    var CACHED_LEADERBOARD_VERSION
+        get() = preferences.getString("cachedLeaderboardVersion", GAME_LEVELS_VERSION)
+        set(value) {
+            preferences.putString("cachedLeaderboardVersion", value)
+        }
 
     // Analytics
     /** Returns how much time a player spent playing the given level. */

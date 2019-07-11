@@ -29,7 +29,7 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.*
-import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
+import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
 import ro.luca1152.gravitybox.utils.ui.Colors
 import kotlin.math.max
 import kotlin.math.min
@@ -46,7 +46,7 @@ class LevelFinishSystem(
     private val gameRules: GameRules = context.inject()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
     private val adsController: AdsController? = context.injectNullable()
-    private val shotsLeaderboard: ShotsLeaderboard = context.inject()
+    private val gameShotsLeaderboardController: GameShotsLeaderboardController = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -160,11 +160,11 @@ class LevelFinishSystem(
             if (gameRules.getGameLevelHighscore(levelId) <= shots)
                 return
 
-            shotsLeaderboard.incrementPlayerCountForShots(levelId, shots)
+            gameShotsLeaderboardController.incrementPlayerCountForShots(levelId, shots)
             if (gameRules.getGameLevelHighscore(levelId) != gameRules.DEFAULT_HIGHSCORE_VALUE &&
                 gameRules.getGameLevelHighscore(levelId) != gameRules.SKIPPED_LEVEL_SCORE_VALUE
             ) {
-                shotsLeaderboard.decrementPlayerCountForShots(levelId, gameRules.getGameLevelHighscore(levelId))
+                gameShotsLeaderboardController.decrementPlayerCountForShots(levelId, gameRules.getGameLevelHighscore(levelId))
             }
             gameRules.setGameLevelHighscore(levelId, shots)
         }

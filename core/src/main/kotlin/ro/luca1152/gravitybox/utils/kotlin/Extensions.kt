@@ -18,6 +18,8 @@
 package ro.luca1152.gravitybox.utils.kotlin
 
 import com.badlogic.ashley.core.*
+import com.badlogic.gdx.Application
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.MathUtils
@@ -32,8 +34,6 @@ import ktx.app.KtxGame
 import ktx.app.clearScreen
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
-import java.io.PrintWriter
-import java.io.StringWriter
 import kotlin.math.abs
 
 /** Linearly interpolates to the target values. */
@@ -212,9 +212,6 @@ fun newEntity(context: Context) = context.inject<PooledEngine>().createEntity()!
 
 inline fun <reified Type : Any> Context.injectNullable(): Type? = if (contains<Type>()) getProvider(Type::class.java)() else null
 
-val Throwable.stringStackTrace: String
-    get() {
-        val stringWriter = StringWriter()
-        printStackTrace(PrintWriter(stringWriter))
-        return stringWriter.toString()
-    }
+fun info(message: String) {
+    if (Gdx.app.logLevel >= Application.LOG_INFO) Gdx.app.log("INFO", message)
+}

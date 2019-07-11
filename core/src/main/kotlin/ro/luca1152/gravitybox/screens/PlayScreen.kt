@@ -37,7 +37,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.app.KtxScreen
 import ktx.graphics.copy
 import ktx.inject.Context
-import ktx.log.info
 import pl.mk5.gdx.fireapp.GdxFIRAnalytics
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.MyGame
@@ -165,7 +164,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     clear()
                     flush()
                 }
-                info { "Cleared all preferences." }
+                info("Cleared all preferences.")
                 return true
             }
             return false
@@ -1303,6 +1302,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun addGameSystems() {
         engine.run {
+            addSystem(LeaderboardCachingSystem(context))
             addSystem(FlushPreferencesSystem(context))
             addSystem(PlayTimeSystem(context))
             addSystem(RewardedAdTimerSystem(context))

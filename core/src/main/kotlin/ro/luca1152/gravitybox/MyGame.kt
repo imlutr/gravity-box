@@ -39,7 +39,7 @@ import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.*
-import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
+import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
 import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 
 /** The main class of the game. */
@@ -92,7 +92,7 @@ class MyGame : KtxGame<Screen>() {
             }
 
             // Leaderboards
-            bindSingleton(ShotsLeaderboard(context))
+            bindSingleton(GameShotsLeaderboardController(context))
         }
     }
 

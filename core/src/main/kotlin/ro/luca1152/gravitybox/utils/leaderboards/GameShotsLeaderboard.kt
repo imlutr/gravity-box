@@ -17,10 +17,8 @@
 
 package ro.luca1152.gravitybox.utils.leaderboards
 
-open class ShotsLeaderboard {
-    var levels = mapOf<String, Level>()
-}
-
-class Level {
-    var shots = mapOf<String, Long>()
+class GameShotsLeaderboard() : ShotsLeaderboard() {
+    constructor(shotsLeaderboard: ShotsLeaderboard) : this() {
+        this.levels = shotsLeaderboard.levels
+    }
 }
