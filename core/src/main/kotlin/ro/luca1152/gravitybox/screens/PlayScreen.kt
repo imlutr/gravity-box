@@ -1302,7 +1302,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun addGameSystems() {
         engine.run {
-            addSystem(LeaderboardCachingSystem(context))
+            addSystem(EntireLeaderboardCachingSystem(context))
+            addSystem(WritingLeaderboardToStorageSystem(context))
             addSystem(FlushPreferencesSystem(context))
             addSystem(PlayTimeSystem(context))
             addSystem(RewardedAdTimerSystem(context))

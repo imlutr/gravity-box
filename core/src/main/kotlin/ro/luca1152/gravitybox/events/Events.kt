@@ -38,3 +38,5 @@ class FadeOutEvent(fadeOutDuration: Float, fadeOutInterpolation: Interpolation =
 
 class FadeInEvent(fadeInDuration: Float, fadeInInterpolation: Interpolation = Interpolation.linear) :
     FadeOutFadeInEvent(0f, Interpolation.linear, fadeInDuration, fadeInInterpolation)
+
+class WriteLeaderboardToStorageEvent : Event

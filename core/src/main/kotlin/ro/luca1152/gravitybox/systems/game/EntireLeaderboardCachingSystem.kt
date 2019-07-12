@@ -18,24 +18,24 @@
 package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.events.WriteLeaderboardToStorageEvent
 import ro.luca1152.gravitybox.utils.ads.AdsController
-import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.info
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
-import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 
-class LeaderboardCachingSystem(private val context: Context) : EntitySystem() {
+class EntireLeaderboardCachingSystem(private val context: Context) : EntitySystem() {
     // Injected objects
     private val gameRules: GameRules = context.inject()
     private val adsController: AdsController? = context.injectNullable()
     private val gameShotsLeaderboardController: GameShotsLeaderboardController = context.inject()
+    private val eventQueue: EventQueue = context.inject()
+
     private var isCachingGameLeaderboard = false
 
     override fun update(deltaTime: Float) {
@@ -51,9 +51,8 @@ class LeaderboardCachingSystem(private val context: Context) : EntitySystem() {
             isCachingGameLeaderboard = false
             logInfoMessage()
             updateNextLederboardCacheTime()
-            writeLeaderboardToStorage(it)
+            writeLeaderboardToStorage()
             bindLeaderboard(it)
-            gameRules.flushUpdates()
         }
     }
 
@@ -68,13 +67,8 @@ class LeaderboardCachingSystem(private val context: Context) : EntitySystem() {
         }
     }
 
-    private fun writeLeaderboardToStorage(shotsLeaderboard: ShotsLeaderboard) {
-        val file = Gdx.files.local(Assets.gameLeaderboardPath)
-        file.writeBytes(Json().prettyPrint(shotsLeaderboard).toByteArray(), false)
-        gameRules.run {
-            CACHED_LEADERBOARD_VERSION = gameRules.GAME_LEVELS_VERSION
-            flushUpdates()
-        }
+    private fun writeLeaderboardToStorage() {
+        eventQueue.add(WriteLeaderboardToStorageEvent())
     }
 
     private fun bindLeaderboard(gameShotsLeaderboard: GameShotsLeaderboard) {
