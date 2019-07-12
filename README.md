@@ -10,12 +10,28 @@ This is the mobile port of my [Game Maker's Toolkit Jam 2018](https://itch.io/ja
 <img src="https://i.imgur.com/cuhzvX0.gif" width=450px>
 
 ## Built with
-- [Kotlin](https://kotlinlang.org/) - The language used
-- [libGDX](https://libgdx.badlogicgames.com/) - The game framework used
-- [Ashley](https://github.com/libgdx/ashley/wiki) - Entity Component System library
-- [libKTX.inject](https://github.com/libktx/ktx/tree/master/inject) - Lightweight dependency injection library
+- [Gradle](https://gradle.org/) - Build automation system
+- [Kotlin](https://kotlinlang.org/) - Programming language
+- [LibGDX](https://libgdx.badlogicgames.com/) - Game framework
+- [shadow](https://github.com/johnrengelman/shadow) - Gradle plugin for creating JARs
+- [Ashley](https://github.com/libgdx/ashley/wiki) - Entity-component-system library
+- [LibKTX](https://github.com/libktx/ktx) - Kotlin extensions for LibGDX
+- [LibKTX.inject](https://github.com/libktx/ktx/tree/master/inject) - Dependency injection library
 - [Box2D](https://github.com/libgdx/libgdx/wiki/Box2d) - 2D physics library
-- [libKTX](https://github.com/libktx/ktx) - Kotlin extensions for libGDX
+- [gdx-pay](https://github.com/libgdx/gdx-pay) - Cross-platform in-app purchases API
+- [gdx-fireapp](https://github.com/mk-5/gdx-fireapp) - Cross-platform Firebase API
+- [Firebase Ads](https://firebase.google.com/docs/admob/admob-firebase) - Mobile advertising API
+- [Firebase Authentication](https://firebase.google.com/docs/auth) - Authentication API
+- [Firebase Performance](https://firebase.google.com/docs/perf-mon) - Performance monitoring API
+- [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics) - Crash reporting API
+- [Firebase Realtime Database](https://firebase.google.com/docs/database) - NoSQL cloud database API
+
+## Tools used
+- [Android Studio](https://developer.android.com/studio) - IDE
+- [Inkscape](https://inkscape.org/) - Vector graphics editor
+- [TexturePacker](https://github.com/libgdx/libgdx/wiki/Texture-packer) - Texture atlas packing tool
+- [Hiero](https://github.com/libgdx/libgdx/wiki/Hiero) - Bitmap font packing tool
+- [gdx-liftoff](https://github.com/tommyettinger/gdx-liftoff) - Setup tool for libGDX projects
 
 ## Running the game
 Windows: `gradlew desktop:run`  
