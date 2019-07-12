@@ -32,6 +32,7 @@ This is the mobile port of my [Game Maker's Toolkit Jam 2018](https://itch.io/ja
 - [TexturePacker](https://github.com/libgdx/libgdx/wiki/Texture-packer) - Texture atlas packing tool
 - [Hiero](https://github.com/libgdx/libgdx/wiki/Hiero) - Bitmap font packing tool
 - [gdx-liftoff](https://github.com/tommyettinger/gdx-liftoff) - Setup tool for libGDX projects
+- [Google BigQuery](https://cloud.google.com/bigquery/) - Web service for SQL queries
 
 ## Running the game
 Windows: `gradlew desktop:run`  
