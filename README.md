@@ -46,7 +46,7 @@ More often than not, running the game from the command-line won't work. I sugges
 
 If you want to run the game only on Desktop (excluding Android), you can use [IntelliJ IDEA](https://www.jetbrains.com/idea/).
 
-The configurations previously mentioned, `android` and `Desktop` won't show up in [Eclipse](https://www.eclipse.org/eclipseide/).
+The configurations previously mentioned, `android` and `Desktop`, won't show up in [Eclipse](https://www.eclipse.org/eclipseide/).
 
 ## License
 All code is licensed under the GNU General Public License v3.0 License - see the [LICENSE](https://github.com/Luca1152/gravity-box/blob/master/LICENSE) file for details.
