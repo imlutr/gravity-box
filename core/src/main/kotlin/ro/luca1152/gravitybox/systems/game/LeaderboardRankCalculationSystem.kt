@@ -50,7 +50,7 @@ class LeaderboardRankCalculationSystem(private val context: Context) :
             var newRank = -1
             val shotsMap = shotsLeaderboard.levels["l${levelEntity.level.levelId}"]!!.shots
             for (i in 1..levelEntity.map.shots) {
-                if (shotsMap.containsKey("s$i")) {
+                if (shotsMap.containsKey("s$i") && shotsMap["s$i"] != 0L) {
                     if (newRank == -1) newRank = 1
                     else newRank++
                 }
