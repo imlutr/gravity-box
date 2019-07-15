@@ -26,26 +26,28 @@ import ro.luca1152.gravitybox.events.WriteLeaderboardToStorageEvent
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
+import kotlin.concurrent.thread
 
-class WritingLeaderboardToStorageSystem(context: Context) :
+class WritingLeaderboardToStorageSystem(private val context: Context) :
     EventSystem<WriteLeaderboardToStorageEvent>(context.inject(), WriteLeaderboardToStorageEvent::class) {
     // Injected objects
-    private val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
     private val gameRules: GameRules = context.inject()
 
     override fun processEvent(event: WriteLeaderboardToStorageEvent, deltaTime: Float) {
         // The leaderboard shouldn't be null, but if it is, for some reason, better avoid a NullPointerException
-        if (shotsLeaderboard == null) return
+        if (context.injectNullable<GameShotsLeaderboard>() == null) return
 
         writeLeaderboardToStorage()
     }
 
     private fun writeLeaderboardToStorage() {
-        val file = Gdx.files.local(Assets.gameLeaderboardPath)
-        file.writeBytes(Json().prettyPrint(shotsLeaderboard).toByteArray(), false)
-        gameRules.run {
-            CACHED_LEADERBOARD_VERSION = gameRules.GAME_LEVELS_VERSION
-            flushUpdates()
+        thread {
+            val file = Gdx.files.local(Assets.gameLeaderboardPath)
+            file.writeBytes(Json().prettyPrint(context.inject<GameShotsLeaderboard>()).toByteArray(), false)
+            gameRules.run {
+                CACHED_LEADERBOARD_VERSION = gameRules.GAME_LEVELS_VERSION
+                flushUpdates()
+            }
         }
     }
 }

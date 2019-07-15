@@ -40,3 +40,4 @@ class FadeInEvent(fadeInDuration: Float, fadeInInterpolation: Interpolation = In
     FadeOutFadeInEvent(0f, Interpolation.linear, fadeInDuration, fadeInInterpolation)
 
 class WriteLeaderboardToStorageEvent : Event
+class CacheCurrentLevelLeaderboardEvent : Event

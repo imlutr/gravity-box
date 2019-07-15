@@ -39,10 +39,7 @@ import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.DashedLineEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.TextEntity
-import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.FadeInEvent
-import ro.luca1152.gravitybox.events.FadeOutFadeInEvent
-import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
+import ro.luca1152.gravitybox.events.*
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
@@ -239,6 +236,8 @@ class MapComponent : Component, Poolable {
 
             // Clear all actions in case the level was restarting, causing visual glitches
             add(FadeInEvent(FadeOutFadeInEvent.CLEAR_ACTIONS))
+
+            add(CacheCurrentLevelLeaderboardEvent())
         }
     }
 

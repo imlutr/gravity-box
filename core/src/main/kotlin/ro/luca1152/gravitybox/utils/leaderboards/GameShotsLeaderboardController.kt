@@ -38,11 +38,23 @@ class GameShotsLeaderboardController(context: Context) {
                 val levels = mutableMapOf<String, Level>()
                 it.forEach { entry ->
                     levels[entry.key] = Level().apply {
-                        shots = entry.value
+                        shots = entry.value.toMutableMap()
                     }
                 }
                 leaderboard.levels = levels
                 onSuccess(leaderboard)
+            }
+        }
+    }
+
+    fun readCurrentGameLevelLeaderboard(levelId: Int, onSuccess: (level: Level) -> Unit) {
+        val databasePath = "shots-leaderboard/game/${gameRules.GAME_LEVELS_VERSION}/l${levelId}"
+        val level = Level()
+        GdxFIRAuth.inst().signInAnonymously().then<GdxFirebaseUser> {
+            GdxFIRCrash.inst().log("Signed in anonymously into Firebase")
+            GdxFIRDatabase.inst().inReference(databasePath).readValue(Map::class.java).then<Map<String, Long>> {
+                level.shots = it.toMutableMap()
+                onSuccess(level)
             }
         }
     }

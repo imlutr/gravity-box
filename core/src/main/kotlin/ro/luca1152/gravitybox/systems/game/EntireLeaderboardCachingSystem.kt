@@ -50,7 +50,7 @@ class EntireLeaderboardCachingSystem(private val context: Context) : EntitySyste
         gameShotsLeaderboardController.readEntireGameLeaderboardDatabase {
             isCachingGameLeaderboard = false
             logInfoMessage()
-            updateNextLederboardCacheTime()
+            updateNextLeaderboardCacheTime()
             writeLeaderboardToStorage()
             bindLeaderboard(it)
         }
@@ -60,7 +60,7 @@ class EntireLeaderboardCachingSystem(private val context: Context) : EntitySyste
         info("Cached the entire game leaderboard.")
     }
 
-    private fun updateNextLederboardCacheTime() {
+    private fun updateNextLeaderboardCacheTime() {
         gameRules.run {
             NEXT_LEADERBOARD_CACHE_TIME = TimeUtils.millis() + gameRules.TIME_DELAY_BETWEEN_CACHING_LEADERBOARD
             flushUpdates()
