@@ -185,6 +185,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
                             Actions.moveTo(uiStage.viewport.worldWidth, y, .2f, Interpolation.pow3In)
                         )
                     }
+                    rankLabel.run {
+                        addAction(
+                            Actions.parallel(
+                                Actions.moveTo(x, y - 100f - bottomGrayStripHeight, .2f, Interpolation.pow3In),
+                                Actions.fadeOut(.2f, Interpolation.pow3In)
+                            )
+                        )
+                    }
                 },
                 Actions.delay(.1f),
                 Actions.parallel(
@@ -212,6 +220,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
         addClickRunnable(Runnable {
             menuOverlayStage.addActor(skipLevelPopUp)
         })
+    }
+    private val rankLabel = DistanceFieldLabel(
+        context,
+        "rank #x",
+        skin, "regular", 37f, Colors.gameColor
+    ).apply {
+        isVisible = false
     }
     private val skipLevelPopUp = object : NewPopUp(context, 600f, 370f, skin) {
         val thisPopUp = this // Can't put a popup@... So this will do
@@ -341,6 +356,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         padLeft(padLeftRight).padRight(padLeftRight)
         padBottom(padTopBottom).padTop(padTopBottom)
         add(topRow).growX().expandY().top().row()
+        add(rankLabel).expand().bottom().padBottom(90f).row()
     }
     private val githubPopUp = NewPopUp(context, 600f, 440f, skin).apply popup@{
         val text = DistanceFieldLabel(
@@ -1212,6 +1228,17 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 )
             )
         }
+        rankLabel.run {
+            addAction(
+                Actions.sequence(
+                    Actions.delay(.1f),
+                    Actions.parallel(
+                        Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
+                        Actions.fadeIn(.2f, Interpolation.pow3In)
+                    )
+                )
+            )
+        }
     }
 
     init {
@@ -1439,6 +1466,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun update() {
+        updateRankLabel()
         updateLevelLabel()
         updateSkipLevelButton()
         updateLeftRightButtons()
@@ -1452,6 +1480,18 @@ class PlayScreen(private val context: Context) : KtxScreen {
         engine.update(delta)
         uiStage.draw()
         menuOverlayStage.draw()
+    }
+
+    private fun updateRankLabel() {
+        if (levelEntity.map.rank == -1) {
+            rankLabel.isVisible = false
+        } else {
+            rankLabel.isVisible = true
+            rankLabel.run {
+                setText("rank #${levelEntity.map.rank}")
+                layout()
+            }
+        }
     }
 
     private fun updateLevelLabel() {

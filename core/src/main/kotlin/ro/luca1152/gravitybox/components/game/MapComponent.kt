@@ -44,6 +44,7 @@ import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.removeComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
 import java.io.StringWriter

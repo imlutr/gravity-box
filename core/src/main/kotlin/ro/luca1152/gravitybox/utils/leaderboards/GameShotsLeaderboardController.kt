@@ -30,6 +30,8 @@ class GameShotsLeaderboardController(context: Context) {
 
     @Suppress("ObjectLiteralToLambda")
     fun readEntireGameLeaderboardDatabase(onSuccess: (gameShotsLeaderboard: GameShotsLeaderboard) -> Unit) {
+        if (!gameRules.IS_MOBILE) return
+
         val databasePath = "shots-leaderboard/game/${gameRules.GAME_LEVELS_VERSION}"
         val leaderboard = GameShotsLeaderboard()
         GdxFIRAuth.inst().signInAnonymously().then<GdxFirebaseUser> {
@@ -48,7 +50,9 @@ class GameShotsLeaderboardController(context: Context) {
     }
 
     fun readCurrentGameLevelLeaderboard(levelId: Int, onSuccess: (level: Level) -> Unit) {
-        val databasePath = "shots-leaderboard/game/${gameRules.GAME_LEVELS_VERSION}/l${levelId}"
+        if (!gameRules.IS_MOBILE) return
+
+        val databasePath = "shots-leaderboard/game/${gameRules.GAME_LEVELS_VERSION}/l$levelId"
         val level = Level()
         GdxFIRAuth.inst().signInAnonymously().then<GdxFirebaseUser> {
             GdxFIRCrash.inst().log("Signed in anonymously into Firebase")
