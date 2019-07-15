@@ -1305,6 +1305,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(EntireLeaderboardCachingSystem(context))
             addSystem(CurrentLevelLeaderboardCachingSystem(context))
             addSystem(WritingLeaderboardToStorageSystem(context))
+            addSystem(LeaderboardRankCalculationSystem(context))
             addSystem(FlushPreferencesSystem(context))
             addSystem(PlayTimeSystem(context))
             addSystem(RewardedAdTimerSystem(context))

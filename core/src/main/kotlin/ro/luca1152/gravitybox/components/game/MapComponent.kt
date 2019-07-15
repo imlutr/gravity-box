@@ -44,7 +44,6 @@ import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import ro.luca1152.gravitybox.utils.kotlin.removeComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
 import java.io.StringWriter
@@ -102,6 +101,9 @@ class MapComponent : Component, Poolable {
 
     /** How many time did the player shot in the current level. */
     var shots = 0
+
+    /** The player's rank based on the shots count. */
+    var rank = -1
 
     fun set(context: Context, levelId: Int, hue: Int) {
         this.levelId = levelId
@@ -238,6 +240,7 @@ class MapComponent : Component, Poolable {
             add(FadeInEvent(FadeOutFadeInEvent.CLEAR_ACTIONS))
 
             add(CacheCurrentLevelLeaderboardEvent())
+            add(CalculateRankEvent())
         }
     }
 
@@ -439,6 +442,7 @@ class MapComponent : Component, Poolable {
         shouldLogLevelStart = false
         shouldBeLoggingLevelPlayTime = false
         shots = 0
+        rank = -1
     }
 
     fun destroyAllBodies() {

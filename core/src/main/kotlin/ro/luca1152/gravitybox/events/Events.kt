@@ -41,3 +41,4 @@ class FadeInEvent(fadeInDuration: Float, fadeInInterpolation: Interpolation = In
 
 class WriteLeaderboardToStorageEvent : Event
 class CacheCurrentLevelLeaderboardEvent : Event
+class CalculateRankEvent : Event

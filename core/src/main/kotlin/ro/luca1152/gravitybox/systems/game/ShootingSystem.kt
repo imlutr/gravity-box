@@ -28,6 +28,8 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.BulletEntity
+import ro.luca1152.gravitybox.events.CalculateRankEvent
+import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.utils.kotlin.GameCamera
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.screenToWorldCoordinates
@@ -38,6 +40,7 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
     private val inputMultiplexer: InputMultiplexer = context.inject()
     private val gameCamera: GameCamera = context.inject()
     private val gameRules: GameRules = context.inject()
+    private val eventQueue: EventQueue = context.inject()
 
     // Entities
     private lateinit var playerEntity: Entity
@@ -65,6 +68,7 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
             gameRules.BULLET_COUNT++
             levelEntity.map.shots++
             shootingTimer = gameRules.TIME_DELAY_BETWEEN_SHOTS
+            eventQueue.add(CalculateRankEvent())
             return true
         }
     }

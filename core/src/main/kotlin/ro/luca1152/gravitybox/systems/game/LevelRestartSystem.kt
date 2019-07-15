@@ -29,6 +29,7 @@ import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
+import ro.luca1152.gravitybox.events.CalculateRankEvent
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.FadeInEvent
 import ro.luca1152.gravitybox.events.FadeOutEvent
@@ -85,6 +86,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                             forceCenterCameraOnPlayer = true
                             shots = 0
                         }
+                        eventQueue.add(CalculateRankEvent())
                     }
                 },
                 Actions.run { eventQueue.add(FadeInEvent(fadeInDuration, Interpolation.pow3In)) },
