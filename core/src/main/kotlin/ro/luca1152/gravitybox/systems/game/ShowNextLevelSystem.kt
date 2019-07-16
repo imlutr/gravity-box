@@ -33,13 +33,15 @@ import ro.luca1152.gravitybox.events.EventSystem
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.injectNullable
+import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
 import kotlin.math.max
 import kotlin.math.min
 
 class ShowNextLevelEvent : Event
 class ShowNextLevelSystem(
-    context: Context,
+    private val context: Context,
     private val playScreen: PlayScreen
 ) : EventSystem<ShowNextLevelEvent>(context.inject(), ShowNextLevelEvent::class) {
     // Injected objects
@@ -59,6 +61,7 @@ class ShowNextLevelSystem(
         logLevelFinish()
         updateLeaderboard()
         showNextLevel()
+        updateGameRules()
     }
 
     private fun logLevelFinish() {
@@ -128,6 +131,12 @@ class ShowNextLevelSystem(
         eventQueue.run {
             add(PromptUserToRateEvent())
             add(ShowInterstitialAdEvent())
+        }
+    }
+
+    private fun updateGameRules() {
+        if (context.injectNullable<GameShotsLeaderboard>() != null) {
+            gameRules.DID_SHOW_GUIDE_BETWEEN_LEVELS = true
         }
     }
 }

@@ -1093,6 +1093,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
         color.a = 0f
     }
 
+    private val levelFinishGuideLabel = OutlineDistanceFieldLabel(
+        context,
+        "Tap anywhere to proceed",
+        skin, "regular", 37f, Colors.gameColor
+    ).apply {
+        color.a = 0f
+    }
+
     private val levelFinishTouchableTransparentImage = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         width = uiViewport.worldWidth
         height = uiViewport.worldHeight
@@ -1110,7 +1118,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         setFillParent(true)
         addActor(levelFinishTouchableTransparentImage)
         add(levelFinishRankLabel).top().padTop(69f).row()
-        add(levelFinishRankPercentageLabel).expand().top().row()
+        add(levelFinishRankPercentageLabel).top().row()
+        add(levelFinishGuideLabel).top().padTop(30f).expand().row()
         add(framedRestartButton).expand().bottom().row()
     }
 
@@ -1717,6 +1726,16 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 )
             )
         }
+        levelFinishGuideLabel.run {
+            if (!gameRules.DID_SHOW_GUIDE_BETWEEN_LEVELS) {
+                addAction(
+                    Actions.sequence(
+                        Actions.delay(fadeOutDuration),
+                        Actions.fadeIn(fadeInDuration)
+                    )
+                )
+            }
+        }
         levelFinishTouchableTransparentImage.run {
             addAction(
                 Actions.sequence(
@@ -1743,6 +1762,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addAction(Actions.fadeOut(fadeOutDuration))
         }
         levelFinishRankPercentageLabel.run {
+            addAction(Actions.fadeOut(fadeOutDuration))
+        }
+        levelFinishGuideLabel.run {
             addAction(Actions.fadeOut(fadeOutDuration))
         }
         levelFinishTouchableTransparentImage.touchable = Touchable.disabled

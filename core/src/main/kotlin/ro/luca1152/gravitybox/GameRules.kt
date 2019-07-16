@@ -241,10 +241,18 @@ class GameRules(context: Context) {
             preferences.putLong("nextLeaderboardCacheTime", value)
         }
 
+    /** The version of the leaderboard cached to storage. */
     var CACHED_LEADERBOARD_VERSION
         get() = preferences.getString("cachedLeaderboardVersion", GAME_LEVELS_VERSION)
         set(value) {
             preferences.putString("cachedLeaderboardVersion", value)
+        }
+
+    /** True if the `Tap anywhere to proceed` guide was shown between levels. */
+    var DID_SHOW_GUIDE_BETWEEN_LEVELS
+        get() = preferences.getBoolean("didShowGuideBetweenLevels", false)
+        set(value) {
+            preferences.putBoolean("didShowGuideBetweenLevels", value)
         }
 
     // Analytics
