@@ -1791,14 +1791,19 @@ class PlayScreen(private val context: Context) : KtxScreen {
             )
         }
         skipLevelButton.run {
-            touchable = Touchable.enabled
-            clearActions()
-            addAction(
-                Actions.sequence(
-                    Actions.delay(fadeOutDuration),
-                    Actions.fadeIn(fadeInDuration)
+            if (!((levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1 && !isSkippingLevel &&
+                        // On Android it takes a bit to update Preferences, thus the skip level button flashed a bit without this condition
+                        levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 2))
+            ) {
+                touchable = Touchable.enabled
+                clearActions()
+                addAction(
+                    Actions.sequence(
+                        Actions.delay(fadeOutDuration),
+                        Actions.fadeIn(fadeInDuration)
+                    )
                 )
-            )
+            }
         }
         rankLabel.run {
             color.a = 1f
