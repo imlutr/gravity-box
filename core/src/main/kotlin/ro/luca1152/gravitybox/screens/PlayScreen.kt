@@ -1743,15 +1743,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
         // Fade in things
         val fadeInDuration = .2f
-        skipLevelButton.run {
-            touchable = Touchable.enabled
-            addAction(
-                Actions.sequence(
-                    Actions.delay(fadeOutDuration),
-                    Actions.fadeIn(fadeInDuration)
-                )
-            )
-        }
         menuButton.run {
             touchable = Touchable.enabled
             addAction(
