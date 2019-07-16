@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.pay.*
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Button
@@ -43,13 +44,11 @@ import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
+import ro.luca1152.gravitybox.components.game.player
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.FadeInEvent
-import ro.luca1152.gravitybox.events.FadeOutEvent
-import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.systems.editor.DashedLineRenderingSystem
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
@@ -87,6 +86,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     // Entities
     private lateinit var levelEntity: Entity
+    private lateinit var playerEntity: Entity
+
+    private val finishUiStage = Stage(context.inject<UIViewport>(), context.inject())
+    private val levelIsFinished
+        get() = playerEntity.player.isInsideFinishPoint && levelEntity.level.colorSchemeIsFullyTransitioned
 
     private val padTopBottom = 38f
     private val padLeftRight = 43f
@@ -1054,6 +1058,55 @@ class PlayScreen(private val context: Context) : KtxScreen {
         add(bottomGrayStrip).fillX().height(bottomGrayStripHeight).bottom().padBottom(-128f)
     }
 
+    private val framedRestartButton = object : Image(skin.getDrawable("framed-restart-button")) {
+        init {
+            color = Colors.gameColor.apply { a = 0f }
+            touchable = Touchable.disabled
+            addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+                    if (!levelEntity.level.isRestarting) {
+                        levelEntity.level.restartLevel = true
+                        gameRules.RESTART_COUNT++
+                    }
+                }
+            })
+        }
+
+        override fun act(delta: Float) {
+            super.act(delta)
+            color.setWithoutAlpha(Colors.gameColor)
+        }
+    }
+
+    private val levelFinishRankLabel = OutlineDistanceFieldLabel(
+        context,
+        "rank #x",
+        skin, "semi-bold", 40f, Colors.gameColor
+    ).apply {
+        color.a = 0f
+    }
+
+    private val levelFinishTouchableTransparentImage = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
+        width = uiViewport.worldWidth
+        height = uiViewport.worldHeight
+        touchable = Touchable.disabled
+        color = Color.CLEAR
+        addListener(object : ClickListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                eventQueue.add(ShowNextLevelEvent())
+                return true
+            }
+        })
+    }
+
+    private val rootFinishUiTable = Table().apply {
+        setFillParent(true)
+        addActor(levelFinishTouchableTransparentImage)
+        add(levelFinishRankLabel).expand().top().padTop(69f).row()
+        add(framedRestartButton).expand().bottom().row()
+    }
+
     private fun initializePurchaseManager() {
         if (!gameRules.IS_MOBILE)
             return
@@ -1207,10 +1260,16 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 Actions.delay(.1f),
                 Actions.parallel(
                     Actions.moveTo(menuButton.x, 25f, .2f, Interpolation.pow3In),
-                    Actions.fadeIn(.2f, Interpolation.pow3In)
+                    Actions.run {
+                        if (!levelIsFinished) {
+                            menuButton.addAction(Actions.fadeIn(.2f, Interpolation.pow3In))
+                        }
+                    }
                 ),
                 Actions.run {
-                    menuButton.touchable = Touchable.enabled
+                    if (!levelIsFinished) {
+                        menuButton.touchable = Touchable.enabled
+                    }
                 }
             )
         )
@@ -1235,7 +1294,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     Actions.delay(.1f),
                     Actions.parallel(
                         Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
-                        Actions.fadeIn(.2f, Interpolation.pow3In)
+                        Actions.run {
+                            if (!levelIsFinished) {
+                                rankLabel.addAction(Actions.fadeIn(.2f, Interpolation.pow3In))
+                            }
+                        }
                     )
                 )
             )
@@ -1252,6 +1315,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         // Fixes issue #55 (UI bug)
         rootOverlayTable.layout()
         rootTable.layout()
+        rootFinishUiTable.layout()
     }
 
     private fun initializeRewardedAds() {
@@ -1324,7 +1388,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             level.forceUpdateMap = true
             map.forceCenterCameraOnPlayer = true
         }
-        PlayerEntity.createEntity(context)
+        playerEntity = PlayerEntity.createEntity(context)
         FinishEntity.createEntity(context)
     }
 
@@ -1356,7 +1420,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(KeyboardLevelRestartSystem(context))
             addSystem(LevelFinishDetectionSystem())
             addSystem(PointsCollectionSystem(context))
-            addSystem(LevelRestartSystem(context))
+            addSystem(LevelRestartSystem(context, this@PlayScreen))
             addSystem(CanFinishLevelSystem(context))
             addSystem(FinishPointColorSystem())
             addSystem(ColorSchemeSystem())
@@ -1367,7 +1431,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(DashedLineRenderingSystem(context))
             addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
-            addSystem(LevelFinishSystem(context, playScreen = this@PlayScreen))
+            addSystem(LevelFinishSystem())
+            addSystem(ShowNextLevelSystem(context, this@PlayScreen))
+            addSystem(PromptUserToRateSystem(context, this@PlayScreen))
+            addSystem(ShowInterstitialAdSystem(context))
             addSystem(ShowFinishStatsSystem(context))
 //            addSystem(PhysicsDebugRenderingSystem(context))
             addSystem(DebugRenderingSystem(context))
@@ -1394,6 +1461,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
             clear()
             addActor(rootOverlayTable)
         }
+        finishUiStage.run {
+            clear()
+            addActor(rootFinishUiTable)
+        }
         handleUiInput()
     }
 
@@ -1401,10 +1472,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
         // [index] is 0 so UI input is handled first, otherwise the buttons can't be pressed
         inputMultiplexer.addProcessor(0, menuOverlayStage)
         inputMultiplexer.addProcessor(1, uiStage)
-        inputMultiplexer.addProcessor(2, clearPreferencesListener)
+        inputMultiplexer.addProcessor(2, finishUiStage)
+        inputMultiplexer.addProcessor(3, clearPreferencesListener)
 
         // Back key
-        inputMultiplexer.addProcessor(3, backKeyListener)
+        inputMultiplexer.addProcessor(4, backKeyListener)
         Gdx.input.isCatchBackKey = true
     }
 
@@ -1468,12 +1540,15 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun update() {
         updateRankLabel()
+        updateFinishRankLabel()
         updateLevelLabel()
         updateSkipLevelButton()
         updateLeftRightButtons()
+        updateUiAfterLevelFinish()
         shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
         menuOverlayStage.act()
+        finishUiStage.act()
     }
 
     private fun draw(delta: Float) {
@@ -1481,9 +1556,12 @@ class PlayScreen(private val context: Context) : KtxScreen {
         engine.update(delta)
         uiStage.draw()
         menuOverlayStage.draw()
+        finishUiStage.draw()
     }
 
     private fun updateRankLabel() {
+        if (levelIsFinished) return
+
         if (levelEntity.map.rank == -1) {
             rankLabel.isVisible = false
         } else {
@@ -1492,6 +1570,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 setText("rank #${levelEntity.map.rank}")
                 layout()
             }
+        }
+    }
+
+    private fun updateFinishRankLabel() {
+        if (!levelIsFinished) return
+        levelFinishRankLabel.run {
+            setText("rank #${levelEntity.map.rank}")
+            layout()
         }
     }
 
@@ -1507,6 +1593,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateSkipLevelButton() {
+        if (levelIsFinished) return
+
         // The skip level button should be hidden if the current level is not the highest finished one
         skipLevelButton.run {
             if (levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1 && !isSkippingLevel &&
@@ -1543,6 +1631,121 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 ) "double-right-button"
                 else "right-button"
             style = skin.get(styleName, Button.ButtonStyle::class.java)
+        }
+    }
+
+    private fun updateUiAfterLevelFinish() {
+        if (!levelIsFinished || levelEntity.level.isRestarting) return
+
+        // The finish UI was already shown
+        if (framedRestartButton.isTouchable) return
+
+        // Hide menu overlay
+        if (bottomGrayStrip.y == 0f) {
+            hideMenuOverlay()
+        }
+
+        // Fade out things
+        val fadeOutDuration = .2f
+        skipLevelButton.run {
+            touchable = Touchable.disabled
+            addAction(Actions.fadeOut(fadeOutDuration))
+        }
+        menuButton.run {
+            touchable = Touchable.disabled
+            addAction(Actions.fadeOut(fadeOutDuration))
+        }
+        restartButton.run {
+            touchable = Touchable.disabled
+            addAction(Actions.fadeOut(fadeOutDuration))
+        }
+        rankLabel.run {
+            addAction(Actions.fadeOut(fadeOutDuration))
+        }
+
+        // Fade in things
+        val fadeInDuration = .2f
+        framedRestartButton.run {
+            touchable = Touchable.enabled
+            addAction(
+                Actions.sequence(
+                    Actions.delay(fadeOutDuration),
+                    Actions.fadeIn(fadeInDuration)
+                )
+            )
+        }
+        levelFinishRankLabel.run {
+            addAction(
+                Actions.sequence(
+                    Actions.delay(fadeOutDuration),
+                    Actions.fadeIn(fadeInDuration)
+                )
+            )
+        }
+        levelFinishTouchableTransparentImage.run {
+            addAction(
+                Actions.sequence(
+                    Actions.delay(fadeOutDuration),
+                    Actions.run {
+                        levelFinishTouchableTransparentImage.touchable = Touchable.enabled
+                    }
+                )
+            )
+        }
+    }
+
+    fun hideLevelFinishUi() {
+        // The finish UI was already hidden
+        if (!framedRestartButton.isTouchable) return
+
+        // Fade out things
+        val fadeOutDuration = .2f
+        framedRestartButton.run {
+            touchable = Touchable.disabled
+            addAction(Actions.fadeOut(fadeOutDuration))
+        }
+        levelFinishRankLabel.run {
+            addAction(Actions.fadeOut(fadeOutDuration))
+        }
+        levelFinishTouchableTransparentImage.touchable = Touchable.disabled
+
+        // Fade in things
+        val fadeInDuration = .2f
+        skipLevelButton.run {
+            touchable = Touchable.enabled
+            addAction(
+                Actions.sequence(
+                    Actions.delay(fadeOutDuration),
+                    Actions.fadeIn(fadeInDuration)
+                )
+            )
+        }
+        menuButton.run {
+            touchable = Touchable.enabled
+            addAction(
+                Actions.sequence(
+                    Actions.delay(fadeOutDuration),
+                    Actions.fadeIn(fadeInDuration)
+                )
+            )
+
+        }
+        restartButton.run {
+            touchable = Touchable.enabled
+            addAction(
+                Actions.sequence(
+                    Actions.delay(fadeOutDuration),
+                    Actions.fadeIn(fadeInDuration)
+                )
+            )
+        }
+        rankLabel.run {
+            addAction(
+                Actions.sequence(
+                    Actions.delay(fadeOutDuration),
+                    Actions.fadeIn(fadeInDuration)
+                )
+            )
         }
     }
 

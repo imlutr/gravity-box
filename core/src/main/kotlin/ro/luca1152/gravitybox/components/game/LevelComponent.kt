@@ -22,7 +22,9 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.approxEqualTo
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
+import ro.luca1152.gravitybox.utils.ui.Colors
 
 /** Contains level information. */
 class LevelComponent : Component, Poolable {
@@ -36,6 +38,13 @@ class LevelComponent : Component, Poolable {
 
     /** True if every point (if any) was collected. */
     var canFinish = true
+
+    // The color scheme is the one that tells whether the level was finished: if the current color scheme
+    // is the same as the dark color scheme, then it means that the level was finished. I should change
+    // this in the future.
+    val colorSchemeIsFullyTransitioned
+        get() = (Colors.useDarkTheme && Colors.gameColor.approxEqualTo(Colors.LightTheme.game57))
+                || (!Colors.useDarkTheme && Colors.gameColor.approxEqualTo(Colors.DarkTheme.game95))
 
     fun set(levelNumber: Int) {
         this.levelId = levelNumber

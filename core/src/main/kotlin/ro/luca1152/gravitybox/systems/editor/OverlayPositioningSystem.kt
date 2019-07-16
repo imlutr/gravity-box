@@ -36,7 +36,7 @@ import ro.luca1152.gravitybox.components.editor.*
 import ro.luca1152.gravitybox.components.editor.SnapComponent.Companion.DRAG_SNAP_THRESHOLD
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
+import ro.luca1152.gravitybox.systems.game.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.Button

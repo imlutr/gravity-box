@@ -39,7 +39,8 @@ import ro.luca1152.gravitybox.entities.game.CollectiblePointEntity
 import ro.luca1152.gravitybox.entities.game.DashedLineEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.TextEntity
-import ro.luca1152.gravitybox.events.*
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent

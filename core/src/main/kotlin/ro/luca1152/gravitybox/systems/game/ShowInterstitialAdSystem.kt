@@ -20,43 +20,41 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import ktx.inject.Context
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.level
-import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.events.Event
 import ro.luca1152.gravitybox.events.EventSystem
+import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
-import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 
-class CalculateRankEvent : Event
-class LeaderboardRankCalculationSystem(private val context: Context) :
-    EventSystem<CalculateRankEvent>(context.inject(), CalculateRankEvent::class) {
-    // Entities
+class ShowInterstitialAdEvent : Event
+
+class ShowInterstitialAdSystem(context: Context) : EventSystem<ShowInterstitialAdEvent>(context.inject(), ShowInterstitialAdEvent::class) {
+    // Injected objects
+    private val gameRules: GameRules = context.inject()
+    private val adsController: AdsController? = context.injectNullable()
+
+    // entities
     private lateinit var levelEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
     }
 
-    override fun processEvent(event: CalculateRankEvent, deltaTime: Float) {
-        calculateRank()
+    override fun processEvent(event: ShowInterstitialAdEvent, deltaTime: Float) {
+        showInterstitialAd()
     }
 
-    private fun calculateRank() {
-        val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
-        if (shotsLeaderboard == null) {
-            levelEntity.map.rank = -1
-        } else {
-            var newRank = -1
-            val shotsMap = shotsLeaderboard.levels["l${levelEntity.level.levelId}"]!!.shots
-            for (i in 1..levelEntity.map.shots) {
-                if (shotsMap.containsKey("s$i") && shotsMap["s$i"] != 0L) {
-                    if (newRank == -1) newRank = 1
-                    else newRank++
-                }
-            }
-            levelEntity.map.rank = newRank
-        }
+    private fun showInterstitialAd() {
+        if (!gameRules.IS_MOBILE) return
+        if (gameRules.IS_AD_FREE) return
+        if (!gameRules.SHOULD_SHOW_INTERSTITIAL_AD) return
+        if (levelEntity.level.levelId == gameRules.MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT) return
+        if (!adsController!!.isNetworkConnected()) return
+        if (!adsController.isInterstitialAdLoaded()) return
+        adsController.showInterstitialAd()
+        gameRules.SHOULD_SHOW_INTERSTITIAL_AD = false
     }
 }

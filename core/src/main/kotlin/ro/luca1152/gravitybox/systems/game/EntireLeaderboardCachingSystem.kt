@@ -22,7 +22,6 @@ import com.badlogic.gdx.utils.TimeUtils
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.WriteLeaderboardToStorageEvent
 import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.info
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable

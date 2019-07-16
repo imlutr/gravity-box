@@ -21,13 +21,14 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.Json
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
+import ro.luca1152.gravitybox.events.Event
 import ro.luca1152.gravitybox.events.EventSystem
-import ro.luca1152.gravitybox.events.WriteLeaderboardToStorageEvent
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import kotlin.concurrent.thread
 
+class WriteLeaderboardToStorageEvent : Event
 class WritingLeaderboardToStorageSystem(private val context: Context) :
     EventSystem<WriteLeaderboardToStorageEvent>(context.inject(), WriteLeaderboardToStorageEvent::class) {
     // Injected objects

@@ -30,12 +30,14 @@ import ro.luca1152.gravitybox.components.editor.EditorObjectComponent
 import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
+import ro.luca1152.gravitybox.events.Event
 import ro.luca1152.gravitybox.events.EventSystem
-import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.hitAll
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
+
+class UpdateRoundedPlatformsEvent : Event
 
 /** Sets the according texture to platforms so they are correctly rounded. */
 class RoundedPlatformsSystem(private val context: Context) :

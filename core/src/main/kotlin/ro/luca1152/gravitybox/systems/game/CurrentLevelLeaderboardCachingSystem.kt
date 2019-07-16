@@ -22,15 +22,15 @@ import com.badlogic.ashley.core.Entity
 import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.level
-import ro.luca1152.gravitybox.events.CacheCurrentLevelLeaderboardEvent
+import ro.luca1152.gravitybox.events.Event
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.EventSystem
-import ro.luca1152.gravitybox.events.WriteLeaderboardToStorageEvent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
 
+class CacheCurrentLevelLeaderboardEvent : Event
 class CurrentLevelLeaderboardCachingSystem(private val context: Context) :
     EventSystem<CacheCurrentLevelLeaderboardEvent>(context.inject(), CacheCurrentLevelLeaderboardEvent::class) {
     // Injected objects
