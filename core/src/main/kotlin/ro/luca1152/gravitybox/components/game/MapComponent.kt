@@ -108,7 +108,7 @@ class MapComponent : Component, Poolable {
     var rank = -1
 
     /** Tells the current rank is in the top [rankPercentage]%. [0-100]*/
-    var rankPercentage = 100f
+    var rankPercentage = -1f
 
     fun set(context: Context, levelId: Int, hue: Int) {
         this.levelId = levelId
@@ -448,6 +448,7 @@ class MapComponent : Component, Poolable {
         shouldBeLoggingLevelPlayTime = false
         shots = 0
         rank = -1
+        rankPercentage = -1f
     }
 
     fun destroyAllBodies() {

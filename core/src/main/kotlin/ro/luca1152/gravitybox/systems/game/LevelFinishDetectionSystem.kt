@@ -23,32 +23,18 @@ import com.badlogic.ashley.core.EntitySystem
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
-/** Detects when the player is inside the finish point. */
 class LevelFinishDetectionSystem : EntitySystem() {
+    // Entities
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
-    private lateinit var finishEntity: Entity
-    private val playerIsInsideFinishPoint
-        get() = playerEntity.collisionBox.box.overlaps(finishEntity.collisionBox.box)
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
         playerEntity = engine.getSingleton<PlayerComponent>()
-        finishEntity = engine.getSingleton<FinishComponent>()
     }
 
     override fun update(deltaTime: Float) {
-        updateVariables()
-    }
-
-    private fun updateVariables() {
-        when (playerIsInsideFinishPoint) {
-            true -> {
-                playerEntity.player.isInsideFinishPoint = true
-            }
-            else -> {
-                playerEntity.player.isInsideFinishPoint = false
-            }
-        }
+        levelEntity.level.isLevelFinished = playerEntity.player.isInsideFinishPoint
+                && levelEntity.level.colorSchemeIsFullyTransitioned && playerEntity.body.body!!.linearVelocity.len2() <= 1f
     }
 }

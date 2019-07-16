@@ -20,23 +20,14 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import ktx.inject.Context
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.level
-import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.components.game.player
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import ro.luca1152.gravitybox.utils.kotlin.injectNullable
-import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 
-/** Handles what happens when a level is finished. */
-class LevelFinishSystem(
-    private val context: Context,
-    private val restartLevelWhenFinished: Boolean = false
-) : EntitySystem() {
-    // Injected objects
-    private val eventQueue: EventQueue = context.inject()
-
+/** Times the time spent inside the finish point. */
+class FinishTimingSystem : EntitySystem() {
     // Entities
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
@@ -47,17 +38,10 @@ class LevelFinishSystem(
     }
 
     override fun update(deltaTime: Float) {
-        if (!levelEntity.level.isLevelFinished) return
-        if (levelEntity.level.isRestarting) return
-
-        if (restartLevelWhenFinished) {
-            levelEntity.level.restartLevel = true
-            return
-        }
-
-        // The leaderboard wasn't loaded yet, showing the finish UI is pointless
-        if (context.injectNullable<GameShotsLeaderboard>() == null) {
-            eventQueue.add(ShowNextLevelEvent())
+        if (playerEntity.player.isInsideFinishPoint) {
+            levelEntity.level.timeSpentInsideFinishPoint += deltaTime
+        } else {
+            levelEntity.level.timeSpentInsideFinishPoint = 0f
         }
     }
 }

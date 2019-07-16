@@ -20,44 +20,35 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import ktx.inject.Context
-import ro.luca1152.gravitybox.components.game.LevelComponent
-import ro.luca1152.gravitybox.components.game.PlayerComponent
-import ro.luca1152.gravitybox.components.game.level
-import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
-import ro.luca1152.gravitybox.utils.kotlin.injectNullable
-import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 
-/** Handles what happens when a level is finished. */
-class LevelFinishSystem(
-    private val context: Context,
-    private val restartLevelWhenFinished: Boolean = false
-) : EntitySystem() {
-    // Injected objects
-    private val eventQueue: EventQueue = context.inject()
-
-    // Entities
+/** Detects when the player is inside the finish point. */
+class PlayerInsideFinishDetectionSystem : EntitySystem() {
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
+    private lateinit var finishEntity: Entity
+    private val playerIsInsideFinishPoint
+        get() = playerEntity.collisionBox.box.overlaps(finishEntity.collisionBox.box)
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
         playerEntity = engine.getSingleton<PlayerComponent>()
+        finishEntity = engine.getSingleton<FinishComponent>()
     }
 
     override fun update(deltaTime: Float) {
-        if (!levelEntity.level.isLevelFinished) return
-        if (levelEntity.level.isRestarting) return
+        updateVariables()
+    }
 
-        if (restartLevelWhenFinished) {
-            levelEntity.level.restartLevel = true
-            return
-        }
-
-        // The leaderboard wasn't loaded yet, showing the finish UI is pointless
-        if (context.injectNullable<GameShotsLeaderboard>() == null) {
-            eventQueue.add(ShowNextLevelEvent())
+    private fun updateVariables() {
+        when (playerIsInsideFinishPoint) {
+            true -> {
+                playerEntity.player.isInsideFinishPoint = true
+            }
+            else -> {
+                playerEntity.player.isInsideFinishPoint = false
+            }
         }
     }
 }

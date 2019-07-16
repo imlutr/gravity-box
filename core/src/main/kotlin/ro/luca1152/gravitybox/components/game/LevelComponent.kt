@@ -35,9 +35,12 @@ class LevelComponent : Component, Poolable {
     var isRestarting = false
     var isChangingLevel = false
     var levelId = 1
+    var isLevelFinished = false
 
     /** True if every point (if any) was collected. */
     var canFinish = true
+
+    var timeSpentInsideFinishPoint = 0f
 
     // The color scheme is the one that tells whether the level was finished: if the current color scheme
     // is the same as the dark color scheme, then it means that the level was finished. I should change
@@ -58,6 +61,8 @@ class LevelComponent : Component, Poolable {
         isRestarting = false
         isChangingLevel = false
         levelId = 1
+        isLevelFinished = false
+        timeSpentInsideFinishPoint = 0f
     }
 
     companion object : ComponentResolver<LevelComponent>(LevelComponent::class.java)

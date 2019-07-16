@@ -45,15 +45,13 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
     private lateinit var playerEntity: Entity
     private lateinit var levelEntity: Entity
 
-    private val levelIsFinished
-        get() = playerEntity.player.isInsideFinishPoint && levelEntity.level.colorSchemeIsFullyTransitioned
-
     private var shootingTimer = gameRules.TIME_DELAY_BETWEEN_SHOTS
 
     private val inputAdapter = object : KtxInputAdapter {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
             if (shootingTimer > 0f) return false
-            if (levelIsFinished) return false
+            if (levelEntity.level.isLevelFinished) return false
+            if (levelEntity.level.timeSpentInsideFinishPoint >= .5f) return false
 
             // Logging
             levelEntity.map.run {

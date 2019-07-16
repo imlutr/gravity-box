@@ -44,7 +44,6 @@ import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
-import ro.luca1152.gravitybox.components.game.player
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
@@ -90,8 +89,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private lateinit var playerEntity: Entity
 
     private val finishUiStage = Stage(context.inject<UIViewport>(), context.inject())
-    private val levelIsFinished
-        get() = playerEntity.player.isInsideFinishPoint && levelEntity.level.colorSchemeIsFullyTransitioned
 
     private val padTopBottom = 38f
     private val padLeftRight = 43f
@@ -1271,13 +1268,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 Actions.parallel(
                     Actions.moveTo(menuButton.x, 25f, .2f, Interpolation.pow3In),
                     Actions.run {
-                        if (!levelIsFinished) {
+                        if (!levelEntity.level.isLevelFinished) {
                             menuButton.addAction(Actions.fadeIn(.2f, Interpolation.pow3In))
                         }
                     }
                 ),
                 Actions.run {
-                    if (!levelIsFinished) {
+                    if (!levelEntity.level.isLevelFinished) {
                         menuButton.touchable = Touchable.enabled
                     }
                 }
@@ -1305,7 +1302,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     Actions.parallel(
                         Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
                         Actions.run {
-                            if (!levelIsFinished) {
+                            if (!levelEntity.level.isLevelFinished) {
                                 rankLabel.addAction(Actions.fadeIn(.2f, Interpolation.pow3In))
                             }
                         }
@@ -1428,6 +1425,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(OffScreenLevelRestartSystem(context))
             addSystem(OffScreenBulletDeletionSystem(context))
             addSystem(KeyboardLevelRestartSystem(context))
+            addSystem(PlayerInsideFinishDetectionSystem())
+            addSystem(FinishTimingSystem())
             addSystem(LevelFinishDetectionSystem())
             addSystem(PointsCollectionSystem(context))
             addSystem(LevelRestartSystem(context, this@PlayScreen))
@@ -1571,7 +1570,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateRankLabel() {
-        if (levelIsFinished) return
+        if (levelEntity.level.isLevelFinished) return
 
         if (levelEntity.map.rank == -1) {
             rankLabel.isVisible = false
@@ -1585,7 +1584,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateFinishRankLabel() {
-        if (!levelIsFinished) return
+        if (!levelEntity.level.isLevelFinished) return
         levelFinishRankLabel.run {
             setText("rank #${levelEntity.map.rank}")
             layout()
@@ -1593,7 +1592,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateFinishRankPercentageLabel() {
-        if (!levelIsFinished) return
+        if (!levelEntity.level.isLevelFinished) return
         levelFinishRankPercentageLabel.run {
             setText("(top ${"%.1f".format(levelEntity.map.rankPercentage)}%)")
             layout()
@@ -1612,7 +1611,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateSkipLevelButton() {
-        if (levelIsFinished) return
+        if (levelEntity.level.isLevelFinished) return
 
         // The skip level button should be hidden if the current level is not the highest finished one
         skipLevelButton.run {
@@ -1654,7 +1653,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateUiAfterLevelFinish() {
-        if (!levelIsFinished || levelEntity.level.isRestarting) return
+        if (!levelEntity.level.isLevelFinished || levelEntity.level.isRestarting) return
 
         // The leaderboard was not loaded yet, so the finish UI shouldn't be shown
         if (context.injectNullable<GameShotsLeaderboard>() == null) return

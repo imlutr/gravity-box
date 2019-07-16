@@ -185,7 +185,7 @@ class PlayingSystem(
             addSystem(OffScreenLevelRestartSystem(context))
             addSystem(OffScreenBulletDeletionSystem(context))
             addSystem(KeyboardLevelRestartSystem(context))
-            addSystem(LevelFinishDetectionSystem())
+            addSystem(PlayerInsideFinishDetectionSystem())
             addSystem(PointsCollectionSystem(context))
             addSystem(LevelFinishSystem(context, restartLevelWhenFinished = true))
             addSystem(FinishPointColorSystem())
