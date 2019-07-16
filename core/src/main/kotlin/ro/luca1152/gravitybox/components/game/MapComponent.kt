@@ -107,6 +107,9 @@ class MapComponent : Component, Poolable {
     /** The player's rank based on the shots count. */
     var rank = -1
 
+    /** Tells the current rank is in the top [rankPercentage]%. [0-100]*/
+    var rankPercentage = 100f
+
     fun set(context: Context, levelId: Int, hue: Int) {
         this.levelId = levelId
         this.hue = hue

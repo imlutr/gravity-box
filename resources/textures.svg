@@ -512,8 +512,8 @@
      inkscape:bbox-nodes="true"
      inkscape:bbox-paths="true"
      inkscape:current-layer="layer1"
-     inkscape:cx="8059.2891"
-     inkscape:cy="757.97523"
+     inkscape:cx="7701.1722"
+     inkscape:cy="1779.7497"
      inkscape:document-units="px"
      inkscape:measure-end="3774.09,-659.996"
      inkscape:measure-start="3774.27,-645.147"
@@ -536,7 +536,7 @@
      inkscape:window-width="1920"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:zoom="0.7071068">
+     inkscape:zoom="1">
     <inkscape:grid
        empcolor="#7a1919"
        empopacity="0.25098039"
@@ -5097,5 +5097,16 @@ AElFTkSuQmCC
        style="fill:none;stroke:#24f2f2;stroke-width:1.71979165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   </g>
 </g>
+<text
+   xml:space="preserve"
+   style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#24f2f2;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   x="2014.8823"
+   y="-205.75443"
+   id="text1847"><tspan
+     sodipodi:role="line"
+     id="tspan1845"
+     x="2014.8823"
+     y="-205.75443"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#24f2f2;fill-opacity:1;stroke-width:0.26458332">(top 75.9%)</tspan></text>
 </g>
 </svg>

@@ -1087,6 +1087,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
         color.a = 0f
     }
 
+    private val levelFinishRankPercentageLabel = OutlineDistanceFieldLabel(
+        context,
+        "(top x.xx%)",
+        skin, "regular", 30f, Colors.gameColor
+    ).apply {
+        color.a = 0f
+    }
+
     private val levelFinishTouchableTransparentImage = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         width = uiViewport.worldWidth
         height = uiViewport.worldHeight
@@ -1103,7 +1111,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val rootFinishUiTable = Table().apply {
         setFillParent(true)
         addActor(levelFinishTouchableTransparentImage)
-        add(levelFinishRankLabel).expand().top().padTop(69f).row()
+        add(levelFinishRankLabel).top().padTop(69f).row()
+        add(levelFinishRankPercentageLabel).expand().top().row()
         add(framedRestartButton).expand().bottom().row()
     }
 
@@ -1541,6 +1550,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private fun update() {
         updateRankLabel()
         updateFinishRankLabel()
+        updateFinishRankPercentageLabel()
         updateLevelLabel()
         updateSkipLevelButton()
         updateLeftRightButtons()
@@ -1577,6 +1587,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
         if (!levelIsFinished) return
         levelFinishRankLabel.run {
             setText("rank #${levelEntity.map.rank}")
+            layout()
+        }
+    }
+
+    private fun updateFinishRankPercentageLabel() {
+        if (!levelIsFinished) return
+        levelFinishRankPercentageLabel.run {
+            setText("(top ${"%.1f".format(levelEntity.map.rankPercentage)}%)")
             layout()
         }
     }
@@ -1685,6 +1703,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 )
             )
         }
+        levelFinishRankPercentageLabel.run {
+            addAction(
+                Actions.sequence(
+                    Actions.delay(fadeOutDuration),
+                    Actions.fadeIn(fadeInDuration)
+                )
+            )
+        }
         levelFinishTouchableTransparentImage.run {
             addAction(
                 Actions.sequence(
@@ -1708,6 +1734,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addAction(Actions.fadeOut(fadeOutDuration))
         }
         levelFinishRankLabel.run {
+            addAction(Actions.fadeOut(fadeOutDuration))
+        }
+        levelFinishRankPercentageLabel.run {
             addAction(Actions.fadeOut(fadeOutDuration))
         }
         levelFinishTouchableTransparentImage.touchable = Touchable.disabled

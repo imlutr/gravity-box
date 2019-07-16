@@ -41,6 +41,7 @@ class LeaderboardRankCalculationSystem(private val context: Context) :
 
     override fun processEvent(event: CalculateRankEvent, deltaTime: Float) {
         calculateRank()
+        calculateRankPercentage()
     }
 
     private fun calculateRank() {
@@ -57,6 +58,27 @@ class LeaderboardRankCalculationSystem(private val context: Context) :
                 }
             }
             levelEntity.map.rank = newRank
+        }
+    }
+
+    private fun calculateRankPercentage() {
+        val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
+        if (shotsLeaderboard == null) {
+            levelEntity.map.rankPercentage = -1f
+        } else {
+            val shotsMap = shotsLeaderboard.levels["l${levelEntity.level.levelId}"]!!.shots
+            val shots = levelEntity.map.shots
+            var totalPlayers = 0L
+            var totalPlayersWhoFinishedInFewerOrEqualShots = 0L
+            shotsMap.forEach {
+                totalPlayers += it.value
+                if (it.key.substring(1).toLong() <= shots) {
+                    totalPlayersWhoFinishedInFewerOrEqualShots += it.value
+                }
+            }
+            if (totalPlayers != 0L) {
+                levelEntity.map.rankPercentage = totalPlayersWhoFinishedInFewerOrEqualShots * 100f / totalPlayers
+            }
         }
     }
 }
