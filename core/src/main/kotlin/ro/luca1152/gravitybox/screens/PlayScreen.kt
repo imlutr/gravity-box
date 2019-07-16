@@ -234,7 +234,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val skipLevelPopUp = object : NewPopUp(context, 600f, 370f, skin) {
         val thisPopUp = this // Can't put a popup@... So this will do
         val skipLevelButtonText = DistanceFieldLabel(context, "Skip level", skin, "regular", 36f, Color.WHITE)
-        val skipLevelButton = Button(skin, "long-button").apply {
+        val skipLevelTextButton = Button(skin, "long-button").apply {
             add(skipLevelButtonText)
             color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
             addListener(object : ClickListener() {
@@ -295,7 +295,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
             widget.run {
                 add(text).padBottom(32f).row()
-                add(skipLevelButton).width(492f).padBottom(32f).row()
+                add(skipLevelTextButton).width(492f).padBottom(32f).row()
                 add(noThanksButton).width(492f).row()
             }
         }
@@ -304,12 +304,12 @@ class PlayScreen(private val context: Context) : KtxScreen {
             super.act(delta)
             if (gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN <= 0f) {
                 skipLevelButtonText.setText("Skip level")
-                skipLevelButton.run {
+                skipLevelTextButton.run {
                     setColor(0 / 255f, 129 / 255f, 213 / 255f, 1f)
                 }
             } else {
                 skipLevelButtonText.setText("Wait ${secondsToTimeString(gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN)}")
-                skipLevelButton.run {
+                skipLevelTextButton.run {
                     setColor(99 / 255f, 116 / 255f, 132 / 255f, 1f)
                 }
             }
@@ -1619,11 +1619,17 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 // On Android it takes a bit to update Preferences, thus the skip level button flashed a bit without this condition
                 levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 2
             ) {
-                color.a = 0f
                 touchable = Touchable.disabled
+                if (!hasActions() && color.a == 1f) {
+                    println("plmmm hide skip")
+                    addAction(Actions.fadeOut(.2f))
+                }
             } else if (!isTouchable || isSkippingLevel) {
-                color.a = 1f
                 touchable = Touchable.enabled
+                if (!hasActions() && color.a == 0f) {
+                    println("plmm showww skip")
+                    addAction(Actions.fadeIn(.2f))
+                }
             }
 
             // The skip level button should be hidden if the current level is the last one.
@@ -1755,6 +1761,16 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         restartButton.run {
             touchable = Touchable.enabled
+            addAction(
+                Actions.sequence(
+                    Actions.delay(fadeOutDuration),
+                    Actions.fadeIn(fadeInDuration)
+                )
+            )
+        }
+        skipLevelButton.run {
+            touchable = Touchable.enabled
+            clearActions()
             addAction(
                 Actions.sequence(
                     Actions.delay(fadeOutDuration),
