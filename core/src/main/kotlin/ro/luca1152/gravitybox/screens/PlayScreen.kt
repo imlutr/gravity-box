@@ -357,7 +357,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         padLeft(padLeftRight).padRight(padLeftRight)
         padBottom(padTopBottom).padTop(padTopBottom)
         add(topRow).growX().expandY().top().row()
-        add(rankLabel).expand().bottom().padBottom(33f).row()
+        add(rankLabel).expand().bottom().padBottom(31f).row()
     }
     private val githubPopUp = NewPopUp(context, 600f, 440f, skin).apply popup@{
         val text = DistanceFieldLabel(
