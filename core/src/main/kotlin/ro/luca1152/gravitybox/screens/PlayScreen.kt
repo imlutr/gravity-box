@@ -1585,9 +1585,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun updateFinishRankLabel() {
         if (!levelEntity.level.isLevelFinished) return
-        levelFinishRankLabel.run {
-            setText("rank #${levelEntity.map.rank}")
-            layout()
+        if (levelEntity.map.rank != -1) {
+            levelFinishRankLabel.run {
+                setText("rank #${levelEntity.map.rank}")
+                layout()
+            }
         }
     }
 
@@ -1621,13 +1623,11 @@ class PlayScreen(private val context: Context) : KtxScreen {
             ) {
                 touchable = Touchable.disabled
                 if (!hasActions() && color.a == 1f) {
-                    println("plmmm hide skip")
                     addAction(Actions.fadeOut(.2f))
                 }
             } else if (!isTouchable || isSkippingLevel) {
                 touchable = Touchable.enabled
                 if (!hasActions() && color.a == 0f) {
-                    println("plmm showww skip")
                     addAction(Actions.fadeIn(.2f))
                 }
             }
