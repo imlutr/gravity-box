@@ -90,7 +90,7 @@ open class BaseDistanceFieldLabel(
             float distance = texture2D(u_texture, v_texCoord).a;
             float alpha = smoothstep(outerEdgeCenter - smoothing, outerEdgeCenter + smoothing, distance);
             float border = smoothstep(0.5 - smoothing, 0.5 + smoothing, distance);
-            gl_FragColor = vec4( mix(u_outlineColor.rgb, v_color.rgb, border), alpha );
+            gl_FragColor = vec4(mix(u_outlineColor.rgb, v_color.rgb, border), v_color.a * alpha);
         }
         """.trimIndent()
 
