@@ -27,7 +27,7 @@ import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.addToEngine
 import ro.luca1152.gravitybox.utils.kotlin.newEntity
-import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
+import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 
 object TextEntity {
     fun createEntity(
@@ -43,7 +43,13 @@ object TextEntity {
         scene2D(context)
         scene2D.run {
             group.run {
-                val label = DistanceFieldLabel(context, text.string, skin, "regular", 37f).apply {
+                val label = DistanceFieldLabel(
+                    context,
+                    text.string,
+                    skin,
+                    "regular",
+                    37f
+                ).apply {
                     setSize(prefWidth, prefHeight)
                 }
                 setScale(1 / PPM)

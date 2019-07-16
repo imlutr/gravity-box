@@ -15,34 +15,28 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.ui.popup
+package ro.luca1152.gravitybox.utils.ui.label
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.utils.Align
 import ktx.inject.Context
-import ro.luca1152.gravitybox.utils.ui.Colors
-import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
+import ro.luca1152.gravitybox.utils.kotlin.DistanceFieldShader
 
-class TextPopUp(
+/** A simple distance field label. No outline. */
+class DistanceFieldLabel(
     context: Context,
-    width: Float, height: Float,
     text: CharSequence,
-    skin: Skin, fontName: String,
-    textSize: Float = 32f,
-    textColor: Color = Color.WHITE
-) : PopUp(context, width, height, skin) {
-    private val textLabel = DistanceFieldLabel(context, text, skin, fontName, textSize, textColor).apply {
-        setWrap(true)
-        setAlignment(Align.center, Align.center)
-    }
+    skin: Skin,
+    styleName: String,
+    fontSize: Float = 32f,
+    color: Color = Color.WHITE
+) : BaseDistanceFieldLabel(text, skin, styleName, fontSize, color) {
+    private val distanceFieldShader: DistanceFieldShader = context.inject()
 
-    init {
-        widget.add(textLabel).prefWidth(width - 50f).expand().center()
-    }
-
-    override fun act(delta: Float) {
-        super.act(delta)
-        textLabel.color = Colors.gameColor
+    override fun draw(batch: Batch, parentAlpha: Float) {
+        batch.shader = distanceFieldShader
+        super.draw(batch, parentAlpha)
+        batch.shader = null
     }
 }

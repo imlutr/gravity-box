@@ -59,8 +59,9 @@ import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
-import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
+import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
+import ro.luca1152.gravitybox.utils.ui.label.OutlineDistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
 import kotlin.math.min
 
@@ -221,7 +222,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             menuOverlayStage.addActor(skipLevelPopUp)
         })
     }
-    private val rankLabel = DistanceFieldLabel(
+    private val rankLabel = OutlineDistanceFieldLabel(
         context,
         "rank #x",
         skin, "regular", 37f, Colors.gameColor

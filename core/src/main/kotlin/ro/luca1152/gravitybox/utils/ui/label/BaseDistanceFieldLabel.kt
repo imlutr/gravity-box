@@ -17,19 +17,17 @@
 
 @file:Suppress("LibGDXStaticResource")
 
-package ro.luca1152.gravitybox.utils.ui
+package ro.luca1152.gravitybox.utils.ui.label
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
-import ktx.inject.Context
-import ro.luca1152.gravitybox.utils.kotlin.DistanceFieldShader
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
+import ro.luca1152.gravitybox.utils.ui.Colors
 
-class DistanceFieldLabel(
-    context: Context,
+/** The base DistanceFieldLabel class. Meant to be extended, not used as is. */
+open class BaseDistanceFieldLabel(
     text: CharSequence,
     skin: Skin,
     styleName: String,
@@ -73,11 +71,33 @@ class DistanceFieldLabel(
             }
         """.trimIndent()
 
+        val outlineFragmentShader = """
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+        
+        uniform sampler2D u_texture;
+        uniform vec4 u_outlineColor;
+        
+        varying vec4 v_color;
+        varying vec2 v_texCoord;
+        
+        const float smoothing = 1.0/16.0;
+        const float outlineWidth = 3.0/16.0;
+        const float outerEdgeCenter = 0.5 - outlineWidth;
+        
+        void main() {
+            float distance = texture2D(u_texture, v_texCoord).a;
+            float alpha = smoothstep(outerEdgeCenter - smoothing, outerEdgeCenter + smoothing, distance);
+            float border = smoothstep(0.5 - smoothing, 0.5 + smoothing, distance);
+            gl_FragColor = vec4( mix(u_outlineColor.rgb, v_color.rgb, border), alpha );
+        }
+        """.trimIndent()
+
         private const val DEFAULT_FONT_SIZE = 32f
     }
 
-    private var syncColorsWithColorScheme = true
-    private val distanceFieldShader: DistanceFieldShader = context.inject()
+    var syncColorsWithColorScheme = true
 
     init {
         this.color = color
@@ -93,11 +113,5 @@ class DistanceFieldLabel(
         if (syncColorsWithColorScheme && color != Colors.uiDownColor) {
             color.setWithoutAlpha(Colors.gameColor)
         }
-    }
-
-    override fun draw(batch: Batch, parentAlpha: Float) {
-        batch.shader = distanceFieldShader
-        super.draw(batch, parentAlpha)
-        batch.shader = null
     }
 }

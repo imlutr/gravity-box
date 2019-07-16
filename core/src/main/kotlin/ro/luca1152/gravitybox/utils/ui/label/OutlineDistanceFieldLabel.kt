@@ -15,35 +15,31 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.utils.ui.popup
+package ro.luca1152.gravitybox.utils.ui.label
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.utils.Align
 import ktx.inject.Context
+import ro.luca1152.gravitybox.utils.kotlin.OutlineDistanceFieldShader
 import ro.luca1152.gravitybox.utils.ui.Colors
-import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 
-class YesNoTextPopUp(
+class OutlineDistanceFieldLabel(
     context: Context,
-    width: Float, height: Float,
     text: CharSequence,
-    skin: Skin, fontName: String,
-    textSize: Float,
-    textColor: Color = Color.WHITE,
-    yesIsHighlighted: Boolean = false, noIsHighlighted: Boolean = false
-) : YesNoPopUp(context, width, height, skin, yesIsHighlighted, noIsHighlighted) {
-    val textLabel = DistanceFieldLabel(context, text, skin, fontName, textSize, textColor).apply {
-        setWrap(true)
-        setAlignment(Align.center, Align.center)
-    }
+    skin: Skin,
+    styleName: String,
+    fontSize: Float = 32f,
+    color: Color = Color.WHITE
+) : BaseDistanceFieldLabel(text, skin, styleName, fontSize, color) {
+    private val outlineDistanceFieldShader: OutlineDistanceFieldShader = context.inject()
 
-    init {
-        emptySpace.add(textLabel).prefWidth(width - 50f).expand().center()
-    }
-
-    override fun act(delta: Float) {
-        super.act(delta)
-        textLabel.color = Colors.gameColor
+    override fun draw(batch: Batch, parentAlpha: Float) {
+        batch.shader = outlineDistanceFieldShader
+        if (syncColorsWithColorScheme) {
+            outlineDistanceFieldShader.setUniformf("u_outlineColor", Colors.bgColor)
+        }
+        super.draw(batch, parentAlpha)
+        batch.shader = null
     }
 }

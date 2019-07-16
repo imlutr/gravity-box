@@ -54,8 +54,8 @@ import ro.luca1152.gravitybox.utils.assets.json.MapFactory
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
-import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.*
+import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.PopUp
 import ro.luca1152.gravitybox.utils.ui.popup.TextPopUp
 import ro.luca1152.gravitybox.utils.ui.popup.YesNoTextPopUp
