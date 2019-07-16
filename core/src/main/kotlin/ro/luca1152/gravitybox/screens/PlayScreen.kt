@@ -1763,12 +1763,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
             )
         }
         rankLabel.run {
-            addAction(
-                Actions.sequence(
-                    Actions.delay(fadeOutDuration),
-                    Actions.fadeIn(fadeInDuration)
-                )
-            )
+            color.a = 1f
+            isVisible = false
         }
     }
 

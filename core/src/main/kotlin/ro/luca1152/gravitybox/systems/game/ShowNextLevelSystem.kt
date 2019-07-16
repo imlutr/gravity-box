@@ -109,6 +109,7 @@ class ShowNextLevelSystem(
         }
         levelEntity.map.run {
             forceCenterCameraOnPlayer = true
+            rank = -1
             resetPassengers()
         }
         gameStage.addAction(
