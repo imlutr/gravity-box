@@ -1431,7 +1431,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(DashedLineRenderingSystem(context))
             addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
-            addSystem(LevelFinishSystem())
+            addSystem(LevelFinishSystem(context))
             addSystem(ShowNextLevelSystem(context, this@PlayScreen))
             addSystem(PromptUserToRateSystem(context, this@PlayScreen))
             addSystem(ShowInterstitialAdSystem(context))
@@ -1636,6 +1636,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun updateUiAfterLevelFinish() {
         if (!levelIsFinished || levelEntity.level.isRestarting) return
+
+        // The leaderboard was not loaded yet, so the finish UI shouldn't be shown
+        if (levelEntity.map.rank == -1) return
 
         // The finish UI was already shown
         if (framedRestartButton.isTouchable) return

@@ -20,14 +20,19 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import ro.luca1152.gravitybox.components.game.LevelComponent
-import ro.luca1152.gravitybox.components.game.PlayerComponent
-import ro.luca1152.gravitybox.components.game.level
-import ro.luca1152.gravitybox.components.game.player
+import ktx.inject.Context
+import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 /** Handles what happens when a level is finished. */
-class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) : EntitySystem() {
+class LevelFinishSystem(
+    context: Context,
+    private val restartLevelWhenFinished: Boolean = false
+) : EntitySystem() {
+    // Injected objects
+    private val eventQueue: EventQueue = context.inject()
+
     // Entities
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
@@ -44,7 +49,14 @@ class LevelFinishSystem(private val restartLevelWhenFinished: Boolean = false) :
         if (!levelIsFinished) return
         if (levelEntity.level.isRestarting) return
 
-        if (restartLevelWhenFinished)
+        if (restartLevelWhenFinished) {
             levelEntity.level.restartLevel = true
+            return
+        }
+
+        // The leaderboard wasn't loaded yet, showing the finish UI is pointless
+        if (levelEntity.map.rank == -1) {
+            eventQueue.add(ShowNextLevelEvent())
+        }
     }
 }
