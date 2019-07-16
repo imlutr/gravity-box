@@ -21,13 +21,18 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import ktx.inject.Context
-import ro.luca1152.gravitybox.components.game.*
+import ro.luca1152.gravitybox.components.game.LevelComponent
+import ro.luca1152.gravitybox.components.game.PlayerComponent
+import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.components.game.player
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.injectNullable
+import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 
 /** Handles what happens when a level is finished. */
 class LevelFinishSystem(
-    context: Context,
+    private val context: Context,
     private val restartLevelWhenFinished: Boolean = false
 ) : EntitySystem() {
     // Injected objects
@@ -55,7 +60,7 @@ class LevelFinishSystem(
         }
 
         // The leaderboard wasn't loaded yet, showing the finish UI is pointless
-        if (levelEntity.map.rank == -1) {
+        if (context.injectNullable<GameShotsLeaderboard>() == null) {
             eventQueue.add(ShowNextLevelEvent())
         }
     }

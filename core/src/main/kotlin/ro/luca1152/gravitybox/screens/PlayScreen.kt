@@ -57,6 +57,7 @@ import ro.luca1152.gravitybox.utils.ads.RewardedAdEventListener
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
@@ -1089,7 +1090,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private val levelFinishRankPercentageLabel = OutlineDistanceFieldLabel(
         context,
-        "(top x.xx%)",
+        "(top x.y%)",
         skin, "regular", 30f, Colors.gameColor
     ).apply {
         color.a = 0f
@@ -1656,7 +1657,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         if (!levelIsFinished || levelEntity.level.isRestarting) return
 
         // The leaderboard was not loaded yet, so the finish UI shouldn't be shown
-        if (levelEntity.map.rank == -1) return
+        if (context.injectNullable<GameShotsLeaderboard>() == null) return
 
         // The finish UI was already shown
         if (framedRestartButton.isTouchable) return
