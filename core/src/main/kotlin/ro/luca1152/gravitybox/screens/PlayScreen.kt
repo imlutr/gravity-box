@@ -558,7 +558,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
         })
     }
-    private val levelLabel = DistanceFieldLabel(
+    private val levelLabel = OutlineDistanceFieldLabel(
         context,
         "#${when {
             gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
@@ -574,9 +574,27 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
         })
     }
+    private val levelMenuOverlayRankLabel = OutlineDistanceFieldLabel(
+            context,
+            "(Unranked)",
+            skin, "semi-bold", 37f, Colors.gameColor
+    ).apply {
+        addListener(object : ClickListener() {
+            // Make the player not shoot if the label is clicked
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                return true
+            }
+        })
+    }
+
+    private val levelAndRankLabels = Table().apply {
+        add(levelLabel).row()
+        add(levelMenuOverlayRankLabel).row()
+    }
+
     private val leftLevelRightTable = Table(skin).apply {
         add(leftButton).padRight(64f)
-        add(levelLabel).padRight(64f)
+        add(levelAndRankLabels).padRight(64f)
         add(rightButton)
         addAction(Actions.fadeOut(0f))
     }
@@ -1450,6 +1468,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
             addSystem(LevelFinishSystem(context))
+            addSystem(WriteRankToStorageSystem(context))
             addSystem(ShowNextLevelSystem(context, this@PlayScreen))
             addSystem(PromptUserToRateSystem(context, this@PlayScreen))
             addSystem(ShowInterstitialAdSystem(context))
@@ -1561,6 +1580,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         updateFinishRankLabel()
         updateFinishRankPercentageLabel()
         updateLevelLabel()
+        updateLevelMenuOverlayRankLabel()
         updateSkipLevelButton()
         updateLeftRightButtons()
         updateUiAfterLevelFinish()
@@ -1618,6 +1638,23 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
             rootOverlayTable.setLayoutEnabled(false)
             shouldUpdateLevelLabel = false
+        }
+    }
+
+    private fun updateLevelMenuOverlayRankLabel() {
+        val storedRank = gameRules.getGameLevelRank(levelEntity.level.levelId)
+        val storedHighscore = gameRules.getGameLevelRank(levelEntity.level.levelId)
+        levelMenuOverlayRankLabel.run {
+            if (storedRank != gameRules.DEFAULT_RANK_VALUE) {
+                setText("(rank #p$storedRank)")
+            } else {
+                if (storedHighscore == gameRules.SKIPPED_LEVEL_SCORE_VALUE) {
+                    setText("(Skipped)")
+                } else {
+                    setText("(Unranked)")
+                }
+            }
+            layout()
         }
     }
 

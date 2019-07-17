@@ -55,7 +55,6 @@ class LevelFinishSystem(
         }
 
         if (!didWriteRankToStorage) {
-            println("plmmm write rank to storage")
             eventQueue.add(WriteRankToStorageEvent())
             didWriteRankToStorage = true
         }
