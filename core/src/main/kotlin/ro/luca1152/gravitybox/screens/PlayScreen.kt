@@ -64,8 +64,6 @@ import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.label.OutlineDistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.panes.LeaderboardPane
 import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import kotlin.math.min
 
 @Suppress("ConstantConditionIf")
@@ -1648,9 +1646,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private fun updateFinishRankPercentageLabel() {
         if (!levelEntity.level.isLevelFinished) return
         levelFinishRankPercentageLabel.run {
-            val rankPercentageAsString = DecimalFormat("#.#").apply { roundingMode = RoundingMode.CEILING }
-                .format(levelEntity.map.rankPercentage)
-            setText("(top $rankPercentageAsString%)")
+            val percentageAsString = "%.1f".format(levelEntity.map.rankPercentage)
+            setText("(top ${if (percentageAsString == "0.0") "0.1" else percentageAsString}%)")
             layout()
         }
     }
