@@ -44,6 +44,7 @@ import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
+import ro.luca1152.gravitybox.components.game.player
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
@@ -1576,6 +1577,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun update() {
+        updateMenuButtonTouchability()
         updateRankLabel()
         updateFinishRankLabel()
         updateFinishRankPercentageLabel()
@@ -1596,6 +1598,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
         uiStage.draw()
         menuOverlayStage.draw()
         finishUiStage.draw()
+    }
+
+    private fun updateMenuButtonTouchability() {
+        menuButton.touchable = if (playerEntity.player.isInsideFinishPoint) Touchable.disabled else Touchable.enabled
     }
 
     private fun updateRankLabel() {
