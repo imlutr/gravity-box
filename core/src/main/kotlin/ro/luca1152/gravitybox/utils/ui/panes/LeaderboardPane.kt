@@ -83,7 +83,7 @@ class LeaderboardPane(
                 context, "#$i${if (i == 10) "+" else ""}",
                 skin, "regular", 36f, skin.getColor("text-gold")
             )
-            add(rankILabel).expand().padBottom(if (i == 10) 0f else rowHeight).row()
+            add(rankILabel).expand().spaceBottom(rowHeight).row()
         }
     }
 
@@ -97,7 +97,7 @@ class LeaderboardPane(
                     context, "$shotI${if (shotsAdded == 10) "+" else ""}",
                     skin, "regular", 36f, skin.getColor("text-gold")
                 )
-                add(shotILabel).expand().padBottom(if (shotsAdded == 10) 0f else rowHeight).row()
+                add(shotILabel).expand().spaceBottom(rowHeight).row()
             }
             shotI++
         }
@@ -111,15 +111,20 @@ class LeaderboardPane(
 
         var shotI = 1
         var percentagesAdded = 0
+        var playersAdded = 0L
         while (percentagesAdded < 10 && percentagesAdded < shotsLeaderboard.levels["l$currentLevelId"]!!.shots.size) {
             if (shotsLeaderboard.levels["l$currentLevelId"]!!.shots.containsKey("s$shotI")) {
-                val percentage = shotsLeaderboard.levels["l$currentLevelId"]!!.shots["s$shotI"]!! * 100f / totalPlayers
                 percentagesAdded++
+                val playersForIShots = shotsLeaderboard.levels["l$currentLevelId"]!!.shots["s$shotI"]!!
+                if (percentagesAdded < 10) {
+                    playersAdded += playersForIShots
+                }
+                val percentage = (if (percentagesAdded == 10) totalPlayers - playersAdded else playersForIShots) * 100f / totalPlayers
                 val percentageILabel = DistanceFieldLabel(
                     context, "${"%.1f".format(percentage)}%",
                     skin, "regular", 36f, skin.getColor("text-gold")
                 )
-                add(percentageILabel).expand().padBottom(if (percentagesAdded == 10) 0f else rowHeight).row()
+                add(percentageILabel).expand().spaceBottom(rowHeight).row()
             }
             shotI++
         }
