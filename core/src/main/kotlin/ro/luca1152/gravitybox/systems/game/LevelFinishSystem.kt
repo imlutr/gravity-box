@@ -21,6 +21,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import ktx.inject.Context
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.level
@@ -28,6 +29,7 @@ import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
+import kotlin.math.max
 
 /** Handles what happens when a level is finished. */
 class LevelFinishSystem(
@@ -36,6 +38,7 @@ class LevelFinishSystem(
 ) : EntitySystem() {
     // Injected objects
     private val eventQueue: EventQueue = context.inject()
+    private val gameRules: GameRules = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -68,5 +71,11 @@ class LevelFinishSystem(
         if (context.injectNullable<GameShotsLeaderboard>() == null) {
             eventQueue.add(ShowNextLevelEvent())
         }
+
+        updateHighestFinishedLevel()
+    }
+
+    private fun updateHighestFinishedLevel() {
+        gameRules.HIGHEST_FINISHED_LEVEL = max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
     }
 }

@@ -36,7 +36,6 @@ import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
-import kotlin.math.max
 import kotlin.math.min
 
 class ShowNextLevelEvent : Event
@@ -103,7 +102,6 @@ class ShowNextLevelSystem(
     }
 
     private fun showNextLevel() {
-        gameRules.HIGHEST_FINISHED_LEVEL = max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
         levelEntity.level.run {
             levelId = min(levelEntity.level.levelId + 1, gameRules.LEVEL_COUNT)
             isRestarting = true

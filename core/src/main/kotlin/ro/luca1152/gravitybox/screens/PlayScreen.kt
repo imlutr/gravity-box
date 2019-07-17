@@ -1646,7 +1646,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         val storedHighscore = gameRules.getGameLevelRank(levelEntity.level.levelId)
         levelMenuOverlayRankLabel.run {
             if (storedRank != gameRules.DEFAULT_RANK_VALUE) {
-                setText("(rank #p$storedRank)")
+                setText("(rank #$storedRank)")
             } else {
                 if (storedHighscore == gameRules.SKIPPED_LEVEL_SCORE_VALUE) {
                     setText("(Skipped)")
