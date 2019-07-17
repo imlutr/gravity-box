@@ -180,14 +180,16 @@ class PlayScreen(private val context: Context) : KtxScreen {
                     Actions.run {
                         touchable = Touchable.disabled
                         skipLevelButton.run {
-                            addAction(
-                                    Actions.moveTo(-prefWidth - 2 * padLeftRight, y, .2f, Interpolation.pow3In)
-                            )
+                            addAction(Actions.moveBy(-270f, 0f, .2f, Interpolation.pow3In))
+                        }
+                        noAdsButton.run {
+                            addAction(Actions.moveBy(-270f, 0f, .2f, Interpolation.pow3In))
+                        }
+                        leaderboardButton.run {
+                            addAction(Actions.moveBy(270f, 0f, .2f, Interpolation.pow3In))
                         }
                         restartButton.run {
-                            addAction(
-                                    Actions.moveTo(uiStage.viewport.worldWidth, y, .2f, Interpolation.pow3In)
-                            )
+                            addAction(Actions.moveBy(270f, 0f, .2f, Interpolation.pow3In))
                         }
                         rankLabel.run {
                             addAction(
@@ -223,6 +225,20 @@ class PlayScreen(private val context: Context) : KtxScreen {
         iconCell!!.padLeft(6f) // The icon doesn't look centered
         addClickRunnable(Runnable {
             menuOverlayStage.addActor(skipLevelPopUp)
+        })
+    }
+    private val noAdsButton = ClickButton(skin, "empty-round-button-padded").apply {
+        addIcon("no-ads-icon")
+        addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                menuOverlayStage.addActor(createNoAdsPopUp())
+            }
+        })
+    }
+    private val leaderboardButton = ClickButton(skin, "empty-round-button-padded").apply {
+        addIcon("leaderboard-icon")
+        addClickRunnable(Runnable {
         })
     }
     private val rankLabel = OutlineDistanceFieldLabel(
@@ -351,15 +367,17 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
     }
     private val topRow = Table().apply {
-        add(skipLevelButton).expand().left().padTop(-25f).padLeft(-25f)
-        add(menuButton).expand().padTop(-25f)
-        add(restartButton).expand().right().padTop(-25f).padRight(-25f)
+        add(skipLevelButton).padRight(6f)
+        add(noAdsButton).expand().left()
+        add(menuButton).expand()
+        add(leaderboardButton).expand().right()
+        add(restartButton).padLeft(6f)
     }
     private val rootTable = Table().apply {
         setFillParent(true)
         padLeft(padLeftRight).padRight(padLeftRight)
         padBottom(padTopBottom).padTop(padTopBottom)
-        add(topRow).growX().expandY().top().row()
+        add(topRow).fillX().expandY().top().padTop(-25f).padLeft(-25f).padRight(-25f).row()
         add(rankLabel).expand().bottom().padBottom(31f).row()
     }
     private val githubPopUp = NewPopUp(context, 600f, 440f, skin).apply popup@{
@@ -409,7 +427,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(maybeLaterButton).width(492f).row()
         }
     }
-    private val githubButton = ClickButton(skin, "gray-full-round-button").apply {
+    private val githubButton = ClickButton(skin, "empty-round-button").apply {
         addIcon("github-icon")
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -603,7 +621,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
         if (gameRules.ENABLE_LEVEL_EDITOR) {
             add(levelEditorButton).expand().top().left().padLeft(-levelEditorButton.prefWidth)
         }
-        add(githubButton).expand().top().right().padRight(-githubButton.prefWidth)
     }
     private val topPart = Table(skin).apply {
         addActor(topPartImage)
@@ -844,15 +861,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
     }
 
-    private val noAdsButton = ClickButton(skin, "empty-round-button").apply {
-        addIcon("no-ads-icon")
-        addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
-                menuOverlayStage.addActor(createNoAdsPopUp())
-            }
-        })
-    }
     private val bottomGrayStrip = Table(skin).apply {
         val grayImage = object : Image(manager.get(Assets.tileset).findRegion("pixel")) {
             init {
@@ -876,14 +884,14 @@ class PlayScreen(private val context: Context) : KtxScreen {
             add(heartButton)
         }
         // For now the game has no audio
-        @Suppress("UNUSED_VARIABLE") val middlePart = Table(skin).apply {
+        @Suppress("UNUSED_VARIABLE")
+        val middlePart = Table(skin).apply {
             add(audioButton)
         }
         val rightPart = Table(skin).apply {
-            add(noAdsButton)
+            add(githubButton)
         }
         add(leftPart).padLeft(padLeftRight).expand().left()
-//        add(middlePart).expand()
         add(rightPart).padRight(padLeftRight).expand().right()
     }
     val rateGamePromptPopUp = NewPopUp(context, 600f, 570f, skin).apply popup@{
@@ -1211,9 +1219,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun showMenuOverlay() {
-        githubButton.run {
-            addAction(Actions.moveTo(x - padLeftRight - prefWidth, y, .2f, Interpolation.pow3In))
-        }
         levelEditorButton.run {
             addAction(Actions.moveTo(x + padLeftRight + prefWidth, y, .2f, Interpolation.pow3In))
         }
@@ -1244,9 +1249,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun hideMenuOverlay() {
-        githubButton.run {
-            addAction(Actions.moveTo(x + padLeftRight + prefWidth, y, .2f, Interpolation.pow3In))
-        }
         levelEditorButton.run {
             addAction(Actions.moveTo(x - padLeftRight - prefWidth, y, .2f, Interpolation.pow3In))
         }
@@ -1272,21 +1274,32 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addAction(
                     Actions.sequence(
                             Actions.delay(.1f),
-                            Actions.moveTo(
-                                    -25f,
-                                    y, .2f, Interpolation.pow3In
-                            )
+                            Actions.moveBy(270f, 0f, .2f, Interpolation.pow3In)
                     )
             )
+        }
+        noAdsButton.run {
+            addAction(
+                    Actions.sequence(
+                            Actions.delay(.1f),
+                            Actions.moveBy(270f, 0f, .2f, Interpolation.pow3In)
+                    )
+            )
+        }
+        leaderboardButton.run {
+            addAction(
+                    Actions.sequence(
+                            Actions.delay(.1f),
+                            Actions.moveBy(-270f, 0f, .2f, Interpolation.pow3In)
+                    )
+            )
+
         }
         restartButton.run {
             addAction(
                     Actions.sequence(
                             Actions.delay(.1f),
-                            Actions.moveTo(
-                                    uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth + 25f,
-                                    y, .2f, Interpolation.pow3In
-                            )
+                            Actions.moveBy(-270f, 0f, .2f, Interpolation.pow3In)
                     )
             )
         }
@@ -1734,7 +1747,15 @@ class PlayScreen(private val context: Context) : KtxScreen {
             touchable = Touchable.disabled
             addAction(Actions.fadeOut(fadeOutDuration))
         }
+        noAdsButton.run {
+            touchable = Touchable.disabled
+            addAction(Actions.fadeOut(fadeOutDuration))
+        }
         menuButton.run {
+            touchable = Touchable.disabled
+            addAction(Actions.fadeOut(fadeOutDuration))
+        }
+        leaderboardButton.run {
             touchable = Touchable.disabled
             addAction(Actions.fadeOut(fadeOutDuration))
         }
@@ -1818,25 +1839,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
         // Fade in things
         val fadeInDuration = .2f
-        menuButton.run {
-            touchable = Touchable.enabled
-            addAction(
-                    Actions.sequence(
-                            Actions.delay(fadeOutDuration),
-                            Actions.fadeIn(fadeInDuration)
-                    )
-            )
-
-        }
-        restartButton.run {
-            touchable = Touchable.enabled
-            addAction(
-                    Actions.sequence(
-                            Actions.delay(fadeOutDuration),
-                            Actions.fadeIn(fadeInDuration)
-                    )
-            )
-        }
         skipLevelButton.run {
             if (!((levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1 && !isSkippingLevel &&
                             // On Android it takes a bit to update Preferences, thus the skip level button flashed a bit without this condition
@@ -1851,6 +1853,22 @@ class PlayScreen(private val context: Context) : KtxScreen {
                         )
                 )
             }
+        }
+        noAdsButton.run {
+            touchable = Touchable.enabled
+            addAction(Actions.sequence(Actions.delay(fadeOutDuration), Actions.fadeIn(fadeInDuration)))
+        }
+        menuButton.run {
+            touchable = Touchable.enabled
+            addAction(Actions.sequence(Actions.delay(fadeOutDuration), Actions.fadeIn(fadeInDuration)))
+        }
+        leaderboardButton.run {
+            touchable = Touchable.enabled
+            addAction(Actions.sequence(Actions.delay(fadeOutDuration), Actions.fadeIn(fadeInDuration)))
+        }
+        restartButton.run {
+            touchable = Touchable.enabled
+            addAction(Actions.sequence(Actions.delay(fadeOutDuration), Actions.fadeIn(fadeInDuration)))
         }
         rankLabel.run {
             color.a = 1f

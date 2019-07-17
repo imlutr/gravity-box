@@ -64,6 +64,13 @@ abstract class Button(
                 }
                 icon?.color?.setWithoutAlpha(Colors.bgColor)
             }
+            "empty-round-button-padded" -> {
+                when (isPressed || isToggled) {
+                    true -> color.setWithoutAlpha(Colors.uiDownColor)
+                    false -> color.setWithoutAlpha(Colors.gameColor)
+                }
+                icon?.color?.setWithoutAlpha(color)
+            }
             "empty-round-button" -> {
                 color.set(Colors.uiWhite)
                 icon?.color?.set(Colors.uiWhite)

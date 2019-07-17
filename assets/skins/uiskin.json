@@ -54,6 +54,10 @@
       up: empty-round-button
       down: empty-round-button
     }
+    empty-round-button-padded: {
+      up: empty-round-button-padded
+      down: empty-round-button-padded
+    }
     menu-button: {
       up: menu-icon
       down: menu-icon
