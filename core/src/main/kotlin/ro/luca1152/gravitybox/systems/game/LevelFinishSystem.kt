@@ -41,14 +41,24 @@ class LevelFinishSystem(
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
 
+    private var didWriteRankToStorage = false
+
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
         playerEntity = engine.getSingleton<PlayerComponent>()
     }
 
     override fun update(deltaTime: Float) {
-        if (!levelEntity.level.isLevelFinished) return
-        if (levelEntity.level.isRestarting) return
+        if (!levelEntity.level.isLevelFinished || levelEntity.level.isRestarting) {
+            didWriteRankToStorage = false
+            return
+        }
+
+        if (!didWriteRankToStorage) {
+            println("plmmm write rank to storage")
+            eventQueue.add(WriteRankToStorageEvent())
+            didWriteRankToStorage = true
+        }
 
         if (restartLevelWhenFinished) {
             levelEntity.level.restartLevel = true

@@ -512,8 +512,8 @@
      inkscape:bbox-nodes="true"
      inkscape:bbox-paths="true"
      inkscape:current-layer="layer1"
-     inkscape:cx="7180.504"
-     inkscape:cy="1523.2886"
+     inkscape:cx="3734.5128"
+     inkscape:cy="1458.3599"
      inkscape:document-units="px"
      inkscape:measure-end="3774.09,-659.996"
      inkscape:measure-start="3774.27,-645.147"
@@ -536,7 +536,7 @@
      inkscape:window-width="1920"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:zoom="0.5">
+     inkscape:zoom="0.35355339">
     <inkscape:grid
        empcolor="#7a1919"
        empopacity="0.25098039"
@@ -1381,6 +1381,7 @@
        inkscape:connector-curvature="0" />
   </g>
 </g>
+
 
 
 
@@ -3273,15 +3274,20 @@
    sodipodi:nodetypes="ccc" />
 <text
    xml:space="preserve"
-   style="font-style:normal;font-weight:normal;font-size:5.82083321px;line-height:6.61458302px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:-3.17235422px;text-anchor:middle;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   style="font-style:normal;font-weight:normal;font-size:5.82083321px;line-height:6.61458302px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#549191;fill-opacity:1;stroke:none;stroke-width:0.26458332"
    x="1161.4592"
-   y="32.791279"
+   y="28.25853"
    id="text3055"><tspan
      sodipodi:role="line"
      id="tspan3053"
      x="1161.4592"
-     y="32.791279"
-     style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.78958321px;font-family:Nunito;-inkscape-font-specification:'Nunito Semi-Bold';fill:#549191;fill-opacity:1;stroke-width:0.26458332">#4</tspan></text>
+     y="28.25853"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.78958321px;font-family:'Nunito SemiBold';-inkscape-font-specification:'Nunito SemiBold,  Bold';word-spacing:0px;fill:#549191;fill-opacity:1;stroke-width:0.26458332">#4</tspan><tspan
+     sodipodi:role="line"
+     x="1161.4592"
+     y="35.561882"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.78958321px;font-family:'Nunito SemiBold';-inkscape-font-specification:'Nunito SemiBold,  Bold';word-spacing:0px;fill:#549191;fill-opacity:1;stroke-width:0.26458332"
+     id="tspan1570">(rank #2)</tspan></text>
 <path
    sodipodi:nodetypes="ccc"
    inkscape:connector-curvature="0"

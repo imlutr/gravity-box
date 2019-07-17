@@ -255,6 +255,22 @@ class GameRules(context: Context) {
             preferences.putBoolean("didShowGuideBetweenLevels", value)
         }
 
+    /** The default value returned when reading a non-existent highscore using [getGameLevelHighscore]. */
+    val DEFAULT_RANK_VALUE = Int.MAX_VALUE
+
+    /** Returns the least number of shots the game (not community) level [level] was finished in. */
+    fun getGameLevelRank(level: Int) = preferences.getInteger("game${level}Rank", DEFAULT_RANK_VALUE)
+
+    /** Sets the least number of shots the game (not community) level [level] was finished in. */
+    fun setGameLevelRank(level: Int, rank: Int) {
+        if (getGameLevelRank(level) > rank) {
+            preferences.putInteger("game${level}Rank", rank)
+        } else {
+            Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
+        }
+    }
+
+
     // Analytics
     /** Returns how much time a player spent playing the given level. */
     fun getGameLevelPlayTime(level: Int) = preferences.getFloat("game${level}PlayTime", 0f)
