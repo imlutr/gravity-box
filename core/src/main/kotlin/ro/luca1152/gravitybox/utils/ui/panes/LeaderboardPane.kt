@@ -29,6 +29,8 @@ import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class LeaderboardPane(
     private val context: Context,
@@ -120,8 +122,9 @@ class LeaderboardPane(
                     playersAdded += playersForIShots
                 }
                 val percentage = (if (percentagesAdded == 10) totalPlayers - playersAdded else playersForIShots) * 100f / totalPlayers
+                val percentageAsString = DecimalFormat("#.#").apply { roundingMode = RoundingMode.CEILING }.format(percentage)
                 val percentageILabel = DistanceFieldLabel(
-                    context, "${"%.1f".format(percentage)}%",
+                    context, "$percentageAsString%",
                     skin, "regular", 36f, skin.getColor("text-gold")
                 )
                 add(percentageILabel).expand().spaceBottom(rowHeight).row()
