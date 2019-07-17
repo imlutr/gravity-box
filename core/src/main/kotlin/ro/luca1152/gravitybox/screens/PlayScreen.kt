@@ -98,17 +98,17 @@ class PlayScreen(private val context: Context) : KtxScreen {
     var shouldUpdateLevelLabel = false
     private val exitGameConfirmationPopUp = NewPopUp(context, 600f, 370f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            """
+                context,
+                """
             Are you sure you want to quit
             the game?
             """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
         )
         val exitButton = Button(skin, "long-button").apply {
             val buttonText = DistanceFieldLabel(
-                context,
-                "Exit",
-                skin, "regular", 36f, Color.WHITE
+                    context,
+                    "Exit",
+                    skin, "regular", 36f, Color.WHITE
             )
             add(buttonText)
             color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
@@ -121,9 +121,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         val keepPlayingButton = Button(skin, "long-button").apply {
             val buttonText = DistanceFieldLabel(
-                context,
-                "Keep playing",
-                skin, "regular", 36f, Color.WHITE
+                    context,
+                    "Keep playing",
+                    skin, "regular", 36f, Color.WHITE
             )
             add(buttonText)
             color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
@@ -176,35 +176,35 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val menuButton = ClickButton(skin, "menu-button").apply {
         addClickRunnable(Runnable {
             addAction(Actions.sequence(
-                Actions.run {
-                    touchable = Touchable.disabled
-                    skipLevelButton.run {
-                        addAction(
-                            Actions.moveTo(-prefWidth - 2 * padLeftRight, y, .2f, Interpolation.pow3In)
-                        )
-                    }
-                    restartButton.run {
-                        addAction(
-                            Actions.moveTo(uiStage.viewport.worldWidth, y, .2f, Interpolation.pow3In)
-                        )
-                    }
-                    rankLabel.run {
-                        addAction(
-                            Actions.parallel(
-                                Actions.moveTo(x, y - 100f - bottomGrayStripHeight, .2f, Interpolation.pow3In),
-                                Actions.fadeOut(.2f, Interpolation.pow3In)
-                            )
-                        )
-                    }
-                },
-                Actions.delay(.1f),
-                Actions.parallel(
-                    Actions.moveTo(x, bottomGrayStripHeight, .2f, Interpolation.pow3In),
-                    Actions.fadeOut(.2f, Interpolation.pow3In),
                     Actions.run {
-                        showMenuOverlay()
-                    }
-                )
+                        touchable = Touchable.disabled
+                        skipLevelButton.run {
+                            addAction(
+                                    Actions.moveTo(-prefWidth - 2 * padLeftRight, y, .2f, Interpolation.pow3In)
+                            )
+                        }
+                        restartButton.run {
+                            addAction(
+                                    Actions.moveTo(uiStage.viewport.worldWidth, y, .2f, Interpolation.pow3In)
+                            )
+                        }
+                        rankLabel.run {
+                            addAction(
+                                    Actions.parallel(
+                                            Actions.moveTo(x, y - 100f - bottomGrayStripHeight, .2f, Interpolation.pow3In),
+                                            Actions.fadeOut(.2f, Interpolation.pow3In)
+                                    )
+                            )
+                        }
+                    },
+                    Actions.delay(.1f),
+                    Actions.parallel(
+                            Actions.moveTo(x, bottomGrayStripHeight, .2f, Interpolation.pow3In),
+                            Actions.fadeOut(.2f, Interpolation.pow3In),
+                            Actions.run {
+                                showMenuOverlay()
+                            }
+                    )
             ))
         })
     }
@@ -225,9 +225,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
         })
     }
     private val rankLabel = OutlineDistanceFieldLabel(
-        context,
-        "rank #x",
-        skin, "regular", 37f, Colors.gameColor
+            context,
+            "rank #x",
+            skin, "regular", 37f, Colors.gameColor
     ).apply {
         isVisible = false
     }
@@ -276,8 +276,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
         init {
             val text = DistanceFieldLabel(
-                context,
-                """
+                    context,
+                    """
                 Watch a short video to skip
                 this level?
                 """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
@@ -326,8 +326,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val noInternetRewardedVideoPopUp = NewPopUp(context, 600f, 334f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            """
+                context,
+                """
             Couldn't load rewarded video...
 
             Please make sure you are
@@ -363,8 +363,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val githubPopUp = NewPopUp(context, 600f, 440f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            """
+                context,
+                """
             This game is fully open-source!
 
             Maybe star the GitHub repository
@@ -373,9 +373,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
         )
         val visitGithubButton = Button(skin, "long-button").apply {
             val buttonText = DistanceFieldLabel(
-                context,
-                "Visit GitHub repository",
-                skin, "regular", 36f, Color.WHITE
+                    context,
+                    "Visit GitHub repository",
+                    skin, "regular", 36f, Color.WHITE
             )
             add(buttonText)
             color.set(0 / 255f, 129 / 255f, 213 / 255f, 1f)
@@ -389,9 +389,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         val maybeLaterButton = Button(skin, "long-button").apply {
             val buttonText = DistanceFieldLabel(
-                context,
-                "Maybe later",
-                skin, "regular", 36f, Color.WHITE
+                    context,
+                    "Maybe later",
+                    skin, "regular", 36f, Color.WHITE
             )
             add(buttonText)
             color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
@@ -419,8 +419,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val levelEditorPopUp = NewPopUp(context, 600f, 370f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            """
+                context,
+                """
             Do you want to go to the level
             editor?
         """.trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
@@ -493,31 +493,31 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 val fadeOutDuration = .2f
                 val fadeInDuration = .2f
                 gameStage.addAction(
-                    Actions.sequence(
-                        Actions.run {
-                            levelEntity.level.isChangingLevel = true
-                            eventQueue.add(FadeOutEvent(fadeOutDuration))
-                        },
-                        Actions.delay(fadeOutDuration),
-                        Actions.run {
-                            shouldUpdateLevelLabel = true
-                            levelEntity.level.run {
-                                levelId = if (levelId == 1) {
-                                    if (gameRules.CAN_PLAY_ANY_LEVEL) gameRules.LEVEL_COUNT
-                                    else gameRules.HIGHEST_FINISHED_LEVEL + 1
-                                } else levelId - 1
-                                loadMap = true
-                                forceUpdateMap = true
-                            }
-                            levelEntity.map.run {
-                                eventQueue.add(UpdateRoundedPlatformsEvent())
-                                forceCenterCameraOnPlayer = true
-                            }
-                        },
-                        Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
-                        Actions.delay(fadeInDuration),
-                        Actions.run { levelEntity.level.isChangingLevel = false }
-                    )
+                        Actions.sequence(
+                                Actions.run {
+                                    levelEntity.level.isChangingLevel = true
+                                    eventQueue.add(FadeOutEvent(fadeOutDuration))
+                                },
+                                Actions.delay(fadeOutDuration),
+                                Actions.run {
+                                    shouldUpdateLevelLabel = true
+                                    levelEntity.level.run {
+                                        levelId = if (levelId == 1) {
+                                            if (gameRules.CAN_PLAY_ANY_LEVEL) gameRules.LEVEL_COUNT
+                                            else gameRules.HIGHEST_FINISHED_LEVEL + 1
+                                        } else levelId - 1
+                                        loadMap = true
+                                        forceUpdateMap = true
+                                    }
+                                    levelEntity.map.run {
+                                        eventQueue.add(UpdateRoundedPlatformsEvent())
+                                        forceCenterCameraOnPlayer = true
+                                    }
+                                },
+                                Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
+                                Actions.delay(fadeInDuration),
+                                Actions.run { levelEntity.level.isChangingLevel = false }
+                        )
                 )
             }
         })
@@ -529,43 +529,43 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 val fadeOutDuration = .2f
                 val fadeInDuration = .2f
                 gameStage.addAction(
-                    Actions.sequence(
-                        Actions.run {
-                            levelEntity.level.isChangingLevel = true
-                            eventQueue.add(FadeOutEvent(fadeOutDuration))
-                        },
-                        Actions.delay(fadeOutDuration),
-                        Actions.run {
-                            shouldUpdateLevelLabel = true
-                            levelEntity.level.run {
-                                levelId =
-                                    if (levelId == gameRules.LEVEL_COUNT && gameRules.CAN_PLAY_ANY_LEVEL) 1
-                                    else if (levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1 && !gameRules.CAN_PLAY_ANY_LEVEL) 1
-                                    else levelId + 1
-                                loadMap = true
-                                forceUpdateMap = true
-                            }
-                            levelEntity.map.run {
-                                eventQueue.add(UpdateRoundedPlatformsEvent())
-                                forceCenterCameraOnPlayer = true
-                            }
-                        },
-                        Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
-                        Actions.delay(fadeInDuration),
-                        Actions.run { levelEntity.level.isChangingLevel = false }
-                    )
+                        Actions.sequence(
+                                Actions.run {
+                                    levelEntity.level.isChangingLevel = true
+                                    eventQueue.add(FadeOutEvent(fadeOutDuration))
+                                },
+                                Actions.delay(fadeOutDuration),
+                                Actions.run {
+                                    shouldUpdateLevelLabel = true
+                                    levelEntity.level.run {
+                                        levelId =
+                                                if (levelId == gameRules.LEVEL_COUNT && gameRules.CAN_PLAY_ANY_LEVEL) 1
+                                                else if (levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1 && !gameRules.CAN_PLAY_ANY_LEVEL) 1
+                                                else levelId + 1
+                                        loadMap = true
+                                        forceUpdateMap = true
+                                    }
+                                    levelEntity.map.run {
+                                        eventQueue.add(UpdateRoundedPlatformsEvent())
+                                        forceCenterCameraOnPlayer = true
+                                    }
+                                },
+                                Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
+                                Actions.delay(fadeInDuration),
+                                Actions.run { levelEntity.level.isChangingLevel = false }
+                        )
                 )
             }
         })
     }
     private val levelLabel = OutlineDistanceFieldLabel(
-        context,
-        "#${when {
-            gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
-            gameRules.CAN_PLAY_ANY_LEVEL -> 1
-            else -> min(gameRules.HIGHEST_FINISHED_LEVEL + 1, gameRules.LEVEL_COUNT)
-        }}",
-        skin, "semi-bold", 37f, Colors.gameColor
+            context,
+            "#${when {
+                gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
+                gameRules.CAN_PLAY_ANY_LEVEL -> 1
+                else -> min(gameRules.HIGHEST_FINISHED_LEVEL + 1, gameRules.LEVEL_COUNT)
+            }}",
+            skin, "semi-bold", 37f, Colors.gameColor
     ).apply {
         addListener(object : ClickListener() {
             // Make the player not shoot if the label is clicked
@@ -611,8 +611,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val heartPopUp = NewPopUp(context, 600f, 440f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            """
+                context,
+                """
             Would you like to rate the game
             or give feedback?
 
@@ -654,8 +654,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
     }
     private val heartButton = ClickButton(
-        skin,
-        if (gameRules.DID_RATE_THE_GAME) "white-full-round-button" else "empty-round-button"
+            skin,
+            if (gameRules.DID_RATE_THE_GAME) "white-full-round-button" else "empty-round-button"
     ).apply {
         addIcon("heart-icon")
         addListener(object : ClickListener() {
@@ -669,7 +669,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         val order = arrayListOf("sounds-and-music-icon", "music-icon", "sounds-icon", "no-sounds-icon")
         var current = order.first()
         fun getNextIcon() =
-            if (order.indexOf(current) == order.size - 1) order.first() else order[order.indexOf(current) + 1]
+                if (order.indexOf(current) == order.size - 1) order.first() else order[order.indexOf(current) + 1]
         addIcon(current)
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -688,22 +688,22 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun createNoAdsPopUp() = NewPopUp(
-        context, 600f,
-        if (!gameRules.IS_AD_FREE) {
-            if (gameRules.IS_IOS) 924f // Show the "I already paid..." button
-            else 820f // Hide the "I already paid..." button
-        } else 856f, skin
+            context, 600f,
+            if (!gameRules.IS_AD_FREE) {
+                if (gameRules.IS_IOS) 924f // Show the "I already paid..." button
+                else 820f // Hide the "I already paid..." button
+            } else 856f, skin
     ).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            (if (!gameRules.IS_AD_FREE)
-                """
+                context,
+                (if (!gameRules.IS_AD_FREE)
+                    """
                 Any amount below will support
                 the development & REMOVE
                 ADS! <3
                 """
-            else
-                """
+                else
+                    """
                 The game is now ad-free!
 
                 Any amount below will support
@@ -819,7 +819,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         val noThanksButton = Button(skin, "long-button").apply {
             val buttonText =
-                DistanceFieldLabel(context, "No, thanks${if (!gameRules.IS_AD_FREE) " :(" else ""}", skin, "regular", 36f, Color.WHITE)
+                    DistanceFieldLabel(context, "No, thanks${if (!gameRules.IS_AD_FREE) " :(" else ""}", skin, "regular", 36f, Color.WHITE)
             add(buttonText)
             color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
             addListener(object : ClickListener() {
@@ -887,8 +887,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     val rateGamePromptPopUp = NewPopUp(context, 600f, 570f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            """
+                context,
+                """
             Would you like to rate the game
             or give feedback?
 
@@ -920,7 +920,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
                     gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN =
-                        gameRules.PLAY_TIME + gameRules.TIME_DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
+                            gameRules.PLAY_TIME + gameRules.TIME_DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
                     this@popup.hide()
                 }
             })
@@ -948,13 +948,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
             // Prompt the player to rate the game later
             gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN =
-                gameRules.PLAY_TIME + gameRules.TIME_DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
+                    gameRules.PLAY_TIME + gameRules.TIME_DELAY_BETWEEN_PROMPTING_USER_TO_RATE_THE_GAME_AGAIN
         }
     }
     private val anErrorOccurredRestorePopUp = NewPopUp(context, 600f, 370f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            """
+                context,
+                """
             An error occurred while
             restoring purchases....
 
@@ -979,8 +979,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val anErrorOccurredPurchasePopUp = NewPopUp(context, 600f, 260f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            """
+                context,
+                """
             An error occurred while
             purchasing....""".trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
         )
@@ -1002,8 +1002,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val successfulRestorePopUp = NewPopUp(context, 600f, 230f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            "Purchases successfully restored.", skin, "regular", 36f, skin.getColor("text-gold")
+                context,
+                "Purchases successfully restored.", skin, "regular", 36f, skin.getColor("text-gold")
         )
         val okayButton = Button(skin, "long-button").apply {
             val buttonText = DistanceFieldLabel(context, "Okay :)", skin, "regular", 36f, Color.WHITE)
@@ -1023,8 +1023,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val noPurchasesToRestorePopUp = NewPopUp(context, 600f, 230f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            "No purchases to restore...", skin, "regular", 36f, skin.getColor("text-gold")
+                context,
+                "No purchases to restore...", skin, "regular", 36f, skin.getColor("text-gold")
         )
         val okayButton = Button(skin, "long-button").apply {
             val buttonText = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
@@ -1044,8 +1044,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
     private val successfulPurchasePopUp = NewPopUp(context, 600f, 340f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            """
+                context,
+                """
             Successful purchase!
 
             Thanks for supporting the
@@ -1079,12 +1079,12 @@ class PlayScreen(private val context: Context) : KtxScreen {
             color = Colors.gameColor.apply { a = 0f }
             touchable = Touchable.disabled
             addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    super.clicked(event, x, y)
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                     if (!levelEntity.level.isRestarting) {
                         levelEntity.level.restartLevel = true
                         gameRules.RESTART_COUNT++
                     }
+                    return true
                 }
             })
         }
@@ -1096,25 +1096,25 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private val levelFinishRankLabel = OutlineDistanceFieldLabel(
-        context,
-        "rank #x",
-        skin, "semi-bold", 40f, Colors.gameColor
+            context,
+            "rank #x",
+            skin, "semi-bold", 40f, Colors.gameColor
     ).apply {
         color.a = 0f
     }
 
     private val levelFinishRankPercentageLabel = OutlineDistanceFieldLabel(
-        context,
-        "(top x.y%)",
-        skin, "regular", 30f, Colors.gameColor
+            context,
+            "(top x.y%)",
+            skin, "regular", 30f, Colors.gameColor
     ).apply {
         color.a = 0f
     }
 
     private val levelFinishGuideLabel = OutlineDistanceFieldLabel(
-        context,
-        "Tap anywhere to proceed",
-        skin, "regular", 37f, Colors.gameColor
+            context,
+            "Tap anywhere to proceed",
+            skin, "regular", 37f, Colors.gameColor
     ).apply {
         color.a = 0f
     }
@@ -1197,7 +1197,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             override fun handlePurchaseCanceled() {}
 
             private fun Transaction.affectsAds() =
-                identifier == "coffee" || identifier == "ice_cream" || identifier == "muffin" || identifier == "pizza" || identifier == "sushi"
+                    identifier == "coffee" || identifier == "ice_cream" || identifier == "muffin" || identifier == "pizza" || identifier == "sushi"
         }
         val purchaseManagerConfig = PurchaseManagerConfig().apply {
             addOffer(Offer().setType(OfferType.CONSUMABLE).setIdentifier("coffee"))
@@ -1221,23 +1221,23 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         topPartImage.touchable = Touchable.enabled
         topPartImage.addAction(
-            Actions.parallel(
-                Actions.moveTo(0f, bottomGrayStripHeight, .2f, Interpolation.pow3In),
-                Actions.color(Colors.bgColor.copy(alpha = .4f), .3f)
-            )
+                Actions.parallel(
+                        Actions.moveTo(0f, bottomGrayStripHeight, .2f, Interpolation.pow3In),
+                        Actions.color(Colors.bgColor.copy(alpha = .4f), .3f)
+                )
         )
         leftLevelRightTable.run {
             addAction(
-                Actions.sequence(
-                    Actions.parallel(
-                        Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
-                        Actions.fadeIn(.2f, Interpolation.pow3In)
-                    ),
-                    Actions.run {
-                        leftButton.touchable = Touchable.enabled
-                        rightButton.touchable = Touchable.enabled
-                    }
-                )
+                    Actions.sequence(
+                            Actions.parallel(
+                                    Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
+                                    Actions.fadeIn(.2f, Interpolation.pow3In)
+                            ),
+                            Actions.run {
+                                leftButton.touchable = Touchable.enabled
+                                rightButton.touchable = Touchable.enabled
+                            }
+                    )
             )
         }
     }
@@ -1251,90 +1251,90 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         bottomGrayStrip.run {
             addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.moveTo(0f, -bottomGrayStripHeight, .2f, Interpolation.pow3In)
-                )
+                    Actions.sequence(
+                            Actions.delay(.1f),
+                            Actions.moveTo(0f, -bottomGrayStripHeight, .2f, Interpolation.pow3In)
+                    )
             )
         }
         topPartImage.touchable = Touchable.disabled
         topPartImage.addAction(
-            Actions.sequence(
-                Actions.delay(.1f),
-                Actions.parallel(
-                    Actions.moveTo(0f, 0f, .2f, Interpolation.pow3In),
-                    Actions.color(Color.WHITE.copy(alpha = 0f), .3f)
+                Actions.sequence(
+                        Actions.delay(.1f),
+                        Actions.parallel(
+                                Actions.moveTo(0f, 0f, .2f, Interpolation.pow3In),
+                                Actions.color(Color.WHITE.copy(alpha = 0f), .3f)
+                        )
                 )
-            )
         )
         skipLevelButton.run {
             addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.moveTo(
-                        -25f,
-                        y, .2f, Interpolation.pow3In
+                    Actions.sequence(
+                            Actions.delay(.1f),
+                            Actions.moveTo(
+                                    -25f,
+                                    y, .2f, Interpolation.pow3In
+                            )
                     )
-                )
             )
         }
         restartButton.run {
             addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.moveTo(
-                        uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth + 25f,
-                        y, .2f, Interpolation.pow3In
+                    Actions.sequence(
+                            Actions.delay(.1f),
+                            Actions.moveTo(
+                                    uiStage.viewport.worldWidth - 2 * padLeftRight - prefWidth + 25f,
+                                    y, .2f, Interpolation.pow3In
+                            )
                     )
-                )
             )
         }
         menuButton.addAction(
-            Actions.sequence(
-                Actions.delay(.1f),
-                Actions.parallel(
-                    Actions.moveTo(menuButton.x, 25f, .2f, Interpolation.pow3In),
-                    Actions.run {
-                        if (!levelEntity.level.isLevelFinished) {
-                            menuButton.addAction(Actions.fadeIn(.2f, Interpolation.pow3In))
+                Actions.sequence(
+                        Actions.delay(.1f),
+                        Actions.parallel(
+                                Actions.moveTo(menuButton.x, 25f, .2f, Interpolation.pow3In),
+                                Actions.run {
+                                    if (!levelEntity.level.isLevelFinished) {
+                                        menuButton.addAction(Actions.fadeIn(.2f, Interpolation.pow3In))
+                                    }
+                                }
+                        ),
+                        Actions.run {
+                            if (!levelEntity.level.isLevelFinished) {
+                                menuButton.touchable = Touchable.enabled
+                            }
                         }
-                    }
-                ),
-                Actions.run {
-                    if (!levelEntity.level.isLevelFinished) {
-                        menuButton.touchable = Touchable.enabled
-                    }
-                }
-            )
+                )
         )
         leftLevelRightTable.run {
             addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.parallel(
-                        Actions.moveTo(x, 0f, .2f, Interpolation.pow3In),
-                        Actions.fadeOut(.2f, Interpolation.pow3In)
-                    ),
-                    Actions.run {
-                        leftButton.touchable = Touchable.disabled
-                        rightButton.touchable = Touchable.disabled
-                    }
-                )
+                    Actions.sequence(
+                            Actions.delay(.1f),
+                            Actions.parallel(
+                                    Actions.moveTo(x, 0f, .2f, Interpolation.pow3In),
+                                    Actions.fadeOut(.2f, Interpolation.pow3In)
+                            ),
+                            Actions.run {
+                                leftButton.touchable = Touchable.disabled
+                                rightButton.touchable = Touchable.disabled
+                            }
+                    )
             )
         }
         rankLabel.run {
             addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.parallel(
-                        Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
-                        Actions.run {
-                            if (!levelEntity.level.isLevelFinished) {
-                                rankLabel.addAction(Actions.fadeIn(.2f, Interpolation.pow3In))
-                            }
-                        }
+                    Actions.sequence(
+                            Actions.delay(.1f),
+                            Actions.parallel(
+                                    Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
+                                    Actions.run {
+                                        if (!levelEntity.level.isLevelFinished) {
+                                            rankLabel.addAction(Actions.fadeIn(.2f, Interpolation.pow3In))
+                                        }
+                                    }
+                            )
                     )
-                )
             )
         }
     }
@@ -1368,8 +1368,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun anErrorOccurredRewardedAd(errorCode: Int) = NewPopUp(context, 600f, 334f, skin).apply popup@{
         val text = DistanceFieldLabel(
-            context,
-            """
+                context,
+                """
             An error occurred while loading
             the rewarded video...
 
@@ -1411,12 +1411,12 @@ class PlayScreen(private val context: Context) : KtxScreen {
 
     private fun createGameEntities() {
         levelEntity = LevelEntity.createEntity(
-            context,
-            when {
-                gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
-                gameRules.CAN_PLAY_ANY_LEVEL -> 1
-                else -> min(gameRules.HIGHEST_FINISHED_LEVEL + 1, gameRules.LEVEL_COUNT)
-            }
+                context,
+                when {
+                    gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
+                    gameRules.CAN_PLAY_ANY_LEVEL -> 1
+                    else -> min(gameRules.HIGHEST_FINISHED_LEVEL + 1, gameRules.LEVEL_COUNT)
+                }
         ).apply {
             level.loadMap = true
             level.forceUpdateMap = true
@@ -1539,30 +1539,30 @@ class PlayScreen(private val context: Context) : KtxScreen {
         val fadeOutDuration = .2f
         val fadeInDuration = .2f
         gameStage.addAction(
-            Actions.sequence(
-                Actions.run {
-                    levelEntity.level.isChangingLevel = true
-                    eventQueue.add(FadeOutEvent(fadeOutDuration))
-                },
-                Actions.delay(fadeOutDuration),
-                Actions.run {
-                    shouldUpdateLevelLabel = true
-                    levelEntity.level.run {
-                        loadMap = true
-                        forceUpdateMap = true
-                    }
-                    levelEntity.map.run {
-                        eventQueue.add(UpdateRoundedPlatformsEvent())
-                        forceCenterCameraOnPlayer = true
-                    }
-                },
-                Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
-                Actions.delay(fadeInDuration),
-                Actions.run {
-                    levelEntity.level.isChangingLevel = false
-                    isSkippingLevel = false
-                }
-            )
+                Actions.sequence(
+                        Actions.run {
+                            levelEntity.level.isChangingLevel = true
+                            eventQueue.add(FadeOutEvent(fadeOutDuration))
+                        },
+                        Actions.delay(fadeOutDuration),
+                        Actions.run {
+                            shouldUpdateLevelLabel = true
+                            levelEntity.level.run {
+                                loadMap = true
+                                forceUpdateMap = true
+                            }
+                            levelEntity.map.run {
+                                eventQueue.add(UpdateRoundedPlatformsEvent())
+                                forceCenterCameraOnPlayer = true
+                            }
+                        },
+                        Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
+                        Actions.delay(fadeInDuration),
+                        Actions.run {
+                            levelEntity.level.isChangingLevel = false
+                            isSkippingLevel = false
+                        }
+                )
         )
 
         gameRules.SKIPPED_LEVELS_COUNT++
@@ -1631,6 +1631,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateLevelLabel() {
+        levelLabel.touchable = if (levelEntity.level.isLevelFinished) Touchable.disabled else Touchable.enabled
+
         if (shouldUpdateLevelLabel) {
             levelLabel.run {
                 setText("#${levelEntity.level.levelId}")
@@ -1642,6 +1644,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
     }
 
     private fun updateLevelMenuOverlayRankLabel() {
+        levelMenuOverlayRankLabel.touchable = if (levelEntity.level.isLevelFinished) Touchable.disabled else Touchable.enabled
+
         val storedRank = gameRules.getGameLevelRank(levelEntity.level.levelId)
         val storedHighscore = gameRules.getGameLevelRank(levelEntity.level.levelId)
         levelMenuOverlayRankLabel.run {
@@ -1664,8 +1668,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         // The skip level button should be hidden if the current level is not the highest finished one
         skipLevelButton.run {
             if (levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1 && !isSkippingLevel &&
-                // On Android it takes a bit to update Preferences, thus the skip level button flashed a bit without this condition
-                levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 2
+                    // On Android it takes a bit to update Preferences, thus the skip level button flashed a bit without this condition
+                    levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 2
             ) {
                 touchable = Touchable.disabled
                 if (!hasActions() && color.a == 1f) {
@@ -1696,10 +1700,10 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         rightButton.run {
             styleName =
-                if ((gameRules.CAN_PLAY_ANY_LEVEL && levelEntity.level.levelId == gameRules.LEVEL_COUNT) ||
-                    (!gameRules.CAN_PLAY_ANY_LEVEL && levelEntity.level.levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1)
-                ) "double-right-button"
-                else "right-button"
+                    if ((gameRules.CAN_PLAY_ANY_LEVEL && levelEntity.level.levelId == gameRules.LEVEL_COUNT) ||
+                            (!gameRules.CAN_PLAY_ANY_LEVEL && levelEntity.level.levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1)
+                    ) "double-right-button"
+                    else "right-button"
             style = skin.get(styleName, Button.ButtonStyle::class.java)
         }
     }
@@ -1741,46 +1745,46 @@ class PlayScreen(private val context: Context) : KtxScreen {
         framedRestartButton.run {
             touchable = Touchable.enabled
             addAction(
-                Actions.sequence(
-                    Actions.delay(fadeOutDuration),
-                    Actions.fadeIn(fadeInDuration)
-                )
+                    Actions.sequence(
+                            Actions.delay(fadeOutDuration),
+                            Actions.fadeIn(fadeInDuration)
+                    )
             )
         }
         levelFinishRankLabel.run {
             addAction(
-                Actions.sequence(
-                    Actions.delay(fadeOutDuration),
-                    Actions.fadeIn(fadeInDuration)
-                )
+                    Actions.sequence(
+                            Actions.delay(fadeOutDuration),
+                            Actions.fadeIn(fadeInDuration)
+                    )
             )
         }
         levelFinishRankPercentageLabel.run {
             addAction(
-                Actions.sequence(
-                    Actions.delay(fadeOutDuration),
-                    Actions.fadeIn(fadeInDuration)
-                )
+                    Actions.sequence(
+                            Actions.delay(fadeOutDuration),
+                            Actions.fadeIn(fadeInDuration)
+                    )
             )
         }
         levelFinishGuideLabel.run {
             if (!gameRules.DID_SHOW_GUIDE_BETWEEN_LEVELS) {
                 addAction(
-                    Actions.sequence(
-                        Actions.delay(fadeOutDuration),
-                        Actions.fadeIn(fadeInDuration)
-                    )
+                        Actions.sequence(
+                                Actions.delay(fadeOutDuration),
+                                Actions.fadeIn(fadeInDuration)
+                        )
                 )
             }
         }
         levelFinishTouchableTransparentImage.run {
             addAction(
-                Actions.sequence(
-                    Actions.delay(fadeOutDuration),
-                    Actions.run {
-                        levelFinishTouchableTransparentImage.touchable = Touchable.enabled
-                    }
-                )
+                    Actions.sequence(
+                            Actions.delay(fadeOutDuration),
+                            Actions.run {
+                                levelFinishTouchableTransparentImage.touchable = Touchable.enabled
+                            }
+                    )
             )
         }
     }
@@ -1811,34 +1815,34 @@ class PlayScreen(private val context: Context) : KtxScreen {
         menuButton.run {
             touchable = Touchable.enabled
             addAction(
-                Actions.sequence(
-                    Actions.delay(fadeOutDuration),
-                    Actions.fadeIn(fadeInDuration)
-                )
+                    Actions.sequence(
+                            Actions.delay(fadeOutDuration),
+                            Actions.fadeIn(fadeInDuration)
+                    )
             )
 
         }
         restartButton.run {
             touchable = Touchable.enabled
             addAction(
-                Actions.sequence(
-                    Actions.delay(fadeOutDuration),
-                    Actions.fadeIn(fadeInDuration)
-                )
+                    Actions.sequence(
+                            Actions.delay(fadeOutDuration),
+                            Actions.fadeIn(fadeInDuration)
+                    )
             )
         }
         skipLevelButton.run {
             if (!((levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1 && !isSkippingLevel &&
-                        // On Android it takes a bit to update Preferences, thus the skip level button flashed a bit without this condition
-                        levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 2))
+                            // On Android it takes a bit to update Preferences, thus the skip level button flashed a bit without this condition
+                            levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 2))
             ) {
                 touchable = Touchable.enabled
                 clearActions()
                 addAction(
-                    Actions.sequence(
-                        Actions.delay(fadeOutDuration),
-                        Actions.fadeIn(fadeInDuration)
-                    )
+                        Actions.sequence(
+                                Actions.delay(fadeOutDuration),
+                                Actions.fadeIn(fadeInDuration)
+                        )
                 )
             }
         }
