@@ -24,6 +24,7 @@ import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.events.Event
 import ro.luca1152.gravitybox.events.EventSystem
 import ro.luca1152.gravitybox.utils.assets.Assets
+import ro.luca1152.gravitybox.utils.kotlin.info
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import kotlin.concurrent.thread
@@ -49,6 +50,7 @@ class WritingLeaderboardToStorageSystem(private val context: Context) :
                 CACHED_LEADERBOARD_VERSION = gameRules.GAME_LEVELS_VERSION
                 flushUpdates()
             }
+            info("Wrote the leaderboard to storage.")
         }
     }
 }
