@@ -22,7 +22,6 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.inject.Context
-import pl.mk5.gdx.fireapp.GdxFIRAnalytics
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.level
@@ -57,32 +56,9 @@ class ShowNextLevelSystem(
     }
 
     override fun processEvent(event: ShowNextLevelEvent, deltaTime: Float) {
-        logLevelFinish()
         updateLeaderboard()
         showNextLevel()
         updateGameRules()
-    }
-
-    private fun logLevelFinish() {
-        gameRules.run {
-            setGameLevelFinishCount(levelEntity.level.levelId, gameRules.getGameLevelFinishCount(levelEntity.level.levelId) + 1)
-            flushUpdates()
-        }
-
-        // Analytics
-        if (gameRules.IS_MOBILE) {
-            GdxFIRAnalytics.inst().logEvent(
-                "level_finish",
-                mapOf(
-                    Pair("level_id", "game/${levelEntity.level.levelId}"),
-                    Pair("finish_time", "${gameRules.getGameLevelPlayTime(levelEntity.level.levelId)}"),
-                    Pair("finish_count", "${gameRules.getGameLevelFinishCount(levelEntity.level.levelId)}")
-                )
-            )
-        }
-
-        // Reset the played time, so in case this level is replayed, a huge time won't be reported
-        gameRules.setGameLevelPlayTime(levelEntity.level.levelId, 0f)
     }
 
     private fun updateLeaderboard() {
