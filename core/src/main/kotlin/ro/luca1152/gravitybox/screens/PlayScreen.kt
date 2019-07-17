@@ -62,6 +62,7 @@ import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.label.OutlineDistanceFieldLabel
+import ro.luca1152.gravitybox.utils.ui.panes.LeaderboardPane
 import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
 import kotlin.math.min
 
@@ -239,6 +240,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val leaderboardButton = ClickButton(skin, "empty-round-button-padded").apply {
         addIcon("leaderboard-icon")
         addClickRunnable(Runnable {
+            menuOverlayStage.addActor(LeaderboardPane(context, skin, levelEntity.level.levelId))
         })
     }
     private val rankLabel = OutlineDistanceFieldLabel(
