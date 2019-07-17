@@ -70,6 +70,9 @@ class LevelFinishSystem(
         // The leaderboard wasn't loaded yet, showing the finish UI is pointless
         if (context.injectNullable<GameShotsLeaderboard>() == null) {
             eventQueue.add(ShowNextLevelEvent())
+        } else {
+            // Make sure the rank is calculated if the leaderboard was just loaded
+            eventQueue.add(CalculateRankEvent())
         }
 
         updateHighestFinishedLevel()
