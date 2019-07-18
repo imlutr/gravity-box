@@ -35,12 +35,17 @@ class EntireLeaderboardCachingSystem(private val context: Context) : EntitySyste
     private val gameShotsLeaderboardController: GameShotsLeaderboardController = context.inject()
     private val eventQueue: EventQueue = context.inject()
 
+    private var delayAfterGainingInternetConnection = .5f
     private var isCachingGameLeaderboard = false
 
     override fun update(deltaTime: Float) {
         if (adsController?.isNetworkConnected() == false) return
+        delayAfterGainingInternetConnection -= deltaTime
+
         if (TimeUtils.timeSinceMillis(gameRules.NEXT_LEADERBOARD_CACHE_TIME) <= 0L && gameRules.CACHED_LEADERBOARD_VERSION == gameRules.GAME_LEVELS_VERSION) return
         if (isCachingGameLeaderboard) return
+        if (delayAfterGainingInternetConnection > 0f) return
+
         cacheLeaderboard()
     }
 

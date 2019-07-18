@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import ktx.actors.isShown
 import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
@@ -36,11 +37,34 @@ class LeaderboardPane(
 ) : Pane(context, 600f, 736f, context.inject()) {
     // Injected objects
     private val skin: Skin = context.inject()
-    private val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
 
     // Constants
     private val rowHeight = 5f
 
+    // Doesn't have internet connection
+    private val noInternetConnectionLabel = DistanceFieldLabel(
+        context,
+        """
+            The leaderboard couldn't be
+            loaded...
+            
+            Please check your internet
+            connection.""".trimIndent(),
+        skin, "regular", 36f, skin.getColor("text-gold")
+    )
+    private val okayButton = Button(skin, "long-button").apply {
+        val buttonText = DistanceFieldLabel(context, "Okay :(", skin, "regular", 36f, Color.WHITE)
+        add(buttonText)
+        color.set(140 / 255f, 182 / 255f, 198 / 255f, 1f)
+        addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                this@LeaderboardPane.hide()
+            }
+        })
+    }
+
+    // Has internet connection
     private val rankLabel = DistanceFieldLabel(context, "Rank", skin, "regular", 36f, skin.getColor("text-gold"))
     private val shotsLabel = DistanceFieldLabel(context, "Shots", skin, "regular", 36f, skin.getColor("text-gold"))
     private val playersLabel = DistanceFieldLabel(context, "Players", skin, "regular", 36f, skin.getColor("text-gold"))
@@ -67,13 +91,29 @@ class LeaderboardPane(
     }
 
     private fun updateWidget() {
+        resetWidget()
         widget.run {
             if (context.injectNullable<GameShotsLeaderboard>() != null) {
                 add(topTextTable).expand().padLeft(35f).padRight(35f).fillX().top().row()
                 add(yellowHorizontalLine).width(492f).expand().top().row()
                 add(createLeaderboardTable()).padLeft(35f).padRight(35f).grow().row()
                 add(closeButton).width(492f).expand().bottom().row()
+            } else {
+                add(noInternetConnectionLabel).expand().top().row()
+                add(okayButton).width(492f).expand().bottom().row()
             }
+        }
+    }
+
+    private fun resetWidget() {
+        noInternetConnectionLabel.remove()
+        okayButton.remove()
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        if (context.injectNullable<GameShotsLeaderboard>() != null && !topTextTable.isShown()) {
+            updateWidget()
         }
     }
 
@@ -90,6 +130,7 @@ class LeaderboardPane(
     private fun createShotsColumn() = Table(skin).apply {
         var shotI = 1
         var shotsAdded = 0
+        val shotsLeaderboard = context.injectNullable<GameShotsLeaderboard>()
         while (shotsAdded < 10 && shotsAdded < shotsLeaderboard!!.levels["l$currentLevelId"]!!.shots.size) {
             if (shotsLeaderboard.levels["l$currentLevelId"]!!.shots.containsKey("s$shotI")) {
                 shotsAdded++
@@ -105,6 +146,7 @@ class LeaderboardPane(
 
     private fun createPlayersColumn() = Table(skin).apply {
         var totalPlayers = 0L
+        val shotsLeaderboard = context.injectNullable<GameShotsLeaderboard>()
         shotsLeaderboard!!.levels["l$currentLevelId"]!!.shots.forEach {
             totalPlayers += it.value
         }

@@ -46,7 +46,7 @@ class LeaderboardRankCalculationSystem(private val context: Context) :
 
     private fun calculateRank() {
         val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
-        if (shotsLeaderboard == null) {
+        if (shotsLeaderboard == null || !shotsLeaderboard.levels.contains("l${levelEntity.level.levelId}")) {
             levelEntity.map.rank = -1
         } else {
             var newRank = -1
