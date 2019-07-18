@@ -99,7 +99,7 @@ class ShowNextLevelSystem(
             )
         )
         playScreen.run {
-            hideLevelFinishUi()
+            finishOverlay.hide()
             menuOverlay.shouldUpdateLevelLabel = true
         }
         eventQueue.run {

@@ -36,6 +36,7 @@ class LevelComponent : Component, Poolable {
     var isChangingLevel = false
     var levelId = 1
     var isLevelFinished = false
+    var isSkippingLevel = false
 
     /** True if every point (if any) was collected. */
     var canFinish = true
@@ -63,6 +64,7 @@ class LevelComponent : Component, Poolable {
         levelId = 1
         isLevelFinished = false
         timeSpentInsideFinishPoint = 0f
+        isSkippingLevel = false
     }
 
     companion object : ComponentResolver<LevelComponent>(LevelComponent::class.java)

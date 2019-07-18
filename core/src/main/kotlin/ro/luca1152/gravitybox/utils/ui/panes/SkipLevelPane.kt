@@ -25,18 +25,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.systems.game.SkipLevelEvent
 import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.MenuOverlayStage
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
 
-class SkipLevelPane(context: Context, skipLevel: () -> Unit) : Pane(context, 600f, 370f, context.inject()) {
+class SkipLevelPane(context: Context) : Pane(context, 600f, 370f, context.inject()) {
     // Injected objects
     private val skin: Skin = context.inject()
     private val gameRules: GameRules = context.inject()
     private val adsController: AdsController? = context.injectNullable()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
+    private val eventQueue: EventQueue = context.inject()
 
     // Other panes
     private val skipLevelNoInternetPane = SkipLevelNoInternetPane(context)
@@ -58,14 +61,14 @@ class SkipLevelPane(context: Context, skipLevel: () -> Unit) : Pane(context, 600
                 // Ad-free
                 if (gameRules.IS_AD_FREE) {
                     gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN = gameRules.TIME_DELAY_BETWEEN_REWARDED_ADS
-                    skipLevel()
+                    eventQueue.add(SkipLevelEvent())
                     return
                 }
 
                 // Debug
                 if (!gameRules.IS_MOBILE || adsController == null) {
                     gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN = gameRules.TIME_DELAY_BETWEEN_REWARDED_ADS
-                    skipLevel()
+                    eventQueue.add(SkipLevelEvent())
                     return
                 }
 

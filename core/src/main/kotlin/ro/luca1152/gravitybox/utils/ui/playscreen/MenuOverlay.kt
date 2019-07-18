@@ -102,6 +102,7 @@ class MenuOverlay(context: Context) {
         skin, "semi-bold", 37f, Colors.gameColor
     ) {
         init {
+            color.a = 1f
             addListener(object : ClickListener() {
                 // Make the player not shoot if the label is clicked
                 override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -121,7 +122,6 @@ class MenuOverlay(context: Context) {
             if (shouldUpdateLevelLabel) {
                 setText("#${playScreen.levelEntity.level.levelId}")
                 layout()
-//                rootTable.setLayoutEnabled(false)
                 shouldUpdateLevelLabel = false
             }
         }
@@ -132,6 +132,7 @@ class MenuOverlay(context: Context) {
         skin, "semi-bold", 37f, Colors.gameColor
     ) {
         init {
+            color.a = 1f
             addListener(object : ClickListener() {
                 // Make the player not shoot if the label is clicked
                 override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {

@@ -22,11 +22,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Button
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
+import ro.luca1152.gravitybox.components.game.player
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.systems.game.FadeInEvent
@@ -34,6 +37,8 @@ import ro.luca1152.gravitybox.systems.game.FadeOutEvent
 import ro.luca1152.gravitybox.systems.game.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.MenuOverlayStage
+import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
+import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.panes.LeaderboardPane
 import ro.luca1152.gravitybox.utils.ui.panes.NoAdsPane
@@ -58,6 +63,7 @@ class SkipLevelButton(context: Context) : ClickButton(context.inject(), "color-r
     // Injected objects
     private val menuOverlayStage: MenuOverlayStage = context.inject()
     private val playScreen: PlayScreen = context.inject()
+    private val gameRules: GameRules = context.inject()
 
     init {
         addIcon("skip-level-icon")
@@ -65,6 +71,41 @@ class SkipLevelButton(context: Context) : ClickButton(context.inject(), "color-r
         addClickRunnable(Runnable {
             menuOverlayStage.addActor(playScreen.skipLevelPane)
         })
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        updateButton()
+    }
+
+    private fun updateButton() {
+        val levelEntity = playScreen.levelEntity
+        if (levelEntity.level.isLevelFinished) return
+
+        // The skip level button should be hidden if the current level is not the highest finished one
+        if (levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1 && !levelEntity.level.isSkippingLevel &&
+            // On Android it takes a bit to update Preferences, thus the skip level button flashed a bit without this condition
+            levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 2
+        ) {
+            touchable = Touchable.disabled
+            if (!hasActions() && color.a == 1f) {
+                addAction(Actions.fadeOut(.2f))
+            }
+        } else if (!isTouchable || levelEntity.level.isSkippingLevel) {
+            touchable = Touchable.enabled
+            if (!hasActions() && color.a == 0f) {
+                addAction(Actions.fadeIn(.2f))
+            }
+        }
+
+        // The skip level button should be hidden if the current level is the last one.
+        if (levelEntity.level.levelId == gameRules.LEVEL_COUNT) {
+            color.a = 0f
+            touchable = Touchable.disabled
+            if (playScreen.skipLevelPane.stage != null) {
+                playScreen.skipLevelPane.hide()
+            }
+        }
     }
 }
 
@@ -192,6 +233,15 @@ class MenuButton(context: Context) : ClickButton(context.inject(), "menu-button"
             )
         })
     }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        updateTouchability()
+    }
+
+    private fun updateTouchability() {
+        touchable = if (playScreen.playerEntity.player.isInsideFinishPoint) Touchable.disabled else Touchable.enabled
+    }
 }
 
 @Suppress("ConstantConditionIf")
@@ -308,5 +358,31 @@ class RightButton(context: Context) : ClickButton(context.inject(), "right-butto
             ) "double-right-button"
             else "right-button"
         style = skin.get(styleName, Button.ButtonStyle::class.java)
+    }
+}
+
+class FramedRestartButton(context: Context) : Image(context.inject<Skin>().getDrawable("framed-restart-button")) {
+    // Injected objects
+    private val playScreen: PlayScreen = context.inject()
+    private val gameRules: GameRules = context.inject()
+
+    init {
+        color = Colors.gameColor.apply { a = 0f }
+        touchable = Touchable.disabled
+        addListener(object : ClickListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                val levelEntity = playScreen.levelEntity
+                if (!levelEntity.level.isRestarting) {
+                    levelEntity.level.restartLevel = true
+                    gameRules.RESTART_COUNT++
+                }
+                return true
+            }
+        })
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        color.setWithoutAlpha(Colors.gameColor)
     }
 }

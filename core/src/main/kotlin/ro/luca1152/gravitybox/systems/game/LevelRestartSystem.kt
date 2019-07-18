@@ -55,7 +55,7 @@ class LevelRestartSystem(private val context: Context, private val playScreen: P
             return
         restartTheLevel()
         levelEntity.map.logLevelStart()
-        playScreen?.hideLevelFinishUi()
+        playScreen?.finishOverlay?.hide()
     }
 
     private fun restartTheLevel() {
