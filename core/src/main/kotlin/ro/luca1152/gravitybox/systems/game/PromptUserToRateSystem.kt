@@ -63,7 +63,7 @@ class PromptUserToRateSystem(
         uiStage.addAction(
             Actions.sequence(
                 Actions.delay(.25f),
-                Actions.run { menuOverlayStage.addActor(playScreen.rateGamePromptPopUp) }
+                Actions.run { menuOverlayStage.addActor(playScreen.rateGamePromptPane) }
             ))
     }
 }

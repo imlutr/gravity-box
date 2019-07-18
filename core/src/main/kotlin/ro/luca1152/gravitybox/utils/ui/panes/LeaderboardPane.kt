@@ -28,13 +28,13 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
-import ro.luca1152.gravitybox.utils.ui.popup.NewPopUp
+import ro.luca1152.gravitybox.utils.ui.popup.Pane
 
 class LeaderboardPane(
     private val context: Context,
     private val skin: Skin,
     private val currentLevelId: Int
-) : NewPopUp(context, 600f, 736f, skin) {
+) : Pane(context, 600f, 736f, skin) {
     // Injected objects
     private val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
 

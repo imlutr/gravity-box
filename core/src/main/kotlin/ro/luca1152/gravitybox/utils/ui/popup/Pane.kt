@@ -35,7 +35,7 @@ import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.UIViewport
 
 /** A redesigned [PopUp]. */
-open class NewPopUp(
+open class Pane(
     context: Context,
     width: Float, height: Float,
     skin: Skin
@@ -92,7 +92,7 @@ open class NewPopUp(
     init {
         @Suppress("LeakingThis")
         addActor(widget)
-        name = "NewPopUp"
+        name = "Pane"
     }
 
     fun hide(fadeOutDuration: Float = .15f) {
