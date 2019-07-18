@@ -31,14 +31,15 @@ import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
 
-class SkipLevelPane(context: Context, skin: Skin, skipLevel: () -> Unit) : Pane(context, 600f, 370f, skin) {
+class SkipLevelPane(context: Context, skipLevel: () -> Unit) : Pane(context, 600f, 370f, context.inject()) {
     // Injected objects
+    private val skin: Skin = context.inject()
     private val gameRules: GameRules = context.inject()
     private val adsController: AdsController? = context.injectNullable()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
 
     // Other panes
-    private val skipLevelNoInternetPane = SkipLevelNoInternetPane(context, skin)
+    private val skipLevelNoInternetPane = SkipLevelNoInternetPane(context)
 
     // This pane
     private val skipLevelButtonText = DistanceFieldLabel(context, "Skip level", skin, "regular", 36f, Color.WHITE)

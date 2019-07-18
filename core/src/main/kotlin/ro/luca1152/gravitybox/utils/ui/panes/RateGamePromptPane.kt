@@ -29,8 +29,9 @@ import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
 
-class RateGamePromptPane(context: Context, skin: Skin, makeHeartButtonFull: () -> Unit) : Pane(context, 600f, 570f, skin) {
+class RateGamePromptPane(context: Context, makeHeartButtonFull: () -> Unit) : Pane(context, 600f, 570f, context.inject()) {
     // Injected objects
+    private val skin: Skin = context.inject()
     private val gameRules: GameRules = context.inject()
 
     private val text = DistanceFieldLabel(

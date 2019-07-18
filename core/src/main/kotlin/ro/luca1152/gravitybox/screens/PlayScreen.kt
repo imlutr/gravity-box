@@ -19,23 +19,21 @@ package ro.luca1152.gravitybox.screens
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
-import com.badlogic.gdx.*
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.pay.*
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.app.KtxScreen
-import ktx.graphics.copy
 import ktx.inject.Context
 import pl.mk5.gdx.fireapp.GdxFIRAnalytics
 import ro.luca1152.gravitybox.GameRules
@@ -47,8 +45,6 @@ import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.systems.editor.DashedLineRenderingSystem
-import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
 import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.ads.RewardedAdEventListener
@@ -57,10 +53,9 @@ import ro.luca1152.gravitybox.utils.box2d.WorldContactListener
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.ui.Colors
-import ro.luca1152.gravitybox.utils.ui.button.ClickButton
 import ro.luca1152.gravitybox.utils.ui.label.OutlineDistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.panes.*
-import ro.luca1152.gravitybox.utils.ui.popup.Pane
+import ro.luca1152.gravitybox.utils.ui.playscreen.*
 import kotlin.math.min
 
 @Suppress("ConstantConditionIf")
@@ -75,129 +70,60 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private val uiViewport: UIViewport = context.inject()
     private val overlayViewport: OverlayViewport = context.inject()
     private val gameStage: GameStage = context.inject()
-    private val preferences: Preferences = context.inject()
     private val eventQueue: EventQueue = context.inject()
     private val gameRules: GameRules = context.inject()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
     private val purchaseManager: PurchaseManager? = context.injectNullable()
     private val adsController: AdsController? = context.injectNullable()
-
-    // Entities
-    private lateinit var levelEntity: Entity
-    private lateinit var playerEntity: Entity
-
+    private val skin: Skin = context.inject()
     private val finishUiStage = Stage(context.inject<UIViewport>(), context.inject())
 
-    private val padTopBottom = 38f
-    private val padLeftRight = 43f
-    private val bottomGrayStripHeight = 128f
-    private val skin = manager.get(Assets.uiSkin)
+    // Bind this PlayScreen singleton so the following declarations don't cause a NullPointerException
+    init {
+        context.bindSingleton(this)
+        initializePurchaseManager()
+        initializeRewardedAds()
+    }
+
+    // Entities
+    private lateinit var playerEntity: Entity
+    lateinit var levelEntity: Entity
+
+    // Constants
+    val padTopBottom = 38f
+    val padLeftRight = 43f
+
+    // Variables
     var shiftCameraYBy = 0f
-    var shouldUpdateLevelLabel = false
-    private val exitGameConfirmationPane = ExitGameConfirmationPane(context, skin)
-    private val backKeyListener = object : InputAdapter() {
-        override fun keyDown(keycode: Int): Boolean {
-            if (keycode == Input.Keys.BACK) {
-                val popUp = menuOverlayStage.root.findActor<Pane>("Pane")
-                if (popUp != null && !popUp.hasActions()) {
-                    popUp.backButtonRunnable.run()
-                } else {
-                    when {
-                        bottomGrayStrip.y == 0f -> hideMenuOverlay()
-                        exitGameConfirmationPane.stage == null -> {
-                            menuOverlayStage.addActor(exitGameConfirmationPane)
-                            exitGameConfirmationPane.toFront()
-                        }
-                    }
-                }
-                return true
-            }
-            return false
-        }
-    }
-    private val clearPreferencesListener = object : InputAdapter() {
-        override fun keyDown(keycode: Int): Boolean {
-            if (keycode == Input.Keys.F5 && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-                preferences.run {
-                    clear()
-                    flush()
-                }
-                info("Cleared all preferences.")
-                return true
-            }
-            return false
-        }
-    }
-    private val menuButton = ClickButton(skin, "menu-button").apply {
-        addClickRunnable(Runnable {
-            addAction(Actions.sequence(
-                Actions.run {
-                    touchable = Touchable.disabled
-                    skipLevelButton.run {
-                        addAction(Actions.moveBy(-270f, 0f, .2f, Interpolation.pow3In))
-                    }
-                    noAdsButton.run {
-                        addAction(Actions.moveBy(-270f, 0f, .2f, Interpolation.pow3In))
-                    }
-                    leaderboardButton.run {
-                        addAction(Actions.moveBy(270f, 0f, .2f, Interpolation.pow3In))
-                    }
-                    restartButton.run {
-                        addAction(Actions.moveBy(270f, 0f, .2f, Interpolation.pow3In))
-                    }
-                    rankLabel.run {
-                        addAction(
-                            Actions.parallel(
-                                Actions.moveTo(x, y - 100f - bottomGrayStripHeight, .2f, Interpolation.pow3In),
-                                Actions.fadeOut(.2f, Interpolation.pow3In)
-                            )
-                        )
-                    }
-                },
-                Actions.delay(.1f),
-                Actions.parallel(
-                    Actions.moveTo(x, bottomGrayStripHeight, .2f, Interpolation.pow3In),
-                    Actions.fadeOut(.2f, Interpolation.pow3In),
-                    Actions.run {
-                        showMenuOverlay()
-                    }
-                )
-            ))
-        })
-    }
-    private val restartButton = ClickButton(skin, "color-round-button-padded").apply {
-        addIcon("restart-icon")
-        addClickRunnable(Runnable {
-            if (!levelEntity.level.isRestarting) {
-                levelEntity.level.restartLevel = true
-                gameRules.RESTART_COUNT++
-            }
-        })
-    }
-    private val skipLevelPane = SkipLevelPane(context, skin) { skipLevel() }
-    private val skipLevelButton = ClickButton(skin, "color-round-button-padded").apply {
-        addIcon("skip-level-icon")
-        iconCell!!.padLeft(6f) // The icon doesn't look centered
-        addClickRunnable(Runnable {
-            menuOverlayStage.addActor(skipLevelPane)
-        })
-    }
-    private val noAdsButton = ClickButton(skin, "empty-round-button-padded").apply {
-        addIcon("no-ads-icon")
-        addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
-                menuOverlayStage.addActor(NoAdsPane(context, skin))
-            }
-        })
-    }
-    private val leaderboardButton = ClickButton(skin, "empty-round-button-padded").apply {
-        addIcon("leaderboard-icon")
-        addClickRunnable(Runnable {
-            menuOverlayStage.addActor(LeaderboardPane(context, skin, levelEntity.level.levelId))
-        })
-    }
-    private val rankLabel = OutlineDistanceFieldLabel(
+
+    // Listeners
+    private val backKeyListener = BackKeyListener(context)
+    private val clearPreferencesListener = ClearPreferencesListener(context)
+
+    // Overlays
+    val menuOverlay = MenuOverlay(context)
+
+    // Panes
+    val exitGameConfirmationPane = ExitGameConfirmationPane(context)
+    val rateGamePromptPane = RateGamePromptPane(context) { menuOverlay.makeHeartButtonFull() }
+    val heartPane = RateGameHeartPane(context) { menuOverlay.makeHeartButtonFull() }
+    val gitHubPane = GitHubPane(context)
+    val skipLevelPane = SkipLevelPane(context) { skipLevel() }
+    val levelEditorPane = LevelEditorPane(context)
+    private val restoreSuccessPane = RestoreSuccessPane(context)
+    private val restoreNoPurchasesErrorPane = RestoreNoPurchasesErrorPane(context)
+    private val restoreErrorPane = RestoreErrorPane(context)
+    private val purchaseErrorPane = PurchaseErrorPane(context)
+    private val purchaseSuccessPane = PurchaseSuccessPane(context)
+
+    // Buttons
+    val restartButton = RestartButton(context)
+    val skipLevelButton = SkipLevelButton(context)
+    val noAdsButton = NoAdsButton(context)
+    val leaderboardButton = LeaderboardButton(context)
+    val menuButton = MenuButton(context)
+
+    val rankLabel = OutlineDistanceFieldLabel(
         context,
         "rank #x",
         skin, "regular", 37f, Colors.gameColor
@@ -217,251 +143,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
         padBottom(padTopBottom).padTop(padTopBottom)
         add(topRow).fillX().expandY().top().padTop(-25f).padLeft(-25f).padRight(-25f).row()
         add(rankLabel).expand().bottom().padBottom(31f).row()
-    }
-    private val gitHubPane = GitHubPane(context, skin)
-    private val githubButton = ClickButton(skin, "empty-round-button").apply {
-        addIcon("github-icon")
-        addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
-                menuOverlayStage.addActor(gitHubPane)
-            }
-        })
-    }
-    private val levelEditorPane = LevelEditorPane(context, skin)
-    private val levelEditorButton = ClickButton(skin, "gray-full-round-button").apply {
-        addIcon("level-editor-icon")
-        addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
-                menuOverlayStage.addActor(levelEditorPane)
-            }
-        })
-    }
-    private val topPartImage = object : Image(manager.get(Assets.tileset).findRegion("pixel")) {
-        init {
-            width = uiViewport.worldWidth
-            height = uiViewport.worldHeight
-            color = Color.WHITE.copy(alpha = 0f)
-            addListener(object : ClickListener() {
-                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                    return if (bottomGrayStrip.y != 0f) false else super.touchDown(event, x, y, pointer, button)
-                }
-
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    super.clicked(event, x, y)
-                    hideMenuOverlay()
-                }
-            })
-        }
-
-        override fun act(delta: Float) {
-            super.act(delta)
-            if (color.a != 0f && !hasActions()) {
-                color.setWithoutAlpha(Colors.bgColor)
-            }
-        }
-    }
-    private val leftButton = ClickButton(skin, "left-button").apply {
-        touchable = Touchable.disabled
-        addClickRunnable(Runnable {
-            if (color.a == 1f && !levelEntity.level.isChangingLevel) {
-                val fadeOutDuration = .2f
-                val fadeInDuration = .2f
-                gameStage.addAction(
-                    Actions.sequence(
-                        Actions.run {
-                            levelEntity.level.isChangingLevel = true
-                            eventQueue.add(FadeOutEvent(fadeOutDuration))
-                        },
-                        Actions.delay(fadeOutDuration),
-                        Actions.run {
-                            shouldUpdateLevelLabel = true
-                            levelEntity.level.run {
-                                levelId = if (levelId == 1) {
-                                    if (gameRules.CAN_PLAY_ANY_LEVEL) gameRules.LEVEL_COUNT
-                                    else gameRules.HIGHEST_FINISHED_LEVEL + 1
-                                } else levelId - 1
-                                loadMap = true
-                                forceUpdateMap = true
-                            }
-                            levelEntity.map.run {
-                                eventQueue.add(UpdateRoundedPlatformsEvent())
-                                forceCenterCameraOnPlayer = true
-                            }
-                        },
-                        Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
-                        Actions.delay(fadeInDuration),
-                        Actions.run { levelEntity.level.isChangingLevel = false }
-                    )
-                )
-            }
-        })
-    }
-    private val rightButton = ClickButton(skin, "right-button").apply {
-        touchable = Touchable.disabled
-        addClickRunnable(Runnable {
-            if (color.a == 1f && !levelEntity.level.isChangingLevel) {
-                val fadeOutDuration = .2f
-                val fadeInDuration = .2f
-                gameStage.addAction(
-                    Actions.sequence(
-                        Actions.run {
-                            levelEntity.level.isChangingLevel = true
-                            eventQueue.add(FadeOutEvent(fadeOutDuration))
-                        },
-                        Actions.delay(fadeOutDuration),
-                        Actions.run {
-                            shouldUpdateLevelLabel = true
-                            levelEntity.level.run {
-                                levelId =
-                                    if (levelId == gameRules.LEVEL_COUNT && gameRules.CAN_PLAY_ANY_LEVEL) 1
-                                    else if (levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1 && !gameRules.CAN_PLAY_ANY_LEVEL) 1
-                                    else levelId + 1
-                                loadMap = true
-                                forceUpdateMap = true
-                            }
-                            levelEntity.map.run {
-                                eventQueue.add(UpdateRoundedPlatformsEvent())
-                                forceCenterCameraOnPlayer = true
-                            }
-                        },
-                        Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
-                        Actions.delay(fadeInDuration),
-                        Actions.run { levelEntity.level.isChangingLevel = false }
-                    )
-                )
-            }
-        })
-    }
-    private val levelLabel = OutlineDistanceFieldLabel(
-        context,
-        "#${when {
-            gameRules.PLAY_SPECIFIC_LEVEL != -1 -> gameRules.PLAY_SPECIFIC_LEVEL
-            gameRules.CAN_PLAY_ANY_LEVEL -> 1
-            else -> min(gameRules.HIGHEST_FINISHED_LEVEL + 1, gameRules.LEVEL_COUNT)
-        }}",
-        skin, "semi-bold", 37f, Colors.gameColor
-    ).apply {
-        addListener(object : ClickListener() {
-            // Make the player not shoot if the label is clicked
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                return true
-            }
-        })
-    }
-    private val levelMenuOverlayRankLabel = OutlineDistanceFieldLabel(
-        context,
-        "(Unranked)",
-        skin, "semi-bold", 37f, Colors.gameColor
-    ).apply {
-        addListener(object : ClickListener() {
-            // Make the player not shoot if the label is clicked
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                return true
-            }
-        })
-    }
-
-    private val levelAndRankLabels = Table().apply {
-        add(levelLabel).row()
-        add(levelMenuOverlayRankLabel).row()
-    }
-
-    private val leftLevelRightTable = Table(skin).apply {
-        add(leftButton).padRight(64f)
-        add(levelAndRankLabels).padRight(64f)
-        add(rightButton)
-        addAction(Actions.fadeOut(0f))
-    }
-    private val topTable = Table(skin).apply {
-        if (gameRules.ENABLE_LEVEL_EDITOR) {
-            add(levelEditorButton).expand().top().left().padLeft(-levelEditorButton.prefWidth)
-        }
-    }
-    private val topPart = Table(skin).apply {
-        addActor(topPartImage)
-        add(topTable).grow().top().padTop(padTopBottom).row()
-        add(leftLevelRightTable).expand().bottom()
-    }
-    private val heartPane = RateGameHeartPane(context, skin) { makeHeartButtonFull() }
-    private val heartButton = ClickButton(
-        skin,
-        if (gameRules.DID_RATE_THE_GAME) "white-full-round-button" else "empty-round-button"
-    ).apply {
-        addIcon("heart-icon")
-        addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
-                menuOverlayStage.addActor(heartPane)
-            }
-        })
-    }
-    private val audioButton = ClickButton(skin, "white-full-round-button").apply {
-        val order = arrayListOf("sounds-and-music-icon", "music-icon", "sounds-icon", "no-sounds-icon")
-        var current = order.first()
-        fun getNextIcon() =
-            if (order.indexOf(current) == order.size - 1) order.first() else order[order.indexOf(current) + 1]
-        addIcon(current)
-        addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
-                current = getNextIcon()
-
-                icon!!.remove()
-                iconCell!!.reset()
-                addIcon(current)
-                layout()
-
-                styleName = if (current == "no-sounds-icon") "empty-round-button" else "white-full-round-button"
-                style = skin.get(styleName, Button.ButtonStyle::class.java)
-            }
-        })
-    }
-
-    private val bottomGrayStrip = Table(skin).apply {
-        val grayImage = object : Image(manager.get(Assets.tileset).findRegion("pixel")) {
-            init {
-                width = uiStage.viewport.worldWidth
-                height = bottomGrayStripHeight
-                color = Colors.uiGray
-                addListener(object : ClickListener() {
-                    override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                        return true
-                    }
-                })
-            }
-
-            override fun act(delta: Float) {
-                super.act(delta)
-                color = Colors.uiGray
-            }
-        }
-        addActor(grayImage)
-        val leftPart = Table(skin).apply {
-            add(heartButton)
-        }
-        // For now the game has no audio
-        @Suppress("UNUSED_VARIABLE")
-        val middlePart = Table(skin).apply {
-            add(audioButton)
-        }
-        val rightPart = Table(skin).apply {
-            add(githubButton)
-        }
-        add(leftPart).padLeft(padLeftRight).expand().left()
-        add(rightPart).padRight(padLeftRight).expand().right()
-    }
-    val rateGamePromptPane = RateGamePromptPane(context, skin) { makeHeartButtonFull() }
-    private val restoreSuccessPane = RestoreSuccessPane(context, skin)
-    private val restoreNoPurchasesErrorPane = RestoreNoPurchasesErrorPane(context, skin)
-    private val restoreErrorPane = RestoreErrorPane(context, skin)
-    private val purchaseErrorPane = PurchaseErrorPane(context, skin)
-    private val purchaseSuccessPane = PurchaseSuccessPane(context, skin)
-    private val rootOverlayTable = Table().apply {
-        setFillParent(true)
-        add(topPart).expand().fill().row()
-        add(bottomGrayStrip).fillX().height(bottomGrayStripHeight).bottom().padBottom(-128f)
     }
 
     private val framedRestartButton = object : Image(skin.getDrawable("framed-restart-button")) {
@@ -599,150 +280,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
         purchaseManager!!.install(purchaseObserver, purchaseManagerConfig, true)
     }
 
-    private fun showMenuOverlay() {
-        levelEditorButton.run {
-            addAction(Actions.moveTo(x + padLeftRight + prefWidth, y, .2f, Interpolation.pow3In))
-        }
-        bottomGrayStrip.run {
-            addAction(Actions.moveTo(0f, 0f, .2f, Interpolation.pow3In))
-        }
-        topPartImage.touchable = Touchable.enabled
-        topPartImage.addAction(
-            Actions.parallel(
-                Actions.moveTo(0f, bottomGrayStripHeight, .2f, Interpolation.pow3In),
-                Actions.color(Colors.bgColor.copy(alpha = .4f), .3f)
-            )
-        )
-        leftLevelRightTable.run {
-            addAction(
-                Actions.sequence(
-                    Actions.parallel(
-                        Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
-                        Actions.fadeIn(.2f, Interpolation.pow3In)
-                    ),
-                    Actions.run {
-                        leftButton.touchable = Touchable.enabled
-                        rightButton.touchable = Touchable.enabled
-                    }
-                )
-            )
-        }
-    }
-
-    private fun hideMenuOverlay() {
-        levelEditorButton.run {
-            addAction(Actions.moveTo(x - padLeftRight - prefWidth, y, .2f, Interpolation.pow3In))
-        }
-        bottomGrayStrip.run {
-            addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.moveTo(0f, -bottomGrayStripHeight, .2f, Interpolation.pow3In)
-                )
-            )
-        }
-        topPartImage.touchable = Touchable.disabled
-        topPartImage.addAction(
-            Actions.sequence(
-                Actions.delay(.1f),
-                Actions.parallel(
-                    Actions.moveTo(0f, 0f, .2f, Interpolation.pow3In),
-                    Actions.color(Color.WHITE.copy(alpha = 0f), .3f)
-                )
-            )
-        )
-        skipLevelButton.run {
-            addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.moveBy(270f, 0f, .2f, Interpolation.pow3In)
-                )
-            )
-        }
-        noAdsButton.run {
-            addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.moveBy(270f, 0f, .2f, Interpolation.pow3In)
-                )
-            )
-        }
-        leaderboardButton.run {
-            addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.moveBy(-270f, 0f, .2f, Interpolation.pow3In)
-                )
-            )
-
-        }
-        restartButton.run {
-            addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.moveBy(-270f, 0f, .2f, Interpolation.pow3In)
-                )
-            )
-        }
-        menuButton.addAction(
-            Actions.sequence(
-                Actions.delay(.1f),
-                Actions.parallel(
-                    Actions.moveTo(menuButton.x, 25f, .2f, Interpolation.pow3In),
-                    Actions.run {
-                        if (!levelEntity.level.isLevelFinished) {
-                            menuButton.addAction(Actions.fadeIn(.2f, Interpolation.pow3In))
-                        }
-                    }
-                ),
-                Actions.run {
-                    if (!levelEntity.level.isLevelFinished) {
-                        menuButton.touchable = Touchable.enabled
-                    }
-                }
-            )
-        )
-        leftLevelRightTable.run {
-            addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.parallel(
-                        Actions.moveTo(x, 0f, .2f, Interpolation.pow3In),
-                        Actions.fadeOut(.2f, Interpolation.pow3In)
-                    ),
-                    Actions.run {
-                        leftButton.touchable = Touchable.disabled
-                        rightButton.touchable = Touchable.disabled
-                    }
-                )
-            )
-        }
-        rankLabel.run {
-            addAction(
-                Actions.sequence(
-                    Actions.delay(.1f),
-                    Actions.parallel(
-                        Actions.moveTo(x, y + 100f + bottomGrayStripHeight, .2f, Interpolation.pow3In),
-                        Actions.run {
-                            if (!levelEntity.level.isLevelFinished) {
-                                rankLabel.addAction(Actions.fadeIn(.2f, Interpolation.pow3In))
-                            }
-                        }
-                    )
-                )
-            )
-        }
-    }
-
-    init {
-        layoutTables()
-        initializePurchaseManager()
-        initializeRewardedAds()
-    }
-
     private fun layoutTables() {
         // Fixes issue #55 (UI bug)
-        rootOverlayTable.layout()
+        menuOverlay.rootTable.layout()
         rootTable.layout()
         rootFinishUiTable.layout()
     }
@@ -756,13 +296,13 @@ class PlayScreen(private val context: Context) : KtxScreen {
             }
 
             override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {
-                menuOverlayStage.addActor(RewardedAddErrorPane(context, skin, errorCode))
+                menuOverlayStage.addActor(RewardedAddErrorPane(context, errorCode))
             }
         }
     }
 
     override fun show() {
-        context.register { if (!contains<Skin>()) bindSingleton(skin) }
+        layoutTables()
         createGame()
         createUI()
     }
@@ -770,7 +310,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     private fun createGame() {
         setOwnBox2DContactListener()
         createGameEntities()
-        addGameSystems()
+        PlayScreenSystems(context).add()
         handleAllInput()
     }
 
@@ -795,67 +335,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         FinishEntity.createEntity(context)
     }
 
-    private fun addGameSystems() {
-        engine.run {
-            addSystem(EntireLeaderboardCachingSystem(context))
-            addSystem(CurrentLevelLeaderboardCachingSystem(context))
-            addSystem(WritingLeaderboardToStorageSystem(context))
-            addSystem(LeaderboardRankCalculationSystem(context))
-            addSystem(FlushPreferencesSystem(context))
-            addSystem(PlayTimeSystem(context))
-            addSystem(RewardedAdTimerSystem(context))
-            addSystem(InterstitialAdsSystem(context))
-            addSystem(LevelPlayTimeLoggingSystem(context))
-            addSystem(GameFinishSystem(context))
-            addSystem(MapLoadingSystem(context))
-            addSystem(MapBodiesCreationSystem(context))
-            addSystem(CombinedBodiesCreationSystem(context))
-            addSystem(RoundedPlatformsSystem(context))
-            addSystem(PhysicsSystem(context))
-            addSystem(ObjectMovementSystem())
-            addSystem(RefilterSystem())
-            addSystem(PhysicsSyncSystem())
-            addSystem(ShootingSystem(context))
-            addSystem(BulletCollisionSystem(context))
-            addSystem(PlatformRemovalSystem(context))
-            addSystem(OffScreenLevelRestartSystem(context))
-            addSystem(OffScreenBulletDeletionSystem(context))
-            addSystem(KeyboardLevelRestartSystem(context))
-            addSystem(PlayerInsideFinishDetectionSystem())
-            addSystem(FinishTimingSystem())
-            addSystem(LevelFinishDetectionSystem())
-            addSystem(PointsCollectionSystem(context))
-            addSystem(LevelRestartSystem(context, this@PlayScreen))
-            addSystem(CanFinishLevelSystem(context))
-            addSystem(FinishPointColorSystem())
-            addSystem(ColorSchemeSystem())
-            addSystem(SelectedObjectColorSystem())
-            addSystem(ColorSyncSystem())
-            addSystem(PlayerCameraSystem(context, this@PlayScreen))
-            addSystem(UpdateGameCameraSystem(context))
-            addSystem(DashedLineRenderingSystem(context))
-            addSystem(FadeOutFadeInSystem(context))
-            addSystem(ImageRenderingSystem(context))
-            addSystem(LevelFinishSystem(context))
-            addSystem(WriteRankToStorageSystem(context))
-            addSystem(ShowNextLevelSystem(context, this@PlayScreen))
-            addSystem(PromptUserToRateSystem(context, this@PlayScreen))
-            addSystem(ShowInterstitialAdSystem(context))
-            addSystem(ShowFinishStatsSystem(context))
-//            addSystem(PhysicsDebugRenderingSystem(context))
-            addSystem(DebugRenderingSystem(context))
-        }
-    }
-
     private fun handleAllInput() {
         Gdx.input.inputProcessor = inputMultiplexer
-    }
-
-    private fun makeHeartButtonFull() {
-        heartButton.run {
-            styleName = "white-full-round-button"
-            style = skin.get(styleName, Button.ButtonStyle::class.java)
-        }
     }
 
     private fun createUI() {
@@ -865,7 +346,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         menuOverlayStage.run {
             clear()
-            addActor(rootOverlayTable)
+            addActor(menuOverlay.rootTable)
         }
         finishUiStage.run {
             clear()
@@ -915,7 +396,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 },
                 Actions.delay(fadeOutDuration),
                 Actions.run {
-                    shouldUpdateLevelLabel = true
+                    menuOverlay.shouldUpdateLevelLabel = true
                     levelEntity.level.run {
                         loadMap = true
                         forceUpdateMap = true
@@ -941,7 +422,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         update()
         draw(delta)
         loadedAnyMap = true
-        rootOverlayTable.setLayoutEnabled(false)
+        menuOverlay.rootTable.setLayoutEnabled(false)
     }
 
     private fun update() {
@@ -949,12 +430,9 @@ class PlayScreen(private val context: Context) : KtxScreen {
         updateRankLabel()
         updateFinishRankLabel()
         updateFinishRankPercentageLabel()
-        updateLevelLabel()
-        updateLevelMenuOverlayRankLabel()
         updateSkipLevelButton()
-        updateLeftRightButtons()
         updateUiAfterLevelFinish()
-        shiftCameraYBy = (bottomGrayStrip.y + 128f).pixelsToMeters
+        shiftCameraYBy = (menuOverlay.bottomGrayStrip.y + 128f).pixelsToMeters
         uiStage.act()
         menuOverlayStage.act()
         finishUiStage.act()
@@ -1005,38 +483,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
     }
 
-    private fun updateLevelLabel() {
-        levelLabel.touchable = if (levelEntity.level.isLevelFinished) Touchable.disabled else Touchable.enabled
-
-        if (shouldUpdateLevelLabel) {
-            levelLabel.run {
-                setText("#${levelEntity.level.levelId}")
-                layout()
-            }
-            rootOverlayTable.setLayoutEnabled(false)
-            shouldUpdateLevelLabel = false
-        }
-    }
-
-    private fun updateLevelMenuOverlayRankLabel() {
-        levelMenuOverlayRankLabel.touchable = if (levelEntity.level.isLevelFinished) Touchable.disabled else Touchable.enabled
-
-        val storedRank = gameRules.getGameLevelRank(levelEntity.level.levelId)
-        val storedHighscore = gameRules.getGameLevelRank(levelEntity.level.levelId)
-        levelMenuOverlayRankLabel.run {
-            if (storedRank != gameRules.DEFAULT_RANK_VALUE) {
-                setText("(rank #$storedRank)")
-            } else {
-                if (storedHighscore == gameRules.SKIPPED_LEVEL_SCORE_VALUE) {
-                    setText("(Skipped)")
-                } else {
-                    setText("(Unranked)")
-                }
-            }
-            layout()
-        }
-    }
-
     private fun updateSkipLevelButton() {
         if (levelEntity.level.isLevelFinished) return
 
@@ -1068,21 +514,6 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
     }
 
-    private fun updateLeftRightButtons() {
-        leftButton.run {
-            styleName = if (levelEntity.level.levelId == 1) "double-left-button" else "left-button"
-            style = skin.get(styleName, Button.ButtonStyle::class.java)
-        }
-        rightButton.run {
-            styleName =
-                if ((gameRules.CAN_PLAY_ANY_LEVEL && levelEntity.level.levelId == gameRules.LEVEL_COUNT) ||
-                    (!gameRules.CAN_PLAY_ANY_LEVEL && levelEntity.level.levelId == gameRules.HIGHEST_FINISHED_LEVEL + 1)
-                ) "double-right-button"
-                else "right-button"
-            style = skin.get(styleName, Button.ButtonStyle::class.java)
-        }
-    }
-
     private fun updateUiAfterLevelFinish() {
         if (!levelEntity.level.isLevelFinished || levelEntity.level.isRestarting) return
 
@@ -1093,8 +524,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         if (framedRestartButton.isTouchable) return
 
         // Hide menu overlay
-        if (bottomGrayStrip.y == 0f) {
-            hideMenuOverlay()
+        if (menuOverlay.bottomGrayStrip.y == 0f) {
+            menuOverlay.hideMenuOverlay()
         }
 
         // Fade out things

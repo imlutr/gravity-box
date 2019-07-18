@@ -26,7 +26,10 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
 
-class PurchaseSuccessPane(context: Context, skin: Skin) : Pane(context, 600f, 340f, skin) {
+class PurchaseSuccessPane(context: Context) : Pane(context, 600f, 340f, context.inject()) {
+    // Injected objects
+    private val skin: Skin = context.inject()
+
     private val text = DistanceFieldLabel(
         context,
         """

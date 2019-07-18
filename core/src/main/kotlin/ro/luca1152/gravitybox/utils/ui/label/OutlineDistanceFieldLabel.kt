@@ -24,7 +24,7 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.kotlin.OutlineDistanceFieldShader
 import ro.luca1152.gravitybox.utils.ui.Colors
 
-class OutlineDistanceFieldLabel(
+open class OutlineDistanceFieldLabel(
     context: Context,
     text: CharSequence,
     skin: Skin,

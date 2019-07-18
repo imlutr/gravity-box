@@ -100,7 +100,7 @@ class ShowNextLevelSystem(
         )
         playScreen.run {
             hideLevelFinishUi()
-            shouldUpdateLevelLabel = true
+            menuOverlay.shouldUpdateLevelLabel = true
         }
         eventQueue.run {
             add(PromptUserToRateEvent())

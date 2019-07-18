@@ -30,8 +30,9 @@ import ro.luca1152.gravitybox.utils.kotlin.setScreen
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
 
-class LevelEditorPane(context: Context, skin: Skin) : Pane(context, 600f, 370f, skin) {
+class LevelEditorPane(context: Context) : Pane(context, 600f, 370f, context.inject()) {
     // Injected objects
+    private val skin: Skin = context.inject()
     private val game: MyGame = context.inject()
 
     private val text = DistanceFieldLabel(

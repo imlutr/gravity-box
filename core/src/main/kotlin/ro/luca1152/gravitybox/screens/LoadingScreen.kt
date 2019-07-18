@@ -111,8 +111,11 @@ class LoadingScreen(private val context: Context) : KtxScreen {
     private fun logLoadingTime() = info("Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s.")
 
     private fun bindLoadedObjects() {
-        if (manager.contains(Assets.gameLeaderboardPath)) {
-            context.bindSingleton(GameShotsLeaderboard(manager.get(Assets.gameLeaderboard)))
+        context.run {
+            bindSingleton(manager.get(Assets.uiSkin))
+            if (manager.contains(Assets.gameLeaderboardPath)) {
+                bindSingleton(GameShotsLeaderboard(manager.get(Assets.gameLeaderboard)))
+            }
         }
     }
 
@@ -121,7 +124,9 @@ class LoadingScreen(private val context: Context) : KtxScreen {
     private fun addScreens() {
         game.run {
             addScreen(LevelEditorScreen(context))
-            addScreen(PlayScreen(context))
+
+            val playScreen = PlayScreen(context)
+            addScreen(playScreen)
         }
     }
 

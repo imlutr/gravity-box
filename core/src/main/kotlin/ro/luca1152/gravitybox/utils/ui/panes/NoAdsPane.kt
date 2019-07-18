@@ -29,18 +29,19 @@ import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
 
-class NoAdsPane(context: Context, skin: Skin) : Pane(
+class NoAdsPane(context: Context) : Pane(
     context, 600f,
     if (!context.inject<GameRules>().IS_AD_FREE) {
         if (context.inject<GameRules>().IS_IOS) 924f // Show the "I already paid..." button
         else 820f // Hide the "I already paid..." button
-    } else 856f, skin
+    } else 856f, context.inject()
 ) {
     // Injected objects
+    private val skin: Skin = context.inject()
     private val gameRules: GameRules = context.inject()
     private val purchaseManager: PurchaseManager? = context.injectNullable()
 
-    val text = DistanceFieldLabel(
+    private val text = DistanceFieldLabel(
         context,
         (if (!gameRules.IS_AD_FREE)
             """
@@ -56,7 +57,7 @@ class NoAdsPane(context: Context, skin: Skin) : Pane(
                 the development! <3
                 """).trimIndent(), skin, "regular", 36f, skin.getColor("text-gold")
     )
-    val coffeeButton = Button(skin, "long-button").apply {
+    private val coffeeButton = Button(skin, "long-button").apply {
         val coffeeText = DistanceFieldLabel(context, "Coffee", skin, "regular", 36f, Color.WHITE)
         val priceText = DistanceFieldLabel(context, "$1.99", skin, "regular", 36f, Color.WHITE)
         add(coffeeText).padLeft(47f).expand().left()
@@ -75,7 +76,7 @@ class NoAdsPane(context: Context, skin: Skin) : Pane(
             }
         })
     }
-    val iceCreamButton = Button(skin, "long-button").apply {
+    private val iceCreamButton = Button(skin, "long-button").apply {
         val iceCreamText = DistanceFieldLabel(context, "Ice Cream (best)", skin, "regular", 36f, Color.WHITE)
         val priceText = DistanceFieldLabel(context, "$4.99", skin, "regular", 36f, Color.WHITE)
         add(iceCreamText).padLeft(47f).expand().left()
@@ -94,7 +95,7 @@ class NoAdsPane(context: Context, skin: Skin) : Pane(
             }
         })
     }
-    val muffinButton = Button(skin, "long-button").apply {
+    private val muffinButton = Button(skin, "long-button").apply {
         val muffinText = DistanceFieldLabel(context, "Muffin", skin, "regular", 36f, Color.WHITE)
         val priceText = DistanceFieldLabel(context, "$7.99", skin, "regular", 36f, Color.WHITE)
         add(muffinText).padLeft(47f).expand().left()
@@ -113,7 +114,7 @@ class NoAdsPane(context: Context, skin: Skin) : Pane(
             }
         })
     }
-    val pizzaButton = Button(skin, "long-button").apply {
+    private val pizzaButton = Button(skin, "long-button").apply {
         val pizzaText = DistanceFieldLabel(context, "Pizza", skin, "regular", 36f, Color.WHITE)
         val priceText = DistanceFieldLabel(context, "$14.99", skin, "regular", 36f, Color.WHITE)
         add(pizzaText).padLeft(47f).expand().left()
@@ -132,7 +133,7 @@ class NoAdsPane(context: Context, skin: Skin) : Pane(
             }
         })
     }
-    val sushiButton = Button(skin, "long-button").apply {
+    private val sushiButton = Button(skin, "long-button").apply {
         val sushiText = DistanceFieldLabel(context, "Sushi", skin, "regular", 36f, Color.WHITE)
         val priceText = DistanceFieldLabel(context, "$24.99", skin, "regular", 36f, Color.WHITE)
         add(sushiText).padLeft(47f).expand().left()
@@ -151,7 +152,7 @@ class NoAdsPane(context: Context, skin: Skin) : Pane(
             }
         })
     }
-    val alreadyPaidButton = Button(skin, "long-button").apply {
+    private val alreadyPaidButton = Button(skin, "long-button").apply {
         val buttonText = DistanceFieldLabel(context, "I already paid...", skin, "regular", 36f, Color.WHITE)
         add(buttonText)
         color.set(99 / 255f, 116 / 255f, 132 / 255f, 1f)
@@ -163,7 +164,7 @@ class NoAdsPane(context: Context, skin: Skin) : Pane(
             }
         })
     }
-    val noThanksButton = Button(skin, "long-button").apply {
+    private val noThanksButton = Button(skin, "long-button").apply {
         val buttonText =
             DistanceFieldLabel(context, "No, thanks${if (!gameRules.IS_AD_FREE) " :(" else ""}", skin, "regular", 36f, Color.WHITE)
         add(buttonText)

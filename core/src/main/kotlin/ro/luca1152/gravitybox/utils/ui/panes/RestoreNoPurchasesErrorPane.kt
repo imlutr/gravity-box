@@ -26,7 +26,10 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
 
-class RestoreNoPurchasesErrorPane(context: Context, skin: Skin) : Pane(context, 600f, 230f, skin) {
+class RestoreNoPurchasesErrorPane(context: Context) : Pane(context, 600f, 230f, context.inject()) {
+    // Context
+    private val skin: Skin = context.inject()
+
     private val text = DistanceFieldLabel(
         context,
         "No purchases to restore...", skin, "regular", 36f, skin.getColor("text-gold")

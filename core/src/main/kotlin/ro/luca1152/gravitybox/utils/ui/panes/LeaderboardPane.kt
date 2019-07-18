@@ -32,10 +32,10 @@ import ro.luca1152.gravitybox.utils.ui.popup.Pane
 
 class LeaderboardPane(
     private val context: Context,
-    private val skin: Skin,
     private val currentLevelId: Int
-) : Pane(context, 600f, 736f, skin) {
+) : Pane(context, 600f, 736f, context.inject()) {
     // Injected objects
+    private val skin: Skin = context.inject()
     private val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
 
     // Constants
