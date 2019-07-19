@@ -39,8 +39,8 @@ import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.LoadingScreen
 import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.*
-import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
-import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
+import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
+import ro.luca1152.gravitybox.utils.ui.label.BaseDistanceFieldLabel
 
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
@@ -85,14 +85,15 @@ class MyGame : KtxGame<Screen>() {
             bindSingleton(UIStage(context))
             bindSingleton(MenuOverlayViewport(context))
             bindSingleton(MenuOverlayStage(context))
-            bindSingleton(DistanceFieldShader(DistanceFieldLabel.vertexShader, DistanceFieldLabel.fragmentShader))
+            bindSingleton(DistanceFieldShader(BaseDistanceFieldLabel.vertexShader, BaseDistanceFieldLabel.fragmentShader))
+            bindSingleton(OutlineDistanceFieldShader(BaseDistanceFieldLabel.vertexShader, BaseDistanceFieldLabel.outlineFragmentShader))
             if (context.inject<GameRules>().IS_MOBILE) {
                 bindSingleton(purchaseManager)
                 bindSingleton(adsController)
             }
 
             // Leaderboards
-            bindSingleton(ShotsLeaderboard(context))
+            bindSingleton(GameShotsLeaderboardController(context))
         }
     }
 

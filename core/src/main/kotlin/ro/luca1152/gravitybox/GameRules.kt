@@ -214,7 +214,9 @@ class GameRules(context: Context) {
         }
 
     // Leaderboard
+    /** The default value returned when reading a non-existent highscore using [getGameLevelHighscore]. */
     val DEFAULT_HIGHSCORE_VALUE = Int.MAX_VALUE
+    /** The score stored in the [Preferences] to mark that the level was skipped. */
     val SKIPPED_LEVEL_SCORE_VALUE = -1
 
     /** Returns the least number of shots the game (not community) level [level] was finished in. */
@@ -228,6 +230,46 @@ class GameRules(context: Context) {
             Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
         }
     }
+
+    /** The delay in miliseconds between leaderboard caches to storage. */
+    val TIME_DELAY_BETWEEN_CACHING_LEADERBOARD = 6L * 3600 * 1000
+
+    /** The time in seconds until the entire leaderboard is cached to storage. */
+    var NEXT_LEADERBOARD_CACHE_TIME
+        get() = preferences.getLong("nextLeaderboardCacheTime", 0L)
+        set(value) {
+            preferences.putLong("nextLeaderboardCacheTime", value)
+        }
+
+    /** The version of the leaderboard cached to storage. */
+    var CACHED_LEADERBOARD_VERSION
+        get() = preferences.getString("cachedLeaderboardVersion", GAME_LEVELS_VERSION)
+        set(value) {
+            preferences.putString("cachedLeaderboardVersion", value)
+        }
+
+    /** True if the `Tap anywhere to proceed` guide was shown between levels. */
+    var DID_SHOW_GUIDE_BETWEEN_LEVELS
+        get() = preferences.getBoolean("didShowGuideBetweenLevels", false)
+        set(value) {
+            preferences.putBoolean("didShowGuideBetweenLevels", value)
+        }
+
+    /** The default value returned when reading a non-existent highscore using [getGameLevelHighscore]. */
+    val DEFAULT_RANK_VALUE = Int.MAX_VALUE
+
+    /** Returns the least number of shots the game (not community) level [level] was finished in. */
+    fun getGameLevelRank(level: Int) = preferences.getInteger("game${level}Rank", DEFAULT_RANK_VALUE)
+
+    /** Sets the least number of shots the game (not community) level [level] was finished in. */
+    fun setGameLevelRank(level: Int, rank: Int) {
+        if (getGameLevelRank(level) > rank) {
+            preferences.putInteger("game${level}Rank", rank)
+        } else {
+            Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
+        }
+    }
+
 
     // Analytics
     /** Returns how much time a player spent playing the given level. */

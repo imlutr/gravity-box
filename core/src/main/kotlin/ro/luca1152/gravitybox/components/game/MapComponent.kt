@@ -40,9 +40,7 @@ import ro.luca1152.gravitybox.entities.game.DashedLineEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.TextEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.FadeInEvent
-import ro.luca1152.gravitybox.events.FadeOutFadeInEvent
-import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
+import ro.luca1152.gravitybox.systems.game.*
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
@@ -105,6 +103,15 @@ class MapComponent : Component, Poolable {
 
     /** How many time did the player shot in the current level. */
     var shots = 0
+
+    /** The player's rank based on the shots count. */
+    var rank = -1
+
+    /** True if the shots the level was finished in is a new record. */
+    var isNewRecord = false
+
+    /** Tells the current rank is in the top [rankPercentage]%. [0-100]*/
+    var rankPercentage = -1f
 
     fun set(context: Context, levelId: Int, hue: Int) {
         this.levelId = levelId
@@ -239,6 +246,9 @@ class MapComponent : Component, Poolable {
 
             // Clear all actions in case the level was restarting, causing visual glitches
             add(FadeInEvent(FadeOutFadeInEvent.CLEAR_ACTIONS))
+
+            add(CacheCurrentLevelLeaderboardEvent())
+            add(CalculateRankEvent())
         }
     }
 
@@ -440,6 +450,9 @@ class MapComponent : Component, Poolable {
         shouldLogLevelStart = false
         shouldBeLoggingLevelPlayTime = false
         shots = 0
+        rank = -1
+        rankPercentage = -1f
+        isNewRecord = false
     }
 
     fun destroyAllBodies() {

@@ -30,14 +30,13 @@ import ro.luca1152.gravitybox.components.editor.editorObject
 import ro.luca1152.gravitybox.components.game.*
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.FadeInEvent
-import ro.luca1152.gravitybox.events.FadeOutEvent
+import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 
 /** Handles what happens when a level is marked as to be restarted. */
-class LevelRestartSystem(private val context: Context) : EntitySystem() {
+class LevelRestartSystem(private val context: Context, private val playScreen: PlayScreen? = null) : EntitySystem() {
     // Injected objects
     private val gameStage: GameStage = context.inject()
     private val eventQueue: EventQueue = context.inject()
@@ -56,6 +55,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
             return
         restartTheLevel()
         levelEntity.map.logLevelStart()
+        playScreen?.finishOverlay?.hide()
     }
 
     private fun restartTheLevel() {
@@ -85,6 +85,7 @@ class LevelRestartSystem(private val context: Context) : EntitySystem() {
                             forceCenterCameraOnPlayer = true
                             shots = 0
                         }
+                        eventQueue.add(CalculateRankEvent())
                     }
                 },
                 Actions.run { eventQueue.add(FadeInEvent(fadeInDuration, Interpolation.pow3In)) },

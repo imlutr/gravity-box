@@ -26,7 +26,7 @@ import ro.luca1152.gravitybox.components.editor.UndoRedoComponent
 import ro.luca1152.gravitybox.components.editor.undoRedo
 import ro.luca1152.gravitybox.components.game.MapComponent
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
+import ro.luca1152.gravitybox.systems.game.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 class UndoRedoSystem(context: Context) : IteratingSystem(Family.all(UndoRedoComponent::class.java).get()) {

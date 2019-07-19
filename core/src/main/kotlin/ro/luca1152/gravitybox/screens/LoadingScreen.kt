@@ -27,14 +27,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.app.KtxScreen
 import ktx.assets.load
 import ktx.inject.Context
-import ktx.log.info
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.assets.Assets
-import ro.luca1152.gravitybox.utils.assets.loaders.MapPack
-import ro.luca1152.gravitybox.utils.assets.loaders.MapPackLoader
-import ro.luca1152.gravitybox.utils.assets.loaders.Text
-import ro.luca1152.gravitybox.utils.assets.loaders.TextLoader
+import ro.luca1152.gravitybox.utils.assets.loaders.*
 import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
+import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 
 class LoadingScreen(private val context: Context) : KtxScreen {
     // Injected objects
@@ -60,6 +58,7 @@ class LoadingScreen(private val context: Context) : KtxScreen {
         loadGraphics()
         loadGameMaps()
         loadEditorMaps()
+        loadCachedLeaderboards()
     }
 
     private fun showSplashScreen() {
@@ -85,6 +84,14 @@ class LoadingScreen(private val context: Context) : KtxScreen {
         }
     }
 
+    private fun loadCachedLeaderboards() {
+        manager.setLoader(ShotsLeaderboard::class.java, ShotsLeaderboardLoader(LocalFileHandleResolver()))
+        if (Gdx.files.local(Assets.gameLeaderboardPath).exists()) {
+            manager.load(Assets.gameLeaderboard)
+            info("Loaded cached game leaderboard.")
+        }
+    }
+
     override fun render(delta: Float) {
         update(delta)
         clearScreen(Color.BLACK)
@@ -95,19 +102,31 @@ class LoadingScreen(private val context: Context) : KtxScreen {
         loadingAssetsTimer += delta
         if (finishedLoadingAssets) {
             logLoadingTime()
+            bindLoadedObjects()
             addScreens()
             showPlayScreen()
         }
     }
 
-    private fun logLoadingTime() = info { "Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s." }
+    private fun logLoadingTime() = info("Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s.")
+
+    private fun bindLoadedObjects() {
+        context.run {
+            bindSingleton(manager.get(Assets.uiSkin))
+            if (manager.contains(Assets.gameLeaderboardPath)) {
+                bindSingleton(GameShotsLeaderboard(manager.get(Assets.gameLeaderboard)))
+            }
+        }
+    }
 
     // They are added here and not in [MyGame] because adding a screen automatically initializes it, initialization which
     // may use assets, such as [Skin]s or [Texture]s, that are loaded here.
     private fun addScreens() {
         game.run {
             addScreen(LevelEditorScreen(context))
-            addScreen(PlayScreen(context))
+
+            val playScreen = PlayScreen(context)
+            addScreen(playScreen)
         }
     }
 

@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.inject.Context
 import ro.luca1152.gravitybox.utils.ui.Colors
-import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
+import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 
 class ClickTextButton(
     context: Context,
