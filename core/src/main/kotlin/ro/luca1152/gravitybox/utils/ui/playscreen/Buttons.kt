@@ -57,6 +57,25 @@ class RestartButton(context: Context) : ClickButton(context.inject(), "color-rou
             }
         })
     }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        updateButton()
+    }
+
+    private fun updateButton() {
+        val levelEntity = playScreen.levelEntity
+        if (levelEntity.level.isLevelFinished) return
+
+        // The button should be hidden if the current level is the last one
+        if (levelEntity.level.levelId == gameRules.LEVEL_COUNT) {
+            color.a = 0f
+            touchable = Touchable.disabled
+        } else {
+            color.a = 1f
+            touchable = Touchable.enabled
+        }
+    }
 }
 
 class SkipLevelButton(context: Context) : ClickButton(context.inject(), "color-round-button-padded") {
@@ -112,6 +131,8 @@ class SkipLevelButton(context: Context) : ClickButton(context.inject(), "color-r
 class NoAdsButton(context: Context) : ClickButton(context.inject(), "empty-round-button-padded") {
     // Injected objects
     private val menuOverlayStage: MenuOverlayStage = context.inject()
+    private val playScreen: PlayScreen = context.inject()
+    private val gameRules: GameRules = context.inject()
 
     init {
         addIcon("no-ads-icon")
@@ -122,18 +143,57 @@ class NoAdsButton(context: Context) : ClickButton(context.inject(), "empty-round
             }
         })
     }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        updateButton()
+    }
+
+    private fun updateButton() {
+        val levelEntity = playScreen.levelEntity
+        if (levelEntity.level.isLevelFinished) return
+
+        // The button should be hidden if the current level is the last one
+        if (levelEntity.level.levelId == gameRules.LEVEL_COUNT) {
+            color.a = 0f
+            touchable = Touchable.disabled
+        } else {
+            color.a = 1f
+            touchable = Touchable.enabled
+        }
+    }
 }
 
 class LeaderboardButton(context: Context) : ClickButton(context.inject(), "empty-round-button-padded") {
     // Injected objects
     private val menuOverlayStage: MenuOverlayStage = context.inject()
     private val playScreen: PlayScreen = context.inject()
+    private val gameRules: GameRules = context.inject()
 
     init {
         addIcon("leaderboard-icon")
         addClickRunnable(Runnable {
             menuOverlayStage.addActor(LeaderboardPane(context, playScreen.levelEntity.level.levelId))
         })
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        updateButton()
+    }
+
+    private fun updateButton() {
+        val levelEntity = playScreen.levelEntity
+        if (levelEntity.level.isLevelFinished) return
+
+        // The button should be hidden if the current level is the last one
+        if (levelEntity.level.levelId == gameRules.LEVEL_COUNT) {
+            color.a = 0f
+            touchable = Touchable.disabled
+        } else {
+            color.a = 1f
+            touchable = Touchable.enabled
+        }
     }
 }
 
