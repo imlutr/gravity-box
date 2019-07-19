@@ -26,6 +26,7 @@ import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.events.Event
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.EventSystem
+import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
@@ -36,6 +37,7 @@ class LeaderboardRankCalculationSystem(
 ) : EventSystem<CalculateRankEvent>(context.inject(), CalculateRankEvent::class) {
     // Injected objects
     private val eventQueue: EventQueue = context.inject()
+    private val playScreen: PlayScreen = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -56,6 +58,7 @@ class LeaderboardRankCalculationSystem(
 
         calculateRank()
         calculateRankPercentage()
+        showLabel()
     }
 
     private fun calculateRank() {
@@ -92,6 +95,14 @@ class LeaderboardRankCalculationSystem(
         }
         if (totalPlayers != 0L) {
             levelEntity.map.rankPercentage = totalPlayersWhoFinishedInFewerOrEqualShots * 100f / totalPlayers
+        }
+    }
+
+    private fun showLabel() {
+        if (playScreen.rankLabel.color.a == 0f && !playScreen.rankLabel.hasActions() &&
+            !levelEntity.level.isLevelFinished && levelEntity.map.rank != -1
+        ) {
+            playScreen.rankLabel.color.a = 1f
         }
     }
 }

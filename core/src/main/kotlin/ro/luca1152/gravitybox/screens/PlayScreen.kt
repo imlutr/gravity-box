@@ -121,7 +121,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         private fun updateLabel() {
             if (levelEntity.level.isLevelFinished) return
 
-            if (levelEntity.map.rank == -1) {
+            if (levelEntity.map.rank == -1 || levelEntity.level.isRestarting) {
                 isVisible = false
             } else {
                 isVisible = true
