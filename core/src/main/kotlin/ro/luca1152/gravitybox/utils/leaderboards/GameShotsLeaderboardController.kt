@@ -51,6 +51,7 @@ class GameShotsLeaderboardController(context: Context) {
 
     fun readCurrentGameLevelLeaderboard(levelId: Int, onSuccess: (level: Level) -> Unit) {
         if (!gameRules.IS_MOBILE) return
+        if (levelId == gameRules.LEVEL_COUNT) return
 
         val databasePath = "shots-leaderboard/game/${gameRules.GAME_LEVELS_VERSION}/l$levelId"
         val level = Level()
