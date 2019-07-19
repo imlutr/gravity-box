@@ -191,6 +191,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(CurrentLevelLeaderboardCachingSystem(context))
             addSystem(WritingLeaderboardToStorageSystem(context))
             addSystem(LeaderboardRankCalculationSystem(context))
+            addSystem(UpdateAllRanksSystem(context))
             addSystem(FlushPreferencesSystem(context))
             addSystem(PlayTimeSystem(context))
             addSystem(RewardedAdTimerSystem(context))

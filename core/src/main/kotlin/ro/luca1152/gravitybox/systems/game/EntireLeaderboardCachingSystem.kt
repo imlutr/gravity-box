@@ -57,6 +57,7 @@ class EntireLeaderboardCachingSystem(private val context: Context) : EntitySyste
             updateNextLeaderboardCacheTime()
             writeLeaderboardToStorage()
             bindLeaderboard(it)
+            eventQueue.add(UpdateAllRanksEvent())
         }
     }
 
