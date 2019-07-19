@@ -70,10 +70,12 @@ class FinishOverlay(private val context: Context) {
         private fun updateLabel() {
             val levelEntity = playScreen.levelEntity
             if (!levelEntity.level.isLevelFinished) return
-            if (levelEntity.map.rank != -1) {
+            if (levelEntity.map.rank != -1 && !levelEntity.map.isNewRecord) {
                 setText("rank #${levelEntity.map.rank}")
-                layout()
+            } else {
+                setText("rank #1")
             }
+            layout()
         }
     }
     private val levelFinishRankPercentageLabel = object : OutlineDistanceFieldLabel(
@@ -94,8 +96,13 @@ class FinishOverlay(private val context: Context) {
             val levelEntity = playScreen.levelEntity
             if (!levelEntity.level.isLevelFinished) return
 
-            val percentageAsString = "%.1f".format(levelEntity.map.rankPercentage)
-            setText("(top ${if (percentageAsString == "0.0") "0.1" else percentageAsString}%)")
+            if (levelEntity.map.isNewRecord) {
+                setText("NEW RECORD!")
+            } else {
+                val percentageAsString = "%.1f".format(levelEntity.map.rankPercentage)
+                setText("(top ${if (percentageAsString == "0.0") "0.1" else percentageAsString}%)")
+            }
+
             layout()
         }
     }

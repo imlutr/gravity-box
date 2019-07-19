@@ -57,7 +57,10 @@ class LeaderboardRankCalculationSystem(private val context: Context) :
                     else newRank++
                 }
             }
-            levelEntity.map.rank = newRank
+            levelEntity.map.run {
+                rank = newRank
+                isNewRecord = !shotsMap.containsKey("s${levelEntity.map.shots}")
+            }
         }
     }
 

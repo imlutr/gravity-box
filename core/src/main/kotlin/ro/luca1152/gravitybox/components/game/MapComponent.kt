@@ -107,6 +107,9 @@ class MapComponent : Component, Poolable {
     /** The player's rank based on the shots count. */
     var rank = -1
 
+    /** True if the shots the level was finished in is a new record. */
+    var isNewRecord = false
+
     /** Tells the current rank is in the top [rankPercentage]%. [0-100]*/
     var rankPercentage = -1f
 
@@ -449,6 +452,7 @@ class MapComponent : Component, Poolable {
         shots = 0
         rank = -1
         rankPercentage = -1f
+        isNewRecord = false
     }
 
     fun destroyAllBodies() {

@@ -37,8 +37,8 @@ import kotlin.math.max
 
 /** Handles what happens when a level is finished. */
 class LevelFinishSystem(
-        private val context: Context,
-        private val restartLevelWhenFinished: Boolean = false
+    private val context: Context,
+    private val restartLevelWhenFinished: Boolean = false
 ) : EntitySystem() {
     // Injected objects
     private val eventQueue: EventQueue = context.inject()
@@ -107,17 +107,20 @@ class LevelFinishSystem(
         // Analytics
         if (gameRules.IS_MOBILE) {
             GdxFIRAnalytics.inst().logEvent(
-                    "level_finish",
-                    mapOf(
-                            Pair("level_id", "game/${levelEntity.level.levelId}"),
-                            Pair("finish_time", "${gameRules.getGameLevelPlayTime(levelEntity.level.levelId)}"),
-                            Pair("finish_count", "${gameRules.getGameLevelFinishCount(levelEntity.level.levelId)}")
-                    )
+                "level_finish",
+                mapOf(
+                    Pair("level_id", "game/${levelEntity.level.levelId}"),
+                    Pair("finish_time", "${gameRules.getGameLevelPlayTime(levelEntity.level.levelId)}"),
+                    Pair("finish_count", "${gameRules.getGameLevelFinishCount(levelEntity.level.levelId)}")
+                )
             )
         }
 
-        info("Logged level finish (level ${levelEntity.level.levelId}, ${"%.2f".format(gameRules.getGameLevelPlayTime(levelEntity.level.levelId))}s," +
-                " ${gameRules.getGameLevelFinishCount(levelEntity.level.levelId)} time${if (gameRules.getGameLevelFinishCount(levelEntity.level.levelId) != 1) "s" else ""}).")
+        info(
+            "Logged level finish (level ${levelEntity.level.levelId}, ${"%.2f".format(gameRules.getGameLevelPlayTime(levelEntity.level.levelId))}s," +
+                    " ${gameRules.getGameLevelFinishCount(levelEntity.level.levelId)} time" +
+                    "${if (gameRules.getGameLevelFinishCount(levelEntity.level.levelId) != 1) "s" else ""})."
+        )
 
         // Reset the played time, so in case this level is replayed, a huge time won't be reported
         gameRules.setGameLevelPlayTime(levelEntity.level.levelId, 0f)
