@@ -45,52 +45,53 @@ class LeaderboardRankCalculationSystem(
     }
 
     override fun processEvent(event: CalculateRankEvent, deltaTime: Float) {
+        val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
+        if (shotsLeaderboard == null || !shotsLeaderboard.levels.contains("l${levelEntity.level.levelId}")) {
+            levelEntity.map.run {
+                rank = -1
+                rankPercentage = -1f
+            }
+            return
+        }
+
         calculateRank()
         calculateRankPercentage()
     }
 
     private fun calculateRank() {
-        val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
-        if (shotsLeaderboard == null || !shotsLeaderboard.levels.contains("l${levelEntity.level.levelId}")) {
-            levelEntity.map.rank = -1
-        } else {
-            var newRank = -1
-            val shotsMap = shotsLeaderboard.levels["l${levelEntity.level.levelId}"]!!.shots
-            for (i in 1..levelEntity.map.shots) {
-                if (shotsMap.containsKey("s$i") && shotsMap["s$i"] != 0L) {
-                    if (newRank == -1) newRank = 1
-                    else newRank++
-                }
+        val shotsLeaderboard: GameShotsLeaderboard = context.inject()
+        var newRank = -1
+        val shotsMap = shotsLeaderboard.levels["l${levelEntity.level.levelId}"]!!.shots
+        for (i in 1..levelEntity.map.shots) {
+            if (shotsMap.containsKey("s$i") && shotsMap["s$i"] != 0L) {
+                if (newRank == -1) newRank = 1
+                else newRank++
             }
-            levelEntity.map.run {
-                rank = newRank
-                isNewRecord = !shotsMap.containsKey("s${levelEntity.map.shots}")
+        }
+        levelEntity.map.run {
+            rank = newRank
+            isNewRecord = !shotsMap.containsKey("s${levelEntity.map.shots}")
 
-                if (isNewRecord && levelEntity.level.isLevelFinished) {
-                    eventQueue.add(CacheCurrentLevelShots())
-                }
+            if (isNewRecord && levelEntity.level.isLevelFinished) {
+                eventQueue.add(CacheCurrentLevelShots())
             }
         }
     }
 
     private fun calculateRankPercentage() {
-        val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
-        if (shotsLeaderboard == null) {
-            levelEntity.map.rankPercentage = -1f
-        } else {
-            val shotsMap = shotsLeaderboard.levels["l${levelEntity.level.levelId}"]!!.shots
-            val shots = levelEntity.map.shots
-            var totalPlayers = 0L
-            var totalPlayersWhoFinishedInFewerOrEqualShots = 0L
-            shotsMap.forEach {
-                totalPlayers += it.value
-                if (it.key.substring(1).toLong() <= shots) {
-                    totalPlayersWhoFinishedInFewerOrEqualShots += it.value
-                }
+        val shotsLeaderboard: GameShotsLeaderboard = context.inject()
+        val shotsMap = shotsLeaderboard.levels["l${levelEntity.level.levelId}"]!!.shots
+        val shots = levelEntity.map.shots
+        var totalPlayers = 0L
+        var totalPlayersWhoFinishedInFewerOrEqualShots = 0L
+        shotsMap.forEach {
+            totalPlayers += it.value
+            if (it.key.substring(1).toLong() <= shots) {
+                totalPlayersWhoFinishedInFewerOrEqualShots += it.value
             }
-            if (totalPlayers != 0L) {
-                levelEntity.map.rankPercentage = totalPlayersWhoFinishedInFewerOrEqualShots * 100f / totalPlayers
-            }
+        }
+        if (totalPlayers != 0L) {
+            levelEntity.map.rankPercentage = totalPlayersWhoFinishedInFewerOrEqualShots * 100f / totalPlayers
         }
     }
 }
