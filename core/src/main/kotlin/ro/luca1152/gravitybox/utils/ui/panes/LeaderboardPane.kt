@@ -31,6 +31,7 @@ import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
+import kotlin.math.min
 
 class LeaderboardPane(
     private val context: Context,
@@ -96,9 +97,9 @@ class LeaderboardPane(
         resetWidget()
         widget.run {
             if (context.injectNullable<GameShotsLeaderboard>() != null) {
-                add(topTextTable).expand().padLeft(35f).padRight(35f).fillX().top().row()
-                add(yellowHorizontalLine).width(492f).expand().top().row()
-                add(createLeaderboardTable()).padLeft(35f).padRight(35f).grow().row()
+                add(topTextTable).padLeft(35f).padRight(35f).fillX().padBottom(13f).row()
+                add(yellowHorizontalLine).width(492f).padBottom(13f).row()
+                add(createLeaderboardTable()).padLeft(35f).padRight(35f).fill().row()
                 add(closeButton).width(492f).expand().bottom().row()
             } else {
                 add(noInternetConnectionLabel).expand().top().row()
@@ -120,7 +121,8 @@ class LeaderboardPane(
     }
 
     private fun createRanksColumn() = Table(skin).apply {
-        for (i in 1..10) {
+        val shotsLeaderboard = context.injectNullable<GameShotsLeaderboard>()
+        for (i in 1..min(10, shotsLeaderboard!!.levels["l$currentLevelId"]!!.shots.size)) {
             val currentRank = gameRules.getGameLevelRank(currentLevelId)
             val textColor = if (currentRank == i || (i == 10 && currentRank >= i && currentRank != gameRules.DEFAULT_RANK_VALUE))
                 "text-dark-gold" else "text-gold"
