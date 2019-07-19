@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.actors.isShown
 import ktx.inject.Context
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
@@ -37,6 +38,7 @@ class LeaderboardPane(
 ) : Pane(context, 600f, 736f, context.inject()) {
     // Injected objects
     private val skin: Skin = context.inject()
+    private val gameRules: GameRules = context.inject()
 
     // Constants
     private val rowHeight = 5f
@@ -119,9 +121,12 @@ class LeaderboardPane(
 
     private fun createRanksColumn() = Table(skin).apply {
         for (i in 1..10) {
+            val currentRank = gameRules.getGameLevelRank(currentLevelId)
+            val textColor = if (currentRank == i || (i == 10 && currentRank >= i && currentRank != gameRules.DEFAULT_RANK_VALUE))
+                "text-dark-gold" else "text-gold"
             val rankILabel = DistanceFieldLabel(
                 context, "#$i${if (i == 10) "+" else ""}",
-                skin, "regular", 36f, skin.getColor("text-gold")
+                skin, "regular", 36f, skin.getColor(textColor)
             )
             add(rankILabel).expand().spaceBottom(rowHeight).row()
         }
@@ -134,9 +139,13 @@ class LeaderboardPane(
         while (shotsAdded < 10 && shotsAdded < shotsLeaderboard!!.levels["l$currentLevelId"]!!.shots.size) {
             if (shotsLeaderboard.levels["l$currentLevelId"]!!.shots.containsKey("s$shotI")) {
                 shotsAdded++
+                val currentRank = gameRules.getGameLevelRank(currentLevelId)
+                val textColor =
+                    if (currentRank == shotsAdded || (shotsAdded == 10 && currentRank >= shotsAdded && currentRank != gameRules.DEFAULT_RANK_VALUE))
+                        "text-dark-gold" else "text-gold"
                 val shotILabel = DistanceFieldLabel(
                     context, "$shotI${if (shotsAdded == 10) "+" else ""}",
-                    skin, "regular", 36f, skin.getColor("text-gold")
+                    skin, "regular", 36f, skin.getColor(textColor)
                 )
                 add(shotILabel).expand().spaceBottom(rowHeight).row()
             }
@@ -157,6 +166,10 @@ class LeaderboardPane(
         while (percentagesAdded < 10 && percentagesAdded < shotsLeaderboard.levels["l$currentLevelId"]!!.shots.size) {
             if (shotsLeaderboard.levels["l$currentLevelId"]!!.shots.containsKey("s$shotI")) {
                 percentagesAdded++
+                val currentRank = gameRules.getGameLevelRank(currentLevelId)
+                val textColor =
+                    if (currentRank == percentagesAdded || (percentagesAdded == 10 && currentRank >= percentagesAdded && currentRank != gameRules.DEFAULT_RANK_VALUE))
+                        "text-dark-gold" else "text-gold"
                 val playersForIShots = shotsLeaderboard.levels["l$currentLevelId"]!!.shots["s$shotI"]!!
                 if (percentagesAdded < 10) {
                     playersAdded += playersForIShots
@@ -165,7 +178,7 @@ class LeaderboardPane(
                 val percentageAsString = "%.1f".format(percentage)
                 val percentageILabel = DistanceFieldLabel(
                     context, "${if (percentageAsString == "0.0") "0.1" else percentageAsString}%",
-                    skin, "regular", 36f, skin.getColor("text-gold")
+                    skin, "regular", 36f, skin.getColor(textColor)
                 )
                 add(percentageILabel).expand().spaceBottom(rowHeight).row()
             }

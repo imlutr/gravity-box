@@ -2,6 +2,7 @@
 {
   com.badlogic.gdx.graphics.Color: {
     text-gold: { r: 0.819, g: 0.647, b: 0.180 }
+    text-dark-gold: { r: 0.498, g: 0.392, b: 0.109 }
   }
   com.badlogic.gdx.graphics.g2d.BitmapFont: {
     regular: {
