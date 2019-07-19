@@ -24,14 +24,19 @@ import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.events.Event
+import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.EventSystem
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 
 class CalculateRankEvent : Event
-class LeaderboardRankCalculationSystem(private val context: Context) :
-    EventSystem<CalculateRankEvent>(context.inject(), CalculateRankEvent::class) {
+class LeaderboardRankCalculationSystem(
+    private val context: Context
+) : EventSystem<CalculateRankEvent>(context.inject(), CalculateRankEvent::class) {
+    // Injected objects
+    private val eventQueue: EventQueue = context.inject()
+
     // Entities
     private lateinit var levelEntity: Entity
 
@@ -60,6 +65,10 @@ class LeaderboardRankCalculationSystem(private val context: Context) :
             levelEntity.map.run {
                 rank = newRank
                 isNewRecord = !shotsMap.containsKey("s${levelEntity.map.shots}")
+
+                if (isNewRecord && levelEntity.level.isLevelFinished) {
+                    eventQueue.add(CacheCurrentLevelShots())
+                }
             }
         }
     }
