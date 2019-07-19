@@ -34,7 +34,6 @@ import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
-import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
 import kotlin.math.min
 
 class ShowNextLevelEvent : Event
@@ -45,7 +44,6 @@ class ShowNextLevelSystem(
     // Injected objects
     private val gameRules: GameRules = context.inject()
     private val gameStage: GameStage = context.inject()
-    private val gameShotsLeaderboardController: GameShotsLeaderboardController = context.inject()
     private val eventQueue: EventQueue = context.inject()
 
     // Entities
@@ -56,25 +54,8 @@ class ShowNextLevelSystem(
     }
 
     override fun processEvent(event: ShowNextLevelEvent, deltaTime: Float) {
-        updateLeaderboard()
         showNextLevel()
         updateGameRules()
-    }
-
-    private fun updateLeaderboard() {
-        val shots = levelEntity.map.shots
-        levelEntity.level.run {
-            if (gameRules.getGameLevelHighscore(levelId) <= shots)
-                return
-
-            gameShotsLeaderboardController.incrementPlayerCountForShots(levelId, shots)
-            if (gameRules.getGameLevelHighscore(levelId) != gameRules.DEFAULT_HIGHSCORE_VALUE &&
-                gameRules.getGameLevelHighscore(levelId) != gameRules.SKIPPED_LEVEL_SCORE_VALUE
-            ) {
-                gameShotsLeaderboardController.decrementPlayerCountForShots(levelId, gameRules.getGameLevelHighscore(levelId))
-            }
-            gameRules.setGameLevelHighscore(levelId, shots)
-        }
     }
 
     private fun showNextLevel() {

@@ -26,11 +26,13 @@ import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.PlayerComponent
 import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.info
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
+import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
 import kotlin.math.max
 
 /** Handles what happens when a level is finished. */
@@ -41,13 +43,16 @@ class LevelFinishSystem(
     // Injected objects
     private val eventQueue: EventQueue = context.inject()
     private val gameRules: GameRules = context.inject()
+    private val gameShotsLeaderboardController: GameShotsLeaderboardController = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
 
+    // Variables
     private var didLogLevelFinish = false
     private var didWriteRankToStorage = false
+    private var didUpdateLeaderboard = false
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
@@ -58,6 +63,7 @@ class LevelFinishSystem(
         if (!levelEntity.level.isLevelFinished || levelEntity.level.isRestarting) {
             didWriteRankToStorage = false
             didLogLevelFinish = false
+            didUpdateLeaderboard = false
             return
         }
 
@@ -69,6 +75,11 @@ class LevelFinishSystem(
         if (!didLogLevelFinish) {
             logLevelFinish()
             didLogLevelFinish = true
+        }
+
+        if (!didUpdateLeaderboard) {
+            updateLeaderboard()
+            didUpdateLeaderboard = true
         }
 
         if (restartLevelWhenFinished) {
@@ -111,6 +122,23 @@ class LevelFinishSystem(
         // Reset the played time, so in case this level is replayed, a huge time won't be reported
         gameRules.setGameLevelPlayTime(levelEntity.level.levelId, 0f)
     }
+
+    private fun updateLeaderboard() {
+        val shots = levelEntity.map.shots
+        levelEntity.level.run {
+            if (gameRules.getGameLevelHighscore(levelId) <= shots)
+                return
+
+            gameShotsLeaderboardController.incrementPlayerCountForShots(levelId, shots)
+            if (gameRules.getGameLevelHighscore(levelId) != gameRules.DEFAULT_HIGHSCORE_VALUE &&
+                gameRules.getGameLevelHighscore(levelId) != gameRules.SKIPPED_LEVEL_SCORE_VALUE
+            ) {
+                gameShotsLeaderboardController.decrementPlayerCountForShots(levelId, gameRules.getGameLevelHighscore(levelId))
+            }
+            gameRules.setGameLevelHighscore(levelId, shots)
+        }
+    }
+
 
     private fun updateHighestFinishedLevel() {
         gameRules.HIGHEST_FINISHED_LEVEL = max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
