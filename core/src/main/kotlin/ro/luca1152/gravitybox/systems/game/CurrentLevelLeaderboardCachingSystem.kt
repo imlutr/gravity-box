@@ -20,6 +20,7 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import ktx.inject.Context
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.events.Event
@@ -36,6 +37,7 @@ class CurrentLevelLeaderboardCachingSystem(private val context: Context) :
     // Injected objects
     private val shotsLeaderboardController: GameShotsLeaderboardController = context.inject()
     private val eventQueue: EventQueue = context.inject()
+    private val gameRules: GameRules = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -49,6 +51,11 @@ class CurrentLevelLeaderboardCachingSystem(private val context: Context) :
     }
 
     private fun cacheCurrentLevelLeaderboard() {
+        // Cache only newly loaded levels
+        if (levelEntity.level.levelId != gameRules.HIGHEST_FINISHED_LEVEL + 1) {
+            return
+        }
+
         val shotsLeaderboard = context.injectNullable<GameShotsLeaderboard>()
         shotsLeaderboardController.readCurrentGameLevelLeaderboard(levelEntity.level.levelId) {
             if (shotsLeaderboard == null) {
