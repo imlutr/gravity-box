@@ -53,7 +53,7 @@ class FinishOverlay(private val context: Context) {
     private val framedRestartButton = FramedRestartButton(context)
 
     // Labels
-    private val levelFinishRankLabel = object : OutlineDistanceFieldLabel(
+    private val rankLabel = object : OutlineDistanceFieldLabel(
         context,
         "rank #x",
         skin, "semi-bold", 40f, Colors.gameColor
@@ -69,7 +69,7 @@ class FinishOverlay(private val context: Context) {
 
         private fun updateLabel() {
             val levelEntity = playScreen.levelEntity
-            if (!levelEntity.level.isLevelFinished) return
+            if (!levelEntity.level.isLevelFinished || levelEntity.level.forceUpdateMap) return
             if (levelEntity.map.rank != -1 && !levelEntity.map.isNewRecord) {
                 setText("rank #${levelEntity.map.rank}")
             } else {
@@ -78,7 +78,7 @@ class FinishOverlay(private val context: Context) {
             layout()
         }
     }
-    private val levelFinishRankPercentageLabel = object : OutlineDistanceFieldLabel(
+    private val rankPercentageLabel = object : OutlineDistanceFieldLabel(
         context,
         "(top x.y%)",
         skin, "regular", 30f, Colors.gameColor
@@ -94,7 +94,7 @@ class FinishOverlay(private val context: Context) {
 
         private fun updateLabel() {
             val levelEntity = playScreen.levelEntity
-            if (!levelEntity.level.isLevelFinished) return
+            if (!levelEntity.level.isLevelFinished || levelEntity.level.forceUpdateMap) return
 
             if (levelEntity.map.isNewRecord) {
                 setText("NEW RECORD!")
@@ -106,7 +106,7 @@ class FinishOverlay(private val context: Context) {
             layout()
         }
     }
-    private val levelFinishGuideLabel = OutlineDistanceFieldLabel(
+    private val guideLabel = OutlineDistanceFieldLabel(
         context,
         "Tap anywhere to proceed",
         skin, "regular", 37f, Colors.gameColor
@@ -115,7 +115,7 @@ class FinishOverlay(private val context: Context) {
     }
 
     // UI
-    private val levelFinishTouchableTransparentImage = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
+    private val touchableTransparentImage = Image(manager.get(Assets.tileset).findRegion("pixel")).apply {
         width = uiViewport.worldWidth
         height = uiViewport.worldHeight
         touchable = Touchable.disabled
@@ -131,10 +131,10 @@ class FinishOverlay(private val context: Context) {
     // Tables
     val rootTable = Table().apply {
         setFillParent(true)
-        addActor(levelFinishTouchableTransparentImage)
-        add(levelFinishRankLabel).top().padTop(69f).row()
-        add(levelFinishRankPercentageLabel).top().row()
-        add(levelFinishGuideLabel).top().padTop(30f).expand().row()
+        addActor(touchableTransparentImage)
+        add(rankLabel).top().padTop(69f).row()
+        add(rankPercentageLabel).top().row()
+        add(guideLabel).top().padTop(30f).expand().row()
         add(framedRestartButton).expand().bottom().row()
     }
 
@@ -192,7 +192,7 @@ class FinishOverlay(private val context: Context) {
                 )
             )
         }
-        levelFinishRankLabel.run {
+        rankLabel.run {
             addAction(
                 Actions.sequence(
                     Actions.delay(fadeOutDuration),
@@ -200,7 +200,7 @@ class FinishOverlay(private val context: Context) {
                 )
             )
         }
-        levelFinishRankPercentageLabel.run {
+        rankPercentageLabel.run {
             addAction(
                 Actions.sequence(
                     Actions.delay(fadeOutDuration),
@@ -208,7 +208,7 @@ class FinishOverlay(private val context: Context) {
                 )
             )
         }
-        levelFinishGuideLabel.run {
+        guideLabel.run {
             if (!gameRules.DID_SHOW_GUIDE_BETWEEN_LEVELS) {
                 addAction(
                     Actions.sequence(
@@ -218,12 +218,12 @@ class FinishOverlay(private val context: Context) {
                 )
             }
         }
-        levelFinishTouchableTransparentImage.run {
+        touchableTransparentImage.run {
             addAction(
                 Actions.sequence(
                     Actions.delay(fadeOutDuration),
                     Actions.run {
-                        levelFinishTouchableTransparentImage.touchable = Touchable.enabled
+                        touchableTransparentImage.touchable = Touchable.enabled
                     }
                 )
             )
@@ -240,16 +240,16 @@ class FinishOverlay(private val context: Context) {
             touchable = Touchable.disabled
             addAction(Actions.fadeOut(fadeOutDuration))
         }
-        levelFinishRankLabel.run {
+        rankLabel.run {
             addAction(Actions.fadeOut(fadeOutDuration))
         }
-        levelFinishRankPercentageLabel.run {
+        rankPercentageLabel.run {
             addAction(Actions.fadeOut(fadeOutDuration))
         }
-        levelFinishGuideLabel.run {
+        guideLabel.run {
             addAction(Actions.fadeOut(fadeOutDuration))
         }
-        levelFinishTouchableTransparentImage.touchable = Touchable.disabled
+        touchableTransparentImage.touchable = Touchable.disabled
 
         // Fade in things
         val fadeInDuration = .2f
