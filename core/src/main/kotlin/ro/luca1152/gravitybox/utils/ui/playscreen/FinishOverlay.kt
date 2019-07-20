@@ -39,6 +39,7 @@ import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.label.OutlineDistanceFieldLabel
+import ro.luca1152.gravitybox.utils.ui.panes.RestartLevelConfirmationPane
 
 class FinishOverlay(private val context: Context) {
     // Injected objects
@@ -51,6 +52,9 @@ class FinishOverlay(private val context: Context) {
 
     // Buttons
     private val framedRestartButton = FramedRestartButton(context)
+
+    // Panes
+    val restartLevelConfirmationPane = RestartLevelConfirmationPane(context)
 
     // Labels
     private val rankLabel = object : OutlineDistanceFieldLabel(

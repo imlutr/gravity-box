@@ -425,6 +425,7 @@ class FramedRestartButton(context: Context) : Image(context.inject<Skin>().getDr
     // Injected objects
     private val playScreen: PlayScreen = context.inject()
     private val gameRules: GameRules = context.inject()
+    private val menuOverlayStage: MenuOverlayStage = context.inject()
 
     init {
         color = Colors.gameColor.apply { a = 0f }
@@ -432,9 +433,13 @@ class FramedRestartButton(context: Context) : Image(context.inject<Skin>().getDr
         addListener(object : ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 val levelEntity = playScreen.levelEntity
-                if (!levelEntity.level.isRestarting) {
-                    levelEntity.level.restartLevel = true
-                    gameRules.RESTART_COUNT++
+                if (levelEntity.level.levelId == gameRules.HIGHEST_FINISHED_LEVEL && gameRules.getGameLevelFinishCount(levelEntity.level.levelId) == 1) {
+                    menuOverlayStage.addActor(playScreen.finishOverlay.restartLevelConfirmationPane)
+                } else {
+                    if (!levelEntity.level.isRestarting) {
+                        levelEntity.level.restartLevel = true
+                        gameRules.RESTART_COUNT++
+                    }
                 }
                 return true
             }
