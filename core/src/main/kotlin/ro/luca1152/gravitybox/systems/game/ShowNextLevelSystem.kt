@@ -61,6 +61,7 @@ class ShowNextLevelSystem(
     private fun showNextLevel() {
         levelEntity.level.run {
             levelId = min(levelEntity.level.levelId + 1, gameRules.LEVEL_COUNT)
+            isLevelFinished = false
             isRestarting = true
             loadMap = true
             forceUpdateMap = true
