@@ -34,7 +34,7 @@ import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 class SkipLevelEvent : Event
-class SkippingLevelSystem(context: Context) : EventSystem<SkipLevelEvent>(context.inject(), SkipLevelEvent::class) {
+class SkipLevelSystem(context: Context) : EventSystem<SkipLevelEvent>(context.inject(), SkipLevelEvent::class) {
     // Injected objects
     private val gameRules: GameRules = context.inject()
     private val gameStage: GameStage = context.inject()
@@ -63,8 +63,9 @@ class SkippingLevelSystem(context: Context) : EventSystem<SkipLevelEvent>(contex
         }
 
         gameRules.run {
-            if (getGameLevelHighscore(levelEntity.level.levelId) == gameRules.DEFAULT_HIGHSCORE_VALUE)
+            if (getGameLevelHighscore(levelEntity.level.levelId) == gameRules.DEFAULT_HIGHSCORE_VALUE) {
                 setGameLevelHighscore(levelEntity.level.levelId, gameRules.SKIPPED_LEVEL_SCORE_VALUE)
+            }
             HIGHEST_FINISHED_LEVEL = levelEntity.level.levelId
         }
         levelEntity.level.run {

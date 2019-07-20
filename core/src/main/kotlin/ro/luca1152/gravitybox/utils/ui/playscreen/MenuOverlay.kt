@@ -150,7 +150,7 @@ class MenuOverlay(context: Context) {
             touchable = if (playScreen.levelEntity.level.isLevelFinished) Touchable.disabled else Touchable.enabled
 
             val storedRank = gameRules.getGameLevelRank(playScreen.levelEntity.level.levelId)
-            val storedHighscore = gameRules.getGameLevelRank(playScreen.levelEntity.level.levelId)
+            val storedHighscore = gameRules.getGameLevelHighscore(playScreen.levelEntity.level.levelId)
             if (storedRank != gameRules.DEFAULT_RANK_VALUE) {
                 setText("(rank #$storedRank)")
             } else {
