@@ -100,7 +100,7 @@ class LeaderboardRankCalculationSystem(
 
     private fun showLabel() {
         if (playScreen.rankLabel.color.a == 0f && !playScreen.rankLabel.hasActions() &&
-            !levelEntity.level.isLevelFinished && levelEntity.map.rank != -1
+            !levelEntity.level.isLevelFinished && levelEntity.map.rank != -1 && !levelEntity.level.isRestarting
         ) {
             playScreen.rankLabel.color.a = 1f
         }
