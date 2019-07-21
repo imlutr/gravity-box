@@ -55,6 +55,8 @@ fun Color.setWithoutAlpha(color: Color) {
     this.b = color.b
 }
 
+fun Color.equalsWithoutAlpha(color: Color) = this.r == color.r && this.g == color.g && this.b == color.b
+
 fun screenToWorldCoordinates(context: Context, screenX: Int, screenY: Int): Vector3 {
     val gameCamera: GameCamera = context.inject()
     val coords = Vector3(screenX.toFloat(), screenY.toFloat(), 0f)

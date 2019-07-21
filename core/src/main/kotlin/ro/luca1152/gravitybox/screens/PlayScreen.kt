@@ -231,6 +231,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(LevelFinishSystem(context))
             addSystem(WriteRankToStorageSystem(context))
             addSystem(ShowNextLevelSystem(context, this@PlayScreen))
+            addSystem(PlaySpecificLevelSystem(context))
             addSystem(PromptUserToRateSystem(context, this@PlayScreen))
             addSystem(ShowInterstitialAdSystem(context))
             addSystem(ShowFinishStatsSystem(context))

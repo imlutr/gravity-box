@@ -38,15 +38,19 @@ class UpdateAllRanksSystem(private val context: Context) : EventSystem<UpdateAll
     private fun updateAllRanks() {
         for (i in 1..gameRules.HIGHEST_FINISHED_LEVEL) {
             val rank = calculateRank(i)
-            if (rank != -1) {
-                gameRules.setGameLevelRank(i, rank)
+            val rankPercentage = calculateRankPercentage(i)
+            if (rank != -1 && rankPercentage != -1f) {
+                gameRules.run {
+                    setGameLevelRank(i, rank)
+                    setGameLevelRankPercentage(i, rankPercentage)
+                }
             }
         }
     }
 
     private fun calculateRank(levelId: Int): Int {
         val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
-        if (shotsLeaderboard != null && shotsLeaderboard.levels.contains("l$levelId")) {
+        return if (shotsLeaderboard != null && shotsLeaderboard.levels.contains("l$levelId")) {
             var newRank = -1
             val shotsMap = shotsLeaderboard.levels["l$levelId"]!!.shots
             val shots = gameRules.getGameLevelHighscore(levelId)
@@ -56,7 +60,24 @@ class UpdateAllRanksSystem(private val context: Context) : EventSystem<UpdateAll
                     else newRank++
                 }
             }
-            return if (newRank != -1) newRank else 1
-        } else return -1
+            if (newRank != -1) newRank else 1
+        } else -1
+    }
+
+    private fun calculateRankPercentage(levelId: Int): Float {
+        val shotsLeaderboard: GameShotsLeaderboard = context.inject()
+        return if (shotsLeaderboard.levels.contains("l$levelId")) {
+            val shotsMap = shotsLeaderboard.levels["l$levelId"]!!.shots
+            val shots = gameRules.getGameLevelHighscore(levelId)
+            var totalPlayers = 0L
+            var totalPlayersWhoFinishedInFewerOrEqualShots = 0L
+            shotsMap.forEach {
+                totalPlayers += it.value
+                if (it.key.substring(1).toLong() <= shots) {
+                    totalPlayersWhoFinishedInFewerOrEqualShots += it.value
+                }
+            }
+            if (totalPlayers != 0L) totalPlayersWhoFinishedInFewerOrEqualShots * 100f / totalPlayers else -1f
+        } else -1f
     }
 }
