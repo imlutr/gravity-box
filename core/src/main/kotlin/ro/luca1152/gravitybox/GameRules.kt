@@ -232,7 +232,7 @@ class GameRules(context: Context) {
     }
 
     /** The delay in miliseconds between leaderboard caches to storage. */
-    val TIME_DELAY_BETWEEN_CACHING_LEADERBOARD = 6L * 3600 * 1000
+    val TIME_DELAY_BETWEEN_CACHING_LEADERBOARD = 12L * 3600 * 1000
 
     /** The time in seconds until the entire leaderboard is cached to storage. */
     var NEXT_LEADERBOARD_CACHE_TIME
