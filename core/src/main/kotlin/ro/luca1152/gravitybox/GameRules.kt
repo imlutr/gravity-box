@@ -258,16 +258,26 @@ class GameRules(context: Context) {
     /** The default value returned when reading a non-existent highscore using [getGameLevelHighscore]. */
     val DEFAULT_RANK_VALUE = Int.MAX_VALUE
 
-    /** Returns the least number of shots the game (not community) level [level] was finished in. */
+    /** Returns the [level]'s rank. */
     fun getGameLevelRank(level: Int) = preferences.getInteger("game${level}Rank", DEFAULT_RANK_VALUE)
 
-    /** Sets the least number of shots the game (not community) level [level] was finished in. */
+    /** Sets the [level]'s rank. */
     fun setGameLevelRank(level: Int, rank: Int) {
         if (getGameLevelRank(level) > rank) {
             preferences.putInteger("game${level}Rank", rank)
         } else {
             Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
         }
+    }
+
+    val DEFAULT_RANK_PERCENTAGE_VALUE = -1f
+
+    /** Returns the [level]'s rank top percentage. */
+    fun getGameLevelRankPercentage(level: Int) = preferences.getFloat("game${level}RankPercentage", DEFAULT_RANK_PERCENTAGE_VALUE)
+
+    /** Sets the [level]'s rank top percentage */
+    fun setGameLevelRankPercentage(level: Int, percent: Float) {
+        preferences.putFloat("game${level}RankPercentage", percent)
     }
 
 
