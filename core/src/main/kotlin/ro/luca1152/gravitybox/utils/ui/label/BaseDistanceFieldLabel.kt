@@ -98,20 +98,25 @@ open class BaseDistanceFieldLabel(
     }
 
     var syncColorsWithColorScheme = true
+    var isTouchedDown = false
 
     init {
         this.color = color
-        setFontScale(fontSize / DEFAULT_FONT_SIZE)
+        this.setFontScale(fontSize / DEFAULT_FONT_SIZE)
         if (this.color != Colors.gameColor && this.color != Colors.bgColor) {
             syncColorsWithColorScheme = false
         }
-        setAlignment(Align.center, Align.center)
+        this.setAlignment(Align.center, Align.center)
     }
 
     override fun act(delta: Float) {
         super.act(delta)
-        if (syncColorsWithColorScheme && color != Colors.uiDownColor) {
-            color.setWithoutAlpha(Colors.gameColor)
+        if (syncColorsWithColorScheme) {
+            if (isTouchedDown) {
+                color.setWithoutAlpha(Colors.uiDownColor)
+            } else {
+                color.setWithoutAlpha(Colors.gameColor)
+            }
         }
     }
 }

@@ -35,11 +35,13 @@ import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.assets.Assets
+import ro.luca1152.gravitybox.utils.kotlin.MenuOverlayStage
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.UIViewport
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
 import ro.luca1152.gravitybox.utils.ui.Colors
 import ro.luca1152.gravitybox.utils.ui.label.OutlineDistanceFieldLabel
+import ro.luca1152.gravitybox.utils.ui.panes.LevelSelectorPane
 import kotlin.math.min
 
 class MenuOverlay(context: Context) {
@@ -50,6 +52,7 @@ class MenuOverlay(context: Context) {
     private val uiStage: UIStage = context.inject()
     private val uiViewport: UIViewport = context.inject()
     private val gameRules: GameRules = context.inject()
+    private val menuOverlayStage: MenuOverlayStage = context.inject()
 
     // Constants
     val bottomGrayStripHeight = 128f
@@ -64,6 +67,9 @@ class MenuOverlay(context: Context) {
     private val levelEditorButton = LevelEditorButton(context)
     private val heartButton = HeartButton(context)
     private val audioButton = AudioButton(context)
+
+    // Panes
+    private val levelSelectorPane = LevelSelectorPane(context)
 
     // UI
     private val transparentImage = object : Image(manager.get(Assets.tileset).findRegion("pixel")) {
@@ -103,12 +109,6 @@ class MenuOverlay(context: Context) {
     ) {
         init {
             color.a = 1f
-            addListener(object : ClickListener() {
-                // Make the player not shoot if the label is clicked
-                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                    return true
-                }
-            })
         }
 
         override fun act(delta: Float) {
@@ -126,19 +126,13 @@ class MenuOverlay(context: Context) {
             }
         }
     }
-    private val levelMenuOverlayRankLabel = object : OutlineDistanceFieldLabel(
+    private val rankLabel = object : OutlineDistanceFieldLabel(
         context,
         "(Unranked)",
         skin, "semi-bold", 37f, Colors.gameColor
     ) {
         init {
             color.a = 1f
-            addListener(object : ClickListener() {
-                // Make the player not shoot if the label is clicked
-                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                    return true
-                }
-            })
         }
 
         override fun act(delta: Float) {
@@ -200,7 +194,29 @@ class MenuOverlay(context: Context) {
     }
     private val levelAndRankLabels = Table().apply {
         add(levelLabel).row()
-        add(levelMenuOverlayRankLabel).row()
+        add(rankLabel).row()
+        touchable = Touchable.enabled
+        addListener(object : ClickListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                super.touchDown(event, x, y, pointer, button)
+                if (bottomGrayStrip.y != 0f) return false
+
+                levelLabel.isTouchedDown = true
+                rankLabel.isTouchedDown = true
+                return true
+            }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                levelLabel.isTouchedDown = false
+                rankLabel.isTouchedDown = false
+            }
+
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                menuOverlayStage.addActor(levelSelectorPane)
+            }
+        })
     }
 
     private val leftLevelRightTable = Table(skin).apply {
