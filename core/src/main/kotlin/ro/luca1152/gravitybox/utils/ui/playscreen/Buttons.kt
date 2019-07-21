@@ -248,6 +248,22 @@ class HeartButton(context: Context) : ClickButton(
     }
 }
 
+class LevelSelectorButton(context: Context) : ClickButton(context.inject(), "empty-round-button") {
+    // Injected objects
+    private val menuOverlayStage: MenuOverlayStage = context.inject()
+    private val playScreen: PlayScreen = context.inject()
+
+    init {
+        addIcon("level-selector-icon")
+        addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                menuOverlayStage.addActor(playScreen.menuOverlay.levelSelectorPane)
+            }
+        })
+    }
+}
+
 class AudioButton(context: Context) : ClickButton(context.inject(), "white-full-round-button") {
     private val order = arrayListOf("sounds-and-music-icon", "music-icon", "sounds-icon", "no-sounds-icon")
     private var current = order.first()

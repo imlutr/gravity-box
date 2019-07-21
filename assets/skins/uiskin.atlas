@@ -151,6 +151,13 @@ level-editor-icon
   orig: 40, 40
   offset: 0, 0
   index: -1
+level-selector-icon
+  rotate: false
+  xy: 248, 812
+  size: 38, 31
+  orig: 38, 31
+  offset: 0, 0
+  index: -1
 long-button
   rotate: false
   xy: 463, 1208
@@ -197,7 +204,7 @@ no-ads-icon
   index: -1
 no-sounds-icon
   rotate: false
-  xy: 248, 812
+  xy: 943, 1152
   size: 38, 31
   orig: 38, 31
   offset: 0, 0

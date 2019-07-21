@@ -66,6 +66,8 @@ class MenuOverlay(context: Context) {
     private val githubButton = GitHubButton(context)
     private val levelEditorButton = LevelEditorButton(context)
     private val heartButton = HeartButton(context)
+    private val levelSelectorButton = LevelSelectorButton(context)
+    @Suppress("unused") // For now, the game has no audio
     private val audioButton = AudioButton(context)
 
     // Panes
@@ -181,15 +183,15 @@ class MenuOverlay(context: Context) {
         val leftPart = Table(skin).apply {
             add(heartButton)
         }
-        // For now the game has no audio
-        @Suppress("UNUSED_VARIABLE")
         val middlePart = Table(skin).apply {
-            add(audioButton)
+            //            add(audioButton) // For now, the game has no audio
+            add(levelSelectorButton)
         }
         val rightPart = Table(skin).apply {
             add(githubButton)
         }
         add(leftPart).padLeft(playScreen.padLeftRight).expand().left()
+        add(middlePart).expand()
         add(rightPart).padRight(playScreen.padLeftRight).expand().right()
     }
     private val levelAndRankLabels = Table().apply {
