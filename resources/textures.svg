@@ -512,8 +512,8 @@
      inkscape:bbox-nodes="true"
      inkscape:bbox-paths="true"
      inkscape:current-layer="layer1"
-     inkscape:cx="9230.4535"
-     inkscape:cy="1733.4637"
+     inkscape:cx="9431.905"
+     inkscape:cy="1636.7495"
      inkscape:document-units="px"
      inkscape:measure-end="3774.09,-659.996"
      inkscape:measure-start="3774.27,-645.147"
@@ -536,7 +536,7 @@
      inkscape:window-width="1920"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:zoom="22.627417">
+     inkscape:zoom="1.4142136">
     <inkscape:grid
        empcolor="#7a1919"
        empopacity="0.25098039"
@@ -1381,6 +1381,7 @@
        inkscape:connector-curvature="0" />
   </g>
 </g>
+
 
 
 
@@ -5819,17 +5820,6 @@
      y="-159.09714"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499962px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332">Level</tspan></text>
 <text
-   xml:space="preserve"
-   style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-   x="2466.5581"
-   y="-159.08762"
-   id="text2030-4-9-5"><tspan
-     sodipodi:role="line"
-     id="tspan2028-4-5-5"
-     x="2466.5581"
-     y="-159.08762"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332">Rank</tspan></text>
-<text
    id="text2169"
    y="-159.40625"
    x="2530.4749"
@@ -5909,12 +5899,12 @@
 <text
    id="text2180-2"
    y="-100.94385"
-   x="2461.9009"
+   x="2489.822"
    style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
    xml:space="preserve"><tspan
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332"
      y="-100.94385"
-     x="2461.9009"
+     x="2489.822"
      id="tspan2178-4"
      sodipodi:role="line">Skipped</tspan></text>
 <text
@@ -6019,14 +6009,14 @@
 <text
    xml:space="preserve"
    style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-   x="2475.8979"
+   x="2486.2273"
    y="-29.163454"
    id="text2240-7"><tspan
      sodipodi:role="line"
      id="tspan2238-8"
-     x="2475.8979"
+     x="2486.2273"
      y="-29.163454"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332">1</tspan></text>
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332">Unranked</tspan></text>
 <text
    xml:space="preserve"
    style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -6041,21 +6031,21 @@
 <text
    id="text2252-1"
    y="-15.004541"
-   x="2476.1028"
-   style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   x="2491.7751"
+   style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#9c8d63;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
    xml:space="preserve"><tspan
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#9c8d63;fill-opacity:1;stroke-width:0.26458332;"
      y="-15.004541"
-     x="2476.1028"
+     x="2491.7751"
      id="tspan2250-1"
-     sodipodi:role="line">2</tspan></text>
+     sodipodi:role="line">Locked</tspan></text>
 <text
    id="text2248-7"
    y="-15.004541"
    x="2421.4307"
-   style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#9c8d63;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
    xml:space="preserve"><tspan
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499962px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499962px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#9c8d63;fill-opacity:1;stroke-width:0.26458332;"
      y="-15.004541"
      x="2421.4307"
      id="tspan2246-0"
@@ -6088,6 +6078,17 @@
          sodipodi:role="line">Close</tspan></text>
   </g>
 </g>
+<text
+   xml:space="preserve"
+   style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+   x="2466.5581"
+   y="-159.08762"
+   id="text2030-4-9-5"><tspan
+     sodipodi:role="line"
+     id="tspan2028-4-5-5"
+     x="2466.5581"
+     y="-159.08762"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332">Rank</tspan></text>
 <text
    xml:space="preserve"
    style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -6176,39 +6177,6 @@
      x="2519.0967"
      id="tspan2230-4"
      sodipodi:role="line">1.5%</tspan></text>
-<text
-   xml:space="preserve"
-   style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-   x="2519.4302"
-   y="-29.049124"
-   id="text2244-6"><tspan
-     sodipodi:role="line"
-     id="tspan2242-7"
-     x="2519.4302"
-     y="-29.049124"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332">0.7%</tspan></text>
-<text
-   id="text2256-6"
-   y="-14.866401"
-   x="2519.3777"
-   style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-   xml:space="preserve"><tspan
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332"
-     y="-14.866401"
-     x="2519.3777"
-     id="tspan2254-6"
-     sodipodi:role="line">2.9%</tspan></text>
-<text
-   id="text2180-2-0"
-   y="-101.59374"
-   x="2513.5422"
-   style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#d1a52e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-   xml:space="preserve"><tspan
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.52499866px;font-family:Nunito;-inkscape-font-specification:Nunito;fill:#d1a52e;fill-opacity:1;stroke-width:0.26458332"
-     y="-101.59374"
-     x="2513.5422"
-     id="tspan2178-4-6"
-     sodipodi:role="line">Skipped</tspan></text>
 <g
    aria-label="▲"
    transform="matrix(0.80618004,0,0,-0.80618004,473.68429,-31.088231)"

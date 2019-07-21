@@ -19,11 +19,9 @@ package ro.luca1152.gravitybox.utils.ui.panes
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.Button
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.graphics.copy
 import ktx.inject.Context
@@ -31,7 +29,7 @@ import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
 
-class LevelSelectorPane(context: Context) : Pane(context, 600f, 736f, context.inject()) {
+class LevelSelectorPane(private val context: Context) : Pane(context, 600f, 736f, context.inject()) {
     // Injected objects
     private val skin: Skin = context.inject()
 
@@ -45,6 +43,17 @@ class LevelSelectorPane(context: Context) : Pane(context, 600f, 736f, context.in
         override fun act(delta: Float) {
             super.act(delta)
             color.setWithoutAlpha(levelLabel.color)
+            when (sortLevelOrder) {
+                SortOrder.ASCENDING -> {
+                    setDrawable(skin, "ascending-sort-icon")
+                    color.a = 1f
+                }
+                SortOrder.DESCENDING -> {
+                    setDrawable(skin, "descending-sort-icon")
+                    color.a = 1f
+                }
+                else -> color.a = 0f
+            }
         }
     }
     private val rankLabel = DistanceFieldLabel(context, "Rank", skin, "regular", 36f, skin.getColor("text-gold"))
@@ -56,6 +65,17 @@ class LevelSelectorPane(context: Context) : Pane(context, 600f, 736f, context.in
         override fun act(delta: Float) {
             super.act(delta)
             color.setWithoutAlpha(rankLabel.color)
+            when (sortRankOrder) {
+                SortOrder.ASCENDING -> {
+                    setDrawable(skin, "ascending-sort-icon")
+                    color.a = 1f
+                }
+                SortOrder.DESCENDING -> {
+                    setDrawable(skin, "descending-sort-icon")
+                    color.a = 1f
+                }
+                else -> color.a = 0f
+            }
         }
     }
     private val percentLabel = DistanceFieldLabel(context, "Percent", skin, "regular", 36f, skin.getColor("text-gold"))
@@ -67,6 +87,17 @@ class LevelSelectorPane(context: Context) : Pane(context, 600f, 736f, context.in
         override fun act(delta: Float) {
             super.act(delta)
             color.setWithoutAlpha(percentLabel.color)
+            when (sortRankPercentageOrder) {
+                SortOrder.ASCENDING -> {
+                    setDrawable(skin, "ascending-sort-icon")
+                    color.a = 1f
+                }
+                SortOrder.DESCENDING -> {
+                    setDrawable(skin, "descending-sort-icon")
+                    color.a = 1f
+                }
+                else -> color.a = 0f
+            }
         }
     }
     private val yellowHorizontalLine = Image(skin.getDrawable("yellow-horizontal-line"))
@@ -87,6 +118,11 @@ class LevelSelectorPane(context: Context) : Pane(context, 600f, 736f, context.in
                 super.touchUp(event, x, y, pointer, button)
                 levelLabel.isTouchedDown = false
             }
+
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                sort(byLevelId = true)
+            }
         })
     }
     private val rankLabelAndSortImageTable = Table().apply {
@@ -103,6 +139,11 @@ class LevelSelectorPane(context: Context) : Pane(context, 600f, 736f, context.in
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 rankLabel.isTouchedDown = false
+            }
+
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                sort(byRank = true)
             }
         })
     }
@@ -121,6 +162,11 @@ class LevelSelectorPane(context: Context) : Pane(context, 600f, 736f, context.in
                 super.touchUp(event, x, y, pointer, button)
                 percentLabel.isTouchedDown = false
             }
+
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                super.clicked(event, x, y)
+                sort(byRankPercentage = true)
+            }
         })
     }
     private val topTextTable = Table().apply {
@@ -128,6 +174,15 @@ class LevelSelectorPane(context: Context) : Pane(context, 600f, 736f, context.in
         add(rankLabelAndSortImageTable).expand().padRight((-8f - rankSortImage.width) / 2f)
         add(percentLabelAndSortImageTable).expand().right().padRight(-8f - percentSortImage.width)
     }
+
+    // Sort
+    var sortLevelOrder = SortOrder.ASCENDING
+    var sortRankOrder = SortOrder.UNSORTED
+    var sortRankPercentageOrder = SortOrder.UNSORTED
+
+    // Scroll pane
+    private val levelsTable = LevelSelectorLevelsTable(context, this)
+    private val scrollPane = ScrollPane(levelsTable)
 
     // Buttons
     private val closeButton = Button(skin, "long-button").apply {
@@ -143,14 +198,45 @@ class LevelSelectorPane(context: Context) : Pane(context, 600f, 736f, context.in
     }
 
     init {
-        updateWidget()
-    }
-
-    private fun updateWidget() {
         widget.run {
             add(topTextTable).padLeft(35f).padRight(35f).fillX().padBottom(13f).row()
-            add(yellowHorizontalLine).width(492f).padBottom(13f).row()
+            add(yellowHorizontalLine).width(492f).height(3f).padBottom(13f).row()
+            add(scrollPane).padLeft(35f).padRight(35f).grow().row()
             add(closeButton).width(492f).expand().bottom().row()
+        }
+    }
+
+    private fun sort(byLevelId: Boolean = false, byRank: Boolean = false, byRankPercentage: Boolean = false) {
+        when {
+            byLevelId -> {
+                sortLevelOrder = if (sortLevelOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
+                sortRankOrder = SortOrder.UNSORTED
+                sortRankPercentageOrder = SortOrder.UNSORTED
+                levelsTable.sortByLevel(sortLevelOrder)
+            }
+            byRank -> {
+                sortRankOrder = if (sortRankOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
+                sortLevelOrder = SortOrder.UNSORTED
+                sortRankPercentageOrder = SortOrder.UNSORTED
+                levelsTable.sortByRank(sortRankOrder)
+            }
+            byRankPercentage -> {
+                sortRankPercentageOrder = if (sortRankPercentageOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
+                sortLevelOrder = SortOrder.UNSORTED
+                sortRankOrder = SortOrder.UNSORTED
+                levelsTable.sortByRankPercentage(sortRankPercentageOrder)
+            }
+        }
+        scrollPane.run {
+            scrollY = 0f
+            velocityY = 0f
+        }
+    }
+
+    override fun setStage(stage: Stage?) {
+        super.setStage(stage)
+        if (stage != null) {
+            levelsTable.update()
         }
     }
 }

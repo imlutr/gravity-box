@@ -231,6 +231,9 @@ class GameRules(context: Context) {
         }
     }
 
+    /** Returs true if the given [level] was skipped. */
+    fun isGameLevelSkipped(level: Int) = getGameLevelHighscore(level) == SKIPPED_LEVEL_SCORE_VALUE
+
     /** The delay in miliseconds between leaderboard caches to storage. */
     val TIME_DELAY_BETWEEN_CACHING_LEADERBOARD = 12L * 3600 * 1000
 
@@ -269,6 +272,9 @@ class GameRules(context: Context) {
             Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
         }
     }
+
+    /** Returns true if the given [level] is unranked. */
+    fun isGameLevelUnranked(level: Int) = getGameLevelRank(level) == DEFAULT_RANK_VALUE
 
     val DEFAULT_RANK_PERCENTAGE_VALUE = -1f
 

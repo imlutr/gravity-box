@@ -69,7 +69,7 @@ class MenuOverlay(context: Context) {
     private val audioButton = AudioButton(context)
 
     // Panes
-    private val levelSelectorPane = LevelSelectorPane(context)
+    val levelSelectorPane = LevelSelectorPane(context)
 
     // UI
     private val transparentImage = object : Image(manager.get(Assets.tileset).findRegion("pixel")) {
