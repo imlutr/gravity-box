@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
+import ro.luca1152.gravitybox.utils.kotlin.equalsWithoutAlpha
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
 import ro.luca1152.gravitybox.utils.ui.Colors
 
@@ -97,6 +98,9 @@ open class BaseDistanceFieldLabel(
         private const val DEFAULT_FONT_SIZE = 32f
     }
 
+    private val goldColor = skin.getColor("text-gold")
+    private val darkGoldColor = skin.getColor("text-dark-gold")
+
     var syncColorsWithColorScheme = true
     var isTouchedDown = false
 
@@ -116,6 +120,12 @@ open class BaseDistanceFieldLabel(
                 color.setWithoutAlpha(Colors.uiDownColor)
             } else {
                 color.setWithoutAlpha(Colors.gameColor)
+            }
+        } else if (color.equalsWithoutAlpha(goldColor) || color.equalsWithoutAlpha(darkGoldColor)) {
+            if (isTouchedDown) {
+                color.setWithoutAlpha(darkGoldColor)
+            } else {
+                color.setWithoutAlpha(goldColor)
             }
         }
     }
