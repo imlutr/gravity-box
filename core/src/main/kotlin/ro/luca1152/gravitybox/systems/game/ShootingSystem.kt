@@ -66,7 +66,7 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
             val worldCoordinates = screenToWorldCoordinates(context, screenX, screenY)
             createBullet(worldCoordinates.x, worldCoordinates.y)
             gameRules.BULLET_COUNT++
-            levelEntity.map.shots++
+            levelEntity.map.incrementShotsCount()
             shootingTimer = gameRules.TIME_DELAY_BETWEEN_SHOTS
             eventQueue.add(CalculateRankEvent())
             return true

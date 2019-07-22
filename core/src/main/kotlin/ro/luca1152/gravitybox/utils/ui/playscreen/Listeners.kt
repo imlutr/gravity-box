@@ -20,16 +20,16 @@ package ro.luca1152.gravitybox.utils.ui.playscreen
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
-import com.badlogic.gdx.Preferences
 import ktx.inject.Context
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.kotlin.MenuOverlayStage
 import ro.luca1152.gravitybox.utils.kotlin.info
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
+import ro.luca1152.gravitybox.utils.ui.security.SecurePreferences
 
 class ClearPreferencesListener(context: Context) : InputAdapter() {
     // Injected objects
-    private val preferences: Preferences = context.inject()
+    private val preferences: SecurePreferences = context.inject()
 
     override fun keyDown(keycode: Int): Boolean {
         if (keycode == Input.Keys.F5 && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {

@@ -21,10 +21,11 @@ import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import ktx.inject.Context
+import ro.luca1152.gravitybox.utils.ui.security.SecurePreferences
 
 @Suppress("LibGDXMissingFlush", "SpellCheckingInspection", "PropertyName", "MemberVisibilityCanBePrivate")
 class GameRules(context: Context) {
-    private val preferences: Preferences = context.inject()
+    private val preferences: SecurePreferences = context.inject()
 
     /** Makes sure updates are persisted. */
     fun flushUpdates() {
@@ -34,6 +35,28 @@ class GameRules(context: Context) {
     // Debug
     val CAN_PLAY_ANY_LEVEL = false
     val PLAY_SPECIFIC_LEVEL = -1
+
+    // Encryption
+    var ARE_RULES_ENCRYPTED
+        get() = preferences.getBoolean("areRulesEncrypted", false)
+        set(value) {
+            preferences.putBoolean("areRulesEncrypted", value)
+        }
+
+    // Ban
+    /**
+     * True if the player is soft banned.
+     * Soft ban means that the player can read from the shots leaderboard, but can't write in it.
+     * So the gameplay would be exactly the same from the player's perspective.
+     *
+     * A player is soft banned if he tried to alter the number of shots so he'd get rank #1, but also if he is
+     * running the game on a rooted Android phone (by default, just in case). Sorry rooted users!
+     */
+    var IS_PLAYER_SOFT_BANNED
+        get() = preferences.getBoolean("isPlayerSoftBanned", false)
+        set(value) {
+            preferences.putBoolean("isPlayerSoftBanned", value)
+        }
 
     // Rules
     /**
@@ -152,7 +175,7 @@ class GameRules(context: Context) {
         }
     /** How many levels did the player skip until finishing the game. */
     var FINISH_SKIPPED_LEVELS_COUNT
-        get() = preferences.getInteger("finishSkippedLevelsCount")
+        get() = preferences.getInteger("finishSkippedLevelsCount", 0)
         set(value) {
             preferences.putInteger("finishSkippedLevelsCount", value)
         }

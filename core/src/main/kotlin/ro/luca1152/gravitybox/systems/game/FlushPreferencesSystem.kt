@@ -20,11 +20,12 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.Preferences
 import ktx.inject.Context
+import ro.luca1152.gravitybox.utils.ui.security.SecurePreferences
 
 /** Flushes the [Preferences] every frame. */
 class FlushPreferencesSystem(context: Context) : EntitySystem() {
     // Injected objects
-    private val preferences: Preferences = context.inject()
+    private val preferences: SecurePreferences = context.inject()
 
     override fun update(deltaTime: Float) {
         preferences.flush()

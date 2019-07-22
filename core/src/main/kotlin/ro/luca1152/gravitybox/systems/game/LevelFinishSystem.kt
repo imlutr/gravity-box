@@ -127,6 +127,11 @@ class LevelFinishSystem(
     }
 
     private fun updateLeaderboard() {
+        if (gameRules.IS_PLAYER_SOFT_BANNED || levelEntity.map.doShotsAndEncryptedShotsDiffer()) {
+            gameRules.setGameLevelHighscore(levelEntity.level.levelId, levelEntity.map.shots)
+            return
+        }
+
         val shots = levelEntity.map.shots
         levelEntity.level.run {
             if (gameRules.getGameLevelHighscore(levelId) <= shots)
