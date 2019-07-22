@@ -43,6 +43,21 @@ class GameRules(context: Context) {
             preferences.putBoolean("areRulesEncrypted", value)
         }
 
+    // Ban
+    /**
+     * True if the player is soft banned.
+     * Soft ban means that the player can read from the shots leaderboard, but can't write in it.
+     * So the gameplay would be exactly the same from the player's perspective.
+     *
+     * A player is soft banned if he tried to alter the number of shots so he'd get rank #1, but also if he is
+     * running the game on a rooted Android phone (by default, just in case). Sorry rooted users!
+     */
+    var IS_PLAYER_SOFT_BANNED
+        get() = preferences.getBoolean("isPlayerSoftBanned", false)
+        set(value) {
+            preferences.putBoolean("isPlayerSoftBanned", value)
+        }
+
     // Rules
     /**
      * The game levels' version. If they change in the future (their order/I add new ones),

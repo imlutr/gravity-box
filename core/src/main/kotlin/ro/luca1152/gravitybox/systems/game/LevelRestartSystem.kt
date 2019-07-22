@@ -83,7 +83,7 @@ class LevelRestartSystem(private val context: Context, private val playScreen: P
                         removeBullets()
                         levelEntity.map.run {
                             forceCenterCameraOnPlayer = true
-                            shots = 0
+                            resetShotsCount()
                         }
                         eventQueue.add(CalculateRankEvent())
                     }

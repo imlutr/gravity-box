@@ -30,6 +30,7 @@ import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.World
 import ktx.app.KtxGame
 import ktx.inject.Context
+import pl.mk5.gdx.fireapp.GdxFIRAnalytics
 import pl.mk5.gdx.fireapp.GdxFIRApp
 import pl.mk5.gdx.fireapp.GdxFIRCrash
 import pl.mk5.gdx.fireapp.promises.FuturePromise
@@ -49,6 +50,7 @@ class MyGame : KtxGame<Screen>() {
     lateinit var purchaseManager: PurchaseManager
     lateinit var adsController: AdsController
     var encryptionSecretKey = ""
+    var isRunningOnRootedAndroidPhone = false
 
     private val context = Context()
 
@@ -56,6 +58,7 @@ class MyGame : KtxGame<Screen>() {
         initializePhysicsEngine()
         initializeDependencyInjection()
         initializeFirebase()
+        softBanPlayer()
         addScreen(LoadingScreen(context))
         setScreen<LoadingScreen>()
     }
@@ -128,6 +131,27 @@ class MyGame : KtxGame<Screen>() {
             GdxFIRCrash.inst().initialize()
             FuturePromise.setThrowFailByDefault(false)
         }
+    }
+
+    private fun softBanPlayer() {
+        // Injected objects
+        val gameRules: GameRules = context.inject()
+
+        if (gameRules.IS_PLAYER_SOFT_BANNED) {
+            return
+        }
+
+        if (isRunningOnRootedAndroidPhone) {
+            gameRules.run {
+                IS_PLAYER_SOFT_BANNED = true
+                flushUpdates()
+            }
+            info("Soft banned user. Cause: device is rooted.")
+            if (gameRules.IS_MOBILE) {
+                GdxFIRAnalytics.inst().logEvent("soft_ban", mapOf(Pair("is_rooted", "true")))
+            }
+        }
+        gameRules.IS_PLAYER_SOFT_BANNED = if (gameRules.IS_PLAYER_SOFT_BANNED) true else isRunningOnRootedAndroidPhone
     }
 
     override fun dispose() {

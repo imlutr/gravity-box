@@ -228,6 +228,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(DashedLineRenderingSystem(context))
             addSystem(FadeOutFadeInSystem(context))
             addSystem(ImageRenderingSystem(context))
+            addSystem(CheatingCheckingSystem(context))
             addSystem(LevelFinishSystem(context))
             addSystem(WriteRankToStorageSystem(context))
             addSystem(ShowNextLevelSystem(context, this@PlayScreen))
