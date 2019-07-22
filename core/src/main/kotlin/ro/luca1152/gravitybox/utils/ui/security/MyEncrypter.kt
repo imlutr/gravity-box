@@ -37,8 +37,8 @@ class MyEncrypter(private var encryptionSecretKey: String) {
 
     fun decrypt(string: String, signature: String): String {
         val decrypted = encryptDecrypt(String(Hex.decode(string)))
-        if (decrypted.startsWith("$signature|")) {
-            return decrypted.substring(signature.length + 1)
+        return if (decrypted.startsWith("$signature|")) {
+            decrypted.substring(signature.length + 1)
         } else {
             error("The signatures don't match.")
         }

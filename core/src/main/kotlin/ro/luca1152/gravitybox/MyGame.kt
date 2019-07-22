@@ -115,13 +115,7 @@ class MyGame : KtxGame<Screen>() {
         // Encrypt all preferences used in version <1.4
         preferences.run {
             get().forEach {
-                when (it.value) {
-                    is String -> putString(it.key, it.value.toString())
-                    is Int -> putInteger(it.key, it.value.toString().toInt())
-                    is Float -> putFloat(it.key, it.value.toString().toFloat())
-                    is Long -> putLong(it.key, it.value.toString().toLong())
-                    is Boolean -> putBoolean(it.key, it.value.toString().toBoolean())
-                }
+                putString(it.key, it.value.toString())
             }
             gameRules.ARE_RULES_ENCRYPTED = true
             flush()

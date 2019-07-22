@@ -39,7 +39,7 @@ class SecurePreferences(context: Context) {
 
     fun putString(key: String, value: String) {
         if (myEncrypter == null) preferences.putString(key, value)
-        else preferences.putString(key, myEncrypter.encrypt(value, key + "f"))
+        else preferences.putString(key, myEncrypter.encrypt(value, key))
     }
 
     fun getString(key: String, defaultValue: String): String {
