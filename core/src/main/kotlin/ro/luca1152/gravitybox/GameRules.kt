@@ -36,6 +36,13 @@ class GameRules(context: Context) {
     val CAN_PLAY_ANY_LEVEL = false
     val PLAY_SPECIFIC_LEVEL = -1
 
+    // Encryption
+    var ARE_RULES_ENCRYPTED
+        get() = preferences.getBoolean("areRulesEncrypted", false)
+        set(value) {
+            preferences.putBoolean("areRulesEncrypted", value)
+        }
+
     // Rules
     /**
      * The game levels' version. If they change in the future (their order/I add new ones),

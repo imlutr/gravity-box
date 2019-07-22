@@ -75,7 +75,9 @@ class MyGame : KtxGame<Screen>() {
             bindSingleton(ShapeRenderer())
             bindSingleton(MyEncrypter(encryptionSecretKey))
             bindSingleton(SecurePreferences(context))
-            bindSingleton(GameRules(context))
+            bindSingleton(GameRules(context)).run {
+                encryptPreferences()
+            }
             bindSingleton(World(Vector2(0f, context.inject<GameRules>().GRAVITY), true))
             bindSingleton(GameCamera())
             bindSingleton(GameViewport(context))
@@ -97,6 +99,32 @@ class MyGame : KtxGame<Screen>() {
 
             // Leaderboards
             bindSingleton(GameShotsLeaderboardController(context))
+        }
+    }
+
+    /** Encrypt the preferences if the game was updated. */
+    private fun encryptPreferences() {
+        // Injected objects
+        val gameRules: GameRules = context.inject()
+        val preferences: SecurePreferences = context.inject()
+
+        if (gameRules.ARE_RULES_ENCRYPTED) {
+            return
+        }
+
+        // Encrypt all preferences used in version <1.4
+        preferences.run {
+            get().forEach {
+                when (it.value) {
+                    is String -> putString(it.key, it.value.toString())
+                    is Int -> putInteger(it.key, it.value.toString().toInt())
+                    is Float -> putFloat(it.key, it.value.toString().toFloat())
+                    is Long -> putLong(it.key, it.value.toString().toLong())
+                    is Boolean -> putBoolean(it.key, it.value.toString().toBoolean())
+                }
+            }
+            gameRules.ARE_RULES_ENCRYPTED = true
+            flush()
         }
     }
 

@@ -33,13 +33,9 @@ class SecurePreferences(context: Context) {
 
     private val preferences = Gdx.app.getPreferences("Gravity Box by Luca1152")
 
-    fun flush() {
-        preferences.flush()
-    }
-
-    fun clear() {
-        preferences.clear()
-    }
+    fun get() = preferences.get()!!
+    fun flush() = preferences.flush()
+    fun clear() = preferences.clear()
 
     fun putString(key: String, value: String) {
         if (myEncrypter == null) preferences.putString(key, value)
