@@ -18,9 +18,7 @@
 package ro.luca1152.gravitybox
 
 import com.badlogic.ashley.core.PooledEngine
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
-import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -41,12 +39,16 @@ import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
 import ro.luca1152.gravitybox.utils.ui.label.BaseDistanceFieldLabel
+import ro.luca1152.gravitybox.utils.ui.security.MyEncrypter
+import ro.luca1152.gravitybox.utils.ui.security.SecurePreferences
+
 
 /** The main class of the game. */
 class MyGame : KtxGame<Screen>() {
     // Initialized in AndroidLauncher
     lateinit var purchaseManager: PurchaseManager
     lateinit var adsController: AdsController
+    var encryptionSecretKey = ""
 
     private val context = Context()
 
@@ -71,7 +73,8 @@ class MyGame : KtxGame<Screen>() {
             bindSingleton(InputMultiplexer())
             bindSingleton(PooledEngine())
             bindSingleton(ShapeRenderer())
-            bindSingleton(Gdx.app.getPreferences("Gravity Box by Luca1152"))
+            bindSingleton(MyEncrypter(encryptionSecretKey))
+            bindSingleton(SecurePreferences(context))
             bindSingleton(GameRules(context))
             bindSingleton(World(Vector2(0f, context.inject<GameRules>().GRAVITY), true))
             bindSingleton(GameCamera())
@@ -107,7 +110,7 @@ class MyGame : KtxGame<Screen>() {
 
     override fun dispose() {
         // Make sure Preferences are flushed
-        context.inject<Preferences>().flush()
+        context.inject<SecurePreferences>().flush()
 
         // Disposes every screen
         super.dispose()

@@ -21,10 +21,11 @@ import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import ktx.inject.Context
+import ro.luca1152.gravitybox.utils.ui.security.SecurePreferences
 
 @Suppress("LibGDXMissingFlush", "SpellCheckingInspection", "PropertyName", "MemberVisibilityCanBePrivate")
 class GameRules(context: Context) {
-    private val preferences: Preferences = context.inject()
+    private val preferences: SecurePreferences = context.inject()
 
     /** Makes sure updates are persisted. */
     fun flushUpdates() {
@@ -152,7 +153,7 @@ class GameRules(context: Context) {
         }
     /** How many levels did the player skip until finishing the game. */
     var FINISH_SKIPPED_LEVELS_COUNT
-        get() = preferences.getInteger("finishSkippedLevelsCount")
+        get() = preferences.getInteger("finishSkippedLevelsCount", 0)
         set(value) {
             preferences.putInteger("finishSkippedLevelsCount", value)
         }

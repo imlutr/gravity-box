@@ -69,6 +69,9 @@ class AndroidLauncher : AndroidApplication() {
 
         // Initialize the game
         initialize(MyGame().apply {
+            // Encryption
+            encryptionSecretKey = BuildConfig.ENCRYPTION_SECRET_KEY
+
             // gdx-pay
             purchaseManager = PurchaseManagerGoogleBilling(this@AndroidLauncher)
 
