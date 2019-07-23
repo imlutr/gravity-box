@@ -43,6 +43,7 @@ class LoadingScreen(private val context: Context) : KtxScreen {
     private val gameViewport: GameViewport = context.inject()
     private val uiViewport: UIViewport = context.inject()
     private val overlayViewport: OverlayViewport = context.inject()
+    private val gameRules: GameRules = context.inject()
 
     private var loadingAssetsTimer = 0f
     private val finishedLoadingAssets
@@ -144,7 +145,9 @@ class LoadingScreen(private val context: Context) : KtxScreen {
     // may use assets, such as [Skin]s or [Texture]s, that are loaded here.
     private fun addScreens() {
         game.run {
-            addScreen(LevelEditorScreen(context))
+            if (gameRules.ENABLE_LEVEL_EDITOR) {
+                addScreen(LevelEditorScreen(context))
+            }
 
             val playScreen = PlayScreen(context)
             addScreen(playScreen)
