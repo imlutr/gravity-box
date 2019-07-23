@@ -121,7 +121,7 @@ class LevelSelectorPane(private val context: Context) : Pane(context, 600f, 736f
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                sort(byLevelId = true)
+                sortBy(byLevelId = true)
             }
         })
     }
@@ -143,7 +143,7 @@ class LevelSelectorPane(private val context: Context) : Pane(context, 600f, 736f
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                sort(byRank = true)
+                sortBy(byRank = true)
             }
         })
     }
@@ -165,7 +165,7 @@ class LevelSelectorPane(private val context: Context) : Pane(context, 600f, 736f
 
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                sort(byRankPercentage = true)
+                sortBy(byRankPercentage = true)
             }
         })
     }
@@ -206,26 +206,11 @@ class LevelSelectorPane(private val context: Context) : Pane(context, 600f, 736f
         }
     }
 
-    private fun sort(byLevelId: Boolean = false, byRank: Boolean = false, byRankPercentage: Boolean = false) {
+    private fun sortBy(byLevelId: Boolean = false, byRank: Boolean = false, byRankPercentage: Boolean = false) {
         when {
-            byLevelId -> {
-                sortLevelOrder = if (sortLevelOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
-                sortRankOrder = SortOrder.UNSORTED
-                sortRankPercentageOrder = SortOrder.UNSORTED
-                levelsTable.sortByLevel(sortLevelOrder)
-            }
-            byRank -> {
-                sortRankOrder = if (sortRankOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
-                sortLevelOrder = SortOrder.UNSORTED
-                sortRankPercentageOrder = SortOrder.UNSORTED
-                levelsTable.sortByRank(sortRankOrder)
-            }
-            byRankPercentage -> {
-                sortRankPercentageOrder = if (sortRankPercentageOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
-                sortLevelOrder = SortOrder.UNSORTED
-                sortRankOrder = SortOrder.UNSORTED
-                levelsTable.sortByRankPercentage(sortRankPercentageOrder)
-            }
+            byLevelId -> sortByOrdered(levelIdSortOrder = if (sortLevelOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING)
+            byRank -> sortByOrdered(rankSortOrder = if (sortRankOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING)
+            byRankPercentage -> sortByOrdered(rankPercentageSortOrder = if (sortRankPercentageOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING)
         }
         scrollPane.run {
             scrollY = 0f
@@ -233,10 +218,26 @@ class LevelSelectorPane(private val context: Context) : Pane(context, 600f, 736f
         }
     }
 
+    private fun sortByOrdered(
+        levelIdSortOrder: SortOrder = SortOrder.UNSORTED,
+        rankSortOrder: SortOrder = SortOrder.UNSORTED,
+        rankPercentageSortOrder: SortOrder = SortOrder.UNSORTED
+    ) {
+        sortLevelOrder = levelIdSortOrder
+        sortRankOrder = rankSortOrder
+        sortRankPercentageOrder = rankPercentageSortOrder
+        when {
+            levelIdSortOrder != SortOrder.UNSORTED -> levelsTable.sortByLevel(sortLevelOrder)
+            rankSortOrder != SortOrder.UNSORTED -> levelsTable.sortByRank(sortRankOrder)
+            rankPercentageSortOrder != SortOrder.UNSORTED -> levelsTable.sortByRankPercentage(sortRankPercentageOrder)
+        }
+    }
+
     override fun setStage(stage: Stage?) {
         super.setStage(stage)
         if (stage != null) {
             levelsTable.update()
+            sortByOrdered(sortLevelOrder, sortRankOrder, sortRankPercentageOrder)
         }
     }
 }
