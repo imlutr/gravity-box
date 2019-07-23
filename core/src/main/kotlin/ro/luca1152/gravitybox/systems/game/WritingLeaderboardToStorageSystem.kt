@@ -38,7 +38,6 @@ class WritingLeaderboardToStorageSystem(private val context: Context) :
     private val eventQueue: EventQueue = context.inject()
 
     override fun processEvent(event: WriteLeaderboardToStorageEvent, deltaTime: Float) {
-        // The leaderboard shouldn't be null, but if it is, for some reason, better avoid a NullPointerException
         if (context.injectNullable<GameShotsLeaderboard>() == null) return
 
         writeLeaderboardToStorage()
@@ -47,7 +46,7 @@ class WritingLeaderboardToStorageSystem(private val context: Context) :
     private fun writeLeaderboardToStorage() {
         thread {
             val file = Gdx.files.local(Assets.gameLeaderboardPath)
-            file.writeBytes(Json().prettyPrint(context.inject<GameShotsLeaderboard>()).toByteArray(), false)
+            file.writeString(Json().toJson(context.inject<GameShotsLeaderboard>()), false)
             gameRules.CACHED_LEADERBOARD_VERSION = gameRules.GAME_LEVELS_VERSION
             eventQueue.add(FlushPreferencesEvent())
             info("Wrote the leaderboard to storage.")

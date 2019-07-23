@@ -109,6 +109,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         context, "rank #x",
         skin, "regular", 37f, Colors.gameColor
     ) {
+        private val rankTexts = (1..200).associateWith { "rank #$it" }
+
         init {
             isVisible = false
         }
@@ -125,7 +127,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 isVisible = false
             } else {
                 isVisible = true
-                setText("rank #${levelEntity.map.rank}")
+                val rank = levelEntity.map.rank
+                setText(if (rankTexts.containsKey(rank)) rankTexts.getValue(rank) else "rank #$rank")
                 layout()
             }
         }

@@ -133,7 +133,7 @@ class MenuOverlay(context: Context) {
         "(Unranked)",
         skin, "semi-bold", 37f, Colors.gameColor
     ) {
-        private val rankedTexts = (1..100).associateWith { "(rank #$it)" }
+        private val rankedTexts = (1..200).associateWith { "(rank #$it)" }
         private val skippedText = "(Skipped)"
         private val unrankedText = "(Unranked)"
 

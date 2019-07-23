@@ -45,7 +45,8 @@ class LeaderboardRankCalculationSystem(
     private lateinit var levelEntity: Entity
 
     private val levelKeys = (1..gameRules.LEVEL_COUNT).associateWith { "l$it" }
-    private val shotKeys = (1..100).associateWith { "s$it" }
+    private val shotKeys = (1..500).associateWith { "s$it" }
+    private val shotKeysToLong = (1L..500L).associateBy { "s$it" }
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
@@ -81,7 +82,7 @@ class LeaderboardRankCalculationSystem(
         }
         levelEntity.map.run {
             rank = newRank
-            isNewRecord = !shotsMap.containsKey(
+            isNewRecord = rank == -1 && !shotsMap.containsKey(
                 if (shotKeys.containsKey(levelEntity.map.shots)) shotKeys[levelEntity.map.shots] else "s${levelEntity.map.shots}"
             )
 
@@ -101,7 +102,8 @@ class LeaderboardRankCalculationSystem(
         var totalPlayersWhoFinishedInFewerOrEqualShots = 0L
         shotsMap.forEach {
             totalPlayers += it.value
-            if (it.key.substring(1).toLong() <= shots) {
+            val longShots = if (shotKeysToLong.containsKey(it.key)) shotKeysToLong.getValue(it.key) else it.key.substring(1).toLong()
+            if (longShots <= shots) {
                 totalPlayersWhoFinishedInFewerOrEqualShots += it.value
             }
         }
