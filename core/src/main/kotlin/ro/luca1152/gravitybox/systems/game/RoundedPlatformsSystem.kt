@@ -146,7 +146,9 @@ class RoundedPlatformsSystem(private val context: Context) :
         isPlatform(actor.hitAll(PlatformEntity.HEIGHT / 2f, (-5).pixelsToMeters))
 
     private fun isPlatform(actors: Array<Actor>): Boolean {
-        actors.forEach { if (isPlatform(it)) return true }
+        for (i in 0 until actors.size) {
+            if (isPlatform(actors[i])) return true
+        }
         return false
     }
 

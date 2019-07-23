@@ -62,6 +62,9 @@ class FinishOverlay(private val context: Context) {
         "rank #x",
         skin, "semi-bold", 40f, Colors.gameColor
     ) {
+        private val rank1Text = "rank #1"
+        private var storedRank = 0
+
         init {
             color.a = 0f
         }
@@ -73,11 +76,15 @@ class FinishOverlay(private val context: Context) {
 
         private fun updateLabel() {
             val levelEntity = playScreen.levelEntity
+            val rank = levelEntity.map.rank
             if (!levelEntity.level.isLevelFinished || levelEntity.level.forceUpdateMap) return
-            if (levelEntity.map.rank != -1 && !levelEntity.map.isNewRecord) {
-                setText("rank #${levelEntity.map.rank}")
+            if (rank != -1 && !levelEntity.map.isNewRecord) {
+                if (storedRank != rank) {
+                    storedRank = rank
+                    setText("rank #${levelEntity.map.rank}")
+                }
             } else {
-                setText("rank #1")
+                setText(rank1Text)
             }
             layout()
         }
@@ -87,6 +94,9 @@ class FinishOverlay(private val context: Context) {
         "(top x.y%)",
         skin, "regular", 30f, Colors.gameColor
     ) {
+        private val newRecordText = "NEW RECORD!"
+        private var storedRankPercentage = -1f
+
         init {
             color.a = 0f
         }
@@ -101,10 +111,14 @@ class FinishOverlay(private val context: Context) {
             if (!levelEntity.level.isLevelFinished || levelEntity.level.forceUpdateMap) return
 
             if (levelEntity.map.isNewRecord) {
-                setText("NEW RECORD!")
+                setText(newRecordText)
             } else {
-                val percentageAsString = "%.1f".format(levelEntity.map.rankPercentage)
-                setText("(top ${if (percentageAsString == "0.0") "0.1" else percentageAsString}%)")
+                val rankPercentage = levelEntity.map.rankPercentage
+                if (storedRankPercentage != rankPercentage) {
+                    storedRankPercentage = rankPercentage
+                    val percentageAsString = "%.1f".format(levelEntity.map.rankPercentage)
+                    setText("(top ${if (percentageAsString == "0.0") "0.1" else percentageAsString}%)")
+                }
             }
 
             layout()
