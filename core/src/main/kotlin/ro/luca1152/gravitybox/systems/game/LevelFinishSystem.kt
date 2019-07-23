@@ -54,6 +54,7 @@ class LevelFinishSystem(
     private var didFlushPreferences = false
     private var didLogLevelFinish = false
     private var didUpdateLeaderboard = false
+    private var didUpdateHighestFinishedLevel = false
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
@@ -66,6 +67,7 @@ class LevelFinishSystem(
             didFlushPreferences = false
             didLogLevelFinish = false
             didUpdateLeaderboard = false
+            didUpdateHighestFinishedLevel = false
             return
         }
 
@@ -102,7 +104,10 @@ class LevelFinishSystem(
             eventQueue.add(CalculateRankEvent())
         }
 
-        updateHighestFinishedLevel()
+        if (!didUpdateHighestFinishedLevel) {
+            updateHighestFinishedLevel()
+            didUpdateHighestFinishedLevel = false
+        }
     }
 
     private fun logLevelFinish() {

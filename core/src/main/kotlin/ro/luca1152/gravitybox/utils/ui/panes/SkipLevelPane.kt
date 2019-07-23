@@ -25,7 +25,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
+import ro.luca1152.gravitybox.components.game.network
 import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.systems.game.SkipLevelEvent
 import ro.luca1152.gravitybox.utils.ads.AdsController
 import ro.luca1152.gravitybox.utils.kotlin.MenuOverlayStage
@@ -40,6 +42,7 @@ class SkipLevelPane(context: Context) : Pane(context, 600f, 370f, context.inject
     private val adsController: AdsController? = context.injectNullable()
     private val menuOverlayStage: MenuOverlayStage = context.inject()
     private val eventQueue: EventQueue = context.inject()
+    private val playScreen: PlayScreen = context.inject()
 
     // Other panes
     private val skipLevelNoInternetPane = SkipLevelNoInternetPane(context)
@@ -72,7 +75,7 @@ class SkipLevelPane(context: Context) : Pane(context, 600f, 370f, context.inject
                     return
                 }
 
-                if (!adsController.isNetworkConnected()) {
+                if (!playScreen.networkEntity.network.isNetworkConnected) {
                     menuOverlayStage.addActor(skipLevelNoInternetPane)
                 } else {
                     // Instantly hide the pop-up

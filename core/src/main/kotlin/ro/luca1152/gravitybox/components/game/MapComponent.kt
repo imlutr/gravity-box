@@ -314,7 +314,8 @@ class MapComponent : Component, Poolable {
                 FinishComponent::class.java,
                 LevelComponent::class.java,
                 UndoRedoComponent::class.java,
-                InputComponent::class.java
+                InputComponent::class.java,
+                NetworkComponent::class.java
             ).get()
         ).forEach {
             entitiesToRemove.add(it)

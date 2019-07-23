@@ -15,17 +15,15 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("PrivatePropertyName", "HasPlatformType")
+package ro.luca1152.gravitybox.entities.game
 
-package ro.luca1152.gravitybox.components
+import ktx.inject.Context
+import ro.luca1152.gravitybox.components.game.network
+import ro.luca1152.gravitybox.utils.kotlin.addToEngine
+import ro.luca1152.gravitybox.utils.kotlin.newEntity
 
-
-import com.badlogic.ashley.core.Component
-import com.badlogic.ashley.core.ComponentMapper
-import com.badlogic.ashley.core.Entity
-
-/** Components with a companion object which extends this class can be referenced in an OOP style.*/
-open class ComponentResolver<T : Component>(componentClass: Class<T>) {
-    private val MAPPER = ComponentMapper.getFor(componentClass)!!
-    operator fun get(entity: Entity) = MAPPER[entity]
+object NetworkEntity {
+    fun createEntity(context: Context) = newEntity(context)
+        .network(context)
+        .addToEngine(context)
 }

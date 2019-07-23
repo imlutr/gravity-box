@@ -17,29 +17,38 @@
 
 package ro.luca1152.gravitybox.systems.game
 
+import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
+import ro.luca1152.gravitybox.components.game.NetworkComponent
+import ro.luca1152.gravitybox.components.game.network
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.utils.ads.AdsController
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.info
-import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
 
 class EntireLeaderboardCachingSystem(private val context: Context) : EntitySystem() {
     // Injected objects
     private val gameRules: GameRules = context.inject()
-    private val adsController: AdsController? = context.injectNullable()
     private val gameShotsLeaderboardController: GameShotsLeaderboardController = context.inject()
     private val eventQueue: EventQueue = context.inject()
+
+    // Entities
+    private lateinit var networkEntity: Entity
 
     private var delayAfterGainingInternetConnection = .5f
     private var isCachingGameLeaderboard = false
 
+    override fun addedToEngine(engine: Engine) {
+        networkEntity = engine.getSingleton<NetworkComponent>()
+    }
+
     override fun update(deltaTime: Float) {
-        if (adsController?.isNetworkConnected() == false) return
+        if (!networkEntity.network.isNetworkConnected) return
         delayAfterGainingInternetConnection -= deltaTime
 
         if (TimeUtils.timeSinceMillis(gameRules.NEXT_LEADERBOARD_CACHE_TIME) <= 0L && gameRules.CACHED_LEADERBOARD_VERSION == gameRules.GAME_LEVELS_VERSION) return

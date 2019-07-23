@@ -34,6 +34,7 @@ import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
+import ro.luca1152.gravitybox.entities.game.NetworkEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.systems.editor.DashedLineRenderingSystem
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
@@ -72,6 +73,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     // Entities
     lateinit var playerEntity: Entity
     lateinit var levelEntity: Entity
+    lateinit var networkEntity: Entity
 
     // Constants
     val padTopBottom = 38f
@@ -185,10 +187,12 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         playerEntity = PlayerEntity.createEntity(context)
         FinishEntity.createEntity(context)
+        networkEntity = NetworkEntity.createEntity(context)
     }
 
     private fun addGameSystems() {
         engine.run {
+            addSystem(NetworkDetectionSystem(context))
             addSystem(SkipLevelSystem(context))
             addSystem(EntireLeaderboardCachingSystem(context))
             addSystem(WriteEntireLeaderboardToStorageSystem(context))
