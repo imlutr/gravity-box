@@ -24,10 +24,10 @@ import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.events.Event
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.EventSystem
+import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.info
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
-import ro.luca1152.gravitybox.utils.leaderboards.Level
 import kotlin.concurrent.thread
 
 class WriteEntireLeaderboardToStorageEvent : Event
@@ -46,12 +46,8 @@ class WriteEntireLeaderboardToStorageSystem(private val context: Context) :
 
     private fun writeLeaderboardToStorage() {
         thread {
-            val leaderboard = context.inject<GameShotsLeaderboard>()
-            for (i in 1 until gameRules.LEVEL_COUNT) {
-                val level = leaderboard.levels[Level.levelsKeys.getValue(i)]
-                val file = Gdx.files.local(Level.levelsFilePath.getValue(i))
-                file.writeString(Json().toJson(level), false)
-            }
+            val file = Gdx.files.local(Assets.gameLeaderboardPath)
+            file.writeString(Json().toJson(context.inject<GameShotsLeaderboard>()), false)
             gameRules.CACHED_LEADERBOARD_VERSION = gameRules.GAME_LEVELS_VERSION
             eventQueue.add(FlushPreferencesEvent())
             info("Wrote the leaderboard to storage.")

@@ -21,8 +21,11 @@ import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ro.luca1152.gravitybox.utils.assets.loaders.MapPack
+import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 
 object Assets {
+    const val gameLeaderboardPath = "leaderboards/game-leaderboard.json"
+    val gameLeaderboard = AssetDescriptor(gameLeaderboardPath, ShotsLeaderboard::class.java)
     val uiSkin = AssetDescriptor("skins/uiskin.json", Skin::class.java)
     val tileset = AssetDescriptor("graphics/tileset.atlas", TextureAtlas::class.java)
     val gameMaps = AssetDescriptor("maps/game/maps.json", MapPack::class.java)

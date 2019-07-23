@@ -25,25 +25,25 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
-import ro.luca1152.gravitybox.utils.leaderboards.Level
+import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 
-class LevelLeaderboardLoader(resolver: FileHandleResolver) :
-    AsynchronousAssetLoader<Level, LevelLeaderboardLoader.LevelLeaderboardParameter>(resolver) {
-    private var level: Level? = null
+class ShotsLeaderboardLoader(resolver: FileHandleResolver) :
+    AsynchronousAssetLoader<ShotsLeaderboard, ShotsLeaderboardLoader.LevelLeaderboardParameter>(resolver) {
+    private var shotsLeaderboard: ShotsLeaderboard? = null
 
     override fun loadAsync(manager: AssetManager?, fileName: String?, file: FileHandle, parameter: LevelLeaderboardParameter?) {
-        level = null
-        level = Json().fromJson(Level::class.java, file.reader())
+        shotsLeaderboard = null
+        shotsLeaderboard = Json().fromJson(ShotsLeaderboard::class.java, file.reader())
     }
 
     override fun loadSync(
         manager: AssetManager?, fileName: String?,
         file: FileHandle?, parameter: LevelLeaderboardParameter?
-    ): Level {
-        val level = this.level
-        this.level = null
+    ): ShotsLeaderboard {
+        val shotsLeaderboard = this.shotsLeaderboard
+        this.shotsLeaderboard = null
 
-        return level!!
+        return shotsLeaderboard!!
     }
 
     override fun getDependencies(
@@ -53,5 +53,5 @@ class LevelLeaderboardLoader(resolver: FileHandleResolver) :
         return null
     }
 
-    class LevelLeaderboardParameter : AssetLoaderParameters<Level>()
+    class LevelLeaderboardParameter : AssetLoaderParameters<ShotsLeaderboard>()
 }

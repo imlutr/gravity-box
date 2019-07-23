@@ -27,13 +27,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.app.KtxScreen
 import ktx.assets.load
 import ktx.inject.Context
-import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.assets.loaders.*
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
-import ro.luca1152.gravitybox.utils.leaderboards.Level
+import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 
 class LoadingScreen(private val context: Context) : KtxScreen {
     // Injected objects
@@ -43,7 +42,6 @@ class LoadingScreen(private val context: Context) : KtxScreen {
     private val gameViewport: GameViewport = context.inject()
     private val uiViewport: UIViewport = context.inject()
     private val overlayViewport: OverlayViewport = context.inject()
-    private val gameRules: GameRules = context.inject()
 
     private var loadingAssetsTimer = 0f
     private val finishedLoadingAssets
@@ -87,14 +85,11 @@ class LoadingScreen(private val context: Context) : KtxScreen {
     }
 
     private fun loadCachedLeaderboards() {
-        manager.setLoader(Level::class.java, LevelLeaderboardLoader(LocalFileHandleResolver()))
-        for (i in 1..gameRules.LEVEL_COUNT) {
-            val path = Level.levelsFilePath.getValue(i)
-            if (Gdx.files.local(path).exists()) {
-                manager.load<Level>(path)
-            }
+        manager.setLoader(ShotsLeaderboard::class.java, ShotsLeaderboardLoader(LocalFileHandleResolver()))
+        if (Gdx.files.local(Assets.gameLeaderboardPath).exists()) {
+            manager.load(Assets.gameLeaderboard)
+            info("Loaded cached game leaderboard.")
         }
-        info("Loaded cached game leaderboard.")
     }
 
     override fun render(delta: Float) {
@@ -118,26 +113,10 @@ class LoadingScreen(private val context: Context) : KtxScreen {
     private fun bindLoadedObjects() {
         context.run {
             bindSingleton(manager.get(Assets.uiSkin))
-            val leaderboard = buildEntireLeaderboardFromLevelsLeaderboard()
-            if (leaderboard != null) {
-                bindSingleton(leaderboard)
+            if (manager.contains(Assets.gameLeaderboardPath)) {
+                bindSingleton(GameShotsLeaderboard(manager.get(Assets.gameLeaderboard)))
             }
         }
-    }
-
-    private fun buildEntireLeaderboardFromLevelsLeaderboard(): GameShotsLeaderboard? {
-        var shotsLeaderboard: GameShotsLeaderboard? = null
-        for (i in 1..gameRules.LEVEL_COUNT) {
-            val path = Level.levelsFilePath.getValue(i)
-            if (manager.contains(path)) {
-                if (shotsLeaderboard == null) {
-                    shotsLeaderboard = GameShotsLeaderboard()
-                }
-                val level = manager.get<Level>(path)
-                shotsLeaderboard.levels[Level.levelsKeys.getValue(Level.levelsFilePathToInt.getValue(path))] = level
-            }
-        }
-        return shotsLeaderboard
     }
 
     // They are added here and not in [MyGame] because adding a screen automatically initializes it, initialization which

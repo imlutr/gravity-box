@@ -24,7 +24,7 @@ import ro.luca1152.gravitybox.events.EventSystem
 import ro.luca1152.gravitybox.utils.kotlin.info
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
-import ro.luca1152.gravitybox.utils.leaderboards.Level
+import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 
 class UpdateAllRanksEvent : Event
 class UpdateAllRanksSystem(private val context: Context) : EventSystem<UpdateAllRanksEvent>(context.inject(), UpdateAllRanksEvent::class) {
@@ -51,12 +51,12 @@ class UpdateAllRanksSystem(private val context: Context) : EventSystem<UpdateAll
 
     private fun calculateRank(levelId: Int): Int {
         val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
-        return if (shotsLeaderboard != null && shotsLeaderboard.levels.contains(Level.levelsKeys.getValue(levelId))) {
+        return if (shotsLeaderboard != null && shotsLeaderboard.levels.contains(ShotsLeaderboard.levelsKeys.getValue(levelId))) {
             var newRank = -1
-            val shotsMap = shotsLeaderboard.levels[Level.levelsKeys.getValue(levelId)]!!.shots
+            val shotsMap = shotsLeaderboard.levels[ShotsLeaderboard.levelsKeys.getValue(levelId)]!!.shots
             val shots = gameRules.getGameLevelHighscore(levelId)
             for (i in 1..shots) {
-                if (shotsMap.containsKey(Level.shotsKeys(i)) && shotsMap[Level.shotsKeys(i)] != 0L) {
+                if (shotsMap.containsKey(ShotsLeaderboard.shotsKeys(i)) && shotsMap[ShotsLeaderboard.shotsKeys(i)] != 0L) {
                     if (newRank == -1) newRank = 1
                     else newRank++
                 }
@@ -67,8 +67,8 @@ class UpdateAllRanksSystem(private val context: Context) : EventSystem<UpdateAll
 
     private fun calculateRankPercentage(levelId: Int): Float {
         val shotsLeaderboard: GameShotsLeaderboard = context.inject()
-        return if (shotsLeaderboard.levels.contains(Level.levelsKeys.getValue(levelId))) {
-            val shotsMap = shotsLeaderboard.levels[Level.levelsKeys.getValue(levelId)]!!.shots
+        return if (shotsLeaderboard.levels.contains(ShotsLeaderboard.levelsKeys.getValue(levelId))) {
+            val shotsMap = shotsLeaderboard.levels[ShotsLeaderboard.levelsKeys.getValue(levelId)]!!.shots
             val shots = gameRules.getGameLevelHighscore(levelId)
             var totalPlayers = 0L
             var totalPlayersWhoFinishedInFewerOrEqualShots = 0L

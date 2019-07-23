@@ -30,7 +30,7 @@ import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
-import ro.luca1152.gravitybox.utils.leaderboards.Level
+import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 
 class CalculateRankEvent : Event
 class LeaderboardRankCalculationSystem(
@@ -49,7 +49,7 @@ class LeaderboardRankCalculationSystem(
 
     override fun processEvent(event: CalculateRankEvent, deltaTime: Float) {
         val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
-        if (shotsLeaderboard == null || !shotsLeaderboard.levels.contains(Level.levelsKeys.getValue(levelEntity.level.levelId))) {
+        if (shotsLeaderboard == null || !shotsLeaderboard.levels.contains(ShotsLeaderboard.levelsKeys.getValue(levelEntity.level.levelId))) {
             levelEntity.map.run {
                 rank = -1
                 rankPercentage = -1f
@@ -65,10 +65,10 @@ class LeaderboardRankCalculationSystem(
     private fun calculateRank() {
         val shotsLeaderboard: GameShotsLeaderboard = context.inject()
         var newRank = -1
-        val levelKey = Level.levelsKeys[levelEntity.level.levelId]
+        val levelKey = ShotsLeaderboard.levelsKeys[levelEntity.level.levelId]
         val shotsMap = shotsLeaderboard.levels[levelKey]!!.shots
         for (i in 1..levelEntity.map.shots) {
-            val shotKey = Level.shotsKeys(i)
+            val shotKey = ShotsLeaderboard.shotsKeys(i)
             if (shotsMap.containsKey(shotKey) && shotsMap[shotKey] != 0L) {
                 if (newRank == -1) newRank = 1
                 else newRank++
@@ -76,7 +76,7 @@ class LeaderboardRankCalculationSystem(
         }
         levelEntity.map.run {
             rank = newRank
-            isNewRecord = rank == -1 && !shotsMap.containsKey(Level.shotsKeys(levelEntity.level.levelId))
+            isNewRecord = rank == -1 && !shotsMap.containsKey(ShotsLeaderboard.shotsKeys(levelEntity.level.levelId))
 
             if (isNewRecord && levelEntity.level.isLevelFinished) {
                 eventQueue.add(CacheCurrentLevelShots())
@@ -86,14 +86,14 @@ class LeaderboardRankCalculationSystem(
 
     private fun calculateRankPercentage() {
         val shotsLeaderboard: GameShotsLeaderboard = context.inject()
-        val levelKey = Level.levelsKeys[levelEntity.level.levelId]
+        val levelKey = ShotsLeaderboard.levelsKeys[levelEntity.level.levelId]
         val shotsMap = shotsLeaderboard.levels[levelKey]!!.shots
         val shots = levelEntity.map.shots
         var totalPlayers = 0L
         var totalPlayersWhoFinishedInFewerOrEqualShots = 0L
         shotsMap.forEach {
             totalPlayers += it.value
-            val intShots = Level.shotsKeysToInt((it.key))
+            val intShots = ShotsLeaderboard.shotsKeysToInt((it.key))
             if (intShots <= shots) {
                 totalPlayersWhoFinishedInFewerOrEqualShots += it.value
             }

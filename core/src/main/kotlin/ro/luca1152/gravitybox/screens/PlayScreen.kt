@@ -191,9 +191,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
         engine.run {
             addSystem(SkipLevelSystem(context))
             addSystem(EntireLeaderboardCachingSystem(context))
-            addSystem(CurrentLevelLeaderboardCachingSystem(context))
             addSystem(WriteEntireLeaderboardToStorageSystem(context))
-            addSystem(WriteLevelLeaderboardToStorageSystem(context))
             addSystem(LeaderboardRankCalculationSystem(context))
             addSystem(UpdateAllRanksSystem(context))
             addSystem(CurrentLevelShotsCachingSystem(context))

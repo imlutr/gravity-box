@@ -18,14 +18,8 @@
 package ro.luca1152.gravitybox.utils.leaderboards
 
 open class ShotsLeaderboard {
-    var levels = mutableMapOf<String, Level>()
-}
-
-class Level {
     companion object {
         // Levels
-        val levelsFilePath = (1..269).associateWith { "leaderboards/game/l$it" }
-        val levelsFilePathToInt = (1..269).associateBy { "leaderboards/game/l$it" }
         val levelsKeys = (1..269).associateWith { "l$it" }
 
         // Shots
@@ -43,5 +37,9 @@ class Level {
         }
     }
 
+    var levels = mutableMapOf<String, Level>()
+}
+
+class Level {
     var shots = mutableMapOf<String, Long>()
 }
