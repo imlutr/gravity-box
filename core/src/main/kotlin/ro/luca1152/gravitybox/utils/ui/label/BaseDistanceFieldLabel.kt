@@ -33,7 +33,7 @@ open class BaseDistanceFieldLabel(
     skin: Skin,
     styleName: String,
     fontSize: Float = 32f,
-    color: Color = Color.WHITE
+    private val initialColor: Color = Color.WHITE
 ) : Label(text, skin, styleName, Color.WHITE) {
     companion object {
         val vertexShader = """
@@ -105,9 +105,9 @@ open class BaseDistanceFieldLabel(
     var isTouchedDown = false
 
     init {
-        this.color = color
+        this.color.set(initialColor)
         this.setFontScale(fontSize / DEFAULT_FONT_SIZE)
-        if (this.color != Colors.gameColor && this.color != Colors.bgColor) {
+        if (this.initialColor != Colors.gameColor && this.initialColor != Colors.bgColor) {
             syncColorsWithColorScheme = false
         }
         this.setAlignment(Align.center, Align.center)
@@ -121,7 +121,9 @@ open class BaseDistanceFieldLabel(
             } else {
                 color.setWithoutAlpha(Colors.gameColor)
             }
-        } else if (color.equalsWithoutAlpha(goldColor) || color.equalsWithoutAlpha(darkGoldColor)) {
+        } else if (!initialColor.equalsWithoutAlpha(darkGoldColor) &&
+            (color.equalsWithoutAlpha(goldColor) || color.equalsWithoutAlpha(darkGoldColor))
+        ) {
             if (isTouchedDown) {
                 color.setWithoutAlpha(darkGoldColor)
             } else {
