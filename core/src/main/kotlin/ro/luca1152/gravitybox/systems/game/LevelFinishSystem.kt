@@ -63,6 +63,7 @@ class LevelFinishSystem(
     override fun update(deltaTime: Float) {
         if (!levelEntity.level.isLevelFinished || levelEntity.level.isRestarting) {
             didWriteRankToStorage = false
+            didFlushPreferences = false
             didLogLevelFinish = false
             didUpdateLeaderboard = false
             return
