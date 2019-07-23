@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.app.KtxScreen
 import ktx.assets.load
 import ktx.inject.Context
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.assets.loaders.*
@@ -115,6 +116,26 @@ class LoadingScreen(private val context: Context) : KtxScreen {
             bindSingleton(manager.get(Assets.uiSkin))
             if (manager.contains(Assets.gameLeaderboardPath)) {
                 bindSingleton(GameShotsLeaderboard(manager.get(Assets.gameLeaderboard)))
+                insertHighscoresInLeaderboard()
+            }
+        }
+    }
+
+    /**
+     * In case the player achieved a highscore (better than everyone) on a certain level, it would disappear
+     * after restarting the game if I didn't do this.
+     */
+    private fun insertHighscoresInLeaderboard() {
+        // Injected objects
+        val leaderboard: GameShotsLeaderboard = context.inject()
+        val gameRules: GameRules = context.inject()
+
+        for (i in 1..gameRules.HIGHEST_FINISHED_LEVEL) {
+            val highscore = gameRules.getGameLevelHighscore(i)
+            val levelKey = ShotsLeaderboard.levelsKeys[i]
+            val shotsKey = ShotsLeaderboard.shotsKeys(highscore)
+            if (leaderboard.levels.containsKey(levelKey)) {
+                leaderboard.levels[levelKey]!!.shots[shotsKey] = leaderboard.levels[levelKey]!!.shots[shotsKey] ?: 0L + 1
             }
         }
     }
