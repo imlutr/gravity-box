@@ -40,7 +40,10 @@ import ro.luca1152.gravitybox.entities.game.DashedLineEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.TextEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.systems.game.*
+import ro.luca1152.gravitybox.systems.game.CalculateRankEvent
+import ro.luca1152.gravitybox.systems.game.FadeInEvent
+import ro.luca1152.gravitybox.systems.game.FadeOutFadeInEvent
+import ro.luca1152.gravitybox.systems.game.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
@@ -269,7 +272,7 @@ class MapComponent : Component, Poolable {
             // Clear all actions in case the level was restarting, causing visual glitches
             add(FadeInEvent(FadeOutFadeInEvent.CLEAR_ACTIONS))
 
-            add(CacheCurrentLevelLeaderboardEvent())
+//            add(CacheCurrentLevelLeaderboardEvent()) // Commented out because it affects performance too much
             add(CalculateRankEvent())
         }
     }

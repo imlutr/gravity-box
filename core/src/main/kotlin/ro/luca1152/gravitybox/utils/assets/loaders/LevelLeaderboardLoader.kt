@@ -25,32 +25,33 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
-import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
+import ro.luca1152.gravitybox.utils.leaderboards.Level
 
-class ShotsLeaderboardLoader(resolver: FileHandleResolver) :
-    AsynchronousAssetLoader<ShotsLeaderboard, ShotsLeaderboardLoader.LeaderboardParameter>(resolver) {
-    private var shotsLeaderboard: ShotsLeaderboard? = null
+class LevelLeaderboardLoader(resolver: FileHandleResolver) :
+    AsynchronousAssetLoader<Level, LevelLeaderboardLoader.LevelLeaderboardParameter>(resolver) {
+    private var level: Level? = null
 
-    override fun loadAsync(manager: AssetManager?, fileName: String?, file: FileHandle, parameter: LeaderboardParameter?) {
-        shotsLeaderboard = null
-        shotsLeaderboard = Json().fromJson(ShotsLeaderboard::class.java, file.reader())
+    override fun loadAsync(manager: AssetManager?, fileName: String?, file: FileHandle, parameter: LevelLeaderboardParameter?) {
+        level = null
+        level = Json().fromJson(Level::class.java, file.reader())
     }
 
     override fun loadSync(
-        manager: AssetManager?,
-        fileName: String?,
-        file: FileHandle?,
-        parameter: LeaderboardParameter?
-    ): ShotsLeaderboard {
-        val leaderboard = this.shotsLeaderboard
-        this.shotsLeaderboard = null
+        manager: AssetManager?, fileName: String?,
+        file: FileHandle?, parameter: LevelLeaderboardParameter?
+    ): Level {
+        val level = this.level
+        this.level = null
 
-        return leaderboard!!
+        return level!!
     }
 
-    override fun getDependencies(fileName: String?, file: FileHandle?, parameter: LeaderboardParameter?): Array<AssetDescriptor<Any>>? {
+    override fun getDependencies(
+        fileName: String?, file: FileHandle?,
+        parameter: LevelLeaderboardParameter?
+    ): Array<AssetDescriptor<Any>>? {
         return null
     }
 
-    class LeaderboardParameter : AssetLoaderParameters<ShotsLeaderboard>()
+    class LevelLeaderboardParameter : AssetLoaderParameters<Level>()
 }

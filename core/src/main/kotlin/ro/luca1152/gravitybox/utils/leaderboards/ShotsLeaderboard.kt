@@ -22,5 +22,26 @@ open class ShotsLeaderboard {
 }
 
 class Level {
+    companion object {
+        // Levels
+        val levelsFilePath = (1..269).associateWith { "leaderboards/game/l$it" }
+        val levelsFilePathToInt = (1..269).associateBy { "leaderboards/game/l$it" }
+        val levelsKeys = (1..269).associateWith { "l$it" }
+
+        // Shots
+        private val shotsKeys = (1..1000).associateWith { "s$it" }
+        private val shotsKeysToInt = (1..1000).associateBy { "s$it" }
+        fun shotsKeys(intShots: Int): String {
+            return if (shotsKeys.containsKey(intShots)) shotsKeys.getValue(intShots)
+            else "s$intShots"
+
+        }
+
+        fun shotsKeysToInt(shotsKey: String): Int {
+            return if (shotsKeysToInt.containsKey(shotsKey)) shotsKeysToInt.getValue(shotsKey)
+            else shotsKey.substring(1).toInt()
+        }
+    }
+
     var shots = mutableMapOf<String, Long>()
 }

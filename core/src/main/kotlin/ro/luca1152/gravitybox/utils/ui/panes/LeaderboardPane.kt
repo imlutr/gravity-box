@@ -29,6 +29,7 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
+import ro.luca1152.gravitybox.utils.leaderboards.Level
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
 import kotlin.math.min
@@ -122,7 +123,7 @@ class LeaderboardPane(
 
     private fun createRanksColumn() = Table(skin).apply {
         val shotsLeaderboard = context.injectNullable<GameShotsLeaderboard>()
-        for (i in 1..min(10, shotsLeaderboard!!.levels["l$currentLevelId"]!!.shots.size)) {
+        for (i in 1..min(10, shotsLeaderboard!!.levels[Level.levelsKeys.getValue(currentLevelId)]!!.shots.size)) {
             val currentRank = gameRules.getGameLevelRank(currentLevelId)
             val textColor = if (currentRank == i || (i == 10 && currentRank >= i && currentRank != gameRules.DEFAULT_RANK_VALUE))
                 "text-dark-gold" else "text-gold"
@@ -138,8 +139,8 @@ class LeaderboardPane(
         var shotI = 1
         var shotsAdded = 0
         val shotsLeaderboard = context.injectNullable<GameShotsLeaderboard>()
-        while (shotsAdded < 10 && shotsAdded < shotsLeaderboard!!.levels["l$currentLevelId"]!!.shots.size) {
-            if (shotsLeaderboard.levels["l$currentLevelId"]!!.shots.containsKey("s$shotI")) {
+        while (shotsAdded < 10 && shotsAdded < shotsLeaderboard!!.levels[Level.levelsKeys.getValue(currentLevelId)]!!.shots.size) {
+            if (shotsLeaderboard.levels[Level.levelsKeys.getValue(currentLevelId)]!!.shots.containsKey(Level.shotsKeys(shotI))) {
                 shotsAdded++
                 val currentRank = gameRules.getGameLevelRank(currentLevelId)
                 val textColor =
@@ -158,21 +159,21 @@ class LeaderboardPane(
     private fun createPlayersColumn() = Table(skin).apply {
         var totalPlayers = 0L
         val shotsLeaderboard = context.injectNullable<GameShotsLeaderboard>()
-        shotsLeaderboard!!.levels["l$currentLevelId"]!!.shots.forEach {
+        shotsLeaderboard!!.levels[Level.levelsKeys.getValue(currentLevelId)]!!.shots.forEach {
             totalPlayers += it.value
         }
 
         var shotI = 1
         var percentagesAdded = 0
         var playersAdded = 0L
-        while (percentagesAdded < 10 && percentagesAdded < shotsLeaderboard.levels["l$currentLevelId"]!!.shots.size) {
-            if (shotsLeaderboard.levels["l$currentLevelId"]!!.shots.containsKey("s$shotI")) {
+        while (percentagesAdded < 10 && percentagesAdded < shotsLeaderboard.levels[Level.levelsKeys.getValue(currentLevelId)]!!.shots.size) {
+            if (shotsLeaderboard.levels[Level.levelsKeys.getValue(currentLevelId)]!!.shots.containsKey(Level.shotsKeys(shotI))) {
                 percentagesAdded++
                 val currentRank = gameRules.getGameLevelRank(currentLevelId)
                 val textColor =
                     if (currentRank == percentagesAdded || (percentagesAdded == 10 && currentRank >= percentagesAdded && currentRank != gameRules.DEFAULT_RANK_VALUE))
                         "text-dark-gold" else "text-gold"
-                val playersForIShots = shotsLeaderboard.levels["l$currentLevelId"]!!.shots["s$shotI"]!!
+                val playersForIShots = shotsLeaderboard.levels[Level.levelsKeys.getValue(currentLevelId)]!!.shots[Level.shotsKeys(shotI)]!!
                 if (percentagesAdded < 10) {
                     playersAdded += playersForIShots
                 }

@@ -30,6 +30,7 @@ import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.info
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
+import ro.luca1152.gravitybox.utils.leaderboards.Level
 
 class CacheCurrentLevelShots : Event
 
@@ -55,10 +56,12 @@ class CurrentLevelShotsCachingSystem(
         val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
         if (shotsLeaderboard != null) {
             val shots = levelEntity.map.shots
-            val playerCountStoredInLeaderboard = shotsLeaderboard.levels["l${levelEntity.level.levelId}"]!!.shots["s$shots"] ?: 0L
-            shotsLeaderboard.levels["l${levelEntity.level.levelId}"]!!.shots["s$shots"] = playerCountStoredInLeaderboard + 1
+            val playerCountStoredInLeaderboard =
+                shotsLeaderboard.levels[Level.levelsKeys.getValue(levelEntity.level.levelId)]!!.shots[Level.shotsKeys(shots)] ?: 0L
+            shotsLeaderboard.levels[Level.levelsKeys.getValue(levelEntity.level.levelId)]!!.shots[Level.shotsKeys(shots)] =
+                playerCountStoredInLeaderboard + 1
             info("Cached current level's shots.")
-            eventQueue.add(WriteLeaderboardToStorageEvent())
+            eventQueue.add(WriteLevelLeaderboardToStorageEvent(levelEntity.level.levelId))
         }
     }
 }

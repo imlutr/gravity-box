@@ -30,8 +30,11 @@ import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
+import ro.luca1152.gravitybox.utils.leaderboards.Level
 
 class CacheCurrentLevelLeaderboardEvent : Event
+
+// Note: Not used because of performance issues
 class CurrentLevelLeaderboardCachingSystem(private val context: Context) :
     EventSystem<CacheCurrentLevelLeaderboardEvent>(context.inject(), CacheCurrentLevelLeaderboardEvent::class) {
     // Injected objects
@@ -60,15 +63,15 @@ class CurrentLevelLeaderboardCachingSystem(private val context: Context) :
         shotsLeaderboardController.readCurrentGameLevelLeaderboard(levelEntity.level.levelId) {
             if (shotsLeaderboard == null) {
                 val newShotsLeaderboard = GameShotsLeaderboard().apply {
-                    levels["l${levelEntity.level.levelId}"] = it
+                    levels[Level.levelsKeys.getValue(levelEntity.level.levelId)] = it
                 }
                 if (!context.contains<GameShotsLeaderboard>()) {
                     context.bindSingleton(newShotsLeaderboard)
                 }
             } else {
-                shotsLeaderboard.levels["l${levelEntity.level.levelId}"] = it
+                shotsLeaderboard.levels[Level.levelsKeys.getValue(levelEntity.level.levelId)] = it
             }
-            eventQueue.add(WriteLeaderboardToStorageEvent())
+            eventQueue.add(WriteLevelLeaderboardToStorageEvent(levelEntity.level.levelId))
         }
     }
 }

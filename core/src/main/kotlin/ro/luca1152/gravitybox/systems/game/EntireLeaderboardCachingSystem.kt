@@ -73,7 +73,7 @@ class EntireLeaderboardCachingSystem(private val context: Context) : EntitySyste
     }
 
     private fun writeLeaderboardToStorage() {
-        eventQueue.add(WriteLeaderboardToStorageEvent())
+        eventQueue.add(WriteEntireLeaderboardToStorageEvent())
     }
 
     private fun bindLeaderboard(gameShotsLeaderboard: GameShotsLeaderboard) {
