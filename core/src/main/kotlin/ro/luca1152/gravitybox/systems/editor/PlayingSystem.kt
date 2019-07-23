@@ -187,6 +187,7 @@ class PlayingSystem(
             addSystem(KeyboardLevelRestartSystem(context))
             addSystem(PlayerInsideFinishDetectionSystem())
             addSystem(PointsCollectionSystem(context))
+            addSystem(LevelFinishDetectionSystem())
             addSystem(LevelFinishSystem(context, restartLevelWhenFinished = true))
             addSystem(FinishPointColorSystem())
             addSystem(SelectedObjectColorSystem())

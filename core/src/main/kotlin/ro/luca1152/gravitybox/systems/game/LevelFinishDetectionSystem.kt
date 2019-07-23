@@ -34,7 +34,9 @@ class LevelFinishDetectionSystem : EntitySystem() {
     }
 
     override fun update(deltaTime: Float) {
-        levelEntity.level.isLevelFinished = playerEntity.player.isInsideFinishPoint
-                && levelEntity.level.colorSchemeIsFullyTransitioned && playerEntity.body.body!!.linearVelocity.len2() <= 1f
+        levelEntity.level.isLevelFinished = playerEntity.player.isInsideFinishPoint &&
+                levelEntity.level.colorSchemeIsFullyTransitioned &&
+                playerEntity.body.body!!.linearVelocity.len2() <= 1f &&
+                playerEntity.body.body!!.angularVelocity <= .25f
     }
 }
