@@ -24,12 +24,12 @@ import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.events.Event
-import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.EventSystem
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.info
 import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
+import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 
 class CacheCurrentLevelShots : Event
 
@@ -37,9 +37,6 @@ class CacheCurrentLevelShots : Event
 class CurrentLevelShotsCachingSystem(
     private val context: Context
 ) : EventSystem<CacheCurrentLevelShots>(context.inject(), CacheCurrentLevelShots::class) {
-    // Injected objects
-    private val eventQueue: EventQueue = context.inject()
-
     // Entities
     private lateinit var levelEntity: Entity
 
@@ -55,10 +52,11 @@ class CurrentLevelShotsCachingSystem(
         val shotsLeaderboard: GameShotsLeaderboard? = context.injectNullable()
         if (shotsLeaderboard != null) {
             val shots = levelEntity.map.shots
-            val playerCountStoredInLeaderboard = shotsLeaderboard.levels["l${levelEntity.level.levelId}"]!!.shots["s$shots"] ?: 0L
-            shotsLeaderboard.levels["l${levelEntity.level.levelId}"]!!.shots["s$shots"] = playerCountStoredInLeaderboard + 1
+            val playerCountStoredInLeaderboard = shotsLeaderboard.levels[ShotsLeaderboard.levelsKeys.getValue(levelEntity.level.levelId)]!!
+                .shots[ShotsLeaderboard.shotsKeys(shots)] ?: 0L
+            shotsLeaderboard.levels[ShotsLeaderboard.levelsKeys.getValue(levelEntity.level.levelId)]!!
+                .shots[ShotsLeaderboard.shotsKeys(shots)] = playerCountStoredInLeaderboard + 1
             info("Cached current level's shots.")
-            eventQueue.add(WriteLeaderboardToStorageEvent())
         }
     }
 }

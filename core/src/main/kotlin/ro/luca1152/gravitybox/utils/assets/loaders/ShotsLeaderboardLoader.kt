@@ -28,29 +28,30 @@ import com.badlogic.gdx.utils.Json
 import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 
 class ShotsLeaderboardLoader(resolver: FileHandleResolver) :
-    AsynchronousAssetLoader<ShotsLeaderboard, ShotsLeaderboardLoader.LeaderboardParameter>(resolver) {
+    AsynchronousAssetLoader<ShotsLeaderboard, ShotsLeaderboardLoader.LevelLeaderboardParameter>(resolver) {
     private var shotsLeaderboard: ShotsLeaderboard? = null
 
-    override fun loadAsync(manager: AssetManager?, fileName: String?, file: FileHandle, parameter: LeaderboardParameter?) {
+    override fun loadAsync(manager: AssetManager?, fileName: String?, file: FileHandle, parameter: LevelLeaderboardParameter?) {
         shotsLeaderboard = null
         shotsLeaderboard = Json().fromJson(ShotsLeaderboard::class.java, file.reader())
     }
 
     override fun loadSync(
-        manager: AssetManager?,
-        fileName: String?,
-        file: FileHandle?,
-        parameter: LeaderboardParameter?
+        manager: AssetManager?, fileName: String?,
+        file: FileHandle?, parameter: LevelLeaderboardParameter?
     ): ShotsLeaderboard {
-        val leaderboard = this.shotsLeaderboard
+        val shotsLeaderboard = this.shotsLeaderboard
         this.shotsLeaderboard = null
 
-        return leaderboard!!
+        return shotsLeaderboard!!
     }
 
-    override fun getDependencies(fileName: String?, file: FileHandle?, parameter: LeaderboardParameter?): Array<AssetDescriptor<Any>>? {
+    override fun getDependencies(
+        fileName: String?, file: FileHandle?,
+        parameter: LevelLeaderboardParameter?
+    ): Array<AssetDescriptor<Any>>? {
         return null
     }
 
-    class LeaderboardParameter : AssetLoaderParameters<ShotsLeaderboard>()
+    class LevelLeaderboardParameter : AssetLoaderParameters<ShotsLeaderboard>()
 }

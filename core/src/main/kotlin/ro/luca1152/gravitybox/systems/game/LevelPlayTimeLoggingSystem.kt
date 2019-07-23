@@ -19,7 +19,7 @@ package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.systems.IntervalSystem
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.LevelComponent
@@ -27,7 +27,7 @@ import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
-class LevelPlayTimeLoggingSystem(context: Context) : EntitySystem() {
+class LevelPlayTimeLoggingSystem(context: Context) : IntervalSystem(1f) {
     // Injected objects
     private val gameRules: GameRules = context.inject()
 
@@ -38,10 +38,10 @@ class LevelPlayTimeLoggingSystem(context: Context) : EntitySystem() {
         levelEntity = engine.getSingleton<LevelComponent>()
     }
 
-    override fun update(deltaTime: Float) {
+    override fun updateInterval() {
         if (!levelEntity.map.shouldBeLoggingLevelPlayTime) {
             return
         }
-        gameRules.setGameLevelPlayTime(levelEntity.level.levelId, gameRules.getGameLevelPlayTime(levelEntity.level.levelId) + deltaTime)
+        gameRules.setGameLevelPlayTime(levelEntity.level.levelId, gameRules.getGameLevelPlayTime(levelEntity.level.levelId) + interval)
     }
 }

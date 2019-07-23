@@ -17,26 +17,33 @@
 
 package ro.luca1152.gravitybox.utils.ui.security
 
+import com.badlogic.gdx.utils.Pools
+
 class MyEncrypter(private var encryptionSecretKey: String) {
     init {
         encryptionSecretKey = if (encryptionSecretKey == "") "encryptionSecretKey" else encryptionSecretKey
     }
 
     private fun encryptDecrypt(input: String): String {
-        val output = StringBuilder()
+        val outputBuilder = Pools.obtain(StringBuilder::class.java).clear()
         for (i in 0 until input.length) {
             val a: Int = input[i].toInt()
             val b: Int = encryptionSecretKey[i % encryptionSecretKey.length].toInt()
-            output.append((a xor b).toChar())
+            outputBuilder.append((a xor b).toChar())
         }
-        Hex
-        return output.toString()
+        Pools.free(outputBuilder)
+        return String(outputBuilder)
     }
 
-    fun encrypt(string: String, signature: String) = Hex.encode(encryptDecrypt("$signature|$string").toByteArray())
+    @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
+    fun encrypt(string: String, signature: String): String {
+        val signedString = "$signature|$string"
+        val encryptedString = encryptDecrypt(signedString)
+        return Hex.encode(encryptedString)
+    }
 
     fun decrypt(string: String, signature: String): String {
-        val decrypted = encryptDecrypt(String(Hex.decode(string)))
+        val decrypted = encryptDecrypt(Hex.decode(string))
         return if (decrypted.startsWith("$signature|")) {
             decrypted.substring(signature.length + 1)
         } else {

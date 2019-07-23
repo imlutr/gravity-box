@@ -17,16 +17,32 @@
 
 package ro.luca1152.gravitybox.systems.game
 
+import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalSystem
 import ktx.inject.Context
-import ro.luca1152.gravitybox.GameRules
+import ro.luca1152.gravitybox.components.game.NetworkComponent
+import ro.luca1152.gravitybox.components.game.network
+import ro.luca1152.gravitybox.utils.ads.AdsController
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 
-/** Increases the play time from the [GameRules]. */
-class PlayTimeSystem(context: Context) : IntervalSystem(5f) {
+class NetworkDetectionSystem(context: Context) : IntervalSystem(1f) {
     // Injected objects
-    private val gameRules: GameRules = context.inject()
+    private val adsController: AdsController? = context.injectNullable()
+
+    // Entities
+    private lateinit var networkEntity: Entity
+
+    override fun addedToEngine(engine: Engine) {
+        networkEntity = engine.getSingleton<NetworkComponent>()
+    }
 
     override fun updateInterval() {
-        gameRules.PLAY_TIME += interval
+        if (adsController == null) {
+            return
+        }
+
+        networkEntity.network.isNetworkConnected = adsController.isNetworkConnected()
     }
 }

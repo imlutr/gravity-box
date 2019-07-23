@@ -15,18 +15,27 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.systems.game
+package ro.luca1152.gravitybox.components.game
 
-import com.badlogic.ashley.systems.IntervalSystem
+import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.inject.Context
-import ro.luca1152.gravitybox.GameRules
+import ro.luca1152.gravitybox.components.ComponentResolver
+import ro.luca1152.gravitybox.utils.kotlin.createComponent
 
-/** Increases the play time from the [GameRules]. */
-class PlayTimeSystem(context: Context) : IntervalSystem(5f) {
-    // Injected objects
-    private val gameRules: GameRules = context.inject()
+class NetworkComponent : Component, Poolable {
+    var isNetworkConnected = false
 
-    override fun updateInterval() {
-        gameRules.PLAY_TIME += interval
+    override fun reset() {
+        isNetworkConnected = false
     }
+
+    companion object : ComponentResolver<NetworkComponent>(NetworkComponent::class.java)
 }
+
+val Entity.network: NetworkComponent
+    get() = NetworkComponent[this]
+
+fun Entity.network(context: Context) =
+    add(createComponent<NetworkComponent>(context))!!

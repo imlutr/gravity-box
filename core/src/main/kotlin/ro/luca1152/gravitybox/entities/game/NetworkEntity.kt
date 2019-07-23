@@ -15,18 +15,15 @@
  * along with Gravity Box.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ro.luca1152.gravitybox.systems.game
+package ro.luca1152.gravitybox.entities.game
 
-import com.badlogic.ashley.systems.IntervalSystem
 import ktx.inject.Context
-import ro.luca1152.gravitybox.GameRules
+import ro.luca1152.gravitybox.components.game.network
+import ro.luca1152.gravitybox.utils.kotlin.addToEngine
+import ro.luca1152.gravitybox.utils.kotlin.newEntity
 
-/** Increases the play time from the [GameRules]. */
-class PlayTimeSystem(context: Context) : IntervalSystem(5f) {
-    // Injected objects
-    private val gameRules: GameRules = context.inject()
-
-    override fun updateInterval() {
-        gameRules.PLAY_TIME += interval
-    }
+object NetworkEntity {
+    fun createEntity(context: Context) = newEntity(context)
+        .network(context)
+        .addToEngine(context)
 }

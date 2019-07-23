@@ -17,7 +17,5 @@
 
 package ro.luca1152.gravitybox.events
 
-import java.util.*
-
-/** A simple [LinkedList] of type [Event]. */
-class EventQueue : LinkedList<Event>()
+/** A simple [ArrayList] of type [Event]. */
+class EventQueue : ArrayList<Event>()

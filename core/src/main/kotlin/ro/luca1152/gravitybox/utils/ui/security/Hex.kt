@@ -17,7 +17,7 @@
 
 package ro.luca1152.gravitybox.utils.ui.security
 
-import kotlin.experimental.and
+import com.badlogic.gdx.utils.Pools
 
 /**
  * Helper methods for encode/decode hex strings.
@@ -25,34 +25,36 @@ import kotlin.experimental.and
  * @author https://github.com/google/tink/blob/master/java/src/main/java/com/google/crypto/tink/subtle/Hex.java
  */
 object Hex {
+    private const val chars = "0123456789abcdef"
+
     /** Encodes a byte array to hex.  */
-    fun encode(bytes: ByteArray): String {
-        val chars = "0123456789abcdef"
-        val result = StringBuilder(2 * bytes.size)
-        for (b in bytes) {
-            // convert to unsigned
-            val value = b and 0xff.toByte()
-            result.append(chars[value / 16])
-            result.append(chars[value % 16])
+    fun encode(string: String): String {
+        val resultStringBuilder = Pools.obtain(StringBuilder::class.java).clear()
+        for (b in string) {
+            val value = b.toInt() and 0xff
+            resultStringBuilder.append(chars[value / 16])
+            resultStringBuilder.append(chars[value % 16])
         }
-        return result.toString()
+        Pools.free(resultStringBuilder)
+        return String(resultStringBuilder)
     }
 
     /** Decodes a hex string to a byte array.  */
-    fun decode(hex: String): ByteArray {
+    fun decode(hex: String): String {
         if (hex.length % 2 != 0) {
-            throw IllegalArgumentException("Expected a string of even length")
+            throw IllegalArgumentException("Expected a string of even length.")
         }
         val size = hex.length / 2
-        val result = ByteArray(size)
+        val resultStringBuilder = Pools.obtain(StringBuilder::class.java).clear()
         for (i in 0 until size) {
             val hi = Character.digit(hex[2 * i], 16)
             val lo = Character.digit(hex[2 * i + 1], 16)
             if (hi == -1 || lo == -1) {
-                throw IllegalArgumentException("input is not hexadecimal")
+                throw IllegalArgumentException("Input is not hexadecimal.")
             }
-            result[i] = (16 * hi + lo).toByte()
+            resultStringBuilder.append((16 * hi + lo).toChar())
         }
-        return result
+        Pools.free(resultStringBuilder)
+        return String(resultStringBuilder)
     }
 }

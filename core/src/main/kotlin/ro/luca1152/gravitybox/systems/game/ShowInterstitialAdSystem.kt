@@ -22,7 +22,9 @@ import com.badlogic.ashley.core.Entity
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.LevelComponent
+import ro.luca1152.gravitybox.components.game.NetworkComponent
 import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.components.game.network
 import ro.luca1152.gravitybox.events.Event
 import ro.luca1152.gravitybox.events.EventSystem
 import ro.luca1152.gravitybox.utils.ads.AdsController
@@ -36,11 +38,13 @@ class ShowInterstitialAdSystem(context: Context) : EventSystem<ShowInterstitialA
     private val gameRules: GameRules = context.inject()
     private val adsController: AdsController? = context.injectNullable()
 
-    // entities
+    // Entities
     private lateinit var levelEntity: Entity
+    private lateinit var networkEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
+        networkEntity = engine.getSingleton<NetworkComponent>()
     }
 
     override fun processEvent(event: ShowInterstitialAdEvent, deltaTime: Float) {
@@ -52,8 +56,8 @@ class ShowInterstitialAdSystem(context: Context) : EventSystem<ShowInterstitialA
         if (gameRules.IS_AD_FREE) return
         if (!gameRules.SHOULD_SHOW_INTERSTITIAL_AD) return
         if (levelEntity.level.levelId == gameRules.MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT) return
-        if (!adsController!!.isNetworkConnected()) return
-        if (!adsController.isInterstitialAdLoaded()) return
+        if (!networkEntity.network.isNetworkConnected) return
+        if (!adsController!!.isInterstitialAdLoaded()) return
         adsController.showInterstitialAd()
         gameRules.SHOULD_SHOW_INTERSTITIAL_AD = false
     }

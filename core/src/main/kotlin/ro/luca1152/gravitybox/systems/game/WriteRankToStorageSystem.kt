@@ -28,7 +28,6 @@ import ro.luca1152.gravitybox.events.EventSystem
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 class WriteRankToStorageEvent : Event
-
 class WriteRankToStorageSystem(context: Context) : EventSystem<WriteRankToStorageEvent>(context.inject(), WriteRankToStorageEvent::class) {
     // Injected objects
     private val gameRules: GameRules = context.inject()

@@ -20,7 +20,6 @@ package ro.luca1152.gravitybox.utils.ui.security
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import ktx.inject.Context
-import ro.luca1152.gravitybox.utils.kotlin.injectNullable
 
 @Suppress("LibGDXMissingFlush")
 /**
@@ -29,102 +28,120 @@ import ro.luca1152.gravitybox.utils.kotlin.injectNullable
  */
 class SecurePreferences(context: Context) {
     // Injected objects
-    private val myEncrypter: MyEncrypter? = context.injectNullable()
+    private val myEncrypter: MyEncrypter = context.inject()
 
     private val preferences = Gdx.app.getPreferences("Gravity Box by Luca1152")
+
+    // Getting values from the preferences unnecessarily consumes much memory, as it has to decode them
+    // So it'd be better if the values were cached in a map, and taken from here when needed
+    private val cachedValues = mutableMapOf<String, Any>()
 
     fun get() = preferences.get()!!
     fun flush() = preferences.flush()
     fun clear() = preferences.clear()
 
     fun putString(key: String, value: String) {
-        if (myEncrypter == null) preferences.putString(key, value)
-        else preferences.putString(key, myEncrypter.encrypt(value, key))
+        cachedValues[key] = value
+        preferences.putString(key, myEncrypter.encrypt(value, key))
     }
 
     fun getString(key: String, defaultValue: String): String {
-        return if (myEncrypter == null) preferences.getString(key, defaultValue)
+        return if (cachedValues.containsKey(key)) cachedValues[key] as String
         else {
-            if (preferences.contains(key)) {
+            return if (preferences.contains(key)) {
                 try {
-                    myEncrypter.decrypt(preferences.getString(key), key)
+                    val retrievedValue = myEncrypter.decrypt(preferences.getString(key), key)
+                    cachedValues[key] = retrievedValue
+                    retrievedValue
                 } catch (e: Throwable) {
-                    return defaultValue
+                    cachedValues[key] = defaultValue
+                    defaultValue
                 }
-            } else return defaultValue
+            } else defaultValue
         }
     }
 
     fun putInteger(key: String, value: Int) {
-        if (myEncrypter == null) preferences.putInteger(key, value)
-        else preferences.putString(key, myEncrypter.encrypt(value.toString(), key))
+        cachedValues[key] = value
+        preferences.putString(key, myEncrypter.encrypt(value.toString(), key))
     }
 
     fun getInteger(key: String, defaultValue: Int): Int {
-        return if (myEncrypter == null) preferences.getInteger(key, defaultValue)
+        return if (cachedValues.containsKey(key)) cachedValues[key] as Int
         else {
-            if (preferences.contains(key)) {
+            return if (preferences.contains(key)) {
                 try {
-                    myEncrypter.decrypt(preferences.getString(key), key).toInt()
+                    val retrievedValue = myEncrypter.decrypt(preferences.getString(key), key).toInt()
+                    cachedValues[key] = retrievedValue
+                    retrievedValue
                 } catch (e: Throwable) {
-                    e.printStackTrace()
-                    return defaultValue
+                    cachedValues[key] = defaultValue
+                    defaultValue
                 }
-            } else return defaultValue
+            } else defaultValue
         }
     }
 
     fun putFloat(key: String, value: Float) {
-        if (myEncrypter == null) preferences.putFloat(key, value)
-        else preferences.putString(key, myEncrypter.encrypt(value.toString(), key))
+        cachedValues[key] = value
+        preferences.putString(key, myEncrypter.encrypt(value.toString(), key))
     }
 
     fun getFloat(key: String, defaultValue: Float): Float {
-        return if (myEncrypter == null) preferences.getFloat(key, defaultValue)
+        return if (cachedValues.containsKey(key)) cachedValues[key] as Float
         else {
-            if (preferences.contains(key)) {
+            return if (preferences.contains(key)) {
                 try {
-                    myEncrypter.decrypt(preferences.getString(key), key).toFloat()
+                    val retrievedValue = myEncrypter.decrypt(preferences.getString(key), key).toFloat()
+                    cachedValues[key] = retrievedValue
+                    retrievedValue
                 } catch (e: Throwable) {
-                    return defaultValue
+                    cachedValues[key] = defaultValue
+                    defaultValue
                 }
-            } else return defaultValue
+            } else defaultValue
         }
     }
 
     fun putLong(key: String, value: Long) {
-        if (myEncrypter == null) preferences.putLong(key, value)
-        else preferences.putString(key, myEncrypter.encrypt(value.toString(), key))
+        cachedValues[key] = value
+        preferences.putString(key, myEncrypter.encrypt(value.toString(), key))
     }
 
     fun getLong(key: String, defaultValue: Long): Long {
-        return if (myEncrypter == null) preferences.getLong(key, defaultValue)
+        return if (cachedValues.containsKey(key)) cachedValues[key] as Long
         else {
-            if (preferences.contains(key)) {
+            return if (preferences.contains(key)) {
                 try {
-                    myEncrypter.decrypt(preferences.getString(key), key).toLong()
+                    val retrievedValue = myEncrypter.decrypt(preferences.getString(key), key).toLong()
+                    cachedValues[key] = retrievedValue
+                    retrievedValue
                 } catch (e: Throwable) {
-                    return defaultValue
+                    cachedValues[key] = defaultValue
+                    defaultValue
                 }
-            } else return defaultValue
+            } else defaultValue
         }
     }
 
     fun putBoolean(key: String, value: Boolean) {
-        if (myEncrypter == null) preferences.putBoolean(key, value)
-        else preferences.putString(key, myEncrypter.encrypt(value.toString(), key))
+        cachedValues[key] = value
+        preferences.putString(key, myEncrypter.encrypt(value.toString(), key))
     }
 
     fun getBoolean(key: String, defaultValue: Boolean): Boolean {
-        return if (myEncrypter == null) preferences.getBoolean(key, defaultValue)
+        return if (cachedValues.containsKey(key)) cachedValues[key] as Boolean
         else {
-            if (preferences.contains(key)) {
+            return if (preferences.contains(key)) {
                 try {
-                    myEncrypter.decrypt(preferences.getString(key), key).toBoolean()
+                    val retrievedValue = myEncrypter.decrypt(preferences.getString(key), key).toBoolean()
+                    cachedValues[key] = retrievedValue
+                    retrievedValue
                 } catch (e: Throwable) {
-                    return defaultValue
+                    cachedValues[key] = defaultValue
+                    defaultValue
                 }
-            } else return defaultValue
+            } else defaultValue
         }
     }
 }

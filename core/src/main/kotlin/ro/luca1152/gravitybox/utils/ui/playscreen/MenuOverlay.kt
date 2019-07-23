@@ -133,6 +133,10 @@ class MenuOverlay(context: Context) {
         "(Unranked)",
         skin, "semi-bold", 37f, Colors.gameColor
     ) {
+        private val rankedTexts = (1..200).associateWith { "(rank #$it)" }
+        private val skippedText = "(Skipped)"
+        private val unrankedText = "(Unranked)"
+
         init {
             color.a = 1f
         }
@@ -148,12 +152,12 @@ class MenuOverlay(context: Context) {
             val storedRank = gameRules.getGameLevelRank(playScreen.levelEntity.level.levelId)
             val storedHighscore = gameRules.getGameLevelHighscore(playScreen.levelEntity.level.levelId)
             if (storedRank != gameRules.DEFAULT_RANK_VALUE) {
-                setText("(rank #$storedRank)")
+                setText(if (rankedTexts.containsKey(storedRank)) rankedTexts[storedRank] else "(rank #$storedRank)")
             } else {
                 if (storedHighscore == gameRules.SKIPPED_LEVEL_SCORE_VALUE) {
-                    setText("(Skipped)")
+                    setText(skippedText)
                 } else {
-                    setText("(Unranked)")
+                    setText(unrankedText)
                 }
             }
             layout()

@@ -50,9 +50,11 @@ class LevelFinishSystem(
     private lateinit var playerEntity: Entity
 
     // Variables
-    private var didLogLevelFinish = false
     private var didWriteRankToStorage = false
+    private var didFlushPreferences = false
+    private var didLogLevelFinish = false
     private var didUpdateLeaderboard = false
+    private var didUpdateHighestFinishedLevel = false
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
@@ -62,14 +64,21 @@ class LevelFinishSystem(
     override fun update(deltaTime: Float) {
         if (!levelEntity.level.isLevelFinished || levelEntity.level.isRestarting) {
             didWriteRankToStorage = false
+            didFlushPreferences = false
             didLogLevelFinish = false
             didUpdateLeaderboard = false
+            didUpdateHighestFinishedLevel = false
             return
         }
 
         if (!didWriteRankToStorage) {
             eventQueue.add(WriteRankToStorageEvent())
             didWriteRankToStorage = true
+        }
+
+        if (!didFlushPreferences) {
+            eventQueue.add(FlushPreferencesEvent())
+            didFlushPreferences = true
         }
 
         if (!didLogLevelFinish) {
@@ -95,14 +104,14 @@ class LevelFinishSystem(
             eventQueue.add(CalculateRankEvent())
         }
 
-        updateHighestFinishedLevel()
+        if (!didUpdateHighestFinishedLevel) {
+            updateHighestFinishedLevel()
+            didUpdateHighestFinishedLevel = false
+        }
     }
 
     private fun logLevelFinish() {
-        gameRules.run {
-            setGameLevelFinishCount(levelEntity.level.levelId, gameRules.getGameLevelFinishCount(levelEntity.level.levelId) + 1)
-            flushUpdates()
-        }
+        gameRules.setGameLevelFinishCount(levelEntity.level.levelId, gameRules.getGameLevelFinishCount(levelEntity.level.levelId) + 1)
 
         // Analytics
         if (gameRules.IS_MOBILE) {
@@ -127,7 +136,7 @@ class LevelFinishSystem(
     }
 
     private fun updateLeaderboard() {
-        if (gameRules.IS_PLAYER_SOFT_BANNED || levelEntity.map.doShotsAndEncryptedShotsDiffer()) {
+        if (gameRules.IS_PLAYER_SOFT_BANNED) {
             gameRules.setGameLevelHighscore(levelEntity.level.levelId, levelEntity.map.shots)
             return
         }

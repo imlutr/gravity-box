@@ -25,6 +25,7 @@ import pl.mk5.gdx.fireapp.GdxFIRAnalytics
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.map
+import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.info
 import ro.luca1152.gravitybox.utils.ui.security.MyEncrypter
@@ -33,6 +34,7 @@ class CheatingCheckingSystem(context: Context) : EntitySystem() {
     // Injected objects
     private val gameRules: GameRules = context.inject()
     private val myEncrypter: MyEncrypter = context.inject()
+    private val eventQueue: EventQueue = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -50,7 +52,7 @@ class CheatingCheckingSystem(context: Context) : EntitySystem() {
             levelEntity.map.shots = myEncrypter.decrypt(levelEntity.map.encryptedShots, "encryptedShots").toInt()
             gameRules.run {
                 IS_PLAYER_SOFT_BANNED = true
-                flushUpdates()
+                eventQueue.add(FlushPreferencesEvent())
             }
             info("Soft banned user. Cause: cheating by editing memory.")
             if (gameRules.IS_MOBILE) {

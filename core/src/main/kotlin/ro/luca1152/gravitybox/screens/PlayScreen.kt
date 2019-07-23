@@ -34,6 +34,7 @@ import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.components.game.pixelsToMeters
 import ro.luca1152.gravitybox.entities.game.FinishEntity
 import ro.luca1152.gravitybox.entities.game.LevelEntity
+import ro.luca1152.gravitybox.entities.game.NetworkEntity
 import ro.luca1152.gravitybox.entities.game.PlayerEntity
 import ro.luca1152.gravitybox.systems.editor.DashedLineRenderingSystem
 import ro.luca1152.gravitybox.systems.editor.SelectedObjectColorSystem
@@ -72,6 +73,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
     // Entities
     lateinit var playerEntity: Entity
     lateinit var levelEntity: Entity
+    lateinit var networkEntity: Entity
 
     // Constants
     val padTopBottom = 38f
@@ -109,6 +111,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
         context, "rank #x",
         skin, "regular", 37f, Colors.gameColor
     ) {
+        private val rankTexts = (1..200).associateWith { "rank #$it" }
+
         init {
             isVisible = false
         }
@@ -125,7 +129,8 @@ class PlayScreen(private val context: Context) : KtxScreen {
                 isVisible = false
             } else {
                 isVisible = true
-                setText("rank #${levelEntity.map.rank}")
+                val rank = levelEntity.map.rank
+                setText(if (rankTexts.containsKey(rank)) rankTexts.getValue(rank) else "rank #$rank")
                 layout()
             }
         }
@@ -182,17 +187,19 @@ class PlayScreen(private val context: Context) : KtxScreen {
         }
         playerEntity = PlayerEntity.createEntity(context)
         FinishEntity.createEntity(context)
+        networkEntity = NetworkEntity.createEntity(context)
     }
 
     private fun addGameSystems() {
         engine.run {
+            addSystem(NetworkDetectionSystem(context))
             addSystem(SkipLevelSystem(context))
             addSystem(EntireLeaderboardCachingSystem(context))
-            addSystem(CurrentLevelLeaderboardCachingSystem(context))
-            addSystem(WritingLeaderboardToStorageSystem(context))
+            addSystem(WriteEntireLeaderboardToStorageSystem(context))
             addSystem(LeaderboardRankCalculationSystem(context))
             addSystem(UpdateAllRanksSystem(context))
             addSystem(CurrentLevelShotsCachingSystem(context))
+            addSystem(FlushPreferencesIntervalSystem(context))
             addSystem(FlushPreferencesSystem(context))
             addSystem(PlayTimeSystem(context))
             addSystem(RewardedAdTimerSystem(context))

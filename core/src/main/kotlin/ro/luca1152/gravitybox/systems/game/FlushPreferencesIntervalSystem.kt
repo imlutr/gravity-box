@@ -18,15 +18,16 @@
 package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.ashley.systems.IntervalSystem
+import com.badlogic.gdx.Preferences
 import ktx.inject.Context
-import ro.luca1152.gravitybox.GameRules
+import ro.luca1152.gravitybox.events.EventQueue
 
-/** Increases the play time from the [GameRules]. */
-class PlayTimeSystem(context: Context) : IntervalSystem(5f) {
+/** Flushes the [Preferences] every frame. */
+class FlushPreferencesIntervalSystem(context: Context) : IntervalSystem(30f) {
     // Injected objects
-    private val gameRules: GameRules = context.inject()
+    private val eventQueue: EventQueue = context.inject()
 
     override fun updateInterval() {
-        gameRules.PLAY_TIME += interval
+        eventQueue.add(FlushPreferencesEvent())
     }
 }

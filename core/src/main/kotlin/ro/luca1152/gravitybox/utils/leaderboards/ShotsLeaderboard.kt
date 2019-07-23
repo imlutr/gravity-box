@@ -18,6 +18,25 @@
 package ro.luca1152.gravitybox.utils.leaderboards
 
 open class ShotsLeaderboard {
+    companion object {
+        // Levels
+        val levelsKeys = (1..269).associateWith { "l$it" }
+
+        // Shots
+        private val shotsKeys = (1..1000).associateWith { "s$it" }
+        private val shotsKeysToInt = (1..1000).associateBy { "s$it" }
+        fun shotsKeys(intShots: Int): String {
+            return if (shotsKeys.containsKey(intShots)) shotsKeys.getValue(intShots)
+            else "s$intShots"
+
+        }
+
+        fun shotsKeysToInt(shotsKey: String): Int {
+            return if (shotsKeysToInt.containsKey(shotsKey)) shotsKeysToInt.getValue(shotsKey)
+            else shotsKey.substring(1).toInt()
+        }
+    }
+
     var levels = mutableMapOf<String, Level>()
 }
 
