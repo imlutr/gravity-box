@@ -17,14 +17,14 @@
 
 package ro.luca1152.gravitybox.systems.game
 
-import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
+import com.badlogic.ashley.systems.IntervalSystem
 import ro.luca1152.gravitybox.components.game.BodyComponent
 import ro.luca1152.gravitybox.components.game.body
 
 /** Fixes this bug: https://stackoverflow.com/questions/55903552/box2d-collision-detection-fails-after-firing-a-lot-of-bullets */
-class RefilterSystem : EntitySystem() {
-    override fun update(deltaTime: Float) {
+class RefilterSystem : IntervalSystem(1f) {
+    override fun updateInterval() {
         engine.getEntitiesFor(Family.one(BodyComponent::class.java).get()).forEach {
             if (it.body.body != null) {
                 it.body.body!!.fixtureList.first().refilter()

@@ -50,8 +50,9 @@ class LevelFinishSystem(
     private lateinit var playerEntity: Entity
 
     // Variables
-    private var didLogLevelFinish = false
     private var didWriteRankToStorage = false
+    private var didFlushPreferences = false
+    private var didLogLevelFinish = false
     private var didUpdateLeaderboard = false
 
     override fun addedToEngine(engine: Engine) {
@@ -70,6 +71,11 @@ class LevelFinishSystem(
         if (!didWriteRankToStorage) {
             eventQueue.add(WriteRankToStorageEvent())
             didWriteRankToStorage = true
+        }
+
+        if (!didFlushPreferences) {
+            eventQueue.add(FlushPreferencesEvent())
+            didFlushPreferences = true
         }
 
         if (!didLogLevelFinish) {
@@ -99,10 +105,7 @@ class LevelFinishSystem(
     }
 
     private fun logLevelFinish() {
-        gameRules.run {
-            setGameLevelFinishCount(levelEntity.level.levelId, gameRules.getGameLevelFinishCount(levelEntity.level.levelId) + 1)
-            flushUpdates()
-        }
+        gameRules.setGameLevelFinishCount(levelEntity.level.levelId, gameRules.getGameLevelFinishCount(levelEntity.level.levelId) + 1)
 
         // Analytics
         if (gameRules.IS_MOBILE) {
@@ -127,7 +130,7 @@ class LevelFinishSystem(
     }
 
     private fun updateLeaderboard() {
-        if (gameRules.IS_PLAYER_SOFT_BANNED || levelEntity.map.doShotsAndEncryptedShotsDiffer()) {
+        if (gameRules.IS_PLAYER_SOFT_BANNED) {
             gameRules.setGameLevelHighscore(levelEntity.level.levelId, levelEntity.map.shots)
             return
         }

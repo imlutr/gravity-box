@@ -38,9 +38,17 @@ abstract class EventSystem<T : Event>(
                     eventsToRemove.add(it)
                 }
             }
-            eventQueue.removeAll(eventsToRemove)
+            for (i in 0 until eventsToRemove.size) {
+                for (j in 0 until eventQueue.size) {
+                    if (eventQueue[j] == eventsToRemove[i]) {
+                        eventQueue.removeAt(j)
+                        break
+                    }
+                }
+            }
             eventsToRemove.clear()
         } catch (e: Throwable) {
+            e.printStackTrace()
         }
     }
 

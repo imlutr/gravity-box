@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Json
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.events.Event
+import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.events.EventSystem
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.info
@@ -34,6 +35,7 @@ class WritingLeaderboardToStorageSystem(private val context: Context) :
     EventSystem<WriteLeaderboardToStorageEvent>(context.inject(), WriteLeaderboardToStorageEvent::class) {
     // Injected objects
     private val gameRules: GameRules = context.inject()
+    private val eventQueue: EventQueue = context.inject()
 
     override fun processEvent(event: WriteLeaderboardToStorageEvent, deltaTime: Float) {
         // The leaderboard shouldn't be null, but if it is, for some reason, better avoid a NullPointerException
@@ -46,10 +48,8 @@ class WritingLeaderboardToStorageSystem(private val context: Context) :
         thread {
             val file = Gdx.files.local(Assets.gameLeaderboardPath)
             file.writeBytes(Json().prettyPrint(context.inject<GameShotsLeaderboard>()).toByteArray(), false)
-            gameRules.run {
-                CACHED_LEADERBOARD_VERSION = gameRules.GAME_LEVELS_VERSION
-                flushUpdates()
-            }
+            gameRules.CACHED_LEADERBOARD_VERSION = gameRules.GAME_LEVELS_VERSION
+            eventQueue.add(FlushPreferencesEvent())
             info("Wrote the leaderboard to storage.")
         }
     }

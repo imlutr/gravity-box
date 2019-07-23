@@ -68,7 +68,7 @@ class EntireLeaderboardCachingSystem(private val context: Context) : EntitySyste
     private fun updateNextLeaderboardCacheTime() {
         gameRules.run {
             NEXT_LEADERBOARD_CACHE_TIME = TimeUtils.millis() + gameRules.TIME_DELAY_BETWEEN_CACHING_LEADERBOARD
-            flushUpdates()
+            eventQueue.add(FlushPreferencesEvent())
         }
     }
 
