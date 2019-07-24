@@ -540,6 +540,14 @@
             "y": -368
           },
           "width": 209.125
+        },
+        {
+          "type": "text",
+          "string": "Tip: use reverse thinking when\naiming, it may help you",
+          "position": {
+            "x": -33.664093,
+            "y": 285.99997
+          }
         }
       ]
     },
