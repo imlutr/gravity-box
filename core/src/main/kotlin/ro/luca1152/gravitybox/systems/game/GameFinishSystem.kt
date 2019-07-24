@@ -60,7 +60,6 @@ class GameFinishSystem(context: Context) : EntitySystem() {
             FINISH_DEATH_COUNT = DEATH_COUNT
             FINISH_DESTROYED_PLATFORM_COUNT = DESTROYED_PLATFORMS_COUNT
             FINISH_COLLECTED_POINT_COUNT = COLLECTED_POINT_COUNT
-            FINISH_SKIPPED_LEVELS_COUNT = SKIPPED_LEVELS_COUNT
         }
         eventQueue.add(FlushPreferencesEvent())
     }

@@ -103,6 +103,5 @@ class SkipLevelSystem(context: Context) : EventSystem<SkipLevelEvent>(context.in
                 }
             )
         )
-        gameRules.SKIPPED_LEVELS_COUNT++
     }
 }
