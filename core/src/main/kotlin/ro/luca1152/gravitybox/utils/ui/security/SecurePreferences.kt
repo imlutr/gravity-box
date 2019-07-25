@@ -40,8 +40,10 @@ class SecurePreferences(context: Context) {
     fun flush() = preferences.flush()
     fun clear() = preferences.clear()
 
-    fun putString(key: String, value: String) {
-        cachedValues[key] = value
+    fun putString(key: String, value: String, updateCache: Boolean = true) {
+        if (updateCache) {
+            cachedValues[key] = value
+        }
         preferences.putString(key, myEncrypter.encrypt(value, key))
     }
 
