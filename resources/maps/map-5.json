@@ -121,10 +121,18 @@
     },
     {
       "type": "text",
+      "string": "You are pushed by explosions\ncaused by your 'rocket launcher'",
+      "position": {
+        "x": -25.767456,
+        "y": 289.46387
+      }
+    },
+    {
+      "type": "text",
       "string": "Tip: use reverse thinking when\naiming, it may help you",
       "position": {
         "x": -33.664093,
-        "y": 285.99997
+        "y": 166.05261
       }
     }
   ]
