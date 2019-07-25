@@ -99,6 +99,7 @@ class SkipLevelSystem(context: Context) : EventSystem<SkipLevelEvent>(context.in
                     levelEntity.level.run {
                         isChangingLevel = false
                         isSkippingLevel = false
+                        eventQueue.add(FlushPreferencesEvent())
                     }
                 }
             )

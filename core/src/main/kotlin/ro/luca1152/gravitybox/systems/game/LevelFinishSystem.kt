@@ -136,15 +136,18 @@ class LevelFinishSystem(
     }
 
     private fun updateLeaderboard() {
+        val previousHighscore = gameRules.getGameLevelHighscore(levelEntity.level.levelId)
         if (gameRules.IS_PLAYER_SOFT_BANNED) {
-            gameRules.setGameLevelHighscore(levelEntity.level.levelId, levelEntity.map.shots)
+            if (previousHighscore <= levelEntity.map.shots && previousHighscore != gameRules.SKIPPED_LEVEL_SCORE_VALUE)
+                gameRules.setGameLevelHighscore(levelEntity.level.levelId, levelEntity.map.shots)
             return
         }
 
         val shots = levelEntity.map.shots
         levelEntity.level.run {
-            if (gameRules.getGameLevelHighscore(levelId) <= shots)
+            if (previousHighscore <= shots && previousHighscore != gameRules.SKIPPED_LEVEL_SCORE_VALUE) {
                 return
+            }
 
             gameShotsLeaderboardController.incrementPlayerCountForShots(levelId, shots)
             if (gameRules.getGameLevelHighscore(levelId) != gameRules.DEFAULT_HIGHSCORE_VALUE &&
