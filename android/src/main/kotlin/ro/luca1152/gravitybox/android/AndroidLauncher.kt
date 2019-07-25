@@ -36,6 +36,7 @@ import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.google.firebase.auth.FirebaseAuth
+import io.fabric.sdk.android.services.common.CommonUtils
 import okhttp3.*
 import ro.luca1152.gravitybox.BuildConfig
 import ro.luca1152.gravitybox.MyGame
@@ -69,6 +70,12 @@ class AndroidLauncher : AndroidApplication() {
 
         // Initialize the game
         initialize(MyGame().apply {
+            // Android root
+            isRunningOnRootedAndroidPhone = CommonUtils.isRooted(context)
+
+            // Encryption
+            encryptionSecretKey = BuildConfig.ENCRYPTION_SECRET_KEY
+
             // gdx-pay
             purchaseManager = PurchaseManagerGoogleBilling(this@AndroidLauncher)
 

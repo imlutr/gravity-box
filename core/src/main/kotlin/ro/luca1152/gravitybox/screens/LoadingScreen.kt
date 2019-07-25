@@ -27,14 +27,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.app.KtxScreen
 import ktx.assets.load
 import ktx.inject.Context
-import ktx.log.info
+import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.MyGame
 import ro.luca1152.gravitybox.utils.assets.Assets
-import ro.luca1152.gravitybox.utils.assets.loaders.MapPack
-import ro.luca1152.gravitybox.utils.assets.loaders.MapPackLoader
-import ro.luca1152.gravitybox.utils.assets.loaders.Text
-import ro.luca1152.gravitybox.utils.assets.loaders.TextLoader
+import ro.luca1152.gravitybox.utils.assets.loaders.*
 import ro.luca1152.gravitybox.utils.kotlin.*
+import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
+import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
 
 class LoadingScreen(private val context: Context) : KtxScreen {
     // Injected objects
@@ -44,6 +43,7 @@ class LoadingScreen(private val context: Context) : KtxScreen {
     private val gameViewport: GameViewport = context.inject()
     private val uiViewport: UIViewport = context.inject()
     private val overlayViewport: OverlayViewport = context.inject()
+    private val gameRules: GameRules = context.inject()
 
     private var loadingAssetsTimer = 0f
     private val finishedLoadingAssets
@@ -60,6 +60,7 @@ class LoadingScreen(private val context: Context) : KtxScreen {
         loadGraphics()
         loadGameMaps()
         loadEditorMaps()
+        loadCachedLeaderboards()
     }
 
     private fun showSplashScreen() {
@@ -85,6 +86,14 @@ class LoadingScreen(private val context: Context) : KtxScreen {
         }
     }
 
+    private fun loadCachedLeaderboards() {
+        manager.setLoader(ShotsLeaderboard::class.java, ShotsLeaderboardLoader(LocalFileHandleResolver()))
+        if (Gdx.files.local(Assets.gameLeaderboardPath).exists()) {
+            manager.load(Assets.gameLeaderboard)
+            info("Loaded cached game leaderboard.")
+        }
+    }
+
     override fun render(delta: Float) {
         update(delta)
         clearScreen(Color.BLACK)
@@ -95,19 +104,53 @@ class LoadingScreen(private val context: Context) : KtxScreen {
         loadingAssetsTimer += delta
         if (finishedLoadingAssets) {
             logLoadingTime()
+            bindLoadedObjects()
             addScreens()
             showPlayScreen()
         }
     }
 
-    private fun logLoadingTime() = info { "Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s." }
+    private fun logLoadingTime() = info("Finished loading assets in ${(loadingAssetsTimer * 100).toInt() / 100f}s.")
+
+    private fun bindLoadedObjects() {
+        context.run {
+            bindSingleton(manager.get(Assets.uiSkin))
+            if (manager.contains(Assets.gameLeaderboardPath)) {
+                bindSingleton(GameShotsLeaderboard(manager.get(Assets.gameLeaderboard)))
+                insertHighscoresInLeaderboard()
+            }
+        }
+    }
+
+    /**
+     * In case the player achieved a highscore (better than everyone) on a certain level, it would disappear
+     * after restarting the game if I didn't do this.
+     */
+    private fun insertHighscoresInLeaderboard() {
+        // Injected objects
+        val leaderboard: GameShotsLeaderboard = context.inject()
+        val gameRules: GameRules = context.inject()
+
+        for (i in 1..gameRules.HIGHEST_FINISHED_LEVEL) {
+            val highscore = gameRules.getGameLevelHighscore(i)
+            val levelKey = ShotsLeaderboard.levelsKeys[i]
+            val shotsKey = ShotsLeaderboard.shotsKeys(highscore)
+            if (leaderboard.levels.containsKey(levelKey)) {
+                leaderboard.levels[levelKey]!!.shots[shotsKey] = leaderboard.levels[levelKey]!!.shots[shotsKey] ?: 0L + 1
+            }
+        }
+    }
 
     // They are added here and not in [MyGame] because adding a screen automatically initializes it, initialization which
     // may use assets, such as [Skin]s or [Texture]s, that are loaded here.
     private fun addScreens() {
         game.run {
-            addScreen(LevelEditorScreen(context))
-            addScreen(PlayScreen(context))
+            if (gameRules.ENABLE_LEVEL_EDITOR) {
+                addScreen(LevelEditorScreen(context))
+            }
+
+            val playScreen = PlayScreen(context)
+            addScreen(playScreen)
         }
     }
 

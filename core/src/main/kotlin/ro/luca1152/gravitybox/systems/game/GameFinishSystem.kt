@@ -24,12 +24,14 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.LevelComponent
 import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
 /** Updates the appropriate stats when the player finished every level. */
 class GameFinishSystem(context: Context) : EntitySystem() {
     // Injected objects
     private val gameRules: GameRules = context.inject()
+    private val eventQueue: EventQueue = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
@@ -58,7 +60,7 @@ class GameFinishSystem(context: Context) : EntitySystem() {
             FINISH_DEATH_COUNT = DEATH_COUNT
             FINISH_DESTROYED_PLATFORM_COUNT = DESTROYED_PLATFORMS_COUNT
             FINISH_COLLECTED_POINT_COUNT = COLLECTED_POINT_COUNT
-            FINISH_SKIPPED_LEVELS_COUNT = SKIPPED_LEVELS_COUNT
         }
+        eventQueue.add(FlushPreferencesEvent())
     }
 }

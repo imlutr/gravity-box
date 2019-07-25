@@ -137,6 +137,14 @@
       },
       "width": 257.04932,
       "rotation": 270
+    },
+    {
+      "type": "text",
+      "string": "Tip: see the level's leaderboard by\ntapping the button in the top right",
+      "position": {
+        "x": -33.451508,
+        "y": -29.54881
+      }
     }
   ]
 }

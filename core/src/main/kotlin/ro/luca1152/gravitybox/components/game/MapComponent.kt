@@ -40,9 +40,10 @@ import ro.luca1152.gravitybox.entities.game.DashedLineEntity
 import ro.luca1152.gravitybox.entities.game.PlatformEntity
 import ro.luca1152.gravitybox.entities.game.TextEntity
 import ro.luca1152.gravitybox.events.EventQueue
-import ro.luca1152.gravitybox.events.FadeInEvent
-import ro.luca1152.gravitybox.events.FadeOutFadeInEvent
-import ro.luca1152.gravitybox.events.UpdateRoundedPlatformsEvent
+import ro.luca1152.gravitybox.systems.game.CalculateRankEvent
+import ro.luca1152.gravitybox.systems.game.FadeInEvent
+import ro.luca1152.gravitybox.systems.game.FadeOutFadeInEvent
+import ro.luca1152.gravitybox.systems.game.UpdateRoundedPlatformsEvent
 import ro.luca1152.gravitybox.utils.assets.json.*
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.createComponent
@@ -50,6 +51,7 @@ import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 import ro.luca1152.gravitybox.utils.kotlin.removeComponent
 import ro.luca1152.gravitybox.utils.kotlin.tryGet
 import ro.luca1152.gravitybox.utils.ui.Colors
+import ro.luca1152.gravitybox.utils.ui.security.MyEncrypter
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.*
@@ -78,6 +80,7 @@ class MapComponent : Component, Poolable {
     private lateinit var world: World
     private lateinit var eventQueue: EventQueue
     private lateinit var gameRules: GameRules
+    private lateinit var myEncrypter: MyEncrypter
 
     var levelId = 1
     var hue = 180
@@ -106,10 +109,38 @@ class MapComponent : Component, Poolable {
     /** How many time did the player shot in the current level. */
     var shots = 0
 
+    /** The number of shots encrypted, used for checking cheating by memory editing. */
+    var encryptedShots = ""
+
+    /** The player's rank based on the shots count. */
+    var rank = -1
+
+    /** True if the shots the level was finished in is a new record. */
+    var isNewRecord = false
+
+    /** Tells the current rank is in the top [rankPercentage]%. [0-100]*/
+    var rankPercentage = -1f
+
     fun set(context: Context, levelId: Int, hue: Int) {
         this.levelId = levelId
         this.hue = hue
         injectObjects(context)
+        resetShotsCount()
+    }
+
+    fun doShotsAndEncryptedShotsDiffer() = shots != myEncrypter.decrypt(encryptedShots, "encryptedShots").toInt()
+
+    fun resetShotsCount() {
+        shots = 0
+        encryptedShots = myEncrypter.encrypt("0", "encryptedShots")
+    }
+
+    fun incrementShotsCount() {
+        shots++
+        encryptedShots = myEncrypter.encrypt(
+            (myEncrypter.decrypt(encryptedShots, "encryptedShots").toInt() + 1).toString(),
+            "encryptedShots"
+        )
     }
 
     private fun injectObjects(context: Context) {
@@ -118,6 +149,7 @@ class MapComponent : Component, Poolable {
         world = context.inject()
         eventQueue = context.inject()
         gameRules = context.inject()
+        myEncrypter = context.inject()
     }
 
     fun updateMapBounds() {
@@ -232,13 +264,16 @@ class MapComponent : Component, Poolable {
         updateMapBounds()
         shouldLogLevelStart = true
         shouldBeLoggingLevelPlayTime = false
-        shots = 0
+        resetShotsCount()
         eventQueue.run {
             clear()
             add(UpdateRoundedPlatformsEvent())
 
             // Clear all actions in case the level was restarting, causing visual glitches
             add(FadeInEvent(FadeOutFadeInEvent.CLEAR_ACTIONS))
+
+//            add(CacheCurrentLevelLeaderboardEvent()) // Commented out because it affects performance too much
+            add(CalculateRankEvent())
         }
     }
 
@@ -279,7 +314,8 @@ class MapComponent : Component, Poolable {
                 FinishComponent::class.java,
                 LevelComponent::class.java,
                 UndoRedoComponent::class.java,
-                InputComponent::class.java
+                InputComponent::class.java,
+                NetworkComponent::class.java
             ).get()
         ).forEach {
             entitiesToRemove.add(it)
@@ -439,7 +475,10 @@ class MapComponent : Component, Poolable {
         forceCenterCameraOnPlayer = false
         shouldLogLevelStart = false
         shouldBeLoggingLevelPlayTime = false
-        shots = 0
+        resetShotsCount()
+        rank = -1
+        rankPercentage = -1f
+        isNewRecord = false
     }
 
     fun destroyAllBodies() {

@@ -21,10 +21,11 @@ import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import ktx.inject.Context
+import ro.luca1152.gravitybox.utils.ui.security.SecurePreferences
 
 @Suppress("LibGDXMissingFlush", "SpellCheckingInspection", "PropertyName", "MemberVisibilityCanBePrivate")
 class GameRules(context: Context) {
-    private val preferences: Preferences = context.inject()
+    private val preferences: SecurePreferences = context.inject()
 
     /** Makes sure updates are persisted. */
     fun flushUpdates() {
@@ -34,6 +35,28 @@ class GameRules(context: Context) {
     // Debug
     val CAN_PLAY_ANY_LEVEL = false
     val PLAY_SPECIFIC_LEVEL = -1
+
+    // Encryption
+    var ARE_RULES_ENCRYPTED
+        get() = preferences.getBoolean("areRulesEncrypted", false)
+        set(value) {
+            preferences.putBoolean("areRulesEncrypted", value)
+        }
+
+    // Ban
+    /**
+     * True if the player is soft banned.
+     * Soft ban means that the player can read from the shots leaderboard, but can't write in it.
+     * So the gameplay would be exactly the same from the player's perspective.
+     *
+     * A player is soft banned if he tried to alter the number of shots so he'd get rank #1, but also if he is
+     * running the game on a rooted Android phone (by default, just in case). Sorry rooted users!
+     */
+    var IS_PLAYER_SOFT_BANNED
+        get() = preferences.getBoolean("isPlayerSoftBanned", false)
+        set(value) {
+            preferences.putBoolean("isPlayerSoftBanned", value)
+        }
 
     // Rules
     /**
@@ -100,12 +123,6 @@ class GameRules(context: Context) {
         set(value) {
             preferences.putInteger("collectedPointCount", value)
         }
-    /** How many levels did the player skip. */
-    var SKIPPED_LEVELS_COUNT
-        get() = preferences.getInteger("skippedLevelsCount", 0)
-        set(value) {
-            preferences.putInteger("skippedLevelsCount", value)
-        }
 
     // Finish game stats (the stats shown on the last level)
     /** True if the last level was reached. */
@@ -149,12 +166,6 @@ class GameRules(context: Context) {
         get() = preferences.getInteger("finishCollectedPointCount", 0)
         set(value) {
             preferences.putInteger("finishCollectedPointCount", value)
-        }
-    /** How many levels did the player skip until finishing the game. */
-    var FINISH_SKIPPED_LEVELS_COUNT
-        get() = preferences.getInteger("finishSkippedLevelsCount")
-        set(value) {
-            preferences.putInteger("finishSkippedLevelsCount", value)
         }
 
     // Rate-related
@@ -214,35 +225,110 @@ class GameRules(context: Context) {
         }
 
     // Leaderboard
+    /** The default value returned when reading a non-existent highscore using [getGameLevelHighscore]. */
     val DEFAULT_HIGHSCORE_VALUE = Int.MAX_VALUE
+    /** The score stored in the [Preferences] to mark that the level was skipped. */
     val SKIPPED_LEVEL_SCORE_VALUE = -1
 
+    /** Used for avoiding excessive [String] allocations. */
+    private val gameLevelHighscoreKeys = (1..LEVEL_COUNT).associateWith { "game${it}Highscore" }
+
     /** Returns the least number of shots the game (not community) level [level] was finished in. */
-    fun getGameLevelHighscore(level: Int) = preferences.getInteger("game${level}Highscore", Int.MAX_VALUE)
+    fun getGameLevelHighscore(level: Int) = preferences.getInteger(gameLevelHighscoreKeys.getValue(level), Int.MAX_VALUE)
 
     /** Sets the least number of shots the game (not community) level [level] was finished in. */
     fun setGameLevelHighscore(level: Int, highscore: Int) {
         if (getGameLevelHighscore(level) > highscore) {
-            preferences.putInteger("game${level}Highscore", highscore)
+            preferences.putInteger(gameLevelHighscoreKeys.getValue(level), highscore)
         } else {
             Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
         }
     }
 
+    /** Returs true if the given [level] was skipped. */
+    fun isGameLevelSkipped(level: Int) = getGameLevelHighscore(level) == SKIPPED_LEVEL_SCORE_VALUE
+
+    /** The delay in miliseconds between leaderboard caches to storage. */
+    val TIME_DELAY_BETWEEN_CACHING_LEADERBOARD = 12L * 3600 * 1000
+
+    /** The time in seconds until the entire leaderboard is cached to storage. */
+    var NEXT_LEADERBOARD_CACHE_TIME
+        get() = preferences.getLong("nextLeaderboardCacheTime", 0L)
+        set(value) {
+            preferences.putLong("nextLeaderboardCacheTime", value)
+        }
+
+    /** The version of the leaderboard cached to storage. */
+    var CACHED_LEADERBOARD_VERSION
+        get() = preferences.getString("cachedLeaderboardVersion", GAME_LEVELS_VERSION)
+        set(value) {
+            preferences.putString("cachedLeaderboardVersion", value)
+        }
+
+    /** True if the `Tap anywhere to proceed` guide was shown between levels. */
+    var DID_SHOW_GUIDE_BETWEEN_LEVELS
+        get() = preferences.getBoolean("didShowGuideBetweenLevels", false)
+        set(value) {
+            preferences.putBoolean("didShowGuideBetweenLevels", value)
+        }
+
+    /** The default value returned when reading a non-existent highscore using [getGameLevelHighscore]. */
+    val DEFAULT_RANK_VALUE = Int.MAX_VALUE
+
+    /** Used for avoiding excessive [String] allocations. */
+    private val gameLevelRankKeys = (1..LEVEL_COUNT).associateWith { "game${it}Rank" }
+
+    /** Returns the [level]'s rank. */
+    fun getGameLevelRank(level: Int) = preferences.getInteger(gameLevelRankKeys.getValue(level), DEFAULT_RANK_VALUE)
+
+    /** Sets the [level]'s rank. */
+    fun setGameLevelRank(level: Int, rank: Int) {
+        if (getGameLevelRank(level) > rank) {
+            preferences.putInteger(gameLevelRankKeys.getValue(level), rank)
+        } else {
+            Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
+        }
+    }
+
+    /** Returns true if the given [level] is unranked. */
+    fun isGameLevelUnranked(level: Int) = getGameLevelRank(level) == DEFAULT_RANK_VALUE
+
+    val DEFAULT_RANK_PERCENTAGE_VALUE = -1f
+
+    /** Used for avoiding excessive [String] allocations. */
+    private val gameLevelRankPercentageKeys = (1..LEVEL_COUNT).associateWith { "game${it}RankPercentage" }
+
+    /** Returns the [level]'s rank top percentage. */
+    fun getGameLevelRankPercentage(level: Int) = preferences.getFloat(
+        gameLevelRankPercentageKeys.getValue(level), DEFAULT_RANK_PERCENTAGE_VALUE
+    )
+
+    /** Sets the [level]'s rank top percentage */
+    fun setGameLevelRankPercentage(level: Int, percent: Float) {
+        preferences.putFloat(gameLevelRankPercentageKeys.getValue(level), percent)
+    }
+
+
     // Analytics
+    /** Used for avoiding excessive [String] allocations. */
+    private val gameLevelPlayTimeKeys = (1..LEVEL_COUNT).associateWith { "game${it}PlayTime" }
+
     /** Returns how much time a player spent playing the given level. */
-    fun getGameLevelPlayTime(level: Int) = preferences.getFloat("game${level}PlayTime", 0f)
+    fun getGameLevelPlayTime(level: Int) = preferences.getFloat(gameLevelPlayTimeKeys.getValue(level), 0f)
 
     /** Sets how much time a player spent playing the given level. */
     fun setGameLevelPlayTime(level: Int, time: Float) {
-        preferences.putFloat("game${level}PlayTime", time)
+        preferences.putFloat(gameLevelPlayTimeKeys.getValue(level), time)
     }
 
+    /** Used for avoiding excessive [String] allocations. */
+    private val gameLevelFinishCountKeys = (1..LEVEL_COUNT).associateWith { "game${it}FinishCount" }
+
     /** Returns how many times a player finished the given level. */
-    fun getGameLevelFinishCount(level: Int) = preferences.getInteger("game${level}FinishCount", 0)
+    fun getGameLevelFinishCount(level: Int) = preferences.getInteger(gameLevelFinishCountKeys.getValue(level), 0)
 
     /** Sets how many time a player finishet the given level. */
     fun setGameLevelFinishCount(level: Int, count: Int) {
-        preferences.putInteger("game${level}FinishCount", count)
+        preferences.putInteger(gameLevelFinishCountKeys.getValue(level), count)
     }
 }

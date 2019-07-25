@@ -17,17 +17,16 @@
 
 package ro.luca1152.gravitybox.systems.game
 
-import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.systems.IntervalSystem
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 
 /** Increases the play time from the [GameRules]. */
-class PlayTimeSystem(context: Context) : EntitySystem() {
+class PlayTimeSystem(context: Context) : IntervalSystem(5f) {
     // Injected objects
     private val gameRules: GameRules = context.inject()
 
-    override fun update(deltaTime: Float) {
-        super.update(deltaTime)
-        gameRules.PLAY_TIME += deltaTime
+    override fun updateInterval() {
+        gameRules.PLAY_TIME += interval
     }
 }

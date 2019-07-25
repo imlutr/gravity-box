@@ -17,18 +17,18 @@
 
 package ro.luca1152.gravitybox.systems.game
 
-import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.systems.IntervalSystem
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 
 /** Keeps track of when a rewarded ad can be shown. */
-class RewardedAdTimerSystem(context: Context) : EntitySystem() {
+class RewardedAdTimerSystem(context: Context) : IntervalSystem(5f) {
     // Injected objects
     private val gameRules: GameRules = context.inject()
 
-    override fun update(deltaTime: Float) {
+    override fun updateInterval() {
         if (gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN > 0f) {
-            gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN -= deltaTime
+            gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN -= interval
         }
     }
 }

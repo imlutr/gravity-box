@@ -18,18 +18,33 @@
 package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import ktx.inject.Context
+import ro.luca1152.gravitybox.events.Event
 import ro.luca1152.gravitybox.events.EventSystem
-import ro.luca1152.gravitybox.events.FadeInEvent
-import ro.luca1152.gravitybox.events.FadeOutEvent
-import ro.luca1152.gravitybox.events.FadeOutFadeInEvent
 import ro.luca1152.gravitybox.utils.assets.Assets
 import ro.luca1152.gravitybox.utils.kotlin.GameStage
 import ro.luca1152.gravitybox.utils.kotlin.UIStage
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
 import ro.luca1152.gravitybox.utils.ui.Colors
+
+open class FadeOutFadeInEvent(
+    val fadeOutDuration: Float, val fadeOutInterpolation: Interpolation,
+    val fadeInDuration: Float, val fadeInInterpolation: Interpolation
+) : Event {
+    companion object {
+        val CLEAR_ACTIONS = Float.NEGATIVE_INFINITY
+    }
+}
+
+class FadeOutEvent(fadeOutDuration: Float, fadeOutInterpolation: Interpolation = Interpolation.linear) :
+    FadeOutFadeInEvent(fadeOutDuration, fadeOutInterpolation, 0f, Interpolation.linear)
+
+class FadeInEvent(fadeInDuration: Float, fadeInInterpolation: Interpolation = Interpolation.linear) :
+    FadeOutFadeInEvent(0f, Interpolation.linear, fadeInDuration, fadeInInterpolation)
+
 
 /** Handles [FadeOutEvent]s, [FadeInEvent]s and [FadeOutFadeInEvent]s. */
 class FadeOutFadeInSystem(context: Context) :

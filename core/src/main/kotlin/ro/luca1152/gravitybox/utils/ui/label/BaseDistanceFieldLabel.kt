@@ -17,24 +17,23 @@
 
 @file:Suppress("LibGDXStaticResource")
 
-package ro.luca1152.gravitybox.utils.ui
+package ro.luca1152.gravitybox.utils.ui.label
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
-import ktx.inject.Context
-import ro.luca1152.gravitybox.utils.kotlin.DistanceFieldShader
+import ro.luca1152.gravitybox.utils.kotlin.equalsWithoutAlpha
 import ro.luca1152.gravitybox.utils.kotlin.setWithoutAlpha
+import ro.luca1152.gravitybox.utils.ui.Colors
 
-class DistanceFieldLabel(
-    context: Context,
+/** The base DistanceFieldLabel class. Meant to be extended, not used as is. */
+open class BaseDistanceFieldLabel(
     text: CharSequence,
     skin: Skin,
     styleName: String,
     fontSize: Float = 32f,
-    color: Color = Color.WHITE
+    private val initialColor: Color = Color.WHITE
 ) : Label(text, skin, styleName, Color.WHITE) {
     companion object {
         val vertexShader = """
@@ -73,31 +72,63 @@ class DistanceFieldLabel(
             }
         """.trimIndent()
 
+        val outlineFragmentShader = """
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+        
+        uniform sampler2D u_texture;
+        uniform vec4 u_outlineColor;
+        
+        varying vec4 v_color;
+        varying vec2 v_texCoord;
+        
+        const float smoothing = 1.0/16.0;
+        const float outlineWidth = 3.0/16.0;
+        const float outerEdgeCenter = 0.5 - outlineWidth;
+        
+        void main() {
+            float distance = texture2D(u_texture, v_texCoord).a;
+            float alpha = smoothstep(outerEdgeCenter - smoothing, outerEdgeCenter + smoothing, distance);
+            float border = smoothstep(0.5 - smoothing, 0.5 + smoothing, distance);
+            gl_FragColor = vec4(mix(u_outlineColor.rgb, v_color.rgb, border), v_color.a * alpha);
+        }
+        """.trimIndent()
+
         private const val DEFAULT_FONT_SIZE = 32f
     }
 
-    private var syncColorsWithColorScheme = true
-    private val distanceFieldShader: DistanceFieldShader = context.inject()
+    private val goldColor = skin.getColor("text-gold")
+    private val darkGoldColor = skin.getColor("text-dark-gold")
+
+    var syncColorsWithColorScheme = true
+    var isTouchedDown = false
 
     init {
-        this.color = color
-        setFontScale(fontSize / DEFAULT_FONT_SIZE)
-        if (this.color != Colors.gameColor && this.color != Colors.bgColor) {
+        this.color.set(initialColor)
+        this.setFontScale(fontSize / DEFAULT_FONT_SIZE)
+        if (this.initialColor != Colors.gameColor && this.initialColor != Colors.bgColor) {
             syncColorsWithColorScheme = false
         }
-        setAlignment(Align.center, Align.center)
+        this.setAlignment(Align.center, Align.center)
     }
 
     override fun act(delta: Float) {
         super.act(delta)
-        if (syncColorsWithColorScheme && color != Colors.uiDownColor) {
-            color.setWithoutAlpha(Colors.gameColor)
+        if (syncColorsWithColorScheme) {
+            if (isTouchedDown) {
+                color.setWithoutAlpha(Colors.uiDownColor)
+            } else {
+                color.setWithoutAlpha(Colors.gameColor)
+            }
+        } else if (!initialColor.equalsWithoutAlpha(darkGoldColor) &&
+            (color.equalsWithoutAlpha(goldColor) || color.equalsWithoutAlpha(darkGoldColor))
+        ) {
+            if (isTouchedDown) {
+                color.setWithoutAlpha(darkGoldColor)
+            } else {
+                color.setWithoutAlpha(goldColor)
+            }
         }
-    }
-
-    override fun draw(batch: Batch, parentAlpha: Float) {
-        batch.shader = distanceFieldShader
-        super.draw(batch, parentAlpha)
-        batch.shader = null
     }
 }

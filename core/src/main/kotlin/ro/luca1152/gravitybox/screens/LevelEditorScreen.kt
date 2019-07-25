@@ -26,7 +26,6 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
@@ -54,8 +53,8 @@ import ro.luca1152.gravitybox.utils.assets.json.MapFactory
 import ro.luca1152.gravitybox.utils.assets.loaders.Text
 import ro.luca1152.gravitybox.utils.kotlin.*
 import ro.luca1152.gravitybox.utils.ui.Colors
-import ro.luca1152.gravitybox.utils.ui.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.button.*
+import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.PopUp
 import ro.luca1152.gravitybox.utils.ui.popup.TextPopUp
 import ro.luca1152.gravitybox.utils.ui.popup.YesNoTextPopUp
@@ -368,7 +367,6 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
         get() = Gdx.files.local("maps/editor").list().size
 
     override fun show() {
-        addDependencies()
         resetVariables()
         createGame()
         createUI()
@@ -397,10 +395,6 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
         }
         handleGameInput()
         addGameSystems()
-    }
-
-    private fun addDependencies() {
-        context.register { if (!contains<Skin>()) bindSingleton(skin) }
     }
 
     private fun createGameEntities() {
@@ -553,7 +547,7 @@ class LevelEditorScreen(private val context: Context) : KtxScreen {
 
     fun addGameSystems() {
         engine.run {
-            addSystem(FlushPreferencesSystem(context))
+            addSystem(FlushPreferencesIntervalSystem(context))
             addSystem(PlayTimeSystem(context))
             addSystem(UndoRedoSystem(context))
             addSystem(SelectedObjectColorSystem())

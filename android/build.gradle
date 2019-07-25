@@ -57,8 +57,7 @@ android {
         buildConfigField "String", "AD_MOB_APP_ID", "\"" + getLocalProperty("admob.appid") + "\""
         buildConfigField "String", "AD_MOB_INTERSTITIAL_AD_UNIT_ID", "\"" + getLocalProperty("admob.interstitial.adunitid") + "\""
         buildConfigField "String", "AD_MOB_REWARDED_AD_UNIT_ID", "\"" + getLocalProperty("admob.rewarded.adunitid") + "\""
-        buildConfigField "String", "AWS_ACCESS_KEY", "\"" + getLocalProperty("aws.accesskey") + "\""
-        buildConfigField "String", "AWS_SECRET_KEY", "\"" + getLocalProperty("aws.secretkey") + "\""
+        buildConfigField "String", "ENCRYPTION_SECRET_KEY", "\"" + getLocalProperty("encryption.secretkey") + "\""
 
         applicationId 'ro.luca1152.gravitybox'
         minSdkVersion 16
@@ -122,8 +121,6 @@ dependencies {
     api "com.android.support:multidex:$multiDexVersion"
 
     // Google Services
-    api "com.google.android.gms:play-services-measurement-sdk:$playServicesMeasurementVersion"
-    api "com.google.android.gms:play-services-measurement:$playServicesMeasurementVersion"
     api "com.google.firebase:firebase-core:$firebaseVersion"
     api "com.crashlytics.sdk.android:crashlytics:$firebaseCrashlyticsVersion"
     api "com.google.firebase:firebase-functions:$firebaseFunctionsVersion"

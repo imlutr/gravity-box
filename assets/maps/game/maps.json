@@ -540,6 +540,14 @@
             "y": -368
           },
           "width": 209.125
+        },
+        {
+          "type": "text",
+          "string": "Tip: use reverse thinking when\naiming, it may help you",
+          "position": {
+            "x": -33.664093,
+            "y": 285.99997
+          }
         }
       ]
     },
@@ -966,6 +974,14 @@
           },
           "width": 458.88196,
           "rotation": 270
+        },
+        {
+          "type": "text",
+          "string": "Tip: finish the level in fewer moves\nfor a better rank",
+          "position": {
+            "x": 6.7658997,
+            "y": -29.496433
+          }
         }
       ]
     },
@@ -2131,6 +2147,14 @@
           },
           "width": 257.04932,
           "rotation": 270
+        },
+        {
+          "type": "text",
+          "string": "Tip: see the level's leaderboard by\ntapping the button in the top right",
+          "position": {
+            "x": -33.451508,
+            "y": -29.54881
+          }
         }
       ]
     },
@@ -27812,7 +27836,7 @@
       "player": {
         "position": {
           "x": 96,
-          "y": 78
+          "y": 96
         }
       },
       "objects": [
@@ -27820,7 +27844,7 @@
           "type": "platform",
           "position": {
             "x": 96,
-            "y": 38
+            "y": 56
           },
           "width": 624
         },

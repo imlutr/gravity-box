@@ -30,14 +30,26 @@ abstract class EventSystem<T : Event>(
     /** The update method called every tick. Calls [processEvent] for each event, then removes it from the [eventQueue]. */
     @Suppress("UNCHECKED_CAST")
     override fun update(deltaTime: Float) {
-        eventQueue.forEach {
-            if (it::class.isSubclassOf(eventType)) {
-                processEvent(it as T, deltaTime)
-                eventsToRemove.add(it)
+        try {
+            for (i in 0 until eventQueue.size) {
+                val it = eventQueue[i]
+                if (it::class.isSubclassOf(eventType)) {
+                    processEvent(it as T, deltaTime)
+                    eventsToRemove.add(it)
+                }
             }
+            for (i in 0 until eventsToRemove.size) {
+                for (j in 0 until eventQueue.size) {
+                    if (eventQueue[j] == eventsToRemove[i]) {
+                        eventQueue.removeAt(j)
+                        break
+                    }
+                }
+            }
+            eventsToRemove.clear()
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
-        eventQueue.removeAll(eventsToRemove)
-        eventsToRemove.clear()
     }
 
     /**	This method is called on every event. Override this to implement your system's specific processing. */

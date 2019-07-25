@@ -9,6 +9,8 @@
 # Kotlin
 -dontwarn kotlin.**
 -dontnote kotlin.**
+-dontwarn kotlinx.**
+-dontnote kotlinx.**
 # Java
 -dontwarn org.objectweb.**
 -dontwarn org.xml.sax.**
@@ -20,6 +22,7 @@
 -dontwarn org.lwjgl.**
 -dontwarn com.badlogic.**
 -dontnote com.badlogic.**
+-dontwarn ktx.scene2d.**
 # AdMob
 -dontwarn com.google.android.gms.**
 -dontnote com.google.android.gms.**
@@ -38,6 +41,15 @@
 
 # Kotlin
 -keep class kotlin.reflect.jvm.internal.** { *; }
+
+# Kotlin coroutines
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidExceptionPreHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidDispatcherFactory {}
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
 
 # LWJGL
 -keep class org.lwjgl.**
@@ -97,6 +109,11 @@
 -keep class ro.luca1152.gravitybox.utils.assets.json.** { *; }
 -keep class ro.luca1152.gravitybox.utils.assets.loaders.MapPack { *; }
 -keep class ro.luca1152.gravitybox.utils.assets.loaders.MapPackFactory { *; }
+
+# Leaderboard serialization
+-keep class ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard { *; }
+-keep class ro.luca1152.gravitybox.utils.leaderboards.Level { *; }
+
 
 # IAP
 -keep class com.android.vending.billing.**

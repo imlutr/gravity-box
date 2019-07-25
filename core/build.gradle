@@ -21,6 +21,7 @@ eclipse.project.name = appName + '-core'
 dependencies {
     // Language
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
 
     // LibGDX
     api "com.badlogicgames.gdx:gdx:$gdxVersion"

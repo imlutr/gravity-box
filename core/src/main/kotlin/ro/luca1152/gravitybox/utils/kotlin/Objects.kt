@@ -47,3 +47,4 @@ class MenuOverlayViewport(context: Context) : ExtendViewport(720f, 1280f, contex
 class MenuOverlayStage(context: Context) : Stage(context.inject<UIViewport>(), context.inject())
 
 class DistanceFieldShader(vertexShader: String, fragmentShader: String) : ShaderProgram(vertexShader, fragmentShader)
+class OutlineDistanceFieldShader(vertexShader: String, fragmentShader: String) : ShaderProgram(vertexShader, fragmentShader)

@@ -20,46 +20,41 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.inject.Context
 import pl.mk5.gdx.fireapp.GdxFIRAnalytics
 import ro.luca1152.gravitybox.GameRules
-import ro.luca1152.gravitybox.components.game.*
-import ro.luca1152.gravitybox.screens.PlayScreen
-import ro.luca1152.gravitybox.utils.ads.AdsController
-import ro.luca1152.gravitybox.utils.kotlin.*
-import ro.luca1152.gravitybox.utils.leaderboards.ShotsLeaderboard
-import ro.luca1152.gravitybox.utils.ui.Colors
+import ro.luca1152.gravitybox.components.game.LevelComponent
+import ro.luca1152.gravitybox.components.game.PlayerComponent
+import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.components.game.map
+import ro.luca1152.gravitybox.events.EventQueue
+import ro.luca1152.gravitybox.utils.kotlin.getSingleton
+import ro.luca1152.gravitybox.utils.kotlin.info
+import ro.luca1152.gravitybox.utils.kotlin.injectNullable
+import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboard
+import ro.luca1152.gravitybox.utils.leaderboards.GameShotsLeaderboardController
 import kotlin.math.max
-import kotlin.math.min
 
 /** Handles what happens when a level is finished. */
 class LevelFinishSystem(
-    context: Context,
-    private val restartLevelWhenFinished: Boolean = false,
-    private val playScreen: PlayScreen? = null
+    private val context: Context,
+    private val restartLevelWhenFinished: Boolean = false
 ) : EntitySystem() {
     // Injected objects
-    private val uiStage: UIStage = context.inject()
-    private val gameStage: GameStage = context.inject()
+    private val eventQueue: EventQueue = context.inject()
     private val gameRules: GameRules = context.inject()
-    private val menuOverlayStage: MenuOverlayStage = context.inject()
-    private val adsController: AdsController? = context.injectNullable()
-    private val shotsLeaderboard: ShotsLeaderboard = context.inject()
+    private val gameShotsLeaderboardController: GameShotsLeaderboardController = context.inject()
 
     // Entities
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
 
-    // The color scheme is the one that tells whether the level was finished: if the current color scheme
-    // is the same as the dark color scheme, then it means that the level was finished. I should change
-    // this in the future.
-    private val colorSchemeIsFullyTransitioned
-        get() = (Colors.useDarkTheme && Colors.gameColor.approxEqualTo(Colors.LightTheme.game57))
-                || (!Colors.useDarkTheme && Colors.gameColor.approxEqualTo(Colors.DarkTheme.game95))
-    private val levelIsFinished
-        get() = playerEntity.player.isInsideFinishPoint && colorSchemeIsFullyTransitioned
+    // Variables
+    private var didWriteRankToStorage = false
+    private var didFlushPreferences = false
+    private var didLogLevelFinish = false
+    private var didUpdateLeaderboard = false
+    private var didUpdateHighestFinishedLevel = false
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
@@ -67,20 +62,56 @@ class LevelFinishSystem(
     }
 
     override fun update(deltaTime: Float) {
-        if (!levelIsFinished)
+        if (!levelEntity.level.isLevelFinished || levelEntity.level.isRestarting) {
+            didWriteRankToStorage = false
+            didFlushPreferences = false
+            didLogLevelFinish = false
+            didUpdateLeaderboard = false
+            didUpdateHighestFinishedLevel = false
             return
-        logLevelFinish()
-        promptUserToRate()
-        updateLeaderboard()
-        handleLevelFinish()
-        playScreen?.shouldUpdateLevelLabel = true
+        }
+
+        if (!didWriteRankToStorage) {
+            eventQueue.add(WriteRankToStorageEvent())
+            didWriteRankToStorage = true
+        }
+
+        if (!didFlushPreferences) {
+            eventQueue.add(FlushPreferencesEvent())
+            didFlushPreferences = true
+        }
+
+        if (!didLogLevelFinish) {
+            logLevelFinish()
+            didLogLevelFinish = true
+        }
+
+        if (!didUpdateLeaderboard) {
+            updateLeaderboard()
+            didUpdateLeaderboard = true
+        }
+
+        if (restartLevelWhenFinished) {
+            levelEntity.level.restartLevel = true
+            return
+        }
+
+        // The leaderboard wasn't loaded yet, showing the finish UI is pointless
+        if (context.injectNullable<GameShotsLeaderboard>() == null) {
+            eventQueue.add(ShowNextLevelEvent())
+        } else {
+            // Make sure the rank is calculated if the leaderboard was just loaded
+            eventQueue.add(CalculateRankEvent())
+        }
+
+        if (!didUpdateHighestFinishedLevel) {
+            updateHighestFinishedLevel()
+            didUpdateHighestFinishedLevel = false
+        }
     }
 
     private fun logLevelFinish() {
-        gameRules.run {
-            setGameLevelFinishCount(levelEntity.level.levelId, gameRules.getGameLevelFinishCount(levelEntity.level.levelId) + 1)
-            flushUpdates()
-        }
+        gameRules.setGameLevelFinishCount(levelEntity.level.levelId, gameRules.getGameLevelFinishCount(levelEntity.level.levelId) + 1)
 
         // Analytics
         if (gameRules.IS_MOBILE) {
@@ -94,79 +125,39 @@ class LevelFinishSystem(
             )
         }
 
+        info(
+            "Logged level finish (level ${levelEntity.level.levelId}, ${"%.2f".format(gameRules.getGameLevelPlayTime(levelEntity.level.levelId))}s," +
+                    " ${gameRules.getGameLevelFinishCount(levelEntity.level.levelId)} time" +
+                    "${if (gameRules.getGameLevelFinishCount(levelEntity.level.levelId) != 1) "s" else ""})."
+        )
+
         // Reset the played time, so in case this level is replayed, a huge time won't be reported
         gameRules.setGameLevelPlayTime(levelEntity.level.levelId, 0f)
     }
 
-    private fun handleLevelFinish() {
-        if (levelEntity.level.isRestarting) return
-
-        if (restartLevelWhenFinished)
-            levelEntity.level.restartLevel = true
-        else {
-            gameRules.HIGHEST_FINISHED_LEVEL = max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
-            levelEntity.level.run {
-                levelId = min(levelEntity.level.levelId + 1, gameRules.LEVEL_COUNT)
-                isRestarting = true
-                loadMap = true
-                forceUpdateMap = true
-            }
-            levelEntity.map.run {
-                forceCenterCameraOnPlayer = true
-                resetPassengers()
-            }
-            showInterstitialAd()
-            gameStage.addAction(
-                Actions.sequence(
-                    Actions.fadeOut(0f),
-                    Actions.fadeIn(.25f, Interpolation.pow3In),
-                    Actions.run {
-                        levelEntity.level.isRestarting = false
-                    }
-                )
-            )
-        }
-    }
-
-    private fun promptUserToRate() {
-        if (gameRules.SHOULD_SHOW_INTERSTITIAL_AD && levelEntity.level.levelId != gameRules.MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT) return
-        if (playScreen == null) return
-        if (gameRules.DID_RATE_THE_GAME) return
-        if (gameRules.NEVER_PROMPT_USER_TO_RATE_THE_GAME) return
-        if (levelEntity.level.levelId < gameRules.MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT) return
-        if (gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN != 0f &&
-            gameRules.PLAY_TIME < gameRules.MIN_PLAY_TIME_TO_PROMPT_USER_TO_RATE_THE_GAME_AGAIN
-        ) return
-        uiStage.addAction(Actions.sequence(
-            Actions.delay(.25f),
-            Actions.run { menuOverlayStage.addActor(playScreen.rateGamePromptPopUp) }
-        ))
-    }
-
-    private fun showInterstitialAd() {
-        if (!gameRules.IS_MOBILE) return
-        if (gameRules.IS_AD_FREE) return
-        if (!gameRules.SHOULD_SHOW_INTERSTITIAL_AD) return
-        if (levelEntity.level.levelId == gameRules.MIN_FINISHED_LEVELS_TO_SHOW_RATE_PROMPT) return
-        if (!adsController!!.isNetworkConnected()) return
-        if (!adsController.isInterstitialAdLoaded()) return
-        adsController.showInterstitialAd()
-        gameRules.SHOULD_SHOW_INTERSTITIAL_AD = false
-    }
-
     private fun updateLeaderboard() {
+        if (gameRules.IS_PLAYER_SOFT_BANNED) {
+            gameRules.setGameLevelHighscore(levelEntity.level.levelId, levelEntity.map.shots)
+            return
+        }
+
         val shots = levelEntity.map.shots
         levelEntity.level.run {
             if (gameRules.getGameLevelHighscore(levelId) <= shots)
                 return
 
-            shotsLeaderboard.incrementPlayerCountForShots(levelId, shots)
+            gameShotsLeaderboardController.incrementPlayerCountForShots(levelId, shots)
             if (gameRules.getGameLevelHighscore(levelId) != gameRules.DEFAULT_HIGHSCORE_VALUE &&
                 gameRules.getGameLevelHighscore(levelId) != gameRules.SKIPPED_LEVEL_SCORE_VALUE
             ) {
-                shotsLeaderboard.decrementPlayerCountForShots(levelId, gameRules.getGameLevelHighscore(levelId))
+                gameShotsLeaderboardController.decrementPlayerCountForShots(levelId, gameRules.getGameLevelHighscore(levelId))
             }
             gameRules.setGameLevelHighscore(levelId, shots)
         }
+    }
+
+
+    private fun updateHighestFinishedLevel() {
+        gameRules.HIGHEST_FINISHED_LEVEL = max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)
     }
 }

@@ -9,7 +9,7 @@
   "player": {
     "position": {
       "x": 96,
-      "y": 78
+      "y": 96
     }
   },
   "objects": [
@@ -17,7 +17,7 @@
       "type": "platform",
       "position": {
         "x": 96,
-        "y": 38
+        "y": 56
       },
       "width": 624
     },

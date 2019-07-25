@@ -2,6 +2,8 @@
 {
   com.badlogic.gdx.graphics.Color: {
     text-gold: { r: 0.819, g: 0.647, b: 0.180 }
+    text-dark-gold: { r: 0.498, g: 0.392, b: 0.109 }
+    text-grayed-gold: { r: 0.611, g: 0.552, b: 0.388 }
   }
   com.badlogic.gdx.graphics.g2d.BitmapFont: {
     regular: {
@@ -53,6 +55,10 @@
     empty-round-button: {
       up: empty-round-button
       down: empty-round-button
+    }
+    empty-round-button-padded: {
+      up: empty-round-button-padded
+      down: empty-round-button-padded
     }
     menu-button: {
       up: menu-icon
