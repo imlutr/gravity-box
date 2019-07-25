@@ -101,7 +101,7 @@ class LevelSelectorLevelsTableEntry(
         // Check if anything has to be updated
         if (levelLabel.textEquals("#$levelId") && rankLabel.textEquals("$rank") && rankPercentageLabel.textEquals(rankPercentage) &&
             ((isLevelSkipped && specialLabel.textEquals("Skipped")) || (isLevelLocked && specialLabel.textEquals("Locked")) ||
-                    (isLevelUnranked && specialLabel.textEquals("Unranked")))
+                    ((isLevelUnranked && !isLevelSkipped) && specialLabel.textEquals("Unranked")))
         ) return
 
         // Remove everything

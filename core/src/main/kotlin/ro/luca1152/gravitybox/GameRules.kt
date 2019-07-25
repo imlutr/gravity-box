@@ -238,7 +238,8 @@ class GameRules(context: Context) {
 
     /** Sets the least number of shots the game (not community) level [level] was finished in. */
     fun setGameLevelHighscore(level: Int, highscore: Int) {
-        if (getGameLevelHighscore(level) > highscore) {
+        val previousHighscore = getGameLevelHighscore(level)
+        if (highscore < previousHighscore || previousHighscore == SKIPPED_LEVEL_SCORE_VALUE) {
             preferences.putInteger(gameLevelHighscoreKeys.getValue(level), highscore)
         } else {
             Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
@@ -286,7 +287,7 @@ class GameRules(context: Context) {
         if (getGameLevelRank(level) > rank) {
             preferences.putInteger(gameLevelRankKeys.getValue(level), rank)
         } else {
-            Gdx.app.log("WARNING", "Tried to set the highscore to a worse value.")
+            Gdx.app.log("WARNING", "Tried to set the rank to a worse value.")
         }
     }
 

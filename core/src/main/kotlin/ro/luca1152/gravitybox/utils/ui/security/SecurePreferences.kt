@@ -57,6 +57,7 @@ class SecurePreferences(context: Context) {
                     retrievedValue
                 } catch (e: Throwable) {
                     cachedValues[key] = defaultValue
+                    putString(key, defaultValue)
                     defaultValue
                 }
             } else defaultValue
@@ -78,6 +79,7 @@ class SecurePreferences(context: Context) {
                     retrievedValue
                 } catch (e: Throwable) {
                     cachedValues[key] = defaultValue
+                    putInteger(key, defaultValue)
                     defaultValue
                 }
             } else defaultValue
@@ -99,6 +101,7 @@ class SecurePreferences(context: Context) {
                     retrievedValue
                 } catch (e: Throwable) {
                     cachedValues[key] = defaultValue
+                    putFloat(key, defaultValue)
                     defaultValue
                 }
             } else defaultValue
@@ -120,6 +123,7 @@ class SecurePreferences(context: Context) {
                     retrievedValue
                 } catch (e: Throwable) {
                     cachedValues[key] = defaultValue
+                    putLong(key, defaultValue)
                     defaultValue
                 }
             } else defaultValue
@@ -141,6 +145,7 @@ class SecurePreferences(context: Context) {
                     retrievedValue
                 } catch (e: Throwable) {
                     cachedValues[key] = defaultValue
+                    putBoolean(key, defaultValue)
                     defaultValue
                 }
             } else defaultValue

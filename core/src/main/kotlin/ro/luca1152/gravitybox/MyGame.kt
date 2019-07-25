@@ -117,7 +117,8 @@ class MyGame : KtxGame<Screen>() {
 
         // Encrypt all preferences used in version <1.4
         preferences.run {
-            get().forEach {
+            val previousPreferences = get().toMap()
+            previousPreferences.forEach {
                 putString(it.key, it.value.toString(), updateCache = false)
             }
             gameRules.ARE_RULES_ENCRYPTED = true
