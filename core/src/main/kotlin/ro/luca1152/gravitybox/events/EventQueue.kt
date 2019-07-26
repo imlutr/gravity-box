@@ -18,4 +18,17 @@
 package ro.luca1152.gravitybox.events
 
 /** A simple [ArrayList] of type [Event]. */
-class EventQueue : ArrayList<Event>()
+class EventQueue : ArrayList<Event>() {
+    private val addQueue = ArrayList<Event>()
+
+    fun addScheduled(element: Event): Boolean {
+        return addQueue.add(element)
+    }
+
+    fun addEverythingScheduled() {
+        for (i in 0 until addQueue.size) {
+            this.add(addQueue[i])
+        }
+        addQueue.clear()
+    }
+}

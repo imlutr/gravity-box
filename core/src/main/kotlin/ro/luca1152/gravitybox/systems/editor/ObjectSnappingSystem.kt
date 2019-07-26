@@ -379,7 +379,7 @@ class ObjectSnappingSystem(context: Context) : EntitySystem() {
 
     private fun updateRoundedPlatforms() {
         if (didSnapPlatform) {
-            eventQueue.add(UpdateRoundedPlatformsEvent())
+            eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
             selectedObject!!.polygon.update()
         }
     }

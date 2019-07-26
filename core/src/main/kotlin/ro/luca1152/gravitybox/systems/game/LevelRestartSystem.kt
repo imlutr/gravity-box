@@ -68,7 +68,7 @@ class LevelRestartSystem(private val context: Context, private val playScreen: P
             Actions.sequence(
                 Actions.run {
                     levelEntity.level.isRestarting = true
-                    eventQueue.add(FadeOutEvent(fadeOutDuration, Interpolation.pow3In))
+                    eventQueue.addScheduled(FadeOutEvent(fadeOutDuration, Interpolation.pow3In))
                 },
                 Actions.delay(fadeOutDuration),
                 Actions.run {
@@ -85,10 +85,10 @@ class LevelRestartSystem(private val context: Context, private val playScreen: P
                             forceCenterCameraOnPlayer = true
                             resetShotsCount()
                         }
-                        eventQueue.add(CalculateRankEvent())
+                        eventQueue.addScheduled(CalculateRankEvent())
                     }
                 },
-                Actions.run { eventQueue.add(FadeInEvent(fadeInDuration, Interpolation.pow3In)) },
+                Actions.run { eventQueue.addScheduled(FadeInEvent(fadeInDuration, Interpolation.pow3In)) },
                 Actions.delay(fadeInDuration),
                 Actions.run { levelEntity.level.isRestarting = false }
             )

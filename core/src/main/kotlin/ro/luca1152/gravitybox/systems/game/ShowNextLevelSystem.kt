@@ -85,8 +85,8 @@ class ShowNextLevelSystem(
             menuOverlay.shouldUpdateLevelLabel = true
         }
         eventQueue.run {
-            add(PromptUserToRateEvent())
-            add(ShowInterstitialAdEvent())
+            addScheduled(PromptUserToRateEvent())
+            addScheduled(ShowInterstitialAdEvent())
         }
     }
 

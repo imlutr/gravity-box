@@ -76,7 +76,7 @@ class RestartLevelConfirmationPane(context: Context) : Pane(context, 600f, 370f,
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                eventQueue.add(ShowNextLevelEvent())
+                eventQueue.addScheduled(ShowNextLevelEvent())
                 this@RestartLevelConfirmationPane.hide()
             }
         })

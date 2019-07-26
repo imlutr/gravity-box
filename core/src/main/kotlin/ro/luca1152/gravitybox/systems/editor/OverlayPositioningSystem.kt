@@ -93,7 +93,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 scaleMapObject(
                     x, this@apply, selectedMapObject!!, toLeft = true
                 )
-                eventQueue.add(UpdateRoundedPlatformsEvent())
+                eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
                 selectedMapObject!!.polygon.update()
             }
 
@@ -143,7 +143,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
                 scaleMapObject(
                     x, this@apply, selectedMapObject!!, toRight = true
                 )
-                eventQueue.add(UpdateRoundedPlatformsEvent())
+                eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
                 selectedMapObject!!.polygon.update()
             }
 
@@ -196,7 +196,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
 
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
-                eventQueue.add(UpdateRoundedPlatformsEvent())
+                eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
                 selectedMapObject!!.editorObject.isRotating = true
 
                 val mouseCoords = screenToWorldCoordinates(context, Gdx.input.x, Gdx.input.y)
@@ -307,7 +307,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 if (!isDragging) return // Make sure dragStart() is called first
-                eventQueue.add(UpdateRoundedPlatformsEvent())
+                eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
                 selectedMapObject!!.editorObject.isDraggingHorizontally = true
 
                 val mouseXInWorldCoords = gameStage.screenToStageCoordinates(Vector2(Gdx.input.x.toFloat(), 0f)).x
@@ -396,7 +396,7 @@ class OverlayPositioningSystem(private val context: Context) : EntitySystem() {
             override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.touchDragged(event, x, y, pointer)
                 if (!isDragging) return // Make sure dragStart() is called first
-                eventQueue.add(UpdateRoundedPlatformsEvent())
+                eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
                 selectedMapObject!!.editorObject.isDraggingVertically = true
 
                 val mouseYInWorldCoords = gameStage.screenToStageCoordinates(Vector2(0f, Gdx.input.y.toFloat())).y

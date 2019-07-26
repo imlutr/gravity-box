@@ -113,7 +113,7 @@ class ObjectPlacementSystem(
                 placedObject.movingObject(context, mockPlatform.scene2D.centerX, mockPlatform.scene2D.centerY, MovingObjectComponent.SPEED)
             }
 
-            eventQueue.add(UpdateRoundedPlatformsEvent())
+            eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
             undoRedoEntity.undoRedo.addExecutedCommand(AddCommand(context, placedObject, mapEntity))
         }
 

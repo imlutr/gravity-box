@@ -66,7 +66,7 @@ class EntireLeaderboardCachingSystem(private val context: Context) : EntitySyste
             updateNextLeaderboardCacheTime()
             writeLeaderboardToStorage()
             bindLeaderboard(it)
-            eventQueue.add(UpdateAllRanksEvent())
+            eventQueue.addScheduled(UpdateAllRanksEvent())
         }
     }
 
@@ -77,12 +77,12 @@ class EntireLeaderboardCachingSystem(private val context: Context) : EntitySyste
     private fun updateNextLeaderboardCacheTime() {
         gameRules.run {
             NEXT_LEADERBOARD_CACHE_TIME = TimeUtils.millis() + gameRules.TIME_DELAY_BETWEEN_CACHING_LEADERBOARD
-            eventQueue.add(FlushPreferencesEvent())
+            eventQueue.addScheduled(FlushPreferencesEvent())
         }
     }
 
     private fun writeLeaderboardToStorage() {
-        eventQueue.add(WriteEntireLeaderboardToStorageEvent())
+        eventQueue.addScheduled(WriteEntireLeaderboardToStorageEvent())
     }
 
     private fun bindLeaderboard(gameShotsLeaderboard: GameShotsLeaderboard) {

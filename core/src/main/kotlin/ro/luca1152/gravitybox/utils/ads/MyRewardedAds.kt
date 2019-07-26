@@ -38,7 +38,7 @@ class MyRewardedAds(private val context: Context) {
             override fun onRewardedEvent(type: String, amount: Int) {
                 Gdx.app.log("AdMob", "Rewarding player with [$type, $amount].")
                 gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN = gameRules.TIME_DELAY_BETWEEN_REWARDED_ADS
-                eventQueue.add(SkipLevelEvent())
+                eventQueue.addScheduled(SkipLevelEvent())
             }
 
             override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {

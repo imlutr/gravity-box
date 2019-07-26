@@ -52,7 +52,7 @@ class CheatingCheckingSystem(context: Context) : EntitySystem() {
             levelEntity.map.shots = myEncrypter.decrypt(levelEntity.map.encryptedShots, "encryptedShots").toInt()
             gameRules.run {
                 IS_PLAYER_SOFT_BANNED = true
-                eventQueue.add(FlushPreferencesEvent())
+                eventQueue.addScheduled(FlushPreferencesEvent())
             }
             info("Soft banned user. Cause: cheating by editing memory.")
             if (gameRules.IS_MOBILE) {

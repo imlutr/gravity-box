@@ -79,7 +79,7 @@ class SkipLevelSystem(context: Context) : EventSystem<SkipLevelEvent>(context.in
             Actions.sequence(
                 Actions.run {
                     levelEntity.level.isChangingLevel = true
-                    eventQueue.add(FadeOutEvent(fadeOutDuration))
+                    eventQueue.addScheduled(FadeOutEvent(fadeOutDuration))
                 },
                 Actions.delay(fadeOutDuration),
                 Actions.run {
@@ -89,17 +89,17 @@ class SkipLevelSystem(context: Context) : EventSystem<SkipLevelEvent>(context.in
                         forceUpdateMap = true
                     }
                     levelEntity.map.run {
-                        eventQueue.add(UpdateRoundedPlatformsEvent())
+                        eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
                         forceCenterCameraOnPlayer = true
                     }
                 },
-                Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
+                Actions.run { eventQueue.addScheduled(FadeInEvent(fadeInDuration)) },
                 Actions.delay(fadeInDuration),
                 Actions.run {
                     levelEntity.level.run {
                         isChangingLevel = false
                         isSkippingLevel = false
-                        eventQueue.add(FlushPreferencesEvent())
+                        eventQueue.addScheduled(FlushPreferencesEvent())
                     }
                 }
             )

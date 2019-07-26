@@ -68,7 +68,7 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
             gameRules.BULLET_COUNT++
             levelEntity.map.incrementShotsCount()
             shootingTimer = gameRules.TIME_DELAY_BETWEEN_SHOTS
-            eventQueue.add(CalculateRankEvent())
+            eventQueue.addScheduled(CalculateRankEvent())
             return true
         }
     }

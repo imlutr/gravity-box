@@ -140,7 +140,7 @@ class FinishOverlay(private val context: Context) {
         color = Color.CLEAR
         addListener(object : ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                eventQueue.add(ShowNextLevelEvent())
+                eventQueue.addScheduled(ShowNextLevelEvent())
                 return true
             }
         })

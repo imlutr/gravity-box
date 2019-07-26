@@ -49,7 +49,7 @@ class WriteEntireLeaderboardToStorageSystem(private val context: Context) :
             val file = Gdx.files.local(Assets.gameLeaderboardPath)
             file.writeString(Json().toJson(context.inject<GameShotsLeaderboard>()), false)
             gameRules.CACHED_LEADERBOARD_VERSION = gameRules.GAME_LEVELS_VERSION
-            eventQueue.add(FlushPreferencesEvent())
+            eventQueue.addScheduled(FlushPreferencesEvent())
             info("Wrote the leaderboard to storage.")
         }
     }
