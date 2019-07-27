@@ -62,7 +62,7 @@ class PlayLevelConfirmationPane(context: Context, private val levelId: Int) : Pa
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                eventQueue.add(PlaySpecificLevelEvent(levelId))
+                eventQueue.addScheduled(PlaySpecificLevelEvent(levelId))
                 this@PlayLevelConfirmationPane.hide()
             }
         })

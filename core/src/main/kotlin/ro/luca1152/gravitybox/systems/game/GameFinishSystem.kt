@@ -61,6 +61,6 @@ class GameFinishSystem(context: Context) : EntitySystem() {
             FINISH_DESTROYED_PLATFORM_COUNT = DESTROYED_PLATFORMS_COUNT
             FINISH_COLLECTED_POINT_COUNT = COLLECTED_POINT_COUNT
         }
-        eventQueue.add(FlushPreferencesEvent())
+        eventQueue.addScheduled(FlushPreferencesEvent())
     }
 }

@@ -182,7 +182,7 @@ class AddCommand(
         affectedEntity.tryGet(CollectiblePointComponent)?.run {
             mapEntity.map.pointsCount++
         }
-        eventQueue.add(UpdateRoundedPlatformsEvent())
+        eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
     }
 
     override fun unexecute() {
@@ -215,7 +215,7 @@ class AddCommand(
         affectedEntity.tryGet(CollectiblePointComponent)?.run {
             mapEntity.map.pointsCount--
         }
-        eventQueue.add(UpdateRoundedPlatformsEvent())
+        eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
     }
 }
 
@@ -306,7 +306,7 @@ class MakeObjectDestroyableCommand(
         affectedEntity.run {
             removeComponent<PlatformComponent>()
             destroyablePlatform(context)
-            eventQueue.add(UpdateRoundedPlatformsEvent())
+            eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
         }
     }
 
@@ -314,7 +314,7 @@ class MakeObjectDestroyableCommand(
         affectedEntity.run {
             removeComponent<DestroyablePlatformComponent>()
             platform(context)
-            eventQueue.add(UpdateRoundedPlatformsEvent())
+            eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
         }
     }
 }
@@ -358,7 +358,7 @@ class MakeObjectMovingCommand(
             mockPlatform.linkedEntity.add("dashedLine", dashedLine)
             this.linkedEntity.add("dashedLine", dashedLine)
 
-            eventQueue.add(UpdateRoundedPlatformsEvent())
+            eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
         }
     }
 
@@ -371,7 +371,7 @@ class MakeObjectMovingCommand(
             removeComponent<LinkedEntityComponent>()
         }
 
-        eventQueue.add(UpdateRoundedPlatformsEvent())
+        eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
     }
 }
 

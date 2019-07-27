@@ -339,7 +339,7 @@ class LeftButton(context: Context) : ClickButton(context.inject(), "left-button"
                     Actions.sequence(
                         Actions.run {
                             levelEntity.level.isChangingLevel = true
-                            eventQueue.add(FadeOutEvent(fadeOutDuration))
+                            eventQueue.addScheduled(FadeOutEvent(fadeOutDuration))
                         },
                         Actions.delay(fadeOutDuration),
                         Actions.run {
@@ -353,11 +353,11 @@ class LeftButton(context: Context) : ClickButton(context.inject(), "left-button"
                                 forceUpdateMap = true
                             }
                             levelEntity.map.run {
-                                eventQueue.add(UpdateRoundedPlatformsEvent())
+                                eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
                                 forceCenterCameraOnPlayer = true
                             }
                         },
-                        Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
+                        Actions.run { eventQueue.addScheduled(FadeInEvent(fadeInDuration)) },
                         Actions.delay(fadeInDuration),
                         Actions.run { levelEntity.level.isChangingLevel = false }
                     )
@@ -395,7 +395,7 @@ class RightButton(context: Context) : ClickButton(context.inject(), "right-butto
                     Actions.sequence(
                         Actions.run {
                             levelEntity.level.isChangingLevel = true
-                            eventQueue.add(FadeOutEvent(fadeOutDuration))
+                            eventQueue.addScheduled(FadeOutEvent(fadeOutDuration))
                         },
                         Actions.delay(fadeOutDuration),
                         Actions.run {
@@ -409,11 +409,11 @@ class RightButton(context: Context) : ClickButton(context.inject(), "right-butto
                                 forceUpdateMap = true
                             }
                             levelEntity.map.run {
-                                eventQueue.add(UpdateRoundedPlatformsEvent())
+                                eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
                                 forceCenterCameraOnPlayer = true
                             }
                         },
-                        Actions.run { eventQueue.add(FadeInEvent(fadeInDuration)) },
+                        Actions.run { eventQueue.addScheduled(FadeInEvent(fadeInDuration)) },
                         Actions.delay(fadeInDuration),
                         Actions.run { levelEntity.level.isChangingLevel = false }
                     )

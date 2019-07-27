@@ -267,13 +267,12 @@ class MapComponent : Component, Poolable {
         resetShotsCount()
         eventQueue.run {
             clear()
-            add(UpdateRoundedPlatformsEvent())
+            addScheduled(UpdateRoundedPlatformsEvent())
 
             // Clear all actions in case the level was restarting, causing visual glitches
-            add(FadeInEvent(FadeOutFadeInEvent.CLEAR_ACTIONS))
+            addScheduled(FadeInEvent(FadeOutFadeInEvent.CLEAR_ACTIONS))
 
-//            add(CacheCurrentLevelLeaderboardEvent()) // Commented out because it affects performance too much
-            add(CalculateRankEvent())
+            addScheduled(CalculateRankEvent())
         }
     }
 

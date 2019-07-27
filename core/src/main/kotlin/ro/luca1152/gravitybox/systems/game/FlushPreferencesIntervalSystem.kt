@@ -28,6 +28,6 @@ class FlushPreferencesIntervalSystem(context: Context) : IntervalSystem(30f) {
     private val eventQueue: EventQueue = context.inject()
 
     override fun updateInterval() {
-        eventQueue.add(FlushPreferencesEvent())
+        eventQueue.addScheduled(FlushPreferencesEvent())
     }
 }

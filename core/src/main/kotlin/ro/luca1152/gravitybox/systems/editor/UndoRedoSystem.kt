@@ -52,7 +52,7 @@ class UndoRedoSystem(context: Context) : IteratingSystem(Family.all(UndoRedoComp
             commandToUndo.unexecute()
             entity.undoRedo.commandsToRedo.push(commandToUndo)
             entity.undoRedo.levelsToUndo--
-            eventQueue.add(UpdateRoundedPlatformsEvent())
+            eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
         }
     }
 
@@ -62,7 +62,7 @@ class UndoRedoSystem(context: Context) : IteratingSystem(Family.all(UndoRedoComp
             commandToRedo.execute()
             entity.undoRedo.commandsToUndo.push(commandToRedo)
             entity.undoRedo.levelsToRedo--
-            eventQueue.add(UpdateRoundedPlatformsEvent())
+            eventQueue.addScheduled(UpdateRoundedPlatformsEvent())
         }
     }
 }

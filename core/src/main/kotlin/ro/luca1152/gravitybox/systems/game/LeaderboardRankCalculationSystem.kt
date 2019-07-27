@@ -79,7 +79,7 @@ class LeaderboardRankCalculationSystem(
             isNewRecord = rank == -1 && !shotsMap.containsKey(ShotsLeaderboard.shotsKeys(levelEntity.level.levelId))
 
             if (isNewRecord && levelEntity.level.isLevelFinished) {
-                eventQueue.add(CacheCurrentLevelShots())
+                eventQueue.addScheduled(CacheCurrentLevelShots())
             }
         }
     }

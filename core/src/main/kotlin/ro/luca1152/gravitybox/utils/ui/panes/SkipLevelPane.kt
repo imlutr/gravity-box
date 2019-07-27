@@ -64,14 +64,14 @@ class SkipLevelPane(context: Context) : Pane(context, 600f, 370f, context.inject
                 // Ad-free
                 if (gameRules.IS_AD_FREE) {
                     gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN = gameRules.TIME_DELAY_BETWEEN_REWARDED_ADS
-                    eventQueue.add(SkipLevelEvent())
+                    eventQueue.addScheduled(SkipLevelEvent())
                     return
                 }
 
                 // Debug
                 if (!gameRules.IS_MOBILE || adsController == null) {
                     gameRules.TIME_UNTIL_REWARDED_AD_CAN_BE_SHOWN = gameRules.TIME_DELAY_BETWEEN_REWARDED_ADS
-                    eventQueue.add(SkipLevelEvent())
+                    eventQueue.addScheduled(SkipLevelEvent())
                     return
                 }
 
