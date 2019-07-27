@@ -38,7 +38,7 @@ class UpdateAllRanksSystem(private val context: Context) : EventSystem<UpdateAll
 
     private fun updateAllRanks() {
         for (i in 1..gameRules.HIGHEST_FINISHED_LEVEL) {
-            if (!gameRules.isGameLevelUnranked(i)) {
+            if (gameRules.getGameLevelHighscore(i) != gameRules.DEFAULT_HIGHSCORE_VALUE) {
                 val rank = calculateRank(i)
                 val rankPercentage = calculateRankPercentage(i)
                 if (rank != -1 && rankPercentage != -1f) {
