@@ -133,10 +133,12 @@ class LoadingScreen(private val context: Context) : KtxScreen {
 
         for (i in 1..gameRules.HIGHEST_FINISHED_LEVEL) {
             val highscore = gameRules.getGameLevelHighscore(i)
-            val levelKey = ShotsLeaderboard.levelsKeys[i]
-            val shotsKey = ShotsLeaderboard.shotsKeys(highscore)
-            if (leaderboard.levels.containsKey(levelKey)) {
-                leaderboard.levels[levelKey]!!.shots[shotsKey] = leaderboard.levels[levelKey]!!.shots[shotsKey] ?: 0L + 1
+            if (highscore != gameRules.DEFAULT_HIGHSCORE_VALUE) {
+                val levelKey = ShotsLeaderboard.levelsKeys[i]
+                val shotsKey = ShotsLeaderboard.shotsKeys(highscore)
+                if (leaderboard.levels.containsKey(levelKey)) {
+                    leaderboard.levels[levelKey]!!.shots[shotsKey] = leaderboard.levels[levelKey]!!.shots[shotsKey] ?: 0L + 1
+                }
             }
         }
     }
