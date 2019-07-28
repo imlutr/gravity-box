@@ -205,7 +205,7 @@ class GameRules(context: Context) {
     /** The first interstitial will be shown after 2 minutes. */
     val TIME_DELAY_BEFORE_SHOWING_FIRST_INTERSTITIAL_AD = 2f * 60
     /** There must be a delay of at least 3.75 minutes between two interstitial ads. */
-    val TIME_DELAY_BETWEEN_INTERSTITIAL_ADS = 3.75f * 60
+    val TIME_DELAY_BETWEEN_INTERSTITIAL_ADS = 2.93f * 60
     /**
      * True when an ad should be shown.
      * Set true by the InterstitialAdsSystem.
