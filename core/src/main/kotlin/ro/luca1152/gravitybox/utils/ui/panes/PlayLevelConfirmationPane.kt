@@ -27,6 +27,7 @@ import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.systems.game.PlaySpecificLevelEvent
+import ro.luca1152.gravitybox.systems.game.ShowInterstitialAdEvent
 import ro.luca1152.gravitybox.utils.kotlin.MenuOverlayStage
 import ro.luca1152.gravitybox.utils.ui.label.DistanceFieldLabel
 import ro.luca1152.gravitybox.utils.ui.popup.Pane
@@ -63,6 +64,7 @@ class PlayLevelConfirmationPane(context: Context, private val levelId: Int) : Pa
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
                 eventQueue.addScheduled(PlaySpecificLevelEvent(levelId))
+                eventQueue.addScheduled(ShowInterstitialAdEvent())
                 this@PlayLevelConfirmationPane.hide()
             }
         })
