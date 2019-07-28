@@ -20,26 +20,26 @@ package ro.luca1152.gravitybox.systems.game
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
-import ro.luca1152.gravitybox.components.game.*
+import ktx.inject.Context
+import ro.luca1152.gravitybox.GameRules
+import ro.luca1152.gravitybox.components.game.LevelComponent
+import ro.luca1152.gravitybox.components.game.level
+import ro.luca1152.gravitybox.components.game.map
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
-/** Detects when the player is inside the finish point. */
-class PlayerInsideFinishDetectionSystem : EntitySystem() {
+class DisableShootingSystem(context: Context) : EntitySystem() {
+    // Injected objects
+    private val gameRules: GameRules = context.inject()
+
+    // Entities
     private lateinit var levelEntity: Entity
-    private lateinit var playerEntity: Entity
-    private lateinit var finishEntity: Entity
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
-        playerEntity = engine.getSingleton<PlayerComponent>()
-        finishEntity = engine.getSingleton<FinishComponent>()
     }
 
     override fun update(deltaTime: Float) {
-        updateVariable()
-    }
-
-    private fun updateVariable() {
-        playerEntity.player.isInsideFinishPoint = playerEntity.collisionBox.box.overlaps(finishEntity.collisionBox.box)
+        levelEntity.map.isShootingDisabled =
+            levelEntity.level.timeSpentInsideFinishPoint >= gameRules.TIME_DELAY_INSIDE_FINISH_POINT_AFTER_DISABLING_SHOOTING && levelEntity.level.canFinish
     }
 }

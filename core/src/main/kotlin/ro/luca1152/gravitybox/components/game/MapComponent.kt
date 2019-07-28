@@ -121,6 +121,9 @@ class MapComponent : Component, Poolable {
     /** Tells the current rank is in the top [rankPercentage]%. [0-100]*/
     var rankPercentage = -1f
 
+    /** False if bullets are shot when the player touches the screen. */
+    var isShootingDisabled = false
+
     fun set(context: Context, levelId: Int, hue: Int) {
         this.levelId = levelId
         this.hue = hue
@@ -478,6 +481,7 @@ class MapComponent : Component, Poolable {
         rank = -1
         rankPercentage = -1f
         isNewRecord = false
+        isShootingDisabled = false
     }
 
     fun destroyAllBodies() {

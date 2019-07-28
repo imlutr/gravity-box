@@ -78,6 +78,8 @@ class GameRules(context: Context) {
     val ENABLE_LEVEL_EDITOR = !IS_MOBILE
     /** The minimum delay in seconds between two shots. */
     val TIME_DELAY_BETWEEN_SHOTS = 0.05f
+    /** The delay in seconds the player can stay inside the finish point while still being able to shoot. */
+    val TIME_DELAY_INSIDE_FINISH_POINT_AFTER_DISABLING_SHOOTING = .5f
 
     // Stats
     /** The highest level the player finished. */
