@@ -214,8 +214,8 @@ class GameRules(context: Context) {
     var SHOULD_SHOW_INTERSTITIAL_AD = false
 
     // Rewarded ads
-    /** There must be a delay of at least 5 minutes between two rewarded ads. */
-    val TIME_DELAY_BETWEEN_REWARDED_ADS = 5f * 60
+    /** There must be a delay of at least 1.5 minutes between two rewarded ads. */
+    val TIME_DELAY_BETWEEN_REWARDED_ADS = 1.5f * 60
     /**
      * The time in seconds until a rewarded ad can be shown.
      * Is kept in [Preferences] so the value is kept between restarts.
