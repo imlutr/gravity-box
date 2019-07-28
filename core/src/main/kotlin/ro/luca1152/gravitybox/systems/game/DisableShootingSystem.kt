@@ -19,16 +19,15 @@ package ro.luca1152.gravitybox.systems.game
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.EntitySystem
 import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.LevelComponent
+import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
-import ro.luca1152.gravitybox.events.Event
-import ro.luca1152.gravitybox.events.EventSystem
 import ro.luca1152.gravitybox.utils.kotlin.getSingleton
 
-class WriteRankToStorageEvent : Event
-class WriteRankToStorageSystem(context: Context) : EventSystem<WriteRankToStorageEvent>(context.inject(), WriteRankToStorageEvent::class) {
+class DisableShootingSystem(context: Context) : EntitySystem() {
     // Injected objects
     private val gameRules: GameRules = context.inject()
 
@@ -39,18 +38,8 @@ class WriteRankToStorageSystem(context: Context) : EventSystem<WriteRankToStorag
         levelEntity = engine.getSingleton<LevelComponent>()
     }
 
-    override fun processEvent(event: WriteRankToStorageEvent, deltaTime: Float) {
-        writeRankToStorage()
-    }
-
-    private fun writeRankToStorage() {
-        levelEntity.map.run {
-            if ((rank != -1 || isNewRecord) && rankPercentage != -1f && rank < gameRules.getGameLevelRank(levelId)) {
-                gameRules.run {
-                    setGameLevelRank(levelId, if (rank == -1) 1 else rank)
-                    setGameLevelRankPercentage(levelId, rankPercentage)
-                }
-            }
-        }
+    override fun update(deltaTime: Float) {
+        levelEntity.map.isShootingDisabled =
+            levelEntity.level.timeSpentInsideFinishPoint >= gameRules.TIME_DELAY_INSIDE_FINISH_POINT_AFTER_DISABLING_SHOOTING && levelEntity.level.canFinish
     }
 }

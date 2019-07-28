@@ -78,6 +78,8 @@ class GameRules(context: Context) {
     val ENABLE_LEVEL_EDITOR = !IS_MOBILE
     /** The minimum delay in seconds between two shots. */
     val TIME_DELAY_BETWEEN_SHOTS = 0.05f
+    /** The delay in seconds the player can stay inside the finish point while still being able to shoot. */
+    val TIME_DELAY_INSIDE_FINISH_POINT_AFTER_DISABLING_SHOOTING = .5f
 
     // Stats
     /** The highest level the player finished. */
@@ -203,7 +205,7 @@ class GameRules(context: Context) {
     /** The first interstitial will be shown after 2 minutes. */
     val TIME_DELAY_BEFORE_SHOWING_FIRST_INTERSTITIAL_AD = 2f * 60
     /** There must be a delay of at least 3.75 minutes between two interstitial ads. */
-    val TIME_DELAY_BETWEEN_INTERSTITIAL_ADS = 3.75f * 60
+    val TIME_DELAY_BETWEEN_INTERSTITIAL_ADS = 2.93f * 60
     /**
      * True when an ad should be shown.
      * Set true by the InterstitialAdsSystem.
@@ -212,8 +214,8 @@ class GameRules(context: Context) {
     var SHOULD_SHOW_INTERSTITIAL_AD = false
 
     // Rewarded ads
-    /** There must be a delay of at least 5 minutes between two rewarded ads. */
-    val TIME_DELAY_BETWEEN_REWARDED_ADS = 5f * 60
+    /** There must be a delay of at least 1.5 minutes between two rewarded ads. */
+    val TIME_DELAY_BETWEEN_REWARDED_ADS = 1.5f * 60
     /**
      * The time in seconds until a rewarded ad can be shown.
      * Is kept in [Preferences] so the value is kept between restarts.
@@ -273,7 +275,7 @@ class GameRules(context: Context) {
             preferences.putBoolean("didShowGuideBetweenLevels", value)
         }
 
-    /** The default value returned when reading a non-existent highscore using [getGameLevelHighscore]. */
+    /** The default value returned when reading a non-existent rank using [getGameLevelRank]. */
     val DEFAULT_RANK_VALUE = Int.MAX_VALUE
 
     /** Used for avoiding excessive [String] allocations. */
