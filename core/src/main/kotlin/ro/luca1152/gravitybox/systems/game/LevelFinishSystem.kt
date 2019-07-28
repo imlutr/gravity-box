@@ -55,6 +55,7 @@ class LevelFinishSystem(
     private var didLogLevelFinish = false
     private var didUpdateLeaderboard = false
     private var didUpdateHighestFinishedLevel = false
+    private var didUpdateRank = false
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
@@ -68,6 +69,7 @@ class LevelFinishSystem(
             didLogLevelFinish = false
             didUpdateLeaderboard = false
             didUpdateHighestFinishedLevel = false
+            didUpdateRank = false
             return
         }
 
@@ -96,12 +98,9 @@ class LevelFinishSystem(
             return
         }
 
-        // The leaderboard wasn't loaded yet, showing the finish UI is pointless
-        if (context.injectNullable<GameShotsLeaderboard>() == null) {
-            eventQueue.addScheduled(ShowNextLevelEvent())
-        } else {
-            // Make sure the rank is calculated if the leaderboard was just loaded
-            eventQueue.addScheduled(CalculateRankEvent())
+        if (!didUpdateRank) {
+            updateRank()
+            didUpdateRank = true
         }
 
         if (!didUpdateHighestFinishedLevel) {
@@ -159,6 +158,15 @@ class LevelFinishSystem(
         }
     }
 
+    private fun updateRank() {
+        // The leaderboard wasn't loaded yet, showing the finish UI is pointless
+        if (context.injectNullable<GameShotsLeaderboard>() == null) {
+            eventQueue.addScheduled(ShowNextLevelEvent())
+        } else {
+            // Make sure the rank is calculated if the leaderboard was just loaded
+            eventQueue.addScheduled(CalculateRankEvent())
+        }
+    }
 
     private fun updateHighestFinishedLevel() {
         gameRules.HIGHEST_FINISHED_LEVEL = max(gameRules.HIGHEST_FINISHED_LEVEL, levelEntity.level.levelId)

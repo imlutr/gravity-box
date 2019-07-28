@@ -90,7 +90,7 @@ class LeaderboardRankCalculationSystem(
         val shotsMap = shotsLeaderboard.levels[levelKey]!!.shots
         val shots = levelEntity.map.shots
         var totalPlayers = 0L
-        var totalPlayersWhoFinishedInFewerOrEqualShots = 0L
+        var totalPlayersWhoFinishedInFewerOrEqualShots = 1L // 1 = the player himself
         shotsMap.forEach {
             totalPlayers += it.value
             val intShots = ShotsLeaderboard.shotsKeysToInt((it.key))

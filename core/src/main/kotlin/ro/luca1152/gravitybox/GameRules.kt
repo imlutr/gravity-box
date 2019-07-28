@@ -275,7 +275,7 @@ class GameRules(context: Context) {
             preferences.putBoolean("didShowGuideBetweenLevels", value)
         }
 
-    /** The default value returned when reading a non-existent highscore using [getGameLevelHighscore]. */
+    /** The default value returned when reading a non-existent rank using [getGameLevelRank]. */
     val DEFAULT_RANK_VALUE = Int.MAX_VALUE
 
     /** Used for avoiding excessive [String] allocations. */
