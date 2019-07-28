@@ -214,6 +214,7 @@ class PlayScreen(private val context: Context) : KtxScreen {
             addSystem(ObjectMovementSystem())
             addSystem(RefilterSystem())
             addSystem(PhysicsSyncSystem())
+            addSystem(DisableShootingSystem(context))
             addSystem(ShootingSystem(context))
             addSystem(BulletCollisionSystem(context))
             addSystem(PlatformRemovalSystem(context))

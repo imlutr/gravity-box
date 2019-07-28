@@ -51,7 +51,7 @@ class ShootingSystem(private val context: Context) : EntitySystem() {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
             if (shootingTimer > 0f) return false
             if (levelEntity.level.isLevelFinished) return false
-            if (levelEntity.level.timeSpentInsideFinishPoint >= .5f) return false
+            if (levelEntity.map.isShootingDisabled) return false
 
             // Logging
             levelEntity.map.run {
