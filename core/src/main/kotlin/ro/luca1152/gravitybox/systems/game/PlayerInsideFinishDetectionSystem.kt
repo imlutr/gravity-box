@@ -28,8 +28,6 @@ class PlayerInsideFinishDetectionSystem : EntitySystem() {
     private lateinit var levelEntity: Entity
     private lateinit var playerEntity: Entity
     private lateinit var finishEntity: Entity
-    private val playerIsInsideFinishPoint
-        get() = playerEntity.collisionBox.box.overlaps(finishEntity.collisionBox.box)
 
     override fun addedToEngine(engine: Engine) {
         levelEntity = engine.getSingleton<LevelComponent>()
@@ -38,17 +36,10 @@ class PlayerInsideFinishDetectionSystem : EntitySystem() {
     }
 
     override fun update(deltaTime: Float) {
-        updateVariables()
+        updateVariable()
     }
 
-    private fun updateVariables() {
-        when (playerIsInsideFinishPoint) {
-            true -> {
-                playerEntity.player.isInsideFinishPoint = true
-            }
-            else -> {
-                playerEntity.player.isInsideFinishPoint = false
-            }
-        }
+    private fun updateVariable() {
+        playerEntity.player.isInsideFinishPoint = playerEntity.collisionBox.box.overlaps(finishEntity.collisionBox.box)
     }
 }
