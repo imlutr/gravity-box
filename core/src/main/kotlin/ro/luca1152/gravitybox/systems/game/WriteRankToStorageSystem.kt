@@ -45,9 +45,9 @@ class WriteRankToStorageSystem(context: Context) : EventSystem<WriteRankToStorag
 
     private fun writeRankToStorage() {
         levelEntity.map.run {
-            if (rank != -1 && rankPercentage != -1f && rank < gameRules.getGameLevelRank(levelId)) {
+            if ((rank != -1 || isNewRecord) && rankPercentage != -1f && rank < gameRules.getGameLevelRank(levelId)) {
                 gameRules.run {
-                    setGameLevelRank(levelId, rank)
+                    setGameLevelRank(levelId, if (rank == -1) 1 else rank)
                     setGameLevelRankPercentage(levelId, rankPercentage)
                 }
             }
