@@ -29,7 +29,6 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 import ro.luca1152.gravitybox.components.game.level
 import ro.luca1152.gravitybox.components.game.map
-import ro.luca1152.gravitybox.components.game.player
 import ro.luca1152.gravitybox.events.EventQueue
 import ro.luca1152.gravitybox.screens.PlayScreen
 import ro.luca1152.gravitybox.systems.game.FadeInEvent
@@ -316,7 +315,7 @@ class MenuButton(context: Context) : ClickButton(context.inject(), "menu-button"
     }
 
     private fun updateTouchability() {
-        touchable = if (playScreen.playerEntity.player.isInsideFinishPoint) Touchable.disabled else Touchable.enabled
+        touchable = if (playScreen.levelEntity.map.isShootingDisabled) Touchable.disabled else Touchable.enabled
     }
 }
 
