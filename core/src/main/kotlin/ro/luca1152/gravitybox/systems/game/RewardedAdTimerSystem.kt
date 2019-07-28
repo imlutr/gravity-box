@@ -22,7 +22,7 @@ import ktx.inject.Context
 import ro.luca1152.gravitybox.GameRules
 
 /** Keeps track of when a rewarded ad can be shown. */
-class RewardedAdTimerSystem(context: Context) : IntervalSystem(5f) {
+class RewardedAdTimerSystem(context: Context) : IntervalSystem(1f) {
     // Injected objects
     private val gameRules: GameRules = context.inject()
 
