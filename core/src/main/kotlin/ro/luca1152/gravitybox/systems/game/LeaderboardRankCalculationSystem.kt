@@ -76,9 +76,8 @@ class LeaderboardRankCalculationSystem(
         }
         levelEntity.map.run {
             rank = newRank
-            isNewRecord = rank == -1 && !shotsMap.containsKey(ShotsLeaderboard.shotsKeys(levelEntity.level.levelId))
-
-            if (isNewRecord && levelEntity.level.isLevelFinished) {
+            isNewRecord = rank == -1 && !shotsMap.containsKey(ShotsLeaderboard.shotsKeys(levelEntity.map.shots))
+            if (isNewRecord && levelEntity.level.isLevelFinished && levelEntity.map.shots != 0) {
                 eventQueue.addScheduled(CacheCurrentLevelShots())
             }
         }
