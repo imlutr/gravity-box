@@ -85,14 +85,14 @@ abstract class Button(
             }
             else -> when (isPressed || isToggled) {
                 true -> {
-                    color.setWithoutAlpha(Colors.uiDownColor)
-                    icon?.color?.setWithoutAlpha(Colors.uiDownColor)
-                    opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
+                    color.set(Colors.uiDownColor)
+                    icon?.color?.set(Colors.uiDownColor)
+                    opaqueImage?.color?.set(Colors.bgColor)
                 }
                 false -> {
-                    color.setWithoutAlpha(Colors.gameColor)
-                    icon?.color?.setWithoutAlpha(Colors.gameColor)
-                    opaqueImage?.color?.setWithoutAlpha(Colors.bgColor)
+                    color.set(Colors.gameColor)
+                    icon?.color?.set(Colors.gameColor)
+                    opaqueImage?.color?.set(Colors.bgColor)
                 }
             }
         }
