@@ -76,8 +76,9 @@ class LeaderboardRankCalculationSystem(
         }
         levelEntity.map.run {
             rank = newRank
-            isNewRecord = rank == -1 && !shotsMap.containsKey(ShotsLeaderboard.shotsKeys(levelEntity.map.shots))
-            if (isNewRecord && levelEntity.level.isLevelFinished && levelEntity.map.shots != 0) {
+            isNewRecord =
+                rank == -1 && !shotsMap.containsKey(ShotsLeaderboard.shotsKeys(levelEntity.map.shots)) && levelEntity.map.shots != 0
+            if (isNewRecord && levelEntity.level.isLevelFinished) {
                 eventQueue.addScheduled(CacheCurrentLevelShots())
             }
         }
@@ -89,7 +90,7 @@ class LeaderboardRankCalculationSystem(
         val shotsMap = shotsLeaderboard.levels[levelKey]!!.shots
         val shots = levelEntity.map.shots
         var totalPlayers = 0L
-        var totalPlayersWhoFinishedInFewerOrEqualShots = 1L // 1 = the player himself
+        var totalPlayersWhoFinishedInFewerOrEqualShots = if (levelEntity.map.isNewRecord) 1L else 0L // 1 = the player himself
         shotsMap.forEach {
             totalPlayers += it.value
             val intShots = ShotsLeaderboard.shotsKeysToInt((it.key))
