@@ -52,7 +52,7 @@ configure(subprojects - project(':android')) {
 }
 
 subprojects {
-    version = '1.4.5'
+    version = '1.4.6'
     ext.appName = 'gravity-box'
     repositories {
         mavenLocal()
