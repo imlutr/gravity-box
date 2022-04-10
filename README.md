@@ -1,5 +1,5 @@
 # Gravity Box
-[![Build Status](https://travis-ci.org/Luca1152/gravity-box.svg?branch=develop)](https://travis-ci.org/Luca1152/gravity-box) 
+**Note**: this repository mirrors the last public release of Gravity Box. The project is now closed-source.
 
 <a href="https://play.google.com/store/apps/details?id=ro.luca1152.gravitybox"><img src="https://i.imgur.com/nmfa0AR.png" width="auto" height="75"></a>
 
